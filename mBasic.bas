@@ -1,15 +1,25 @@
 Attribute VB_Name = "mBasic"
+Option Private Module
 Option Explicit
-#Const CustomMsg = 1 ' = 1 when the fMsg UserForm is to be used instead of the MsgBox
 ' -----------------------------------------------------------------------------------
-' Standard Module mBasic
-'          Basic declarations, procedures, methods, functions im most VBProjects.
+' ----------------------------------------------------------------------------
+' Standard Module mTest: Declarations, procedures, methods and function
+'       likely to be required in any VB-Project.
+'
+' Note: Procedures do not use the Common VBA Error Handler (mErrHndlr) module.
+'       This VB-Project is dedicated to the development, test, and maintenance
+'       of Basic VBA Procedures. In order not to urge users of this module to
+'       also use the mErrHndlr module the mErrHndlr is only used by the mTest
+'       module of this VB-Project. Errors in any mBasic procedure just use
+'       the VB MsgBox to display it.
 '
 ' Methods:
-' - AppErr              Converts a positive number into a negative error number
-'                       ensuring it not conflicts with a VB error. A negative error
-'                       number is turned back into the original positive Application
-'                       Error Number.
+' - AppErr              Converts a positive error number into a negative one which
+'                       ensures non conflicting application error numbers since
+'                       they are not mixed up with positive VB error numbers. In
+'                       return a negative error number is turned back into its
+'                       original positive Application Error Number.
+' - AppIsInstalled      Returns TRUE when a named exec is found in the system path
 ' - ArrayCompare        Compares two one-dimensional arrays. Returns an array with
 '                       al different items
 ' - ArrayIsAllocated    Returns TRUE when the provided array has at least one item
@@ -31,8 +41,8 @@ Option Explicit
 ' - "Microsoft Scripting Runtime"
 ' - "Microsoft Visual Basic Application Extensibility .."
 '
-' W. Rauschenberger Berlin May 2020
-' -------------------------------------------------------------------------------
+' W. Rauschenberger, Berlin Sept 2020
+' ----------------------------------------------------------------------------
 ' Basic declarations potentially uesefull in any project
 Public Declare PtrSafe Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
 Public Declare PtrSafe Function GetSystemMetrics32 Lib "user32" Alias "GetSystemMetrics" (ByVal nIndex As Long) As Long
@@ -87,13 +97,13 @@ Public Enum xlOnOff ' ------------------------------------
 End Enum            ' ------------------------------------
 
 Public Enum enDctMode ' Dictionary add/insert modes
-    dct_addafter = 1
-    dct_addbefore = 2
-    dct_ascending = 3
-    dct_ascendingignorecase = 4
-    dct_descending = 5
-    dct_descendingignorecase = 6
-    dct_sequence = 7
+    dct_addafter
+    dct_addbefore
+    dct_ascendingcasesensitive
+    dct_ascendcaseingignored
+    dct_descendingcasesensitive
+    dct_descendingcaseignored
+    dct_sequence
 End Enum
 
 Public Property Let MsgReply(ByVal v As Variant):   vMsgReply = v:          End Property
@@ -160,13 +170,14 @@ Public Function BaseName(ByVal v As Variant) As String
 ' a Workbook object.
 ' -----------------------------------------------------
 Const PROC  As String = "BaseName"
+Dim fso     As New FileSystemObject
 
     On Error GoTo on_error
     
     Select Case TypeName(v)
-        Case "String":      With New FileSystemObject:  BaseName = .GetBaseName(v):             End With
-        Case "Workbook":    With New FileSystemObject:  BaseName = .GetBaseName(v.FullName):    End With
-        Case "File":        With New FileSystemObject:  BaseName = .GetBaseName(v.ShortName):   End With
+        Case "String":      BaseName = fso.GetBaseName(v)
+        Case "Workbook":    BaseName = fso.GetBaseName(v.FullName)
+        Case "File":        BaseName = fso.GetBaseName(v.ShortName)
         Case Else:          Err.Raise AppErr(1), ErrSrc(PROC), "The parameter (v) is neither a string nor a File or Workbook object (TypeName = '" & TypeName(v) & "')!"
     End Select
 
@@ -175,9 +186,9 @@ exit_proc:
     
 on_error:
 #If Debugging Then
-'    Stop: ' Resume
+    Debug.Print Err.Description: Stop: Resume
 #End If
-    mBasic.ErrMsg Err.Number, ErrSrc(PROC), Err.Description, Erl
+    MsgBox Prompt:=Err.Descriiption, Title:="Application Error 1 in " & ErrSrc(PROC)
 End Function
 
 Public Function CleanTrim(ByVal s As String, _
@@ -198,24 +209,21 @@ Dim asToClean   As Variant
 
 End Function
 
-
 Public Sub DictAdd(ByRef dct As Dictionary, _
-                   ByRef vKey As Variant, _
-                   ByRef vItem As Variant, _
-                   ByVal lMode As enDctMode, _
-          Optional ByVal vTarget As Variant)
-' --------------------------------------------------
-' Universal method to add an item to the Dictionary
-' (dct), supporting ascending and descending order,
-' case and case insensitive as well as adding items
-' before or after an existing item.
-' - When the key (vKey) already exists adding will
-'   just be skipped without a warning or an error.
-' - When the dictionary (dct) is Nothing it is setup
-'   on the fly.
+                   ByVal dctkey As Variant, _
+                   ByVal dctitem As Variant, _
+          Optional ByVal dctmode As enDctMode = dct_sequence, _
+          Optional ByVal dcttargetkey As Variant)
+' ----------------------------------------------------------------------
+' Adds the item (dctitem) to the Dictionary (dct) with the key (dctkey).
+' Supports various key sequences, case and case insensitive key as well
+' as adding items before or after an existing item.
+' - When the key (dctkey) already exists the item is updated when it is
+'   numeric or a string, else it is ignored.
+' - When the dictionary (dct) is Nothing it is setup on the fly.
 '
-' W. Rauschenberger, Berlin Mar 2015
-' --------------------------------------------------
+' W. Rauschenberger, Berlin Mar 2020
+' -----------------------------------------------------------------
 Dim dctTemp     As Dictionary
 Dim vTempKey    As Variant
 Dim bAdd        As Boolean
@@ -223,82 +231,78 @@ Dim bAdd        As Boolean
     If dct Is Nothing Then Set dct = New Dictionary
     
     With dct
-        If .Count = 0 Or lMode = dct_sequence Then
-            '~~> Very first item is just added
-            .Add vKey, vItem
+        If .Count = 0 Or dctmode = dct_sequence Then ' the very first item is just added
+            .Add dctkey, dctitem
             Exit Sub
-        Else
-            ' ------------------------------------
-            ' Let's see whether the new key can be
-            ' added directly after the last key
-            ' ------------------------------------
-            vTempKey = .Keys()(.Count - 1)
-            Select Case lMode
-                Case dct_ascending
-                    If vKey > vTempKey Then
-                        .Add vKey, vItem
-                        Exit Sub                ' Done!
-                    End If
-                Case dct_ascendingignorecase
-                    If LCase$(vKey) > LCase$(vTempKey) Then
-                        .Add vKey, vItem
-                        Exit Sub                ' Done!
-                    End If
-                Case dct_descending
-                    If vKey < vTempKey Then
-                        .Add vKey, vItem
-                        Exit Sub                ' Done!
-                    End If
-                Case dct_descendingignorecase
-                    If LCase$(vKey) < LCase$(vTempKey) Then
-                        .Add vKey, vItem
-                        Exit Sub                ' Done!
-                    End If
-            End Select
         End If
+        ' ----------------------------------------------------------------------
+        ' Let's see whether the new key can be added directly after the last key
+        ' ----------------------------------------------------------------------
+        vTempKey = .Keys()(.Count - 1)
+        Select Case dctmode
+            Case dct_ascendingcasesensitive
+                If dctkey > vTempKey Then
+                    .Add dctkey, dctitem
+                    Exit Sub                ' Done!
+                End If
+            Case dct_ascendcaseingignored
+                If LCase$(dctkey) > LCase$(vTempKey) Then
+                    .Add dctkey, dctitem
+                    Exit Sub                ' Done!
+                End If
+            Case dct_descendingcasesensitive
+                If dctkey < vTempKey Then
+                    .Add dctkey, dctitem
+                    Exit Sub                ' Done!
+                End If
+            Case dct_descendingcaseignored
+                If LCase$(dctkey) < LCase$(vTempKey) Then
+                    .Add dctkey, dctitem
+                    Exit Sub                ' Done!
+                End If
+        End Select
     End With
 
-    ' ----------------------------------------------
-    ' Since the new key could not simply be added
-    ' to the dct it must be added/inserted somewhere
-    ' in between or even before the very first key.
-    ' ----------------------------------------------
+    '~~ -------------------------------------------------------------------------
+    '~~ Since the new key could not simply be added to the Dictionary it will be
+    '~~ added, somewhere in between, before the very first or after the last key.
+    '~~ -------------------------------------------------------------------------
     Set dctTemp = New Dictionary
     bAdd = True
     For Each vTempKey In dct
         With dctTemp
             If bAdd Then
-                '~~> Skip this section when already added
-                If dct.Exists(vKey) Then
-                    '~~> Simply ignore add when already existing
-                    bAdd = False
+                If dct.Exists(dctkey) Then
+                    '~~ When the item is numeric or a string and the key already exists the item is updated
+                    '~~ else ignored
+                    If IsNumeric(dctitem) Or TypeName(dctitem) = "String" Then dct.Item(dctkey) = dctitem
                     Exit Sub
                 End If
-                Select Case lMode
-                    Case dct_ascending
-                        If vTempKey > vKey Then
-                            .Add vKey, vItem
+                Select Case dctmode
+                    Case dct_ascendingcasesensitive
+                        If vTempKey > dctkey Then
+                            .Add dctkey, dctitem
                             bAdd = False ' Add done
                         End If
-                    Case dct_ascendingignorecase
-                        If LCase$(vTempKey) > LCase$(vKey) Then
-                            .Add vKey, vItem
+                    Case dct_ascendcaseingignored
+                        If LCase$(vTempKey) > LCase$(dctkey) Then
+                            .Add dctkey, dctitem
                             bAdd = False ' Add done
                         End If
                     Case dct_addbefore
-                        If vTempKey = vTarget Then
-                            '~~> Add before vTarget key has been reached
-                            .Add vKey, vItem
+                        If vTempKey = dcttargetkey Then
+                            '~~> Add before dcttargetkey key has been reached
+                            .Add dctkey, dctitem
                             bAdd = True
                         End If
-                    Case dct_descending
-                        If vTempKey < vKey Then
-                            .Add vKey, vItem
+                    Case dct_descendingcasesensitive
+                        If vTempKey < dctkey Then
+                            .Add dctkey, dctitem
                             bAdd = False ' Add done
                         End If
-                    Case dct_descendingignorecase
-                        If LCase$(vTempKey) < LCase$(vKey) Then
-                            .Add vKey, vItem
+                    Case dct_descendingcaseignored
+                        If LCase$(vTempKey) < LCase$(dctkey) Then
+                            .Add dctkey, dctitem
                             bAdd = False ' Add done
                         End If
                 End Select
@@ -307,13 +311,13 @@ Dim bAdd        As Boolean
             '~~> Transfer the existing item to the temporary dictionary
             .Add vTempKey, dct.Item(vTempKey)
             
-            If lMode = dct_addafter And bAdd Then
-                If vTempKey = vTarget Then
+            If dctmode = dct_addafter And bAdd Then
+                If vTempKey = dcttargetkey Then
                     ' ----------------------------------------
-                    ' Just add when lMode indicates add after,
+                    ' Just add when dctmode indicates add after,
                     ' and the vTraget key has been reached
                     ' ----------------------------------------
-                    .Add vKey, vItem
+                    .Add dctkey, dctitem
                     bAdd = False
                 End If
             End If
@@ -365,9 +369,9 @@ exit_proc:
 on_error:
     '~~ Global error handling is used to seamlessly monitor error conditions
 #If Debugging Then
-    Stop: Resume
+    Debug.Print Err.Description: Stop: Resume
 #End If
-    mBasic.ErrMsg Err.Number, ErrSrc(PROC), Err.Description, Erl
+    MsgBox Prompt:=Err.Description, Title:="VB Runtime Error " & Err.Number & " in " & ErrSrc(PROC)
 End Sub
 
 Public Sub ArrayRemoveItems(ByRef va As Variant, _
@@ -447,9 +451,9 @@ exit_proc:
 on_error:
     '~~ Global error handling is used to seamlessly monitor error conditions
 #If Debugging Then
-    Stop: Resume
+    Debug.Print Err.Description: Stop: Resume
 #End If
-    mBasic.ErrMsg Err.Number, ErrSrc(PROC), Err.Description, Erl
+    MsgBox Prompt:=Err.Description, Title:="VB Runtime Error " & Err.Number & " in " & ErrSrc(PROC)
 End Sub
 
 Public Function ElementOfIndex(ByVal a As Variant, _
@@ -543,7 +547,6 @@ Public Function ArrayDiffers(ByVal a1 As Variant, _
 ' Returns TRUE when array (a1) differs from array (a2).
 ' ----------------------------------------------------------
 Const PROC  As String = "ArrayDiffers"
-Dim l       As Long
 Dim i       As Long
 Dim va()    As Variant
 
@@ -571,9 +574,12 @@ Dim va()    As Variant
     
 exit_proc:
     Exit Function
-    
+
 on_error:
-    mBasic.ErrMsg Err.Number, ErrSrc(PROC), Err.Description, Erl
+#If Debugging Then
+    Debug.Print Err.Description: Stop: Resume
+#End If
+    MsgBox Prompt:=Err.Description, Title:="VB Runtime Error " & Err.Number & " in " & ErrSrc(PROC)
 End Function
 
 Public Function ArrayNoOfDims(arr As Variant) As Integer
@@ -631,7 +637,10 @@ exit_proc:
     Exit Function
     
 on_error:
-    mBasic.ErrMsg Err.Number, ErrSrc(PROC), Err.Description, Erl
+#If Debugging Then
+    Debug.Print Err.Description: Stop: Resume
+#End If
+    MsgBox Prompt:=Err.Description, Title:="VB Runtime Error " & Err.Number & " in " & ErrSrc(PROC)
 End Function
 
 Public Function IsCvName(ByVal v As Variant) As Boolean
@@ -668,128 +677,20 @@ Public Function IsPath(ByVal v As Variant) As Boolean
 
 End Function
 
-#If CustomMsg Then
-Public Sub ErrMsg(Optional ByVal lErrNo As Long = 0, _
-                  Optional ByVal sErrSrc As String = vbNullString, _
-                  Optional ByVal sErrDesc As String = vbNullString, _
-                  Optional ByVal sErrLine As String = vbNullString, _
-                  Optional ByVal sTitle As String = vbNullString, _
-                  Optional ByVal sErrPath As String = vbNullString, _
-                  Optional ByVal sErrInfo As String = vbNullString)
-' -------------------------------------------------------------------
-' Common error message using fMsg which supports the
-' display of an error path in a fixed font textbox.
-' -------------------------------------------------------------------
-Const PROC      As String = "ErrMsg"
-Dim sIndicate   As String
-Dim sErrText    As String   ' May be a first part of the sErrDesc
-
-    If lErrNo = 0 _
-    Then MsgBox "Exit statement before error handling missing! Error number is 0!", vbCritical, "Application error in " & ErrSrc(PROC) & "!"
-    
-    '~~ Additional info about the error line in case one had been provided
-    If sErrLine = vbNullString Or sErrLine = "0" Then
-        sIndicate = vbNullString
-    Else
-        sIndicate = " (at line " & sErrLine & ")"
-    End If
-    
-    If sTitle = vbNullString Then
-        '~~ When no title is provided, one is assembled by provided info
-        sTitle = sTitle & sIndicate
-        '~~ Distinguish between VBA and Application error
-        Select Case lErrNo
-            Case Is > 0:    sTitle = "VBA Error " & lErrNo
-            Case Is < 0:    sTitle = "Application Error " & AppErr(lErrNo)
-        End Select
-        sTitle = sTitle & " in:  " & sErrSrc & sIndicate
-    End If
-    
-    If sErrInfo = vbNullString Then
-        '~~ When no error information is provided one may be within the error description
-        '~~ which is only possible with an application error raised by Err.Raise
-        If InStr(sErrDesc, DCONCAT) <> 0 Then
-            sErrText = Split(sErrDesc, DCONCAT)(0)
-            sErrInfo = Split(sErrDesc, DCONCAT)(1)
-        Else
-            sErrText = sErrDesc
-            sErrInfo = vbNullString
-        End If
-    Else
-        sErrText = sErrDesc
-    End If
-    
-    '~~ Display error message by UserForm fErrMsg
-    With fMsg
-        .Title = sTitle
-        .TitleFontName = "Tahoma"
-        .TitleFontSize = 9
-        .LabelMessage1 = "Error Message/Description:"
-        .Message1Proportional = sErrText
-        If sErrPath <> vbNullString Then
-            .LabelMessage2 = "Error path (call stack):"
-            .Message2Proportional = sErrPath
-        End If
-        If sErrInfo <> vbNullString Then
-            .LabelMessage3 = "Info:"
-            .Message3Proportional = sErrInfo
-        End If
-        .Replies = vbOKOnly
-        .Show
-    End With
-
-End Sub
-#Else
-
-Public Sub ErrMsg(ByVal lErrNo As Long, _
-                  ByVal sErrSrc As String, _
-                  ByVal sErrDesc As String, _
-                  ByVal sErrLine As String)
-' ---------------------------------------------
-' Common error message using MsgBox.
-' ---------------------------------------------
-Const PROC  As String = "ErrMsg"
-Dim sMsg    As String
-Dim sTitle  As String
-
-    If lErrNo = 0 _
-    Then MsgBox "Exit statement before error handling missing! Error number is 0!", vbCritical, "Application error in " & ErrSrc(PROC) & "!"
-    
-    '~~ Prepare Title
-    If lErrNo < 0 Then
-        sTitle = "Application Error " & AppErr(lErrNo)
-    Else
-        sTitle = "VB Error " & lErrNo
-    End If
-    sTitle = sTitle & " in " & sErrSource
-    If sErrLine <> 0 Then sTitle = sTitle & " (at line " & sErrLine & ")"
-    
-    '~~ Prepare message
-    sMsg = "Error : " & sErrText & vbLf & vbLf & _
-           "In : " & sErrSource
-    If sErrLine <> 0 Then sMsg = sMsg & " (at line " & sErrLine & ")"
-    
-    MsgBox sMsg, vbCritical, sTitle
-
-End Sub
-#End If
-
 Public Function Msg(ByVal sTitle As String, _
            Optional ByVal sMsgText As String = vbNullString, _
            Optional ByVal bFixed As Boolean = False, _
            Optional ByVal sTitleFontName As String = vbNullString, _
            Optional ByVal lTitleFontSize As Long = 0, _
            Optional ByVal siFormWidth As Single = 0, _
-           Optional ByVal vReplies As Variant = vbOKOnly) As Variant
-' -----------------------------------------------------------------------
+           Optional ByVal sReplies As Variant = vbOKOnly) As Variant
+' ------------------------------------------------------------------
 ' Custom message using the UserForm fMsg. The function returns the
 ' clicked reply button's caption or the corresponding vb variable
 ' (vbOk, vbYes, vbNo, etc.) or its caption string.
-' -----------------------------------------------------------------------
-Dim siDisplayHeight As Single
-Dim w               As Long
-Dim h               As Long
-Dim siHeight        As Single
+' ------------------------------------------------------------------
+    Dim w, h        As Long
+    Dim siHeight    As Single
 
     w = GetSystemMetrics32(0) ' Screen Resolution width in points
     h = GetSystemMetrics32(1) ' Screen Resolution height in points
@@ -805,9 +706,9 @@ Dim siHeight        As Single
             Else .Message1Proportional = sMsgText
         End If
         
-        .Replies = vReplies
+        .Replies = sReplies
         If siFormWidth <> 0 Then .Width = Max(.Width, siFormWidth)
-        .StartUpPosition = 1
+        .StartupPosition = 1
         .Width = w * PointsPerPixel * 0.85 'Userform width= Width in Resolution * DPI * 85%
         siHeight = h * PointsPerPixel * 0.2
         .Height = Min(.Height, siHeight)
@@ -817,7 +718,6 @@ Dim siHeight        As Single
     
     Msg = vMsgReply
 End Function
-
 
 Public Function Msg3(ByVal sTitle As String, _
             Optional ByVal sLabel1 As String = vbNullString, _
@@ -832,17 +732,15 @@ Public Function Msg3(ByVal sTitle As String, _
             Optional ByVal sTitleFontName As String = vbNullString, _
             Optional ByVal lTitleFontSize As Long = 0, _
             Optional ByVal siFormWidth As Single = 0, _
-            Optional ByVal vReplies As Variant = vbOKOnly) As Variant
+            Optional ByVal sReplies As Variant = vbOKOnly) As Variant
 ' ------------------------------------------------------------------
 ' Custom message allowing three sections, each with a label/haeder,
 ' using the UserForm fMsg. The function returns the clicked reply
 ' button's caption or the corresponding vb variable (vbOk, vbYes,
 ' vbNo, etc.) or its caption string.
 ' ------------------------------------------------------------------
-Dim siDisplayHeight As Single
-Dim w               As Long
-Dim h               As Long
-Dim siHeight        As Single
+    Dim w, h        As Long
+    Dim siHeight    As Single
 
     w = GetSystemMetrics32(0) ' Screen Resolution width in points
     h = GetSystemMetrics32(1) ' Screen Resolution height in points
@@ -873,9 +771,9 @@ Dim siHeight        As Single
             .LabelMessage3 = sLabel3
         End If
         
-        .Replies = vReplies
+        .Replies = sReplies
         If siFormWidth <> 0 Then .Width = Max(.Width, siFormWidth)
-        .StartUpPosition = 1
+        .StartupPosition = 1
         .Width = w * PointsPerPixel * 0.85 'Userform width= Width in Resolution * DPI * 85%
         siHeight = h * PointsPerPixel * 0.2
         .Height = Min(.Height, siHeight)
@@ -926,14 +824,6 @@ Public Function AppErr(ByVal lNo As Long) As Long
     End If
 End Function
 
-Public Function Space(ByVal l As Long) As String
-' --------------------------------------------------
-' Unifies the VB differences SPACE$ and Space$ which
-' lead to code diferences where there aren't any.
-' --------------------------------------------------
-    Space = VBA.Space$(l)
-End Function
-
 Public Function SelectFolder( _
                 Optional ByVal sTitle As String = "Select a Folder") As String
 ' ----------------------------------------------------------------------------
@@ -951,6 +841,14 @@ Dim sFolder As String
     SelectFolder = sFolder
 End Function
 
+Public Function Space(ByVal l As Long) As String
+' --------------------------------------------------
+' Unifies the VB differences SPACE$ and Space$ which
+' lead to code diferences where there aren't any.
+' --------------------------------------------------
+    Space = VBA.Space$(l)
+End Function
+
 Public Function PointsPerPixel() As Double
 ' ----------------------------------------
 ' Return DPI
@@ -964,5 +862,5 @@ Dim lDotsPerInch    As Long
 End Function
 
 Private Function ErrSrc(ByVal sProc As String) As String
-    ErrSrc = "mBasic" & "." & sProc
+    ErrSrc = ThisWorkbook.Name & " mBasic." & sProc
 End Function

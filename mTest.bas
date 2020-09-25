@@ -1,25 +1,26 @@
 Attribute VB_Name = "mTest"
 Option Private Module
 Option Explicit
-Option Compare Text
-' -----------------------------------------------------
-' Standard Module mBasic
-'          Basic declarations, procedures, methods and
-'          functions coomon im most VBProjects.
+' ----------------------------------------------------------------------------
+' Standard Module mTest: Dedicate fo the test of procedures in the mBasic
+'       module.
 '
-' Please note:
-' Errors raised by the tested procedures cannot be
-' asserted since they are not passed on to the calling
-' /entry procedure. This would require the Common
-' Standard Module mErrHndlr which is not used with this
-' module by intention.
+' Note: Procedures if the mBasic module do not use the Common VBA Error Handler.
+'       However, this test module uses the mErrHndlr module for test purpose.
 '
-' W. Rauschenberger, Berlin Feb 2020
-' -----------------------------------------------------
+' W. Rauschenberger, Berlin Sept 2020
+' ----------------------------------------------------------------------------
 
-Private Function ErrSrc(ByVal s As String) As String
-    ErrSrc = "mTest." & s
-End Function
+Private Sub EnvironmentVariables()
+Dim i As Long
+    For i = 1 To 100
+        On Error Resume Next
+        Debug.Print i & ". : " & Environ$(i) & """"
+        If Err.Number <> 0 Then Exit For
+    Next i
+End Sub
+
+Private Property Get ErrSrc(Optional ByVal s As String) As String:  ErrSrc = "mTest." & s:  End Property
 
 Public Sub Test_ArrayCompare()
 Const PROC  As String = "Test_ArrayToRange"
@@ -61,7 +62,10 @@ Dim a2      As Variant
 exit_proc:
     Exit Sub
 on_error:
-    mBasic.ErrMsg Err.Number, ErrSrc(PROC), Err.Description, Erl
+#If Debugging Then
+    Debug.Print Err.Description: Stop: Resume
+#End If
+    MsgBox Prompt:=Err.Description, Title:="VB Runtime Error " & Err.Number & " in & ErrSrc(PROC)"
 End Sub
 
 Private Sub Test_ArrayRemoveItems()
@@ -82,7 +86,10 @@ exit_proc:
     Exit Sub
 
 on_error:
-    mBasic.ErrMsg Err.Number, ErrSrc(PROC), Err.Description, Erl
+#If Debugging Then
+    Debug.Print Err.Description: Stop: Resume
+#End If
+    MsgBox Prompt:=Err.Description, Title:="VB Runtime Error " & Err.Number & " in & ErrSrc(PROC)"
 End Sub
 
 Private Sub Test_ArrayRemoveItems_Error_Conditions()
@@ -98,34 +105,37 @@ Dim a       As Variant
     Set a = Nothing
     On Error Resume Next
     mBasic.ArrayRemoveItems a, 2
-    Debug.Assert AppErr(Err.Number) = 1
+    Debug.Assert mErrHndlr.AppErr(Err.Number) = 1
     
     a = aTest
     ' Missing parameter
     On Error Resume Next
     mBasic.ArrayRemoveItems a
-    Debug.Assert AppErr(Err.Number) = 3
+    Debug.Assert mErrHndlr.AppErr(Err.Number) = 3
     
     ' Element out of boundary
     On Error Resume Next
     mBasic.ArrayRemoveItems a, Element:=8
-    Debug.Assert AppErr(Err.Number) = 4
+    Debug.Assert mErrHndlr.AppErr(Err.Number) = 4
     
     ' Index out of boundary
     On Error Resume Next
     mBasic.ArrayRemoveItems a, Index:=7
-    Debug.Assert AppErr(Err.Number) = 5
+    Debug.Assert mErrHndlr.AppErr(Err.Number) = 5
     
     ' Element plus number of elements out of boundary
     On Error Resume Next
     mBasic.ArrayRemoveItems a, Element:=7, NoOfElements:=2
-    Debug.Assert AppErr(Err.Number) = 6
+    Debug.Assert mErrHndlr.AppErr(Err.Number) = 6
 
 exit_proc:
     Exit Sub
 
 on_error:
-    mBasic.ErrMsg Err.Number, ErrSrc(PROC), Err.Description, Erl
+#If Debugging Then
+    Debug.Print Err.Description: Stop: Resume
+#End If
+    MsgBox Prompt:=Err.Description, Title:="VB Runtime Error " & Err.Number & " in & ErrSrc(PROC)"
 End Sub
 
 Private Sub Test_ArrayRemoveItems_Error_Display()
@@ -148,7 +158,10 @@ exit_proc:
     Exit Sub
 
 on_error:
-    mBasic.ErrMsg Err.Number, ErrSrc(PROC), Err.Description, Erl
+#If Debugging Then
+    Debug.Print Err.Description: Stop: Resume
+#End If
+    MsgBox Prompt:=Err.Description, Title:="VB Runtime Error " & Err.Number & " in & ErrSrc(PROC)"
 End Sub
 
 Private Sub Test_ArrayRemoveItems_Function()
@@ -207,7 +220,10 @@ exit_proc:
     Exit Sub
 
 on_error:
-    mBasic.ErrMsg Err.Number, ErrSrc(PROC), Err.Description, Erl
+#If Debugging Then
+    Debug.Print Err.Description: Stop: Resume
+#End If
+    MsgBox Prompt:=Err.Description, Title:="VB Runtime Error " & Err.Number & " in & ErrSrc(PROC)"
 End Sub
 
 Private Sub Test_ArrayToRange()
@@ -229,7 +245,10 @@ Dim aTest   As Variant
     Exit Sub
     
 on_error:
-    mBasic.ErrMsg Err.Number, ErrSrc(PROC), Err.Description, Erl
+#If Debugging Then
+    Debug.Print Err.Description: Stop: Resume
+#End If
+    MsgBox Prompt:=Err.Description, Title:="VB Runtime Error " & Err.Number & " in & ErrSrc(PROC)"
 End Sub
 
 Public Sub Test_ArrayTrimm()
@@ -282,248 +301,114 @@ Dim fl      As File
     '~~ Test unsupported object
     On Error Resume Next
     mBasic.BaseName wb.Worksheets(1)
-    Debug.Assert AppErr(Err.Number) = 1
     On Error GoTo on_error
     
 exit_proc:
     Exit Sub
     
 on_error:
-    mBasic.ErrMsg Err.Number, ErrSrc(PROC), Err.Description, Erl
+#If Debugging Then
+    Debug.Print Err.Description: Stop: Resume
+#End If
+    MsgBox Prompt:=Err.Description, Title:="VB Runtime Error " & Err.Number & " in & ErrSrc(PROC)"
 End Sub
 
-Private Sub Test_ErrMsg()
-' -------------------------
-' Common error message test
-' -------------------------
-Const PROC = "Test_ErrMsg"
-    mBasic.ErrMsg lErrNo:=1, sErrSrc:=ErrSrc(PROC), sErrDesc:="The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog." & DCONCAT & "Optional possible additional info about the error", sErrLine:="0"
+Public Sub Test_DictAdd_1()
+' -----------------------------------------------
+' Note: Reverse key order added in mode ascending
+' is the worst case regarding performance!
+' -----------------------------------------------
+    Const PROC = "Test_DictAdd_1"
+    Dim i   As Long
+    Dim dct As Dictionary
+    
+    BoP ErrSrc(PROC)
+    For i = 1 To 100 ' Step -1
+        DictAdd dct:=dct, dctkey:=i, dctitem:=ThisWorkbook, dctmode:=dct_ascendingcasesensitive
+    Next i
+    
+    '~~ Add an already existing key, ignored when the item is neither numeric nor a string
+    DictAdd dct:=dct, dctkey:=50, dctitem:=ThisWorkbook, dctmode:=dct_ascendingcasesensitive
+    
+    EoP ErrSrc(PROC)
+    Set dct = Nothing
+    
 End Sub
 
-Public Sub Test_Msg_1_Reply_Button_1_Message_Paragraph()
-Dim sTitle      As String
+Public Sub Test_Msg_1_Reply()
+' ---------------------------
+' ---------------------------
 Dim sMsg1       As String
-Dim vReply1     As Variant
+Dim sMsg2       As String
+Dim sTitle      As String
 Dim vReplies    As Variant
 Dim vReply      As Variant
-Dim vReplied    As Variant
 
+    sMsg1 = "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog."
+    sMsg2 = "Click Display Execution Trace!"
     sTitle = "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over ..."
-    
-    sMsg1 = "Test Message with 1 reply button. Reply with <Ok>!"
-    
     vReplies = vbOKOnly
     vReply = vbOK
     
-    vReplied = Msg( _
-                   sTitle:=sTitle, _
-                   sMsgText:=sMsg1, _
-                   bFixed:=False, _
-                   vReplies:=vReplies _
-                  )
-    Debug.Assert vReplied = vReply
-
-End Sub
-
-Public Sub Test_Msg_2_Reply_Buttons_1_Message_Paragraph()
-Dim sTitle      As String
-Dim sMsg1       As String
-Dim vReply1     As Variant
-Dim vReplies    As Variant
-Dim vReply      As Variant
-Dim vReplied    As Variant
-
-    sTitle = "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over ..."
-    
-    sMsg1 = "Test Message with 2 standard MsgBox reply buttons. Reply with <Yes>!"
-    
-    vReplies = vbYesNo
-    vReply = vbYes
-    
     Debug.Assert Msg( _
                  sTitle:=sTitle, _
-                 sMsgText:=sMsg1, _
-                 bFixed:=False, _
-                 vReplies:=vReplies _
+                 sMsgText:="Fixed: " & sMsg1 & vbLf & sMsg1 & vbLf & sMsg1 & vbLf & sMsg1 & vbLf & sMsg1 & vbLf & vbLf & sMsg2 & vbLf & vbLf & "Form width is dertermined by the 4 reply buttons with maximized width.", _
+                 bFixed:=True, _
+                 sReplies:=vReplies _
                     ) = vReply
 End Sub
 
-Public Sub Test_Msg_3_Reply_Buttons_1_Message_Paragraph()
-Dim sTitle      As String
+Public Sub Test_Msg_5_Replies()
+' -----------------------------
+' -----------------------------
 Dim sMsg1       As String
-Dim vReply1     As Variant
+Dim sMsg2       As String
+Dim sMsg3       As String
+Dim sTitle      As String
 Dim vReplies    As Variant
 Dim vReply      As Variant
-Dim vReplied    As Variant
+Dim sLabel1     As String
+Dim sLabel2     As String
+Dim sLabel3     As String
+Dim vReply1     As Variant
+Dim vReply2     As Variant
+Dim vReply3     As Variant
+Dim vReply4     As Variant
+Dim vReply5     As Variant
 
-    sTitle = "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over ..."
+    sTitle = "mBasic.mMsg and .mMsg3 guarantee that the title is never truncated!"
     
-    sMsg1 = "Test Message with 3 standard MsgBox reply buttons. Reply with <No>!"
+    sLabel1 = vbNullString
+    sMsg1 = "mBasic.mMsg displays 1, msg3 displays up to 3 text strings/blocks" & vbLf & _
+            "- either proportional or fixed" & vbLf & _
+            "- each with an optional label/title above"
     
-    vReplies = vbYesNoCancel
-    vReply = vbNo
+    sLabel2 = "optional label/titel for any of the 3 text strings"
+    sMsg2 = "The message window width is adjusted to" & vbLf & _
+            "- the required width for the title " & vbLf & _
+            "- the required width for the longest fixed font text (like this one)." & vbLf & _
+            "- the required width for the (max 5) displayed reply buttons (determined the width of this test)" & vbLf & _
+            "- the specified minimum window width" & vbLf & _
+            "Proportional text strings are adjusted to the final window width"
     
-    Debug.Assert Msg( _
+    sLabel3 = "For this test reply with <Reply button 5> !!!"
+    sMsg3 = "By the way: The returned reply is equal to the content of the clicked reply button which may be any of the MsgBox values vbOk, vbCancel, ... or any free text string."
+    
+    vReply1 = "Reply button 1"
+    vReply2 = "Reply button 2"
+    vReply3 = "All reply buttons" & vbLf & "are adjusted" & vbLf & "to the biggest"
+    vReply4 = "Reply button 4"
+    vReply5 = "Reply button 5"
+    vReplies = Join(Array(vReply1, vReply2, vReply3, vReply4, vReply5), ",")
+    
+    vReply = vReply5
+    
+    Debug.Assert mBasic.Msg3( _
                  sTitle:=sTitle, _
-                 sMsgText:=sMsg1, _
-                 bFixed:=False, _
-                 vReplies:=vReplies _
+                 sLabel1:=sLabel1, sText1:=sMsg1, bFixed1:=False, _
+                 sLabel2:=sLabel2, sText2:=sMsg2, bFixed2:=True, _
+                 sLabel3:=sLabel3, sText3:=sMsg3, bFixed3:=False, _
+                 sReplies:=vReplies _
                     ) = vReply
-End Sub
-
-Public Sub Test_Msg_4_Reply_Buttons_1_Message_Pragraph()
-Dim sTitle      As String
-Dim sLabel1     As String
-Dim sLabel2     As String
-Dim sLabel3     As String
-Dim sText1      As String
-Dim sText2      As String
-Dim sText3      As String
-Dim vReply1     As Variant
-Dim vReply2     As Variant
-Dim vReply3     As Variant
-Dim vReply4     As Variant
-Dim vReply5     As Variant
-Dim vReplies    As Variant
-Dim vReply      As Variant
-Dim vReplied    As Variant
-
-    sTitle = "mBasic.Msg provides a message analogous to the MsgBox with some ""improvements"""
-    
-    sText1 = "1. The title is never trunctated (see 4. width adjustment)" & vbLf & _
-             "2. The message text may optionally be displayed in a fixed font" & vbLf & _
-             "   to support a message text with indented lines (like these here or the error-path in an error message)" & vbLf & _
-             "3. There may be up to 5 reply buttons either like the MsgBox (vbOkOnly, vbYesNo, ...)" & vbLf & _
-             "   or any text with any number of lines (all buttons are adjusted accordingly) and the" & vbLf & _
-             "   reply value corresponds with the button's content, i.e. either vbOk, vbYes, ..." & vbLf & _
-             "   or the displayed text" & vbLf & _
-             "4. The final message box width is dertermined by:" & vbLf & _
-             "   - the width of the title (never truncated)" & vbLf & _
-             "   - the longest fixed font message text line" & vbLf & _
-             "   - the required space for the displayed reply buttons"
-    sText2 = "Reply this test with <Display Execution Trace>!"
-    
-    vReply1 = "Update Target" & vbLf & "with Source"
-    vReply2 = "Update Source" & vbLf & "with Target"
-    vReply3 = "Display" & vbLf & "Execution Trace"
-    vReply4 = "Ignore"
-    vReply5 = vbNullString
-    vReplies = Join(Array(vReply1, vReply2, vReply3, vReply4, vReply5), ",")
-    vReply = vReply3
-    
-    vReplied = Msg( _
-                   sTitle:=sTitle, _
-                   sMsgText:=sText1 & vbLf & vbLf & sText2, _
-                   bFixed:=True, _
-                   vReplies:=vReplies _
-                  )
-    Debug.Assert CStr(vReplied) = CStr(vReply)
-    
-End Sub
-
-Public Sub Test_Msg_4_Reply_Buttons_3_Message_Paragraphs()
-Dim sTitle      As String
-Dim sLabel1     As String
-Dim sLabel2     As String
-Dim sLabel3     As String
-Dim sText1      As String
-Dim sText2      As String
-Dim sText3      As String
-Dim vReply1     As Variant
-Dim vReply2     As Variant
-Dim vReply3     As Variant
-Dim vReply4     As Variant
-Dim vReply5     As Variant
-Dim vReplies    As Variant
-Dim vReply      As Variant
-
-    sTitle = "mBasic.mMsg3 works pretty much like MsgBox but with significant enhancements (see below)"
-    
-    sLabel1 = "General"
-    sText1 = "- The title will never be truncated" & vbLf & _
-             "- There are up to 3 message paragraphs, each with an optional label/header" & vbLf & _
-             "- Each message paragraph may be in a proportional or fixed font (like these two)" & vbLf & _
-             "  supporting indented text like this one - or the display of the error-path in an error message" & vbLf & _
-             "- There are up to 5 reply buttons. 3 work exactly like with the MsgBox (vbOkOnly, vbYesNo, ...)" & vbLf & _
-             "  but all may as well contain any string and the reply value corresponds with the clicked reply button"
-    
-    sLabel2 = "Window width adjustment"
-    sText2 = "The message window width considers:" & vbLf & _
-             "- the title width (never truncated anymore)" & vbLf & _
-             "- the maximum length of any fixed font message block" & vbLf & _
-             "- total width of the displayed reply buttons" & vbLf & _
-             "- specified minimum window width"
-    
-    sLabel3 = vbNullString
-    sText3 = "Reply this test with <Reply 4>"
-    
-    vReply1 = "Reply 1"
-    vReply2 = "Reply 2"
-    vReply3 = "Reply lines" & vbLf & "determine the" & vbLf & "button height"
-    vReply4 = "Reply 4"
-    vReply5 = vbNullString
-    vReplies = Join(Array(vReply1, vReply2, vReply3, vReply4, vReply5), ",")
-    vReply = vReply4
-    
-    Debug.Assert Msg3( _
-                      sTitle:=sTitle, _
-                      sText1:=sText1, sLabel1:=sLabel1, bFixed1:=True, _
-                      sText2:=sText2, sLabel2:=sLabel2, bFixed2:=False, _
-                      sText3:=sText3, sLabel3:=sLabel3, bFixed3:=False, _
-                      vReplies:=vReplies _
-                     ) = vReply
-End Sub
-
-Public Sub Test_Msg_5_Reply_Buttons_3_Message_Paragraphs()
-Dim sTitle      As String
-Dim sLabel1     As String
-Dim sLabel2     As String
-Dim sLabel3     As String
-Dim sText1      As String
-Dim sText2      As String
-Dim sText3      As String
-Dim vReply1     As Variant
-Dim vReply2     As Variant
-Dim vReply3     As Variant
-Dim vReply4     As Variant
-Dim vReply5     As Variant
-Dim vReplies    As Variant
-Dim vReply      As Variant
-
-    sTitle = "mBasic.mMsg3 works pretty much like MsgBox but with significant enhancements (see below)"
-    
-    sLabel1 = "General"
-    sText1 = "- The title will never be truncated" & vbLf & _
-             "- There are up to 3 message paragraphs, each with an optional label/header" & vbLf & _
-             "- Each message paragraph may be in a proportional or fixed font (like these two)" & vbLf & _
-             "  supporting indented text like this one - or the display of the error-path in an error message" & vbLf & _
-             "- There are up to 5 reply buttons. 3 work exactly like with the MsgBox (vbOkOnly, vbYesNo, ...)" & vbLf & _
-             "  but all may as well contain any string and the reply value corresponds with the clicked reply button"
-    
-    sLabel2 = "Window width adjustment"
-    sText2 = "The message window width considers:" & vbLf & _
-             "- the title width (never truncated anymore)" & vbLf & _
-             "- the maximum length of any fixed font message block" & vbLf & _
-             "- total width of the displayed reply buttons" & vbLf & _
-             "- specified minimum window width"
-    
-    sLabel3 = vbNullString
-    sText3 = "Reply this test with <Reply lines determine the button height>"
-    
-    vReply1 = "Reply 1"
-    vReply2 = "Reply 2"
-    vReply3 = "Reply lines" & vbLf & "determine the" & vbLf & "button height"
-    vReply4 = "Reply 4"
-    vReply5 = "Reply 5"
-    vReplies = Join(Array(vReply1, vReply2, vReply3, vReply4, vReply5), ",")
-    vReply = vReply3
-    
-    Debug.Assert Msg3( _
-                      sTitle:=sTitle, _
-                      sText1:=sText1, sLabel1:=sLabel1, bFixed1:=True, _
-                      sText2:=sText2, sLabel2:=sLabel2, bFixed2:=False, _
-                      sText3:=sText3, sLabel3:=sLabel3, bFixed3:=False, _
-                      vReplies:=vReplies _
-                     ) = vReply
 End Sub
 
