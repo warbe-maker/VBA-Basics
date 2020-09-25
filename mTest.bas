@@ -10,6 +10,7 @@ Option Explicit
 '
 ' W. Rauschenberger, Berlin Sept 2020
 ' ----------------------------------------------------------------------------
+Dim dctTest As Dictionary
 
 Private Sub EnvironmentVariables()
 Dim i As Long
@@ -313,26 +314,81 @@ on_error:
     MsgBox Prompt:=Err.Description, Title:="VB Runtime Error " & Err.Number & " in & ErrSrc(PROC)"
 End Sub
 
-Public Sub Test_DictAdd_1()
-' -----------------------------------------------
-' Note: Reverse key order added in mode ascending
-' is the worst case regarding performance!
-' -----------------------------------------------
-    Const PROC = "Test_DictAdd_1"
-    Dim i   As Long
-    Dim dct As Dictionary
+Public Sub Test_DctAdd()
+    Const PROC = "Test_DctAdd"
     
     BoP ErrSrc(PROC)
-    For i = 1 To 100 ' Step -1
-        DictAdd dct:=dct, dctkey:=i, dctitem:=ThisWorkbook, dctmode:=dct_ascendingcasesensitive
+    Set dctTest = Nothing
+    Test_DctAdd_KeyIsValue
+    EoP ErrSrc(PROC)
+    Test_DctAddResult dctTest
+    Set dctTest = Nothing
+    
+    BoP ErrSrc(PROC)
+    Set dctTest = Nothing
+    Test_DctAdd_KeyIsObjectWithNameProperty
+    EoP ErrSrc(PROC)
+    Test_DctAddResult dctTest
+    Set dctTest = Nothing
+    
+End Sub
+
+Private Sub Test_DctAdd_KeyIsValue()
+' -----------------------------------------------
+' Note: Since a 100% reverse key order added in mode ascending
+' is the worst case regarding performance this test sorts 100 items
+' with 50% already in sequence and the other 50% to be inserted.
+' -----------------------------------------------
+    Const PROC = "Test_DctAdd_KeyIsValue"
+    Dim i   As Long
+    
+    BoP ErrSrc(PROC)
+    For i = 1 To 99 Step 2
+        DctAdd dct:=dctTest, dctkey:=i, dctitem:=ThisWorkbook, dctmode:=dct_ascendingcasesensitive
+    Next i
+    For i = 100 To 2 Step -2
+        DctAdd dct:=dctTest, dctkey:=i, dctitem:=ThisWorkbook, dctmode:=dct_ascendingcasesensitive
     Next i
     
     '~~ Add an already existing key, ignored when the item is neither numeric nor a string
-    DictAdd dct:=dct, dctkey:=50, dctitem:=ThisWorkbook, dctmode:=dct_ascendingcasesensitive
+    DctAdd dct:=dctTest, dctkey:=50, dctitem:=ThisWorkbook, dctmode:=dct_ascendingcasesensitive
     
     EoP ErrSrc(PROC)
-    Set dct = Nothing
     
+End Sub
+
+Private Sub Test_DctAdd_KeyIsObjectWithNameProperty()
+' ----------------------------------------------------
+' Note: Reverse key order added in mode ascending
+' is the worst case regarding performance!
+' ----------------------------------------------------
+    Const PROC = "Test_DctAdd_KeyIsObjectWithNameProperty"
+    Dim i   As Long
+    Dim vbc As VBComponent
+    
+    BoP ErrSrc(PROC)
+    For Each vbc In ThisWorkbook.VBProject.VBComponents
+        DctAdd dct:=dctTest, dctkey:=vbc, dctitem:=vbc.Name, dctmode:=dct_ascendingcasesensitive
+    Next vbc
+    
+    '~~ Add an already existing key, ignored when the item is neither numeric nor a string
+    Debug.Assert dctTest.Count = 8
+    Set vbc = ThisWorkbook.VBProject.VBComponents("mTest")
+    DctAdd dct:=dctTest, dctkey:=vbc, dctitem:=vbc.Name, dctmode:=dct_ascendingcasesensitive
+    Debug.Assert dctTest.Count = 8
+    EoP ErrSrc(PROC)
+    
+    Test_DctAddResult dctTest
+    
+End Sub
+
+Private Sub Test_DctAddResult(ByVal dct As Dictionary)
+    Dim v As Variant
+    For Each v In dct
+        If IsNumeric(v) Or TypeName(v) = "String" _
+        Then Debug.Print v _
+        Else Debug.Print v.Name
+    Next v
 End Sub
 
 Public Sub Test_Msg_1_Reply()

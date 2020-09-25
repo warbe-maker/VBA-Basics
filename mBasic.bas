@@ -209,11 +209,11 @@ Dim asToClean   As Variant
 
 End Function
 
-Public Sub DictAdd(ByRef dct As Dictionary, _
-                   ByVal dctkey As Variant, _
-                   ByVal dctitem As Variant, _
-          Optional ByVal dctmode As enDctMode = dct_sequence, _
-          Optional ByVal dcttargetkey As Variant)
+Public Sub DctAdd(ByRef dct As Dictionary, _
+                  ByVal dctkey As Variant, _
+                  ByVal dctitem As Variant, _
+         Optional ByVal dctmode As enDctMode = dct_sequence, _
+         Optional ByVal dcttargetkey As Variant)
 ' ----------------------------------------------------------------------
 ' Adds the item (dctitem) to the Dictionary (dct) with the key (dctkey).
 ' Supports various key sequences, case and case insensitive key as well
@@ -221,14 +221,29 @@ Public Sub DictAdd(ByRef dct As Dictionary, _
 ' - When the key (dctkey) already exists the item is updated when it is
 '   numeric or a string, else it is ignored.
 ' - When the dictionary (dct) is Nothing it is setup on the fly.
-'
+' - When dctmode = before or after dcttargetkey is obligatory and an
+'   error is raised when not provided.
+' - When the item's key is an object any dctmode other then by sequence
+'   requires an object with a name property. If not the case an error is
+'   raised.
+
 ' W. Rauschenberger, Berlin Mar 2020
 ' -----------------------------------------------------------------
-Dim dctTemp     As Dictionary
-Dim vTempKey    As Variant
-Dim bAdd        As Boolean
+    Const PROC = "DctAdd"
+    Dim dctTemp As Dictionary
+    Dim vKey    As Variant
+    Dim bAdd    As Boolean
 
+    On Error GoTo on_error
+    
     If dct Is Nothing Then Set dct = New Dictionary
+    
+    If Not IsNumeric(dctkey) And TypeName(dctkey) <> "String" Then
+        On Error Resume Next
+        Debug.Print "Added object with name '" & dctkey.Name & "'"
+        If Err.Number <> 0 _
+        Then Err.Raise AppErr(1), ErrSrc(PROC), "The key is neither a numeric value nor a string, nor an object with a name property!"
+    End If
     
     With dct
         If .Count = 0 Or dctmode = dct_sequence Then ' the very first item is just added
@@ -238,25 +253,28 @@ Dim bAdd        As Boolean
         ' ----------------------------------------------------------------------
         ' Let's see whether the new key can be added directly after the last key
         ' ----------------------------------------------------------------------
-        vTempKey = .Keys()(.Count - 1)
+        If IsNumeric(.Keys()(.Count - 1)) Or TypeName(.Keys()(.Count - 1)) = "String" _
+        Then vKey = .Keys()(.Count - 1) _
+        Else Set vKey = .Keys()(.Count - 1)
+        
         Select Case dctmode
             Case dct_ascendingcasesensitive
-                If dctkey > vTempKey Then
+                If DctAddKeyValue(dctkey) > DctAddKeyValue(vKey) Then
                     .Add dctkey, dctitem
                     Exit Sub                ' Done!
                 End If
             Case dct_ascendcaseingignored
-                If LCase$(dctkey) > LCase$(vTempKey) Then
+                If LCase$(dctkey) > LCase$(DctAddKeyValue(vKey)) Then
                     .Add dctkey, dctitem
                     Exit Sub                ' Done!
                 End If
             Case dct_descendingcasesensitive
-                If dctkey < vTempKey Then
+                If DctAddKeyValue(dctkey) < DctAddKeyValue(vKey) Then
                     .Add dctkey, dctitem
                     Exit Sub                ' Done!
                 End If
             Case dct_descendingcaseignored
-                If LCase$(dctkey) < LCase$(vTempKey) Then
+                If LCase$(DctAddKeyValue(dctkey)) < LCase$(DctAddKeyValue(vKey)) Then
                     .Add dctkey, dctitem
                     Exit Sub                ' Done!
                 End If
@@ -269,7 +287,7 @@ Dim bAdd        As Boolean
     '~~ -------------------------------------------------------------------------
     Set dctTemp = New Dictionary
     bAdd = True
-    For Each vTempKey In dct
+    For Each vKey In dct
         With dctTemp
             If bAdd Then
                 If dct.Exists(dctkey) Then
@@ -280,28 +298,28 @@ Dim bAdd        As Boolean
                 End If
                 Select Case dctmode
                     Case dct_ascendingcasesensitive
-                        If vTempKey > dctkey Then
+                        If DctAddKeyValue(vKey) > DctAddKeyValue(dctkey) Then
                             .Add dctkey, dctitem
                             bAdd = False ' Add done
                         End If
                     Case dct_ascendcaseingignored
-                        If LCase$(vTempKey) > LCase$(dctkey) Then
+                        If LCase$(DctAddKeyValue(vKey)) > LCase$(DctAddKeyValue(dctkey)) Then
                             .Add dctkey, dctitem
                             bAdd = False ' Add done
                         End If
                     Case dct_addbefore
-                        If vTempKey = dcttargetkey Then
+                        If DctAddKeyValue(vKey) = dcttargetkey Then
                             '~~> Add before dcttargetkey key has been reached
                             .Add dctkey, dctitem
                             bAdd = True
                         End If
                     Case dct_descendingcasesensitive
-                        If vTempKey < dctkey Then
+                        If DctAddKeyValue(vKey) < DctAddKeyValue(dctkey) Then
                             .Add dctkey, dctitem
                             bAdd = False ' Add done
                         End If
                     Case dct_descendingcaseignored
-                        If LCase$(vTempKey) < LCase$(dctkey) Then
+                        If LCase$(DctAddKeyValue(vKey)) < LCase$(DctAddKeyValue(dctkey)) Then
                             .Add dctkey, dctitem
                             bAdd = False ' Add done
                         End If
@@ -309,10 +327,10 @@ Dim bAdd        As Boolean
             End If
             
             '~~> Transfer the existing item to the temporary dictionary
-            .Add vTempKey, dct.Item(vTempKey)
+            .Add vKey, dct.Item(vKey)
             
             If dctmode = dct_addafter And bAdd Then
-                If vTempKey = dcttargetkey Then
+                If DctAddKeyValue(vKey) = dcttargetkey Then
                     ' ----------------------------------------
                     ' Just add when dctmode indicates add after,
                     ' and the vTraget key has been reached
@@ -323,14 +341,36 @@ Dim bAdd        As Boolean
             End If
             
         End With
-    Next vTempKey
+    Next vKey
     
     '~~> Return the temporary dictionary with the new item added
     Set dct = dctTemp
     Set dctTemp = Nothing
+
+end_proc:
     Exit Sub
 
+on_error:
+#If Debugging Then
+    Debug.Print Err.Description: Stop: Resume
+#End If
+    MsgBox Prompt:=Err.Description, Title:="VB Runtime Error " & Err.Number & " in " & ErrSrc(PROC)
 End Sub
+
+Private Function DctAddKeyValue(ByVal dctkey As Variant) As Variant
+' -----------------------------------------------------------------
+' When dctkey when it is numeric or a string it is returned as is
+' else when it is an object with a name property the name
+' else a vbNullString.
+' -----------------------------------------------------------------
+    If IsNumeric(dctkey) Or TypeName(dctkey) = "String" Then
+        DctAddKeyValue = dctkey
+    Else
+        On Error Resume Next
+        DctAddKeyValue = dctkey.Name
+        If Err.Number <> 0 Then DctAddKeyValue = vbNullString
+    End If
+End Function
 
 Public Sub ArrayTrimm(ByRef a As Variant)
 ' ---------------------------------------
