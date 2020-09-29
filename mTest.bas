@@ -5,12 +5,14 @@ Option Explicit
 ' Standard Module mTest: Dedicate fo the test of procedures in the mBasic
 '       module.
 '
-' Note: Procedures if the mBasic module do not use the Common VBA Error Handler.
+' Note: Procedures of the mBasic module do not use the Common VBA Error Handler.
 '       However, this test module uses the mErrHndlr module for test purpose.
 '
 ' W. Rauschenberger, Berlin Sept 2020
 ' ----------------------------------------------------------------------------
 Dim dctTest As Dictionary
+
+Private Property Get ErrSrc(Optional ByVal s As String) As String:  ErrSrc = "mTest." & s:  End Property
 
 Private Sub EnvironmentVariables()
 Dim i As Long
@@ -20,8 +22,6 @@ Dim i As Long
         If Err.Number <> 0 Then Exit For
     Next i
 End Sub
-
-Private Property Get ErrSrc(Optional ByVal s As String) As String:  ErrSrc = "mTest." & s:  End Property
 
 Public Sub Test_ArrayCompare()
 Const PROC  As String = "Test_ArrayToRange"
@@ -66,7 +66,7 @@ on_error:
 #If Debugging Then
     Debug.Print Err.Description: Stop: Resume
 #End If
-    MsgBox Prompt:=Err.Description, Title:="VB Runtime Error " & Err.Number & " in & ErrSrc(PROC)"
+    mBasic.ErrMsg errnumber:=Err.Number, errsource:=ErrSrc(PROC), errdscrptn:=Err.Description, errline:=Erl
 End Sub
 
 Private Sub Test_ArrayRemoveItems()
@@ -90,7 +90,7 @@ on_error:
 #If Debugging Then
     Debug.Print Err.Description: Stop: Resume
 #End If
-    MsgBox Prompt:=Err.Description, Title:="VB Runtime Error " & Err.Number & " in & ErrSrc(PROC)"
+    mBasic.ErrMsg errnumber:=Err.Number, errsource:=ErrSrc(PROC), errdscrptn:=Err.Description, errline:=Erl
 End Sub
 
 Private Sub Test_ArrayRemoveItems_Error_Conditions()
@@ -136,7 +136,7 @@ on_error:
 #If Debugging Then
     Debug.Print Err.Description: Stop: Resume
 #End If
-    MsgBox Prompt:=Err.Description, Title:="VB Runtime Error " & Err.Number & " in & ErrSrc(PROC)"
+    mErrHndlr.ErrHndlr lErrNo:=Err.Number, sErrSource:=ErrSrc(PROC), sErrText:=Err.Description, sErrLine:=Erl
 End Sub
 
 Private Sub Test_ArrayRemoveItems_Error_Display()
@@ -162,7 +162,7 @@ on_error:
 #If Debugging Then
     Debug.Print Err.Description: Stop: Resume
 #End If
-    MsgBox Prompt:=Err.Description, Title:="VB Runtime Error " & Err.Number & " in & ErrSrc(PROC)"
+    mErrHndlr.ErrHndlr lErrNo:=Err.Number, sErrSource:=ErrSrc(PROC), sErrText:=Err.Description, sErrLine:=Erl
 End Sub
 
 Private Sub Test_ArrayRemoveItems_Function()
@@ -224,7 +224,7 @@ on_error:
 #If Debugging Then
     Debug.Print Err.Description: Stop: Resume
 #End If
-    MsgBox Prompt:=Err.Description, Title:="VB Runtime Error " & Err.Number & " in & ErrSrc(PROC)"
+    mErrHndlr.ErrHndlr lErrNo:=Err.Number, sErrSource:=ErrSrc(PROC), sErrText:=Err.Description, sErrLine:=Erl
 End Sub
 
 Private Sub Test_ArrayToRange()
@@ -249,7 +249,7 @@ on_error:
 #If Debugging Then
     Debug.Print Err.Description: Stop: Resume
 #End If
-    MsgBox Prompt:=Err.Description, Title:="VB Runtime Error " & Err.Number & " in & ErrSrc(PROC)"
+    mErrHndlr.ErrHndlr lErrNo:=Err.Number, sErrSource:=ErrSrc(PROC), sErrText:=Err.Description, sErrLine:=Erl
 End Sub
 
 Public Sub Test_ArrayTrimm()
@@ -311,25 +311,199 @@ on_error:
 #If Debugging Then
     Debug.Print Err.Description: Stop: Resume
 #End If
-    MsgBox Prompt:=Err.Description, Title:="VB Runtime Error " & Err.Number & " in & ErrSrc(PROC)"
+    mErrHndlr.ErrHndlr lErrNo:=Err.Number, sErrSource:=ErrSrc(PROC), sErrText:=Err.Description, sErrLine:=Erl
 End Sub
 
 Public Sub Test_DctAdd()
+    
     Const PROC = "Test_DctAdd"
-    
     BoP ErrSrc(PROC)
-    Set dctTest = Nothing
+    
     Test_DctAdd_KeyIsValue
+    Test_DctAdd_KeyIsObjectWithNameProperty
+    Test_DctAdd_ItemIsObjectWithNameProperty
+    Test_DctAdd_InsertKeyBefore
+    Test_DctAdd_InsertKeyAfter
+    Test_DctAdd_InsertItemBefore
+    Test_DctAdd_InsertItemAfter
+    
     EoP ErrSrc(PROC)
-    Test_DctAddResult dctTest
-    Set dctTest = Nothing
+
+End Sub
+
+Private Sub Test_DctAddResult(ByVal dct As Dictionary)
+    
+    Dim v As Variant
+    
+    Debug.Print "---------------------------"
+    For Each v In dct
+        If IsNumeric(v) Or TypeName(v) = "String" _
+        Then Debug.Print v _
+        Else Debug.Print v.Name
+    Next v
+    Debug.Print "---------------------------"
+    
+End Sub
+
+Private Sub Test_DctAdd_ItemIsObjectWithNameProperty()
+' ----------------------------------------------------
+' Added items with a key which is an object.
+' The order by key uses the object's name property.
+' ----------------------------------------------------
+    Const PROC = "Test_DctAdd_ItemIsObjectWithNameProperty"
+    Dim i   As Long
+    Dim vbc As VBComponent
     
     BoP ErrSrc(PROC)
     Set dctTest = Nothing
-    Test_DctAdd_KeyIsObjectWithNameProperty
+    For Each vbc In ThisWorkbook.VBProject.VBComponents
+        DctAdd dct:=dctTest, dctnewkey:=vbc.Name, dctnewitem:=vbc, dctmode:=dct_ascending_byitem_casesensitive
+    Next vbc
+    Debug.Assert dctTest.Count = 8
+    Debug.Assert dctTest.Items()(0).Name = "clsCallStack"
+    Debug.Assert dctTest.Items()(dctTest.Count - 1).Name = "wsBasicTest"
+    
+    '~~ Add an already existing key = update the item
+    Set vbc = ThisWorkbook.VBProject.VBComponents("mTest")
+    DctAdd dct:=dctTest, dctnewkey:=vbc.Name, dctnewitem:=vbc, dctmode:=dct_ascending_byitem_casesensitive
+    Debug.Assert dctTest.Count = 8
+    Debug.Assert dctTest.Items()(0).Name = "clsCallStack"
+    Debug.Assert dctTest.Items()(dctTest.Count - 1).Name = "wsBasicTest"
     EoP ErrSrc(PROC)
-    Test_DctAddResult dctTest
+        
+End Sub
+
+Private Sub Test_DctAdd_InsertKeyAfter()
+    
+    Const PROC = "Test_DctAdd_InsertKeyAfter"
+    Dim vbc1 As VBComponent
+    Dim vbc2 As VBComponent
+    
+    BoP ErrSrc(PROC)
+    
+    '~~ Preparation
+    Test_DctAdd_KeyIsObjectWithNameProperty
+    Debug.Assert dctTest.Keys()(0).Name = "clsCallStack"
+    Debug.Assert dctTest.Keys()(1).Name = "clsCallStackItem"
+    Set vbc1 = ThisWorkbook.VBProject.VBComponents("clsCallStackItem")
+    Set vbc2 = ThisWorkbook.VBProject.VBComponents("clsCallStack")
+    dctTest.Remove vbc2
+    Debug.Assert dctTest.Count = 7
+    
+    '~~ Test
+    DctAdd dctTest, vbc2, vbc1.Name, dct_addafter_key_caseignored, vbc1
+    Debug.Assert dctTest.Count = 8
+    Debug.Assert dctTest.Keys()(0).Name = "clsCallStackItem"
+    Debug.Assert dctTest.Keys()(1).Name = "clsCallStack"
+    EoP ErrSrc(PROC)
+    
+End Sub
+
+Private Sub Test_DctAdd_InsertItemAfter()
+    
+    Const PROC = "Test_DctAdd_InsertItemAfter"
+    Dim vbc1 As VBComponent
+    Dim vbc2 As VBComponent
+    
+    BoP ErrSrc(PROC)
+    
+    '~~ Preparation
+    Test_DctAdd_ItemIsObjectWithNameProperty
+    Debug.Assert dctTest.Keys()(0) = "clsCallStack"
+    Debug.Assert dctTest.Keys()(1) = "clsCallStackItem"
+    Set vbc1 = ThisWorkbook.VBProject.VBComponents("clsCallStackItem")
+    Set vbc2 = ThisWorkbook.VBProject.VBComponents("clsCallStack")
+    dctTest.Remove vbc2.Name
+    Debug.Assert dctTest.Count = 7
+    
+    '~~ Test
+    DctAdd dctTest, vbc2.Name, vbc2, dct_addafter_item_caseignored, vbc1
+    Debug.Assert dctTest.Count = 8
+    Debug.Assert dctTest.Items()(0).Name = "clsCallStackItem"
+    Debug.Assert dctTest.Items()(1).Name = "clsCallStack"
+    EoP ErrSrc(PROC)
+    
+End Sub
+
+Private Sub Test_DctAdd_InsertItemBefore()
+    
+    Const PROC = "Test_DctAdd_InsertItemBefore"
+    Dim vbc1 As VBComponent
+    Dim vbc2 As VBComponent
+    
+    BoP ErrSrc(PROC)
+    
+    '~~ Preparation
+    Test_DctAdd_ItemIsObjectWithNameProperty
+    Debug.Assert dctTest.Keys()(0) = "clsCallStack"
+    Debug.Assert dctTest.Keys()(1) = "clsCallStackItem"
+    Set vbc1 = ThisWorkbook.VBProject.VBComponents("clsCallStackItem")
+    Set vbc2 = ThisWorkbook.VBProject.VBComponents("clsCallStack")
+    dctTest.Remove vbc1.Name
+    Debug.Assert dctTest.Count = 7
+    
+    '~~ Test
+    DctAdd dctTest, vbc1.Name, vbc1, dct_addbefore_item_caseignored, vbc2
+    Debug.Assert dctTest.Count = 8
+    Debug.Assert dctTest.Items()(0).Name = "clsCallStackItem"
+    Debug.Assert dctTest.Items()(1).Name = "clsCallStack"
+    EoP ErrSrc(PROC)
+    
+End Sub
+
+Private Sub Test_DctAdd_InsertKeyBefore()
+    
+    Const PROC = "Test_DctAdd_InsertKeyBefore"
+    Dim vbc1 As VBComponent
+    Dim vbc2 As VBComponent
+    
+    BoP ErrSrc(PROC)
+    
+    '~~ Preparation
+    Test_DctAdd_KeyIsObjectWithNameProperty
+    Debug.Assert dctTest.Keys()(0).Name = "clsCallStack"
+    Debug.Assert dctTest.Keys()(1).Name = "clsCallStackItem"
+    Set vbc1 = ThisWorkbook.VBProject.VBComponents("clsCallStackItem")
+    Set vbc2 = ThisWorkbook.VBProject.VBComponents("clsCallStack")
+    dctTest.Remove vbc1
+    Debug.Assert dctTest.Count = 7
+    
+    '~~ Test
+    DctAdd dctTest, vbc1, vbc1.Name, dct_addbefore_key_caseignored, vbc2
+    Debug.Assert dctTest.Count = 8
+    Debug.Assert dctTest.Keys()(0).Name = "clsCallStackItem"
+    Debug.Assert dctTest.Keys()(1).Name = "clsCallStack"
+    EoP ErrSrc(PROC)
+    
+End Sub
+
+Private Sub Test_DctAdd_KeyIsObjectWithNameProperty()
+' ----------------------------------------------------
+' Added items with a key which is an object.
+' The order by key uses the object's name property.
+' ----------------------------------------------------
+    Const PROC = "Test_DctAdd_KeyIsObjectWithNameProperty"
+    Dim i   As Long
+    Dim vbc As VBComponent
+    
+    BoP ErrSrc(PROC)
     Set dctTest = Nothing
+    For Each vbc In ThisWorkbook.VBProject.VBComponents
+        DctAdd dct:=dctTest, dctnewkey:=vbc, dctnewitem:=vbc.Name, dctmode:=dct_ascending_bykey_casesensitive
+    Next vbc
+    Debug.Assert dctTest.Count = 8
+    Debug.Assert dctTest.Items()(0) = "clsCallStack"
+    Debug.Assert dctTest.Items()(dctTest.Count - 1) = "wsBasicTest"
+    
+    '~~ Add an already existing key = update the item
+    Set vbc = ThisWorkbook.VBProject.VBComponents("mTest")
+    DctAdd dct:=dctTest, dctnewkey:=vbc, dctnewitem:=vbc.Name, dctmode:=dct_ascending_bykey_casesensitive
+    Debug.Assert dctTest.Count = 8
+    Debug.Assert dctTest.Items()(0) = "clsCallStack"
+    Debug.Assert dctTest.Items()(dctTest.Count - 1) = "wsBasicTest"
+    EoP ErrSrc(PROC)
+    
+'    Test_DctAddResult dctTest
     
 End Sub
 
@@ -343,52 +517,36 @@ Private Sub Test_DctAdd_KeyIsValue()
     Dim i   As Long
     
     BoP ErrSrc(PROC)
-    For i = 1 To 99 Step 2
-        DctAdd dct:=dctTest, dctkey:=i, dctitem:=ThisWorkbook, dctmode:=dct_ascendingcasesensitive
+    Set dctTest = Nothing
+    For i = 1 To 9 Step 2
+        DctAdd dct:=dctTest, dctnewkey:=i, dctnewitem:=ThisWorkbook, dctmode:=dct_ascending_bykey_casesensitive
     Next i
-    For i = 100 To 2 Step -2
-        DctAdd dct:=dctTest, dctkey:=i, dctitem:=ThisWorkbook, dctmode:=dct_ascendingcasesensitive
+    For i = 10 To 2 Step -2
+        DctAdd dct:=dctTest, dctnewkey:=i, dctnewitem:=ThisWorkbook, dctmode:=dct_ascending_bykey_casesensitive
     Next i
     
     '~~ Add an already existing key, ignored when the item is neither numeric nor a string
-    DctAdd dct:=dctTest, dctkey:=50, dctitem:=ThisWorkbook, dctmode:=dct_ascendingcasesensitive
+    DctAdd dct:=dctTest, dctnewkey:=5, dctnewitem:=ThisWorkbook, dctmode:=dct_ascending_bykey_casesensitive
     
     EoP ErrSrc(PROC)
     
 End Sub
 
-Private Sub Test_DctAdd_KeyIsObjectWithNameProperty()
-' ----------------------------------------------------
-' Note: Reverse key order added in mode ascending
-' is the worst case regarding performance!
-' ----------------------------------------------------
-    Const PROC = "Test_DctAdd_KeyIsObjectWithNameProperty"
-    Dim i   As Long
-    Dim vbc As VBComponent
-    
+Private Sub Test_DctNumKey()
+    Const PROC = "Test_DctNumKey"
     BoP ErrSrc(PROC)
-    For Each vbc In ThisWorkbook.VBProject.VBComponents
-        DctAdd dct:=dctTest, dctkey:=vbc, dctitem:=vbc.Name, dctmode:=dct_ascendingcasesensitive
-    Next vbc
+    Set dctTest = Nothing
     
-    '~~ Add an already existing key, ignored when the item is neither numeric nor a string
-    Debug.Assert dctTest.Count = 8
-    Set vbc = ThisWorkbook.VBProject.VBComponents("mTest")
-    DctAdd dct:=dctTest, dctkey:=vbc, dctitem:=vbc.Name, dctmode:=dct_ascendingcasesensitive
-    Debug.Assert dctTest.Count = 8
+    DctAdd dctTest, 2, 5, dct_ascending_bykey_caseignored
+    DctAdd dctTest, 5, 2, dct_ascending_bykey_caseignored
+    DctAdd dctTest, 3, 4, dct_ascending_bykey_caseignored
+    
+    Debug.Assert dctTest.Count = 3
+    Debug.Assert dctTest.Keys()(0) = 2
+    Debug.Assert dctTest.Keys()(dctTest.Count - 1) = 5
+    
     EoP ErrSrc(PROC)
     
-    Test_DctAddResult dctTest
-    
-End Sub
-
-Private Sub Test_DctAddResult(ByVal dct As Dictionary)
-    Dim v As Variant
-    For Each v In dct
-        If IsNumeric(v) Or TypeName(v) = "String" _
-        Then Debug.Print v _
-        Else Debug.Print v.Name
-    Next v
 End Sub
 
 Public Sub Test_Msg_1_Reply()

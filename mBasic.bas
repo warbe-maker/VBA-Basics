@@ -1,12 +1,12 @@
 Attribute VB_Name = "mBasic"
 Option Private Module
 Option Explicit
-' -----------------------------------------------------------------------------------
 ' ----------------------------------------------------------------------------
 ' Standard Module mTest: Declarations, procedures, methods and function
 '       likely to be required in any VB-Project.
 '
-' Note: Procedures do not use the Common VBA Error Handler (mErrHndlr) module.
+' Note: Procedures do not use the Common VBA Error Handler (mErrHndlr) module
+'       but still make use of this modules error message display method "ErrMsg".
 '       This VB-Project is dedicated to the development, test, and maintenance
 '       of Basic VBA Procedures. In order not to urge users of this module to
 '       also use the mErrHndlr module the mErrHndlr is only used by the mTest
@@ -34,8 +34,7 @@ Option Explicit
 ' - Msg3                Displays a message with any possible 4 replies and 3
 '                       message sections each either with a foxed or proportional
 '                       font.
-' - ErrMsg              Displays a common error message either by means of the
-'                       VB MsgBox or by means of the common method Msg.
+' - ErrMsg              Displays a common error message by means of the VB MsgBox.
 '
 ' Requires Reference to:
 ' - "Microsoft Scripting Runtime"
@@ -96,436 +95,56 @@ Public Enum xlOnOff ' ------------------------------------
     xlOff = -4146   ' grouped for being used as Enum Type.
 End Enum            ' ------------------------------------
 
-Public Enum enDctMode ' Dictionary add/insert modes
-    dct_addafter
-    dct_addbefore
-    dct_ascendingcasesensitive
-    dct_ascendcaseingignored
-    dct_descendingcasesensitive
-    dct_descendingcaseignored
-    dct_sequence
+Public Enum enDctAddOrder ' Dictionary add/insert modes
+    dct_addafter_item_caseignored
+    dct_addafter_key_caseignored
+    dct_addbefore_item_caseignored
+    dct_addbefore_key_caseignored
+    dct_addafter_item_casesensitive
+    dct_addafter_key_casesensitive
+    dct_addbefore_item_casesensitive
+    dct_addbefore_key_casesensitive
+    dct_ascending_byitem_caseignored
+    dct_ascending_byitem_casesensitive
+    dct_ascending_bykey_caseignored
+    dct_ascending_bykey_casesensitive
+    dct_descending_byitem_caseignored
+    dct_descending_byitem_casesensitive
+    dct_descending_bykey_caseignored
+    dct_descending_bykey_casesensitive
+    dct_entry_sequence
 End Enum
 
-Public Property Let MsgReply(ByVal v As Variant):   vMsgReply = v:          End Property
 Public Property Get MsgReply() As Variant:          MsgReply = vMsgReply:   End Property
 
-Public Function Max(ByVal v1 As Variant, _
-                    ByVal v2 As Variant, _
-           Optional ByVal v3 As Variant = 0, _
-           Optional ByVal v4 As Variant = 0, _
-           Optional ByVal v5 As Variant = 0, _
-           Optional ByVal v6 As Variant = 0, _
-           Optional ByVal v7 As Variant = 0, _
-           Optional ByVal v8 As Variant = 0, _
-           Optional ByVal v9 As Variant = 0) As Variant
-' -----------------------------------------------------
-' Returns the maximum (biggest) of all provided values.
-' -----------------------------------------------------
-Dim dMax As Double
-    dMax = v1
-    If v2 > dMax Then dMax = v2
-    If v3 > dMax Then dMax = v3
-    If v4 > dMax Then dMax = v4
-    If v5 > dMax Then dMax = v5
-    If v6 > dMax Then dMax = v6
-    If v7 > dMax Then dMax = v7
-    If v8 > dMax Then dMax = v8
-    If v9 > dMax Then dMax = v9
-    Max = dMax
-End Function
+Public Property Let MsgReply(ByVal v As Variant):   vMsgReply = v:          End Property
 
-Public Function ProgramIsInstalled(ByVal sProgram As String) As Boolean
-        ProgramIsInstalled = InStr(Environ$(18), sProgram) <> 0
-End Function
-
-Public Function Min(ByVal v1 As Variant, _
-                    ByVal v2 As Variant, _
-           Optional ByVal v3 As Variant = Nothing, _
-           Optional ByVal v4 As Variant = Nothing, _
-           Optional ByVal v5 As Variant = Nothing, _
-           Optional ByVal v6 As Variant = Nothing, _
-           Optional ByVal v7 As Variant = Nothing, _
-           Optional ByVal v8 As Variant = Nothing, _
-           Optional ByVal v9 As Variant = Nothing) As Variant
-' ------------------------------------------------------
-' Returns the minimum (smallest) of all provided values.
-' ------------------------------------------------------
-Dim dMin As Double
-    dMin = v1
-    If v2 < dMin Then dMin = v2
-    If TypeName(v3) <> "Nothing" Then If v3 < dMin Then dMin = v3
-    If TypeName(v4) <> "Nothing" Then If v4 < dMin Then dMin = v4
-    If TypeName(v5) <> "Nothing" Then If v5 < dMin Then dMin = v5
-    If TypeName(v6) <> "Nothing" Then If v6 < dMin Then dMin = v6
-    If TypeName(v7) <> "Nothing" Then If v7 < dMin Then dMin = v7
-    If TypeName(v8) <> "Nothing" Then If v8 < dMin Then dMin = v8
-    If TypeName(v9) <> "Nothing" Then If v9 < dMin Then dMin = v9
-    Min = dMin
-End Function
-
-Public Function BaseName(ByVal v As Variant) As String
-' -----------------------------------------------------
-' Returns the file name without the extension. v may be
-' a file name a file path (full name) a File object or
-' a Workbook object.
-' -----------------------------------------------------
-Const PROC  As String = "BaseName"
-Dim fso     As New FileSystemObject
-
-    On Error GoTo on_error
-    
-    Select Case TypeName(v)
-        Case "String":      BaseName = fso.GetBaseName(v)
-        Case "Workbook":    BaseName = fso.GetBaseName(v.FullName)
-        Case "File":        BaseName = fso.GetBaseName(v.ShortName)
-        Case Else:          Err.Raise AppErr(1), ErrSrc(PROC), "The parameter (v) is neither a string nor a File or Workbook object (TypeName = '" & TypeName(v) & "')!"
-    End Select
-
-exit_proc:
-    Exit Function
-    
-on_error:
-#If Debugging Then
-    Debug.Print Err.Description: Stop: Resume
-#End If
-    MsgBox Prompt:=Err.Descriiption, Title:="Application Error 1 in " & ErrSrc(PROC)
-End Function
-
-Public Function CleanTrim(ByVal s As String, _
-                 Optional ByVal ConvertNonBreakingSpace As Boolean = True) As String
-' ----------------------------------------------------------------------------------
-' Returns the string 's' cleaned from any non-printable characters.
-' ----------------------------------------------------------------------------------
-Dim l           As Long
-Dim asToClean   As Variant
-    
-    asToClean = Array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, _
-                     21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 127, 129, 141, 143, 144, 157)
-    If ConvertNonBreakingSpace Then s = Replace(s, Chr$(160), " ")
-    For l = LBound(asToClean) To UBound(asToClean)
-        If InStr(s, Chr$(asToClean(l))) Then s = Replace(s, Chr$(asToClean(l)), vbNullString)
-    Next
-    CleanTrim = s
-
-End Function
-
-Public Sub DctAdd(ByRef dct As Dictionary, _
-                  ByVal dctkey As Variant, _
-                  ByVal dctitem As Variant, _
-         Optional ByVal dctmode As enDctMode = dct_sequence, _
-         Optional ByVal dcttargetkey As Variant)
-' ----------------------------------------------------------------------
-' Adds the item (dctitem) to the Dictionary (dct) with the key (dctkey).
-' Supports various key sequences, case and case insensitive key as well
-' as adding items before or after an existing item.
-' - When the key (dctkey) already exists the item is updated when it is
-'   numeric or a string, else it is ignored.
-' - When the dictionary (dct) is Nothing it is setup on the fly.
-' - When dctmode = before or after dcttargetkey is obligatory and an
-'   error is raised when not provided.
-' - When the item's key is an object any dctmode other then by sequence
-'   requires an object with a name property. If not the case an error is
-'   raised.
-
-' W. Rauschenberger, Berlin Mar 2020
-' -----------------------------------------------------------------
-    Const PROC = "DctAdd"
-    Dim dctTemp As Dictionary
-    Dim vKey    As Variant
-    Dim bAdd    As Boolean
-
-    On Error GoTo on_error
-    
-    If dct Is Nothing Then Set dct = New Dictionary
-    
-    If Not IsNumeric(dctkey) And TypeName(dctkey) <> "String" Then
-        On Error Resume Next
-        Debug.Print "Added object with name '" & dctkey.Name & "'"
-        If Err.Number <> 0 _
-        Then Err.Raise AppErr(1), ErrSrc(PROC), "The key is neither a numeric value nor a string, nor an object with a name property!"
-    End If
-    
-    With dct
-        If .Count = 0 Or dctmode = dct_sequence Then ' the very first item is just added
-            .Add dctkey, dctitem
-            Exit Sub
-        End If
-        ' ----------------------------------------------------------------------
-        ' Let's see whether the new key can be added directly after the last key
-        ' ----------------------------------------------------------------------
-        If IsNumeric(.Keys()(.Count - 1)) Or TypeName(.Keys()(.Count - 1)) = "String" _
-        Then vKey = .Keys()(.Count - 1) _
-        Else Set vKey = .Keys()(.Count - 1)
-        
-        Select Case dctmode
-            Case dct_ascendingcasesensitive
-                If DctAddKeyValue(dctkey) > DctAddKeyValue(vKey) Then
-                    .Add dctkey, dctitem
-                    Exit Sub                ' Done!
-                End If
-            Case dct_ascendcaseingignored
-                If LCase$(dctkey) > LCase$(DctAddKeyValue(vKey)) Then
-                    .Add dctkey, dctitem
-                    Exit Sub                ' Done!
-                End If
-            Case dct_descendingcasesensitive
-                If DctAddKeyValue(dctkey) < DctAddKeyValue(vKey) Then
-                    .Add dctkey, dctitem
-                    Exit Sub                ' Done!
-                End If
-            Case dct_descendingcaseignored
-                If LCase$(DctAddKeyValue(dctkey)) < LCase$(DctAddKeyValue(vKey)) Then
-                    .Add dctkey, dctitem
-                    Exit Sub                ' Done!
-                End If
-        End Select
-    End With
-
-    '~~ -------------------------------------------------------------------------
-    '~~ Since the new key could not simply be added to the Dictionary it will be
-    '~~ added, somewhere in between, before the very first or after the last key.
-    '~~ -------------------------------------------------------------------------
-    Set dctTemp = New Dictionary
-    bAdd = True
-    For Each vKey In dct
-        With dctTemp
-            If bAdd Then
-                If dct.Exists(dctkey) Then
-                    '~~ When the item is numeric or a string and the key already exists the item is updated
-                    '~~ else ignored
-                    If IsNumeric(dctitem) Or TypeName(dctitem) = "String" Then dct.Item(dctkey) = dctitem
-                    Exit Sub
-                End If
-                Select Case dctmode
-                    Case dct_ascendingcasesensitive
-                        If DctAddKeyValue(vKey) > DctAddKeyValue(dctkey) Then
-                            .Add dctkey, dctitem
-                            bAdd = False ' Add done
-                        End If
-                    Case dct_ascendcaseingignored
-                        If LCase$(DctAddKeyValue(vKey)) > LCase$(DctAddKeyValue(dctkey)) Then
-                            .Add dctkey, dctitem
-                            bAdd = False ' Add done
-                        End If
-                    Case dct_addbefore
-                        If DctAddKeyValue(vKey) = dcttargetkey Then
-                            '~~> Add before dcttargetkey key has been reached
-                            .Add dctkey, dctitem
-                            bAdd = True
-                        End If
-                    Case dct_descendingcasesensitive
-                        If DctAddKeyValue(vKey) < DctAddKeyValue(dctkey) Then
-                            .Add dctkey, dctitem
-                            bAdd = False ' Add done
-                        End If
-                    Case dct_descendingcaseignored
-                        If LCase$(DctAddKeyValue(vKey)) < LCase$(DctAddKeyValue(dctkey)) Then
-                            .Add dctkey, dctitem
-                            bAdd = False ' Add done
-                        End If
-                End Select
-            End If
-            
-            '~~> Transfer the existing item to the temporary dictionary
-            .Add vKey, dct.Item(vKey)
-            
-            If dctmode = dct_addafter And bAdd Then
-                If DctAddKeyValue(vKey) = dcttargetkey Then
-                    ' ----------------------------------------
-                    ' Just add when dctmode indicates add after,
-                    ' and the vTraget key has been reached
-                    ' ----------------------------------------
-                    .Add dctkey, dctitem
-                    bAdd = False
-                End If
-            End If
-            
-        End With
-    Next vKey
-    
-    '~~> Return the temporary dictionary with the new item added
-    Set dct = dctTemp
-    Set dctTemp = Nothing
-
-end_proc:
-    Exit Sub
-
-on_error:
-#If Debugging Then
-    Debug.Print Err.Description: Stop: Resume
-#End If
-    MsgBox Prompt:=Err.Description, Title:="VB Runtime Error " & Err.Number & " in " & ErrSrc(PROC)
-End Sub
-
-Private Function DctAddKeyValue(ByVal dctkey As Variant) As Variant
-' -----------------------------------------------------------------
-' When dctkey when it is numeric or a string it is returned as is
-' else when it is an object with a name property the name
-' else a vbNullString.
-' -----------------------------------------------------------------
-    If IsNumeric(dctkey) Or TypeName(dctkey) = "String" Then
-        DctAddKeyValue = dctkey
+Public Function AppErr(ByVal lNo As Long) As Long
+' -------------------------------------------------------------------------------
+' Attention: This function is dedicated for being used with Err.Raise AppErr()
+'            in conjunction with the common error handling module mErrHndlr when
+'            the call stack is supported. The error number passed on to the entry
+'            procedure is interpreted when the error message is displayed.
+' The function ensures that a programmed (application) error numbers never
+' conflicts with VB error numbers by adding vbObjectError which turns it into a
+' negative value. In return, translates a negative error number back into an
+' Application error number. The latter is the reason why this function must never
+' be used with a true VB error number.
+' -------------------------------------------------------------------------------
+    If lNo < 0 Then
+        AppErr = lNo - vbObjectError
     Else
-        On Error Resume Next
-        DctAddKeyValue = dctkey.Name
-        If Err.Number <> 0 Then DctAddKeyValue = vbNullString
+        AppErr = vbObjectError + lNo
     End If
 End Function
 
-Public Sub ArrayTrimm(ByRef a As Variant)
-' ---------------------------------------
-' Return the array (a) with all leading
-' and trailing blank items removed. Any
-' vbCr, vbCrLf, vbLf are ignored.
-' When the array contains only blank
-' items the returned array is erased.
-' ---------------------------------------
-Const PROC  As String = "ArrayTrimm"
-Dim i       As Long
-
-    On Error GoTo on_error
-    
-    '~~ Eliminate leading blank lines
-    If Not mBasic.ArrayIsAllocated(a) Then Exit Sub
-    
-    Do While (Len(Trim$(a(LBound(a)))) = 0 Or Trim$(a(LBound(a))) = " ") And UBound(a) >= 0
-        mBasic.ArrayRemoveItems a, Index:=i
-        If Not mBasic.ArrayIsAllocated(a) Then Exit Do
+Public Function AppIsInstalled(ByVal sApp As String) As Boolean
+Dim i As Long: i = 1
+    Do Until Left(Environ$(i), 5) = "Path="
+        i = i + 1
     Loop
-    
-    If mBasic.ArrayIsAllocated(a) Then
-        Do While (Len(Trim$(a(UBound(a)))) = 0 Or Trim$(a(LBound(a))) = " ") And UBound(a) >= 0
-            If UBound(a) = 0 Then
-                Erase a
-            Else
-                ReDim Preserve a(UBound(a) - 1)
-            End If
-            If Not mBasic.ArrayIsAllocated(a) Then Exit Do
-        Loop
-    End If
-exit_proc:
-    Exit Sub
-    
-on_error:
-    '~~ Global error handling is used to seamlessly monitor error conditions
-#If Debugging Then
-    Debug.Print Err.Description: Stop: Resume
-#End If
-    MsgBox Prompt:=Err.Description, Title:="VB Runtime Error " & Err.Number & " in " & ErrSrc(PROC)
-End Sub
-
-Public Sub ArrayRemoveItems(ByRef va As Variant, _
-                   Optional ByVal Element As Variant, _
-                   Optional ByVal Index As Variant, _
-                   Optional ByVal NoOfElements = 1)
-' ------------------------------------------------------
-' Returns the array (va) with the number of elements
-' (NoOfElements) removed whereby the start element may be
-' indicated by the element number 1,2,... (vElement) or
-' the index (Index) which must be within the array's
-' LBound to Ubound.
-' Any inapropriate provision of the parameters results
-' in a clear error message.
-' When the last item in an array is removed the returned
-' arry is erased (no longer allocated).
-'
-' Restriction: Works only with one dimensional array.
-'
-' W. Rauschenberger, Berlin Jan 2020
-' ------------------------------------------------------
-Const PROC              As String = "ArrayRemoveItems"
-Dim a                   As Variant
-Dim iElement            As Long
-Dim iIndex              As Long
-Dim NoOfElementsInArray    As Long
-Dim i                   As Long
-Dim iNewUBound          As Long
-
-    On Error GoTo on_error
-    
-    If Not IsArray(va) Then
-        Err.Raise AppErr(1), ErrSrc(PROC), "Array not provided!"
-    Else
-        a = va
-        NoOfElementsInArray = UBound(a) - LBound(a) + 1
-    End If
-    If Not ArrayNoOfDims(a) = 1 Then
-        Err.Raise AppErr(2), ErrSrc(PROC), "Array must not be multidimensional!"
-    End If
-    If Not IsNumeric(Element) And Not IsNumeric(Index) Then
-        Err.Raise AppErr(3), ErrSrc(PROC), "Neither FromElement nor FromIndex is a numeric value!"
-    End If
-    If IsNumeric(Element) Then
-        iElement = Element
-        If iElement < 1 _
-        Or iElement > NoOfElementsInArray Then
-            Err.Raise AppErr(4), ErrSrc(PROC), "vFromElement is not between 1 and " & NoOfElementsInArray & " !"
-        Else
-            iIndex = LBound(a) + iElement - 1
-        End If
-    End If
-    If IsNumeric(Index) Then
-        iIndex = Index
-        If iIndex < LBound(a) _
-        Or iIndex > UBound(a) Then
-            Err.Raise AppErr(5), ErrSrc(PROC), "FromIndex is not between " & LBound(a) & " and " & UBound(a) & " !"
-        Else
-            iElement = ElementOfIndex(a, iIndex)
-        End If
-    End If
-    If iElement + NoOfElements - 1 > NoOfElementsInArray Then
-        Err.Raise AppErr(6), ErrSrc(PROC), "FromElement (" & iElement & ") plus the number of elements to remove (" & NoOfElements & ") is beyond the number of elelemnts in the array (" & NoOfElementsInArray & ")!"
-    End If
-    
-    For i = iIndex + NoOfElements To UBound(a)
-        a(i - NoOfElements) = a(i)
-    Next i
-    
-    iNewUBound = UBound(a) - NoOfElements
-    If iNewUBound < 0 Then Erase a Else ReDim Preserve a(LBound(a) To iNewUBound)
-    va = a
-    
-exit_proc:
-    Exit Sub
-
-on_error:
-    '~~ Global error handling is used to seamlessly monitor error conditions
-#If Debugging Then
-    Debug.Print Err.Description: Stop: Resume
-#End If
-    MsgBox Prompt:=Err.Description, Title:="VB Runtime Error " & Err.Number & " in " & ErrSrc(PROC)
-End Sub
-
-Public Function ElementOfIndex(ByVal a As Variant, _
-                                ByVal i As Long) As Long
-' ------------------------------------------------------
-' Returns the element number of index (i) in array (a).
-' ------------------------------------------------------
-Dim ia  As Long
-    For ia = LBound(a) To i
-        ElementOfIndex = ElementOfIndex + 1
-    Next ia
+    AppIsInstalled = InStr(Environ$(i), sApp) <> 0
 End Function
-
-Public Sub ArrayToRange(ByVal vArr As Variant, _
-                        ByVal r As Range, _
-               Optional ByVal bOneCol As Boolean = False)
-' -------------------------------------------------------
-' Copy the content of the Arry (vArr) to the range (r).
-' -------------------------------------------------------
-Dim rTarget As Range
-
-    If bOneCol Then
-        '~~ One column, n rows
-        Set rTarget = r.Cells(1, 1).Resize(UBound(vArr), 1)
-        rTarget.Value = Application.Transpose(vArr)
-    Else
-        '~~ One column, n rows
-        Set rTarget = r.Cells(1, 1).Resize(1, UBound(vArr))
-        rTarget.Value = vArr
-    End If
-    
-End Sub
 
 Public Function ArrayCompare(ByVal a1 As Variant, _
                              ByVal a2 As Variant, _
@@ -619,7 +238,14 @@ on_error:
 #If Debugging Then
     Debug.Print Err.Description: Stop: Resume
 #End If
-    MsgBox Prompt:=Err.Description, Title:="VB Runtime Error " & Err.Number & " in " & ErrSrc(PROC)
+    ErrMsg errnumber:=Err.Number, errsource:=ErrSrc(PROC), errdscrptn:=Err.Description, errline:=Erl
+End Function
+
+Public Function ArrayIsAllocated(arr As Variant) As Boolean
+    On Error Resume Next
+    ArrayIsAllocated = IsArray(arr) And _
+                       Not IsError(LBound(arr, 1)) And _
+                       LBound(arr, 1) <= UBound(arr, 1)
 End Function
 
 Public Function ArrayNoOfDims(arr As Variant) As Integer
@@ -644,11 +270,583 @@ Dim Res As Integer
 
 End Function
 
-Public Function ArrayIsAllocated(arr As Variant) As Boolean
-    On Error Resume Next
-    ArrayIsAllocated = IsArray(arr) And _
-                       Not IsError(LBound(arr, 1)) And _
-                       LBound(arr, 1) <= UBound(arr, 1)
+Public Sub ArrayRemoveItems(ByRef va As Variant, _
+                   Optional ByVal Element As Variant, _
+                   Optional ByVal Index As Variant, _
+                   Optional ByVal NoOfElements = 1)
+' ------------------------------------------------------
+' Returns the array (va) with the number of elements
+' (NoOfElements) removed whereby the start element may be
+' indicated by the element number 1,2,... (vElement) or
+' the index (Index) which must be within the array's
+' LBound to Ubound.
+' Any inapropriate provision of the parameters results
+' in a clear error message.
+' When the last item in an array is removed the returned
+' arry is erased (no longer allocated).
+'
+' Restriction: Works only with one dimensional array.
+'
+' W. Rauschenberger, Berlin Jan 2020
+' ------------------------------------------------------
+Const PROC              As String = "ArrayRemoveItems"
+Dim a                   As Variant
+Dim iElement            As Long
+Dim iIndex              As Long
+Dim NoOfElementsInArray    As Long
+Dim i                   As Long
+Dim iNewUBound          As Long
+
+    On Error GoTo on_error
+    
+    If Not IsArray(va) Then
+        Err.Raise AppErr(1), ErrSrc(PROC), "Array not provided!"
+    Else
+        a = va
+        NoOfElementsInArray = UBound(a) - LBound(a) + 1
+    End If
+    If Not ArrayNoOfDims(a) = 1 Then
+        Err.Raise AppErr(2), ErrSrc(PROC), "Array must not be multidimensional!"
+    End If
+    If Not IsNumeric(Element) And Not IsNumeric(Index) Then
+        Err.Raise AppErr(3), ErrSrc(PROC), "Neither FromElement nor FromIndex is a numeric value!"
+    End If
+    If IsNumeric(Element) Then
+        iElement = Element
+        If iElement < 1 _
+        Or iElement > NoOfElementsInArray Then
+            Err.Raise AppErr(4), ErrSrc(PROC), "vFromElement is not between 1 and " & NoOfElementsInArray & " !"
+        Else
+            iIndex = LBound(a) + iElement - 1
+        End If
+    End If
+    If IsNumeric(Index) Then
+        iIndex = Index
+        If iIndex < LBound(a) _
+        Or iIndex > UBound(a) Then
+            Err.Raise AppErr(5), ErrSrc(PROC), "FromIndex is not between " & LBound(a) & " and " & UBound(a) & " !"
+        Else
+            iElement = ElementOfIndex(a, iIndex)
+        End If
+    End If
+    If iElement + NoOfElements - 1 > NoOfElementsInArray Then
+        Err.Raise AppErr(6), ErrSrc(PROC), "FromElement (" & iElement & ") plus the number of elements to remove (" & NoOfElements & ") is beyond the number of elelemnts in the array (" & NoOfElementsInArray & ")!"
+    End If
+    
+    For i = iIndex + NoOfElements To UBound(a)
+        a(i - NoOfElements) = a(i)
+    Next i
+    
+    iNewUBound = UBound(a) - NoOfElements
+    If iNewUBound < 0 Then Erase a Else ReDim Preserve a(LBound(a) To iNewUBound)
+    va = a
+    
+exit_proc:
+    Exit Sub
+
+on_error:
+    '~~ Global error handling is used to seamlessly monitor error conditions
+#If Debugging Then
+    Debug.Print Err.Description: Stop: Resume
+#End If
+    ErrMsg errnumber:=Err.Number, errsource:=ErrSrc(PROC), errdscrptn:=Err.Description, errline:=Erl
+End Sub
+
+Public Sub ArrayToRange(ByVal vArr As Variant, _
+                        ByVal r As Range, _
+               Optional ByVal bOneCol As Boolean = False)
+' -------------------------------------------------------
+' Copy the content of the Arry (vArr) to the range (r).
+' -------------------------------------------------------
+Dim rTarget As Range
+
+    If bOneCol Then
+        '~~ One column, n rows
+        Set rTarget = r.Cells(1, 1).Resize(UBound(vArr), 1)
+        rTarget.Value = Application.Transpose(vArr)
+    Else
+        '~~ One column, n rows
+        Set rTarget = r.Cells(1, 1).Resize(1, UBound(vArr))
+        rTarget.Value = vArr
+    End If
+    
+End Sub
+
+Public Sub ArrayTrimm(ByRef a As Variant)
+' ---------------------------------------
+' Return the array (a) with all leading
+' and trailing blank items removed. Any
+' vbCr, vbCrLf, vbLf are ignored.
+' When the array contains only blank
+' items the returned array is erased.
+' ---------------------------------------
+Const PROC  As String = "ArrayTrimm"
+Dim i       As Long
+
+    On Error GoTo on_error
+    
+    '~~ Eliminate leading blank lines
+    If Not mBasic.ArrayIsAllocated(a) Then Exit Sub
+    
+    Do While (Len(Trim$(a(LBound(a)))) = 0 Or Trim$(a(LBound(a))) = " ") And UBound(a) >= 0
+        mBasic.ArrayRemoveItems a, Index:=i
+        If Not mBasic.ArrayIsAllocated(a) Then Exit Do
+    Loop
+    
+    If mBasic.ArrayIsAllocated(a) Then
+        Do While (Len(Trim$(a(UBound(a)))) = 0 Or Trim$(a(LBound(a))) = " ") And UBound(a) >= 0
+            If UBound(a) = 0 Then
+                Erase a
+            Else
+                ReDim Preserve a(UBound(a) - 1)
+            End If
+            If Not mBasic.ArrayIsAllocated(a) Then Exit Do
+        Loop
+    End If
+exit_proc:
+    Exit Sub
+    
+on_error:
+    '~~ Global error handling is used to seamlessly monitor error conditions
+#If Debugging Then
+    Debug.Print Err.Description: Stop: Resume
+#End If
+    ErrMsg errnumber:=Err.Number, errsource:=ErrSrc(PROC), errdscrptn:=Err.Description, errline:=Erl
+End Sub
+
+Public Function BaseName(ByVal v As Variant) As String
+' -----------------------------------------------------
+' Returns the file name without the extension. v may be
+' a file name a file path (full name) a File object or
+' a Workbook object.
+' -----------------------------------------------------
+Const PROC  As String = "BaseName"
+Dim fso     As New FileSystemObject
+
+    On Error GoTo on_error
+    
+    Select Case TypeName(v)
+        Case "String":      BaseName = fso.GetBaseName(v)
+        Case "Workbook":    BaseName = fso.GetBaseName(v.FullName)
+        Case "File":        BaseName = fso.GetBaseName(v.ShortName)
+        Case Else:          Err.Raise AppErr(1), ErrSrc(PROC), "The parameter (v) is neither a string nor a File or Workbook object (TypeName = '" & TypeName(v) & "')!"
+    End Select
+
+exit_proc:
+    Exit Function
+    
+on_error:
+#If Debugging Then
+    Debug.Print Err.Description: Stop: Resume
+#End If
+    ErrMsg errnumber:=Err.Number, errsource:=ErrSrc(PROC), errdscrptn:=Err.Description, errline:=Erl
+End Function
+
+Public Function CleanTrim(ByVal s As String, _
+                 Optional ByVal ConvertNonBreakingSpace As Boolean = True) As String
+' ----------------------------------------------------------------------------------
+' Returns the string 's' cleaned from any non-printable characters.
+' ----------------------------------------------------------------------------------
+Dim l           As Long
+Dim asToClean   As Variant
+    
+    asToClean = Array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, _
+                     21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 127, 129, 141, 143, 144, 157)
+    If ConvertNonBreakingSpace Then s = Replace(s, Chr$(160), " ")
+    For l = LBound(asToClean) To UBound(asToClean)
+        If InStr(s, Chr$(asToClean(l))) Then s = Replace(s, Chr$(asToClean(l)), vbNullString)
+    Next
+    CleanTrim = s
+
+End Function
+
+Public Sub DctAdd(ByRef dct As Dictionary, _
+                  ByVal dctnewkey As Variant, _
+                  ByVal dctnewitem As Variant, _
+         Optional ByVal dctmode As enDctAddOrder = dct_entry_sequence, _
+         Optional ByVal dcttarget As Variant, _
+         Optional ByVal dctkeepduplicates As Boolean = True)
+' ----------------------------------------------------------------------------
+' Adds the item (dctnewitem) to the Dictionary (dct) with the key (dctnewkey).
+' Supports various key sequences, case and case insensitive key as well
+' as adding items before or after an existing item.
+' - When the key (dctnewkey) already exists the item is updated when it is
+'   numeric or a string, else it is ignored.
+' - When the dictionary (dct) is Nothing it is setup on the fly.
+' - When dctmode = before or after dcttarget is obligatory and an
+'   error is raised when not provided.
+' - When the item's key is an object any dctmode other then by sequence
+'   requires an object with a name property. If not the case an error is
+'   raised.
+
+' W. Rauschenberger, Berlin Oct 2020
+' ----------------------------------------------------------------------------
+    Const PROC = "DctAdd"
+    Dim dctTemp             As Dictionary
+    Dim vExistingKey        As Variant
+    Dim vExistingItem       As Variant
+    Dim vValueEntryNew      As Variant ' the argument key's/item's value
+    Dim vValueEntryExisting As Variant ' the entry's key/item value for the comparison with the vValueEntryNew
+    Dim vValueEntryTarget   As Variant ' the add before/after key/item's value
+    Dim bDone               As Boolean
+    Dim bAddedBefore        As Boolean
+    Dim bAddedAfter         As Boolean
+    Dim vItem               As Variant
+    
+    On Error GoTo on_error
+    
+    If dct Is Nothing Then Set dct = New Dictionary
+    
+    '~~ When no target is specified for add before/after descending/ascending order is asumed
+    If IsMissing(dcttarget) Then
+        Select Case dctmode
+            Case dct_addbefore_key_casesensitive:     dctmode = dct_descending_bykey_casesensitive
+            Case dct_addbefore_item_casesensitive:    dctmode = dct_descending_byitem_casesensitive
+            Case dct_addafter_key_casesensitive:      dctmode = dct_ascending_bykey_casesensitive
+            Case dct_addafter_item_casesensitive:     dctmode = dct_ascending_byitem_casesensitive
+            Case dct_addbefore_key_caseignored:     dctmode = dct_descending_bykey_caseignored
+            Case dct_addbefore_item_caseignored:    dctmode = dct_descending_byitem_caseignored
+            Case dct_addafter_key_caseignored:      dctmode = dct_ascending_bykey_caseignored
+            Case dct_addafter_item_caseignored:     dctmode = dct_ascending_byitem_caseignored
+        End Select
+    Else
+        '~~ The target may be a key or an item
+        If DctAddOrderByKey(dctmode) And Not dct.Exists(dcttarget) _
+        Then Err.Raise AppErr(2), ErrSrc(PROC), "The target key for an add before/after key does not exists!"
+        If DctAddOrderByItem(dctmode) Then
+            If Not DctAddItemExists(dct, dcttarget) _
+            Then Err.Raise AppErr(2), ErrSrc(PROC), "The target itemfor an add before/after item does not exists!"
+        End If
+        vValueEntryTarget = DctAddOrderValue(dcttarget, dcttarget, dctmode)
+    End If
+        
+    With dct
+        '~~ Do some plausibility checks
+        If DctAddOrderByKey(dctmode) And (DctAddOrderBefore(dctmode) Or DctAddOrderAfter(dctmode)) And .Exists(dctnewkey) _
+        Then Err.Raise AppErr(1), ErrSrc(PROC), "The new key for an add before/after already exists!"
+        
+        '~~ When it is the very first item or the order option is entry sequence the item will just be added
+        If .Count = 0 Or dctmode = dct_entry_sequence Then ' the very first item is just added
+            .Add dctnewkey, dctnewitem
+'            Debug.Print "Added     : order value='" & DctAddOrderValue(dctnewkey, dctnewitem, dctmode) & "'"
+            GoTo end_proc
+        End If
+        
+        If DctAddOrderByKey(dctmode) And .Exists(dctnewkey) Then
+            
+            '~~ When the order is by key and the key already exists the item is updated
+            If VarType(dctnewitem) = vbObject _
+            Then Set .Item(dctnewkey) = dctnewitem _
+            Else .Item(dctnewkey) = dctnewitem
+'            Debug.Print "Updated   : order value='" & DctAddOrderValue(dctnewkey, dctnewitem, dctmode) & "'"
+            GoTo end_proc
+        End If
+    End With
+        
+    '~~ When the order argument is an object but does not have a name property raise an error
+    If DctAddOrderByKey(dctmode) Then
+        If VarType(dctnewkey) = vbObject Then
+            On Error Resume Next
+            If Err.Number <> 0 _
+            Then Err.Raise AppErr(3), ErrSrc(PROC), "The order option is by key, the key is an object but does not have a name property!"
+        End If
+    Else ' order mode is by item
+        On Error Resume Next
+        If Err.Number <> 0 _
+        Then Err.Raise AppErr(4), ErrSrc(PROC), "The order option is by item, the item is an object but does not have a name property!"
+    End If
+    
+    vValueEntryNew = DctAddOrderValue(dctnewkey, dctnewitem, dctmode)
+    '~~ When the order mode is asscending and the last entry's key or item is less than the order argument
+    '~~ just add it and exit
+    With dct
+        '~~ Get the last entry's order value
+        vValueEntryExisting = DctAddOrderValue(.Keys()(.Count - 1), .Items()(.Count - 1), dctmode)
+        
+        If DctAddOrderAscending(dctmode) And vValueEntryNew > vValueEntryExisting Then
+            '~~ The item just needs to be added as the last item
+            .Add dctnewkey, dctnewitem
+'            Debug.Print "Added     : order value='" & DctAddOrderValue(dctnewkey, dctnewitem, dctmode) & "'"
+            GoTo end_proc
+        End If
+    End With
+        
+    '~~ Since the new key/item couldn't simply be added to the Dictionary it will
+    '~~ be inserted before or after the key/item as specified by the dctmode.
+    Set dctTemp = New Dictionary
+    bDone = False
+    For Each vExistingKey In dct
+        
+        If IsObject(dct.Item(vExistingKey)) _
+        Then Set vExistingItem = dct.Item(vExistingKey) _
+        Else vExistingItem = dct.Item(vExistingKey)
+        
+        With dctTemp
+            If bDone Then
+                '~~ All remaining items just transfer
+                .Add vExistingKey, vExistingItem
+'                Debug.Print "Transfered: order value='" & DctAddOrderValue(vExistingKey, vExistingItem, dctmode) & "'"
+            Else
+                vValueEntryExisting = DctAddOrderValue(vExistingKey, vExistingItem, dctmode)
+            
+                If vValueEntryExisting = vValueEntryTarget And DctAddOrderBefore(dctmode) Then
+                    '~~ The add before target key/item has been reached
+                    .Add dctnewkey, dctnewitem
+'                    Debug.Print "Added     : order value='" & DctAddOrderValue(dctnewkey, dctnewitem, dctmode) & "'"
+                    .Add vExistingKey, vExistingItem
+'                    Debug.Print "Transfered: order value='" & DctAddOrderValue(vExistingKey, vExistingItem, dctmode) & "'"
+                    bDone = True ' Add done
+                    bAddedBefore = True
+                ElseIf vValueEntryExisting = vValueEntryTarget And DctAddOrderAfter(dctmode) Then
+                    '~~ The add after target key/item has been reached
+                    .Add vExistingKey, vExistingItem
+'                    Debug.Print "Transfered: order value='" & DctAddOrderValue(vExistingKey, vExistingItem, dctmode) & "'"
+                    .Add dctnewkey, dctnewitem
+'                    Debug.Print "Added     : order value='" & DctAddOrderValue(dctnewkey, dctnewitem, dctmode) & "'"
+                    bDone = True
+                    bAddedAfter = True
+                ElseIf DctAddOrderAscending(dctmode) And vValueEntryExisting > vValueEntryNew Then
+                    .Add dctnewkey, dctnewitem
+'                    Debug.Print "Added     : order value='" & DctAddOrderValue(dctnewkey, dctnewitem, dctmode) & "'"
+                    .Add vExistingKey, vExistingItem
+'                    Debug.Print "Transfered: order value='" & DctAddOrderValue(vExistingKey, vExistingItem, dctmode) & "'"
+                    bDone = True ' Add done
+                ElseIf DctAddOrderDescending(dctmode) And vValueEntryNew > vValueEntryExisting Then
+                    '~~> Add before dcttarget key has been reached
+                    .Add dctnewkey, dctnewitem
+'                    Debug.Print "Added     : order value='" & DctAddOrderValue(dctnewkey, dctnewitem, dctmode) & "'"
+                    .Add vExistingKey, vExistingItem
+'                    Debug.Print "Transfered: order value='" & DctAddOrderValue(vExistingKey, vExistingItem, dctmode) & "'"
+                    bDone = True
+                Else
+                    .Add vExistingKey, vExistingItem ' transfer item
+'                     Debug.Print "Transfered: order value='" & DctAddOrderValue(vExistingKey, vExistingItem, dctmode) & "'"
+                End If
+            End If
+        End With ' dctTemp
+    Next vExistingKey
+    
+    '~~ Return the temporary dictionary with the new item added and all exiting items in dct transfered to it
+    '~~ provided ther was not a add before/after error
+    If DctAddOrderBefore(dctmode) And Not bAddedBefore _
+    Then Err.Raise AppErr(5), ErrSrc(PROC), "The key/item couldn't be added before because the target key/item did not exist!"
+    If DctAddOrderAfter(dctmode) And Not bAddedAfter _
+    Then Err.Raise AppErr(6), ErrSrc(PROC), "The key/item couldn't be added before because the target key/item did not exist!"
+    
+    Set dct = dctTemp
+    Set dctTemp = Nothing
+
+end_proc:
+    Exit Sub
+
+on_error:
+#If Debugging Then
+    Debug.Print Err.Description: Stop: Resume
+#End If
+    ErrMsg errnumber:=Err.Number, errsource:=ErrSrc(PROC), errdscrptn:=Err.Description, errline:=Erl
+End Sub
+
+Private Function DctAddItemExists( _
+                 ByVal dct As Dictionary, _
+                 ByVal dctitem As Variant) As Boolean
+    
+    Dim v As Variant
+    DctAddItemExists = False
+    
+    For Each v In dct
+        If VarType(dct.Item(v)) = vbObject Then
+            If dct.Item(v) Is dctitem Then
+                DctAddItemExists = True
+                Exit Function
+            End If
+        Else
+            If dct.Item(v) = dctitem Then
+                DctAddItemExists = True
+                Exit Function
+            End If
+        End If
+    Next v
+    
+End Function
+
+Private Function DctAddOrderAfter(ByVal dctmode As enDctMode) As Boolean
+    Select Case dctmode
+        Case dct_addafter_key_casesensitive, dct_addafter_item_casesensitive, dct_addafter_key_caseignored, dct_addafter_item_caseignored
+            DctAddOrderAfter = True
+        Case Else
+            DctAddOrderAfter = False
+    End Select
+End Function
+
+Private Function DctAddOrderAscending(ByVal dctmode As enDctMode) As Boolean
+    DctAddOrderAscending = False
+    Select Case dctmode
+        Case dct_ascending_bykey_casesensitive, _
+             dct_ascending_byitem_casesensitive, _
+             dct_ascending_bykey_caseignored, _
+             dct_ascending_byitem_caseignored
+            DctAddOrderAscending = True
+    End Select
+End Function
+
+Private Function DctAddOrderBefore(ByVal dctmode As enDctMode) As Boolean
+    Select Case dctmode
+        Case dct_addbefore_key_caseignored, dct_addbefore_key_casesensitive, _
+             dct_addbefore_item_caseignored, dct_addbefore_item_casesensitive
+            DctAddOrderBefore = True
+        Case Else
+            DctAddOrderBefore = False
+    End Select
+End Function
+
+Private Function DctAddOrderByItem(ByVal dctmode As enDctMode) As Boolean
+    Select Case dctmode
+        Case dct_ascending_byitem_casesensitive, _
+             dct_ascending_byitem_caseignored, _
+             dct_descending_byitem_casesensitive, _
+             dct_descending_byitem_caseignored, _
+             dct_addbefore_item_casesensitive, _
+             dct_addbefore_item_caseignored, _
+             dct_addafter_item_casesensitive, _
+             dct_addafter_item_caseignored
+            DctAddOrderByItem = True
+        Case Else: DctAddOrderByItem = False
+    End Select
+End Function
+
+Private Function DctAddOrderByKey(ByVal dctmode As enDctMode) As Boolean
+    Select Case dctmode
+        Case dct_ascending_bykey_casesensitive, _
+             dct_ascending_bykey_caseignored, _
+             dct_addbefore_key_casesensitive, _
+             dct_addafter_key_casesensitive, _
+             dct_addbefore_key_caseignored, _
+             dct_addafter_key_caseignored
+            DctAddOrderByKey = True
+        Case Else: DctAddOrderByKey = False
+    End Select
+End Function
+
+Private Function DctAddOrderDescending(ByVal dctmode As enDctMode) As Boolean
+    DctAddOrderDescending = False
+    Select Case dctmode
+        Case dct_descending_bykey_casesensitive, _
+             dct_descending_byitem_casesensitive, _
+             dct_descending_bykey_caseignored, _
+             dct_descending_byitem_caseignored
+            DctAddOrderDescending = True
+    End Select
+End Function
+
+Public Sub ErrMsg(ByVal errnumber As Long, _
+                  ByVal errsource As String, _
+                  ByVal errdscrptn As String, _
+                  ByVal errline As String)
+' ----------------------------------------------------
+' Display the error message by means of the VBA MsgBox
+' ----------------------------------------------------
+    
+    Dim sErrMsg     As String
+    Dim sErrPath    As String
+    
+    sErrMsg = "Description: " & vbLf & ErrMsgErrDscrptn(errdscrptn) & vbLf & vbLf & _
+              "Source:" & vbLf & errsource & ErrMsgErrLine(errline)
+    sErrPath = vbNullString ' only available with the mErrHndlr module
+    If sErrPath <> vbNullString _
+    Then sErrMsg = sErrMsg & vbLf & vbLf & _
+                   "Path:" & vbLf & sErrPath
+    If ErrMsgInfo(errdscrptn) <> vbNullString _
+    Then sErrMsg = sErrMsg & vbLf & vbLf & _
+                   "Info:" & vbLf & ErrMsgInfo(errdscrptn)
+    MsgBox sErrMsg, vbCritical, ErrMsgErrType(errnumber, errsource) & " in " & errsource & ErrMsgErrLine(errline)
+
+End Sub
+
+Private Function ErrMsgErrType( _
+        ByVal errnumber As Long, _
+        ByVal errsource As String) As String
+' ------------------------------------------
+' Return the kind of error considering the
+' Err.Source and the error number.
+' ------------------------------------------
+
+   If InStr(1, Err.Source, "DAO") <> 0 _
+   Or InStr(1, Err.Source, "ODBC Teradata Driver") <> 0 _
+   Or InStr(1, Err.Source, "ODBC") <> 0 _
+   Or InStr(1, Err.Source, "Oracle") <> 0 Then
+      ErrMsgErrType = "Database Error"
+   Else
+      If errnumber > 0 _
+      Then ErrMsgErrType = "VB Runtime Error" _
+      Else ErrMsgErrType = "Application Error"
+   End If
+   
+End Function
+
+Private Function ErrMsgErrLine(ByVal errline As Long) As String
+    If errline <> 0 _
+    Then ErrMsgErrLine = " (at line " & errline & ")" _
+    Else ErrMsgErrLine = vbNullString
+End Function
+
+Private Function ErrMsgErrDscrptn(ByVal s As String) As String
+' -------------------------------------------------------------------
+' Return the string before a "||" in the error description. May only
+' be the case when the error has been raised by means of err.Raise
+' which means when it is an "Application Error".
+' -------------------------------------------------------------------
+    If InStr(s, DCONCAT) <> 0 _
+    Then ErrMsgErrDscrptn = Split(s, DCONCAT)(0) _
+    Else ErrMsgErrDscrptn = s
+End Function
+
+Private Function ErrMsgInfo(ByVal s As String) As String
+' -------------------------------------------------------------------
+' Return the string after a "||" in the error description. May only
+' be the case when the error has been raised by means of err.Raise
+' which means when it is an "Application Error".
+' -------------------------------------------------------------------
+    If InStr(s, DCONCAT) <> 0 _
+    Then ErrMsgInfo = Split(s, DCONCAT)(1) _
+    Else ErrMsgInfo = vbNullString
+End Function
+
+Private Function DctAddOrderValue(ByVal dctkey As Variant, _
+                                  ByVal dctitem As Variant, _
+                                  ByVal dctmode As enDctAddOrder) As Variant
+' --------------------------------------------------------------------------
+' When keyoritem is an object its name becomes the order value else
+' the keyoiritem value as is.
+' --------------------------------------------------------------------------
+    If DctAddOrderByKey(dctmode) Then
+    
+        If VarType(dctkey) = vbObject _
+        Then DctAddOrderValue = dctkey.Name _
+        Else DctAddOrderValue = dctkey
+        
+    ElseIf DctAddOrderByItem(dctmode) Then
+    
+        If VarType(dctitem) = vbObject _
+        Then DctAddOrderValue = dctitem.Name _
+        Else DctAddOrderValue = dctitem
+    
+    End If
+    
+    If TypeName(DctAddOrderValue) = "String" Then
+        Select Case dctmode
+            Case dct_ascending_byitem_casesensitive, _
+                 dct_ascending_bykey_casesensitive, _
+                 dct_descending_byitem_casesensitive, _
+                 dct_descending_bykey_casesensitive, _
+                 dct_addbefore_item_casesensitive, _
+                 dct_addbefore_key_casesensitive, _
+                 dct_addafter_item_casesensitive, _
+                 dct_addafter_key_casesensitive
+            Case Else
+                DctAddOrderValue = LCase$(DctAddOrderValue)
+        End Select
+    End If
+
 End Function
 
 Public Function DictDiffers(ByVal dct1 As Dictionary, _
@@ -680,7 +878,22 @@ on_error:
 #If Debugging Then
     Debug.Print Err.Description: Stop: Resume
 #End If
-    MsgBox Prompt:=Err.Description, Title:="VB Runtime Error " & Err.Number & " in " & ErrSrc(PROC)
+    ErrMsg errnumber:=Err.Number, errsource:=ErrSrc(PROC), errdscrptn:=Err.Description, errline:=Erl
+End Function
+
+Public Function ElementOfIndex(ByVal a As Variant, _
+                                ByVal i As Long) As Long
+' ------------------------------------------------------
+' Returns the element number of index (i) in array (a).
+' ------------------------------------------------------
+Dim ia  As Long
+    For ia = LBound(a) To i
+        ElementOfIndex = ElementOfIndex + 1
+    Next ia
+End Function
+
+Private Function ErrSrc(ByVal sProc As String) As String
+    ErrSrc = ThisWorkbook.Name & " mBasic." & sProc
 End Function
 
 Public Function IsCvName(ByVal v As Variant) As Boolean
@@ -697,14 +910,6 @@ Public Function IsCvObject(ByVal v As Variant) As Boolean
     
 End Function
 
-Public Function AppIsInstalled(ByVal sApp As String) As Boolean
-Dim i As Long: i = 1
-    Do Until Left(Environ$(i), 5) = "Path="
-        i = i + 1
-    Loop
-    AppIsInstalled = InStr(Environ$(i), sApp) <> 0
-End Function
-
 Public Function IsPath(ByVal v As Variant) As Boolean
     
     If VarType(v) = vbString Then
@@ -715,6 +920,76 @@ Public Function IsPath(ByVal v As Variant) As Boolean
         End If
     End If
 
+End Function
+
+Public Sub MakeFormResizable()
+' ---------------------------------------------------------------------------
+' This part is from Leith Ross                                              |
+' Found this Code on:                                                       |
+' https://www.mrexcel.com/forum/excel-questions/485489-resize-userform.html |
+'                                                                           |
+' All credits belong to him                                                 |
+' ---------------------------------------------------------------------------
+Const WS_THICKFRAME = &H40000
+Const GWL_STYLE As Long = (-16)
+Dim lStyle As LongPtr
+Dim hwnd As LongPtr
+Dim RetVal
+
+    hwnd = GetForegroundWindow
+    
+    lStyle = GetWindowLongPtr(hwnd, GWL_STYLE Or WS_THICKFRAME)
+    RetVal = SetWindowLongPtr(hwnd, GWL_STYLE, lStyle)
+End Sub
+
+Public Function Max(ByVal v1 As Variant, _
+                    ByVal v2 As Variant, _
+           Optional ByVal v3 As Variant = 0, _
+           Optional ByVal v4 As Variant = 0, _
+           Optional ByVal v5 As Variant = 0, _
+           Optional ByVal v6 As Variant = 0, _
+           Optional ByVal v7 As Variant = 0, _
+           Optional ByVal v8 As Variant = 0, _
+           Optional ByVal v9 As Variant = 0) As Variant
+' -----------------------------------------------------
+' Returns the maximum (biggest) of all provided values.
+' -----------------------------------------------------
+Dim dMax As Double
+    dMax = v1
+    If v2 > dMax Then dMax = v2
+    If v3 > dMax Then dMax = v3
+    If v4 > dMax Then dMax = v4
+    If v5 > dMax Then dMax = v5
+    If v6 > dMax Then dMax = v6
+    If v7 > dMax Then dMax = v7
+    If v8 > dMax Then dMax = v8
+    If v9 > dMax Then dMax = v9
+    Max = dMax
+End Function
+
+Public Function Min(ByVal v1 As Variant, _
+                    ByVal v2 As Variant, _
+           Optional ByVal v3 As Variant = Nothing, _
+           Optional ByVal v4 As Variant = Nothing, _
+           Optional ByVal v5 As Variant = Nothing, _
+           Optional ByVal v6 As Variant = Nothing, _
+           Optional ByVal v7 As Variant = Nothing, _
+           Optional ByVal v8 As Variant = Nothing, _
+           Optional ByVal v9 As Variant = Nothing) As Variant
+' ------------------------------------------------------
+' Returns the minimum (smallest) of all provided values.
+' ------------------------------------------------------
+Dim dMin As Double
+    dMin = v1
+    If v2 < dMin Then dMin = v2
+    If TypeName(v3) <> "Nothing" Then If v3 < dMin Then dMin = v3
+    If TypeName(v4) <> "Nothing" Then If v4 < dMin Then dMin = v4
+    If TypeName(v5) <> "Nothing" Then If v5 < dMin Then dMin = v5
+    If TypeName(v6) <> "Nothing" Then If v6 < dMin Then dMin = v6
+    If TypeName(v7) <> "Nothing" Then If v7 < dMin Then dMin = v7
+    If TypeName(v8) <> "Nothing" Then If v8 < dMin Then dMin = v8
+    If TypeName(v9) <> "Nothing" Then If v9 < dMin Then dMin = v9
+    Min = dMin
 End Function
 
 Public Function Msg(ByVal sTitle As String, _
@@ -825,43 +1100,20 @@ Public Function Msg3(ByVal sTitle As String, _
 
 End Function
 
-Public Sub MakeFormResizable()
-' ---------------------------------------------------------------------------
-' This part is from Leith Ross                                              |
-' Found this Code on:                                                       |
-' https://www.mrexcel.com/forum/excel-questions/485489-resize-userform.html |
-'                                                                           |
-' All credits belong to him                                                 |
-' ---------------------------------------------------------------------------
-Const WS_THICKFRAME = &H40000
-Const GWL_STYLE As Long = (-16)
-Dim lStyle As LongPtr
-Dim hwnd As LongPtr
-Dim RetVal
+Public Function PointsPerPixel() As Double
+' ----------------------------------------
+' Return DPI
+' ----------------------------------------
+Dim hDC             As Long
+Dim lDotsPerInch    As Long
+    hDC = GetDC(0)
+    lDotsPerInch = GetDeviceCaps(hDC, LOGPIXELSX)
+    PointsPerPixel = POINTS_PER_INCH / lDotsPerInch
+    ReleaseDC 0, hDC
+End Function
 
-    hwnd = GetForegroundWindow
-    
-    lStyle = GetWindowLongPtr(hwnd, GWL_STYLE Or WS_THICKFRAME)
-    RetVal = SetWindowLongPtr(hwnd, GWL_STYLE, lStyle)
-End Sub
-
-Public Function AppErr(ByVal lNo As Long) As Long
-' -------------------------------------------------------------------------------
-' Attention: This function is dedicated for being used with Err.Raise AppErr()
-'            in conjunction with the common error handling module mErrHndlr when
-'            the call stack is supported. The error number passed on to the entry
-'            procedure is interpreted when the error message is displayed.
-' The function ensures that a programmed (application) error numbers never
-' conflicts with VB error numbers by adding vbObjectError which turns it into a
-' negative value. In return, translates a negative error number back into an
-' Application error number. The latter is the reason why this function must never
-' be used with a true VB error number.
-' -------------------------------------------------------------------------------
-    If lNo < 0 Then
-        AppErr = lNo - vbObjectError
-    Else
-        AppErr = vbObjectError + lNo
-    End If
+Public Function ProgramIsInstalled(ByVal sProgram As String) As Boolean
+        ProgramIsInstalled = InStr(Environ$(18), sProgram) <> 0
 End Function
 
 Public Function SelectFolder( _
@@ -889,18 +1141,3 @@ Public Function Space(ByVal l As Long) As String
     Space = VBA.Space$(l)
 End Function
 
-Public Function PointsPerPixel() As Double
-' ----------------------------------------
-' Return DPI
-' ----------------------------------------
-Dim hDC             As Long
-Dim lDotsPerInch    As Long
-    hDC = GetDC(0)
-    lDotsPerInch = GetDeviceCaps(hDC, LOGPIXELSX)
-    PointsPerPixel = POINTS_PER_INCH / lDotsPerInch
-    ReleaseDC 0, hDC
-End Function
-
-Private Function ErrSrc(ByVal sProc As String) As String
-    ErrSrc = ThisWorkbook.Name & " mBasic." & sProc
-End Function
