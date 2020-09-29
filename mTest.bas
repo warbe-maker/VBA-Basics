@@ -93,6 +93,32 @@ on_error:
     mBasic.ErrMsg errnumber:=Err.Number, errsource:=ErrSrc(PROC), errdscrptn:=Err.Description, errline:=Erl
 End Sub
 
+Private Sub Test_DctDiffers()
+' -------------------------------------------
+' Precondition: DctAdd is tested
+' -------------------------------------------
+    Const PROC = "Test_DctDiffers"
+    Dim dct1 As Dictionary
+    Dim dct2 As Dictionary
+    Dim vbc  As VBComponent
+    
+    BoP ErrSrc(PROC)
+    Test_DctAdd
+    For Each vbc In ThisWorkbook.VBProject.VBComponents
+        DctAdd dct:=dct1, dctnewkey:=vbc, dctnewitem:=vbc.Name, dctmode:=dct_ascending_bykey_casesensitive
+    Next vbc
+    For Each vbc In ThisWorkbook.VBProject.VBComponents
+        DctAdd dct:=dct2, dctnewkey:=vbc, dctnewitem:=vbc.Name, dctmode:=dct_ascending_bykey_casesensitive
+    Next vbc
+    Set vbc = ThisWorkbook.VBProject.VBComponents("mTest")
+    
+    '~~ Test: Differs in keys
+    Debug.Assert Not DctDiffers(dct1, dct2)
+    dct1.Remove vbc
+    Debug.Assert DctDiffers(dct1, dct2)
+    EoP ErrSrc(PROC)
+    
+End Sub
 Private Sub Test_ArrayRemoveItems_Error_Conditions()
 Const PROC  As String = "Test_ArrayRemoveItems_Error_Conditions"
 Dim aTest   As Variant
@@ -136,7 +162,7 @@ on_error:
 #If Debugging Then
     Debug.Print Err.Description: Stop: Resume
 #End If
-    mErrHndlr.ErrHndlr lErrNo:=Err.Number, sErrSource:=ErrSrc(PROC), sErrText:=Err.Description, sErrLine:=Erl
+    mErrHndlr.ErrHndlr errnumber:=Err.Number, errsource:=ErrSrc(PROC), errdscrptn:=Err.Description, errline:=Erl
 End Sub
 
 Private Sub Test_ArrayRemoveItems_Error_Display()
@@ -162,7 +188,7 @@ on_error:
 #If Debugging Then
     Debug.Print Err.Description: Stop: Resume
 #End If
-    mErrHndlr.ErrHndlr lErrNo:=Err.Number, sErrSource:=ErrSrc(PROC), sErrText:=Err.Description, sErrLine:=Erl
+    mErrHndlr.ErrHndlr errnumber:=Err.Number, errsource:=ErrSrc(PROC), errdscrptn:=Err.Description, errline:=Erl
 End Sub
 
 Private Sub Test_ArrayRemoveItems_Function()
@@ -224,7 +250,7 @@ on_error:
 #If Debugging Then
     Debug.Print Err.Description: Stop: Resume
 #End If
-    mErrHndlr.ErrHndlr lErrNo:=Err.Number, sErrSource:=ErrSrc(PROC), sErrText:=Err.Description, sErrLine:=Erl
+    mErrHndlr.ErrHndlr errnumber:=Err.Number, errsource:=ErrSrc(PROC), errdscrptn:=Err.Description, errline:=Erl
 End Sub
 
 Private Sub Test_ArrayToRange()
@@ -249,7 +275,7 @@ on_error:
 #If Debugging Then
     Debug.Print Err.Description: Stop: Resume
 #End If
-    mErrHndlr.ErrHndlr lErrNo:=Err.Number, sErrSource:=ErrSrc(PROC), sErrText:=Err.Description, sErrLine:=Erl
+    mErrHndlr.ErrHndlr errnumber:=Err.Number, errsource:=ErrSrc(PROC), errdscrptn:=Err.Description, errline:=Erl
 End Sub
 
 Public Sub Test_ArrayTrimm()
@@ -311,7 +337,7 @@ on_error:
 #If Debugging Then
     Debug.Print Err.Description: Stop: Resume
 #End If
-    mErrHndlr.ErrHndlr lErrNo:=Err.Number, sErrSource:=ErrSrc(PROC), sErrText:=Err.Description, sErrLine:=Erl
+    mErrHndlr.ErrHndlr errnumber:=Err.Number, errsource:=ErrSrc(PROC), errdscrptn:=Err.Description, errline:=Erl
 End Sub
 
 Public Sub Test_DctAdd()

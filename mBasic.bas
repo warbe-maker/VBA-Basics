@@ -5,13 +5,12 @@ Option Explicit
 ' Standard Module mTest: Declarations, procedures, methods and function
 '       likely to be required in any VB-Project.
 '
-' Note: Procedures do not use the Common VBA Error Handler (mErrHndlr) module
-'       but still make use of this modules error message display method "ErrMsg".
-'       This VB-Project is dedicated to the development, test, and maintenance
-'       of Basic VBA Procedures. In order not to urge users of this module to
-'       also use the mErrHndlr module the mErrHndlr is only used by the mTest
-'       module of this VB-Project. Errors in any mBasic procedure just use
-'       the VB MsgBox to display it.
+' Note: 1. Procedures of the mBasic module do not use the Common VBA Error Handler.
+'          However, this test module uses the mErrHndlr module for test purpose.
+'
+'       2. This module is developed, tested, and maintained in the dedicated
+'          Common Component Workbook Basic.xlsm available on Github
+'          https://Github.com/warbe-maker/VBA-Basic-Procedures
 '
 ' Methods:
 ' - AppErr              Converts a positive error number into a negative one which
@@ -29,11 +28,6 @@ Option Explicit
 '                       to a range
 ' - ArrayTrim           Removes any leading or trailing empty items.
 ' - CleanTrim           Clears a string from any unprinable characters.
-' - Msg                 Displays a message with any possible 4 replies and the
-'                       message either with a foxed or proportional font.
-' - Msg3                Displays a message with any possible 4 replies and 3
-'                       message sections each either with a foxed or proportional
-'                       font.
 ' - ErrMsg              Displays a common error message by means of the VB MsgBox.
 '
 ' Requires Reference to:
@@ -849,8 +843,8 @@ Private Function DctAddOrderValue(ByVal dctkey As Variant, _
 
 End Function
 
-Public Function DictDiffers(ByVal dct1 As Dictionary, _
-                            ByVal dct2 As Dictionary) As Boolean
+Public Function DctDiffers(ByVal dct1 As Dictionary, _
+                           ByVal dct2 As Dictionary) As Boolean
 ' --------------------------------------------------------------
 ' Returns TRUE when array (a1) differs from array (a2).
 ' --------------------------------------------------------------
@@ -861,14 +855,20 @@ Dim v       As Variant
     On Error GoTo on_error
     If dct1.Count = dct2.Count Then
         For Each v In dct1
-            If dct1.Item(v) <> dct2.Items(i) Then
-                DictDiffers = True
-                GoTo exit_proc
+            DctDiffers = Not dct2.Exists(v)
+            If DctDiffers Then GoTo exit_proc
+    
+            If VarType(dct1.Item(v)) = vbObject Then
+                DctDiffers = Not dct1.Item(v) Is dct2.Items(i)
+                If DctDiffers Then GoTo exit_proc
+            Else
+                DctDiffers = dct1.Item(v) <> dct2.Items(i)
+                If DctDiffers Then GoTo exit_proc
             End If
             i = i + 1
         Next v
     Else
-        DictDiffers = True
+        DctDiffers = True
     End If
        
 exit_proc:
