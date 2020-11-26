@@ -41,9 +41,9 @@ Public Declare PtrSafe Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
 Public Declare PtrSafe Function GetSystemMetrics32 Lib "user32" Alias "GetSystemMetrics" (ByVal nIndex As Long) As Long
 
 'Functions to get DPI
-Private Declare PtrSafe Function GetDC Lib "user32" (ByVal hwnd As Long) As Long
+Private Declare PtrSafe Function GetDC Lib "user32" (ByVal hWnd As Long) As Long
 Private Declare PtrSafe Function GetDeviceCaps Lib "gdi32" (ByVal hDC As Long, ByVal nIndex As Long) As Long
-Private Declare PtrSafe Function ReleaseDC Lib "user32" (ByVal hwnd As Long, ByVal hDC As Long) As Long
+Private Declare PtrSafe Function ReleaseDC Lib "user32" (ByVal hWnd As Long, ByVal hDC As Long) As Long
 Private Const LOGPIXELSX = 88               ' Pixels/inch in X
 Private Const POINTS_PER_INCH As Long = 72  ' A point is defined as 1/72 inches
 Private Declare PtrSafe Function GetForegroundWindow _
@@ -51,13 +51,13 @@ Private Declare PtrSafe Function GetForegroundWindow _
 
 Private Declare PtrSafe Function GetWindowLongPtr _
   Lib "User32.dll" Alias "GetWindowLongA" _
-    (ByVal hwnd As LongPtr, _
+    (ByVal hWnd As LongPtr, _
      ByVal nIndex As Long) _
   As LongPtr
 
 Private Declare PtrSafe Function SetWindowLongPtr _
   Lib "User32.dll" Alias "SetWindowLongA" _
-    (ByVal hwnd As LongPtr, _
+    (ByVal hWnd As LongPtr, _
      ByVal nIndex As LongPtr, _
      ByVal dwNewLong As LongPtr) _
   As LongPtr
@@ -114,62 +114,67 @@ End Function
 
 Public Function AppIsInstalled(ByVal sApp As String) As Boolean
 Dim i As Long: i = 1
-    Do Until Left(Environ$(i), 5) = "Path="
+    Do Until left(Environ$(i), 5) = "Path="
         i = i + 1
     Loop
     AppIsInstalled = InStr(Environ$(i), sApp) <> 0
 End Function
 
-Public Function ArrayCompare(ByVal a1 As Variant, _
-                             ByVal a2 As Variant, _
-                    Optional ByVal lStopAfter As Long = 1) As Variant
-' -------------------------------------------------------------------
-' Returns an array of all lines which are different. Each element
-' contains the corresponding elements of both arrays in form:
-' linenumber: <line>||<line>. When a value for stop after
-' (lStopAfter) is provided greater 0 the comparison stops after that.
+Public Function ArrayCompare(ByVal ac_a1 As Variant, _
+                             ByVal ac_a2 As Variant, _
+                    Optional ByVal ac_stop_after As Long = 1, _
+                    Optional ByVal ac_id1 As String = vbNullString, _
+                    Optional ByVal ac_id2 As String = vbNullString) As Variant
+' ----------------------------------------------------------------------------
+' Returns an array of n (as_stop_after) lines which are different between
+' array 1 (ac_a1) and array 2 (ac_a2). Each line element contains the
+' lines which differ in the form:
+' linenumber: <ac_id1> '<line>' || <ac_id2> '<line>'
+' The comparisonWhen a value for stop after n (ac_stop_after) lines.
 ' Note: Either or both arrays may not be assigned (=empty).
-' -------------------------------------------------------------------
-Dim l       As Long
-Dim i       As Long
-Dim va()    As Variant
+' ----------------------------------------------------------------------------
+    Const PROC = "ArrayCompare"
+    
+    Dim l       As Long
+    Dim i       As Long
+    Dim va()    As Variant
 
-    If Not mBasic.ArrayIsAllocated(a1) And mBasic.ArrayIsAllocated(a2) Then
-        va = a2
-    ElseIf mBasic.ArrayIsAllocated(a1) And Not mBasic.ArrayIsAllocated(a2) Then
-        va = a1
-    ElseIf Not mBasic.ArrayIsAllocated(a1) And Not mBasic.ArrayIsAllocated(a2) Then
-        GoTo exit_proc
+    If Not mBasic.ArrayIsAllocated(ac_a1) And mBasic.ArrayIsAllocated(ac_a2) Then
+        va = ac_a2
+    ElseIf mBasic.ArrayIsAllocated(ac_a1) And Not mBasic.ArrayIsAllocated(ac_a2) Then
+        va = ac_a1
+    ElseIf Not mBasic.ArrayIsAllocated(ac_a1) And Not mBasic.ArrayIsAllocated(ac_a2) Then
+        GoTo xt
     End If
     
     l = 0
-    For i = LBound(a1) To Min(UBound(a1), UBound(a2))
-        If a1(i) <> a2(i) Then
+    For i = LBound(ac_a1) To Min(UBound(ac_a1), UBound(ac_a2))
+        If ac_a1(i) <> ac_a2(i) Then
             ReDim Preserve va(l)
-            va(l) = i & ": " & DGT & a1(i) & DLT & DCONCAT & DGT & a2(i) & DLT
+            va(l) = Format(i, "000") & " " & ac_id1 & " '" & ac_a1(i) & "'  < >  '" & ac_id2 & " " & ac_a2(i) & "'"
             l = l + 1
-            If lStopAfter > 0 And l >= lStopAfter Then GoTo exit_proc
+            If ac_stop_after > 0 And l >= ac_stop_after Then GoTo xt
         End If
     Next i
     
-    If UBound(a1) < UBound(a2) Then
-        For i = UBound(a1) + 1 To UBound(a2)
+    If UBound(ac_a1) < UBound(ac_a2) Then
+        For i = UBound(ac_a1) + 1 To UBound(ac_a2)
             ReDim Preserve va(l)
-            va(l) = i & ": " & DGT & DLT & DCONCAT & DGT & a2(i) & DLT
+            va(l) = Format(i, "000") & ac_id2 & ": '" & ac_a2(i) & "'"
             l = l + 1
-            If lStopAfter > 0 And l >= lStopAfter Then GoTo exit_proc
+            If ac_stop_after > 0 And l >= ac_stop_after Then GoTo xt
         Next i
         
-    ElseIf UBound(a2) < UBound(a1) Then
-        For i = UBound(a2) + 1 To UBound(a1)
+    ElseIf UBound(ac_a2) < UBound(ac_a1) Then
+        For i = UBound(ac_a2) + 1 To UBound(ac_a1)
             ReDim Preserve va(l)
-            va(l) = i & ": " & DGT & a1(i) & DLT & DCONCAT & DGT & DLT
+            va(l) = Format(i, "000") & " " & ac_id1 & " '" & ac_a1(i) & "'"
             l = l + 1
-            If lStopAfter > 0 And l >= lStopAfter Then GoTo exit_proc
+            If ac_stop_after > 0 And l >= ac_stop_after Then GoTo xt
         Next i
     End If
 
-exit_proc:
+xt:
     ArrayCompare = va
     
 End Function
@@ -183,19 +188,19 @@ Const PROC  As String = "ArrayDiffers"
 Dim i       As Long
 Dim va()    As Variant
 
-    On Error GoTo on_error
+    On Error GoTo eh
     
     If Not mBasic.ArrayIsAllocated(a1) And mBasic.ArrayIsAllocated(a2) Then
         va = a2
     ElseIf mBasic.ArrayIsAllocated(a1) And Not mBasic.ArrayIsAllocated(a2) Then
         va = a1
     ElseIf Not mBasic.ArrayIsAllocated(a1) And Not mBasic.ArrayIsAllocated(a2) Then
-        GoTo exit_proc
+        GoTo xt
     End If
     
     On Error Resume Next
     ArrayDiffers = Join(a1) <> Join(a2)
-    If Err.Number = 0 Then GoTo exit_proc
+    If Err.Number = 0 Then GoTo xt
     
     '~~ At least one of the joins resulted in a string exeeding the maximum possible lenght
     For i = LBound(a1) To Min(UBound(a1), UBound(a2))
@@ -205,14 +210,12 @@ Dim va()    As Variant
         End If
     Next i
     
-exit_proc:
-    Exit Function
+xt: Exit Function
 
-on_error:
+eh: ErrMsg err_source:=ErrSrc(PROC)
 #If Debugging Then
     Debug.Print Err.Description: Stop: Resume
 #End If
-    ErrMsg errnumber:=Err.Number, errsource:=ErrSrc(PROC), errdscrptn:=Err.Description, errline:=Erl
 End Function
 
 Public Function ArrayIsAllocated(arr As Variant) As Boolean
@@ -271,7 +274,7 @@ Dim NoOfElementsInArray    As Long
 Dim i                   As Long
 Dim iNewUBound          As Long
 
-    On Error GoTo on_error
+    On Error GoTo eh
     
     If Not IsArray(va) Then
         Err.Raise AppErr(1), ErrSrc(PROC), "Array not provided!"
@@ -315,15 +318,13 @@ Dim iNewUBound          As Long
     If iNewUBound < 0 Then Erase a Else ReDim Preserve a(LBound(a) To iNewUBound)
     va = a
     
-exit_proc:
-    Exit Sub
+xt: Exit Sub
 
-on_error:
-    '~~ Global error handling is used to seamlessly monitor error conditions
+eh:
 #If Debugging Then
     Debug.Print Err.Description: Stop: Resume
 #End If
-    ErrMsg errnumber:=Err.Number, errsource:=ErrSrc(PROC), errdscrptn:=Err.Description, errline:=Erl
+    ErrMsg err_source:=ErrSrc(PROC)
 End Sub
 
 Public Sub ArrayToRange(ByVal vArr As Variant, _
@@ -337,11 +338,11 @@ Dim rTarget As Range
     If bOneCol Then
         '~~ One column, n rows
         Set rTarget = r.Cells(1, 1).Resize(UBound(vArr), 1)
-        rTarget.Value = Application.Transpose(vArr)
+        rTarget.value = Application.Transpose(vArr)
     Else
         '~~ One column, n rows
         Set rTarget = r.Cells(1, 1).Resize(1, UBound(vArr))
-        rTarget.Value = vArr
+        rTarget.value = vArr
     End If
     
 End Sub
@@ -357,7 +358,7 @@ Public Sub ArrayTrimm(ByRef a As Variant)
 Const PROC  As String = "ArrayTrimm"
 Dim i       As Long
 
-    On Error GoTo on_error
+    On Error GoTo eh
     
     '~~ Eliminate leading blank lines
     If Not mBasic.ArrayIsAllocated(a) Then Exit Sub
@@ -377,15 +378,15 @@ Dim i       As Long
             If Not mBasic.ArrayIsAllocated(a) Then Exit Do
         Loop
     End If
-exit_proc:
-    Exit Sub
+
+xt: Exit Sub
     
-on_error:
+eh:
     '~~ Global error handling is used to seamlessly monitor error conditions
 #If Debugging Then
     Debug.Print Err.Description: Stop: Resume
 #End If
-    ErrMsg errnumber:=Err.Number, errsource:=ErrSrc(PROC), errdscrptn:=Err.Description, errline:=Erl
+    ErrMsg err_source:=ErrSrc(PROC)
 End Sub
 
 Public Function BaseName(ByVal v As Variant) As String
@@ -397,7 +398,7 @@ Public Function BaseName(ByVal v As Variant) As String
 Const PROC  As String = "BaseName"
 Dim fso     As New FileSystemObject
 
-    On Error GoTo on_error
+    On Error GoTo eh
     
     Select Case TypeName(v)
         Case "String":      BaseName = fso.GetBaseName(v)
@@ -406,14 +407,14 @@ Dim fso     As New FileSystemObject
         Case Else:          Err.Raise AppErr(1), ErrSrc(PROC), "The parameter (v) is neither a string nor a File or Workbook object (TypeName = '" & TypeName(v) & "')!"
     End Select
 
-exit_proc:
+xt:
     Exit Function
     
-on_error:
+eh:
 #If Debugging Then
     Debug.Print Err.Description: Stop: Resume
 #End If
-    ErrMsg errnumber:=Err.Number, errsource:=ErrSrc(PROC), errdscrptn:=Err.Description, errline:=Erl
+    ErrMsg err_source:=ErrSrc(PROC)
 End Function
 
 Public Function CleanTrim(ByVal s As String, _
@@ -432,79 +433,6 @@ Dim asToClean   As Variant
     Next
     CleanTrim = s
 
-End Function
-
-Public Sub ErrMsg(ByVal errnumber As Long, _
-                  ByVal errsource As String, _
-                  ByVal errdscrptn As String, _
-                  ByVal errline As String)
-' ----------------------------------------------------
-' Display the error message by means of the VBA MsgBox
-' ----------------------------------------------------
-    
-    Dim sErrMsg     As String
-    Dim sErrPath    As String
-    
-    sErrMsg = "Description: " & vbLf & ErrMsgErrDscrptn(errdscrptn) & vbLf & vbLf & _
-              "Source:" & vbLf & errsource & ErrMsgErrLine(errline)
-    sErrPath = vbNullString ' only available with the mErrHndlr module
-    If sErrPath <> vbNullString _
-    Then sErrMsg = sErrMsg & vbLf & vbLf & _
-                   "Path:" & vbLf & sErrPath
-    If ErrMsgInfo(errdscrptn) <> vbNullString _
-    Then sErrMsg = sErrMsg & vbLf & vbLf & _
-                   "Info:" & vbLf & ErrMsgInfo(errdscrptn)
-    MsgBox sErrMsg, vbCritical, ErrMsgErrType(errnumber, errsource) & " in " & errsource & ErrMsgErrLine(errline)
-
-End Sub
-
-Private Function ErrMsgErrType( _
-        ByVal errnumber As Long, _
-        ByVal errsource As String) As String
-' ------------------------------------------
-' Return the kind of error considering the
-' Err.Source and the error number.
-' ------------------------------------------
-
-   If InStr(1, Err.Source, "DAO") <> 0 _
-   Or InStr(1, Err.Source, "ODBC Teradata Driver") <> 0 _
-   Or InStr(1, Err.Source, "ODBC") <> 0 _
-   Or InStr(1, Err.Source, "Oracle") <> 0 Then
-      ErrMsgErrType = "Database Error"
-   Else
-      If errnumber > 0 _
-      Then ErrMsgErrType = "VB Runtime Error" _
-      Else ErrMsgErrType = "Application Error"
-   End If
-   
-End Function
-
-Private Function ErrMsgErrLine(ByVal errline As Long) As String
-    If errline <> 0 _
-    Then ErrMsgErrLine = " (at line " & errline & ")" _
-    Else ErrMsgErrLine = vbNullString
-End Function
-
-Private Function ErrMsgErrDscrptn(ByVal s As String) As String
-' -------------------------------------------------------------------
-' Return the string before a "||" in the error description. May only
-' be the case when the error has been raised by means of err.Raise
-' which means when it is an "Application Error".
-' -------------------------------------------------------------------
-    If InStr(s, DCONCAT) <> 0 _
-    Then ErrMsgErrDscrptn = Split(s, DCONCAT)(0) _
-    Else ErrMsgErrDscrptn = s
-End Function
-
-Private Function ErrMsgInfo(ByVal s As String) As String
-' -------------------------------------------------------------------
-' Return the string after a "||" in the error description. May only
-' be the case when the error has been raised by means of err.Raise
-' which means when it is an "Application Error".
-' -------------------------------------------------------------------
-    If InStr(s, DCONCAT) <> 0 _
-    Then ErrMsgInfo = Split(s, DCONCAT)(1) _
-    Else ErrMsgInfo = vbNullString
 End Function
 
 Public Function ElementOfIndex(ByVal a As Variant, _
@@ -559,13 +487,13 @@ Public Sub MakeFormResizable()
 Const WS_THICKFRAME = &H40000
 Const GWL_STYLE As Long = (-16)
 Dim lStyle As LongPtr
-Dim hwnd As LongPtr
+Dim hWnd As LongPtr
 Dim RetVal
 
-    hwnd = GetForegroundWindow
+    hWnd = GetForegroundWindow
     
-    lStyle = GetWindowLongPtr(hwnd, GWL_STYLE Or WS_THICKFRAME)
-    RetVal = SetWindowLongPtr(hwnd, GWL_STYLE, lStyle)
+    lStyle = GetWindowLongPtr(hWnd, GWL_STYLE Or WS_THICKFRAME)
+    RetVal = SetWindowLongPtr(hWnd, GWL_STYLE, lStyle)
 End Sub
 
 Public Function Max(ByVal v1 As Variant, _
@@ -618,114 +546,6 @@ Dim dMin As Double
     Min = dMin
 End Function
 
-Public Function Msg(ByVal sTitle As String, _
-           Optional ByVal sMsgText As String = vbNullString, _
-           Optional ByVal bFixed As Boolean = False, _
-           Optional ByVal sTitleFontName As String = vbNullString, _
-           Optional ByVal lTitleFontSize As Long = 0, _
-           Optional ByVal siFormWidth As Single = 0, _
-           Optional ByVal sReplies As Variant = vbOKOnly) As Variant
-' ------------------------------------------------------------------
-' Custom message using the UserForm fMsg. The function returns the
-' clicked reply button's caption or the corresponding vb variable
-' (vbOk, vbYes, vbNo, etc.) or its caption string.
-' ------------------------------------------------------------------
-    Dim w, h        As Long
-    Dim siHeight    As Single
-
-    w = GetSystemMetrics32(0) ' Screen Resolution width in points
-    h = GetSystemMetrics32(1) ' Screen Resolution height in points
-    
-    With fMsg
-        .Title = sTitle
-        .TitleFontName = sTitleFontName
-        .TitleFontSize = lTitleFontSize
-        
-        If sMsgText <> vbNullString Then
-            If bFixed = True _
-            Then .Message1Fixed = sMsgText _
-            Else .Message1Proportional = sMsgText
-        End If
-        
-        .Replies = sReplies
-        If siFormWidth <> 0 Then .Width = Max(.Width, siFormWidth)
-        .StartupPosition = 1
-        .Width = w * PointsPerPixel * 0.85 'Userform width= Width in Resolution * DPI * 85%
-        siHeight = h * PointsPerPixel * 0.2
-        .Height = Min(.Height, siHeight)
-                     
-        .Show
-    End With
-    
-    Msg = vMsgReply
-End Function
-
-Public Function Msg3(ByVal sTitle As String, _
-            Optional ByVal sLabel1 As String = vbNullString, _
-            Optional ByVal sText1 As String = vbNullString, _
-            Optional ByVal bFixed1 As Boolean = False, _
-            Optional ByVal sLabel2 As String = vbNullString, _
-            Optional ByVal sText2 As String = vbNullString, _
-            Optional ByVal bFixed2 As Boolean = False, _
-            Optional ByVal sLabel3 As String = vbNullString, _
-            Optional ByVal sText3 As String = vbNullString, _
-            Optional ByVal bFixed3 As Boolean = False, _
-            Optional ByVal sTitleFontName As String = vbNullString, _
-            Optional ByVal lTitleFontSize As Long = 0, _
-            Optional ByVal siFormWidth As Single = 0, _
-            Optional ByVal sReplies As Variant = vbOKOnly) As Variant
-' ------------------------------------------------------------------
-' Custom message allowing three sections, each with a label/haeder,
-' using the UserForm fMsg. The function returns the clicked reply
-' button's caption or the corresponding vb variable (vbOk, vbYes,
-' vbNo, etc.) or its caption string.
-' ------------------------------------------------------------------
-    Dim w, h        As Long
-    Dim siHeight    As Single
-
-    w = GetSystemMetrics32(0) ' Screen Resolution width in points
-    h = GetSystemMetrics32(1) ' Screen Resolution height in points
-    
-    With fMsg
-        .Title = sTitle
-        .TitleFontName = sTitleFontName
-        .TitleFontSize = lTitleFontSize
-        
-        If sText1 <> vbNullString Then
-            If bFixed1 = True _
-            Then .Message1Fixed = sText1 _
-            Else .Message1Proportional = sText1
-            .LabelMessage1 = sLabel1
-        End If
-        
-        If sText2 <> vbNullString Then
-            If bFixed2 = True _
-            Then .Message2Fixed = sText2 _
-            Else .Message2Proportional = sText2
-            .LabelMessage2 = sLabel2
-        End If
-        
-        If sText3 <> vbNullString Then
-            If bFixed3 = True _
-            Then .Message3Fixed = sText3 _
-            Else .Message3Proportional = sText3
-            .LabelMessage3 = sLabel3
-        End If
-        
-        .Replies = sReplies
-        If siFormWidth <> 0 Then .Width = Max(.Width, siFormWidth)
-        .StartupPosition = 1
-        .Width = w * PointsPerPixel * 0.85 'Userform width= Width in Resolution * DPI * 85%
-        siHeight = h * PointsPerPixel * 0.2
-        .Height = Min(.Height, siHeight)
-                     
-        .Show
-    End With
-    
-    Msg3 = vMsgReply
-
-End Function
-
 Public Function PointsPerPixel() As Double
 ' ----------------------------------------
 ' Return DPI
@@ -752,7 +572,7 @@ Dim sFolder As String
     ' Open the select folder prompt
     With Application.FileDialog(msoFileDialogFolderPicker)
         .Title = sTitle
-        If .Show = -1 Then ' if OK is pressed
+        If .show = -1 Then ' if OK is pressed
             sFolder = .SelectedItems(1)
         End If
     End With
@@ -766,4 +586,22 @@ Public Function Space(ByVal l As Long) As String
 ' --------------------------------------------------
     Space = VBA.Space$(l)
 End Function
+
+Private Sub ErrMsg( _
+             ByVal err_source As String, _
+    Optional ByVal err_no As Long = 0, _
+    Optional ByVal err_dscrptn As String = vbNullString)
+' ------------------------------------------------------
+' This Common Component does not have its own error
+' handling. Instead it passes on any error to the
+' caller's error handling.
+' ------------------------------------------------------
+    
+    If err_no = 0 Then err_no = Err.Number
+    If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
+
+    Err.Raise Number:=err_no, Source:=err_source, Description:=err_dscrptn
+
+End Sub
+
 
