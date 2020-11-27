@@ -200,7 +200,7 @@ Dim va()    As Variant
     
     On Error Resume Next
     ArrayDiffers = Join(a1) <> Join(a2)
-    If Err.Number = 0 Then GoTo xt
+    If err.Number = 0 Then GoTo xt
     
     '~~ At least one of the joins resulted in a string exeeding the maximum possible lenght
     For i = LBound(a1) To Min(UBound(a1), UBound(a2))
@@ -214,7 +214,7 @@ xt: Exit Function
 
 eh: ErrMsg err_source:=ErrSrc(PROC)
 #If Debugging Then
-    Debug.Print Err.Description: Stop: Resume
+    Debug.Print err.Description: Stop: Resume
 #End If
 End Function
 
@@ -241,8 +241,8 @@ Dim Res As Integer
     Do
         Ndx = Ndx + 1
         Res = UBound(arr, Ndx)
-    Loop Until Err.Number <> 0
-    Err.Clear
+    Loop Until err.Number <> 0
+    err.Clear
     ArrayNoOfDims = Ndx - 1
 
 End Function
@@ -277,22 +277,22 @@ Dim iNewUBound          As Long
     On Error GoTo eh
     
     If Not IsArray(va) Then
-        Err.Raise AppErr(1), ErrSrc(PROC), "Array not provided!"
+        err.Raise AppErr(1), ErrSrc(PROC), "Array not provided!"
     Else
         a = va
         NoOfElementsInArray = UBound(a) - LBound(a) + 1
     End If
     If Not ArrayNoOfDims(a) = 1 Then
-        Err.Raise AppErr(2), ErrSrc(PROC), "Array must not be multidimensional!"
+        err.Raise AppErr(2), ErrSrc(PROC), "Array must not be multidimensional!"
     End If
     If Not IsNumeric(Element) And Not IsNumeric(Index) Then
-        Err.Raise AppErr(3), ErrSrc(PROC), "Neither FromElement nor FromIndex is a numeric value!"
+        err.Raise AppErr(3), ErrSrc(PROC), "Neither FromElement nor FromIndex is a numeric value!"
     End If
     If IsNumeric(Element) Then
         iElement = Element
         If iElement < 1 _
         Or iElement > NoOfElementsInArray Then
-            Err.Raise AppErr(4), ErrSrc(PROC), "vFromElement is not between 1 and " & NoOfElementsInArray & " !"
+            err.Raise AppErr(4), ErrSrc(PROC), "vFromElement is not between 1 and " & NoOfElementsInArray & " !"
         Else
             iIndex = LBound(a) + iElement - 1
         End If
@@ -301,13 +301,13 @@ Dim iNewUBound          As Long
         iIndex = Index
         If iIndex < LBound(a) _
         Or iIndex > UBound(a) Then
-            Err.Raise AppErr(5), ErrSrc(PROC), "FromIndex is not between " & LBound(a) & " and " & UBound(a) & " !"
+            err.Raise AppErr(5), ErrSrc(PROC), "FromIndex is not between " & LBound(a) & " and " & UBound(a) & " !"
         Else
             iElement = ElementOfIndex(a, iIndex)
         End If
     End If
     If iElement + NoOfElements - 1 > NoOfElementsInArray Then
-        Err.Raise AppErr(6), ErrSrc(PROC), "FromElement (" & iElement & ") plus the number of elements to remove (" & NoOfElements & ") is beyond the number of elelemnts in the array (" & NoOfElementsInArray & ")!"
+        err.Raise AppErr(6), ErrSrc(PROC), "FromElement (" & iElement & ") plus the number of elements to remove (" & NoOfElements & ") is beyond the number of elelemnts in the array (" & NoOfElementsInArray & ")!"
     End If
     
     For i = iIndex + NoOfElements To UBound(a)
@@ -322,7 +322,7 @@ xt: Exit Sub
 
 eh:
 #If Debugging Then
-    Debug.Print Err.Description: Stop: Resume
+    Debug.Print err.Description: Stop: Resume
 #End If
     ErrMsg err_source:=ErrSrc(PROC)
 End Sub
@@ -384,7 +384,7 @@ xt: Exit Sub
 eh:
     '~~ Global error handling is used to seamlessly monitor error conditions
 #If Debugging Then
-    Debug.Print Err.Description: Stop: Resume
+    Debug.Print err.Description: Stop: Resume
 #End If
     ErrMsg err_source:=ErrSrc(PROC)
 End Sub
@@ -404,7 +404,7 @@ Dim fso     As New FileSystemObject
         Case "String":      BaseName = fso.GetBaseName(v)
         Case "Workbook":    BaseName = fso.GetBaseName(v.FullName)
         Case "File":        BaseName = fso.GetBaseName(v.ShortName)
-        Case Else:          Err.Raise AppErr(1), ErrSrc(PROC), "The parameter (v) is neither a string nor a File or Workbook object (TypeName = '" & TypeName(v) & "')!"
+        Case Else:          err.Raise AppErr(1), ErrSrc(PROC), "The parameter (v) is neither a string nor a File or Workbook object (TypeName = '" & TypeName(v) & "')!"
     End Select
 
 xt:
@@ -412,7 +412,7 @@ xt:
     
 eh:
 #If Debugging Then
-    Debug.Print Err.Description: Stop: Resume
+    Debug.Print err.Description: Stop: Resume
 #End If
     ErrMsg err_source:=ErrSrc(PROC)
 End Function
@@ -597,10 +597,10 @@ Private Sub ErrMsg( _
 ' caller's error handling.
 ' ------------------------------------------------------
     
-    If err_no = 0 Then err_no = Err.Number
-    If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
+    If err_no = 0 Then err_no = err.Number
+    If err_dscrptn = vbNullString Then err_dscrptn = err.Description
 
-    Err.Raise Number:=err_no, Source:=err_source, Description:=err_dscrptn
+    err.Raise Number:=err_no, Source:=err_source, Description:=err_dscrptn
 
 End Sub
 

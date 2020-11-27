@@ -19,7 +19,7 @@ Dim i As Long
     For i = 1 To 100
         On Error Resume Next
         Debug.Print i & ". : " & Environ$(i) & """"
-        If Err.Number <> 0 Then Exit For
+        If err.Number <> 0 Then Exit For
     Next i
 End Sub
 
@@ -110,7 +110,7 @@ Public Sub Test_01_ArrayCompare()
                                 ac_a2:=a2)
     On Error Resume Next
     Debug.Assert UBound(aDiff) >= 0
-    Debug.Assert Err.Number = 9
+    Debug.Assert err.Number = 9
     
 xt: mErH.EoP ErrSrc(PROC)
     Exit Sub
@@ -160,28 +160,28 @@ Public Sub Test_03_ArrayRemoveItems_Error_Conditions()
     Set a = Nothing
     On Error Resume Next
     mBasic.ArrayRemoveItems a, 2
-    Debug.Assert mErH.AppErr(Err.Number) = 1
+    Debug.Assert mErH.AppErr(err.Number) = 1
     
     a = aTest
     ' Missing parameter
     On Error Resume Next
     mBasic.ArrayRemoveItems a
-    Debug.Assert mErH.AppErr(Err.Number) = 3
+    Debug.Assert mErH.AppErr(err.Number) = 3
     
     ' Element out of boundary
     On Error Resume Next
     mBasic.ArrayRemoveItems a, Element:=8
-    Debug.Assert mErH.AppErr(Err.Number) = 4
+    Debug.Assert mErH.AppErr(err.Number) = 4
     
     ' Index out of boundary
     On Error Resume Next
     mBasic.ArrayRemoveItems a, Index:=7
-    Debug.Assert mErH.AppErr(Err.Number) = 5
+    Debug.Assert mErH.AppErr(err.Number) = 5
     
     ' Element plus number of elements out of boundary
     On Error Resume Next
     mBasic.ArrayRemoveItems a, Element:=7, NoOfElements:=2
-    Debug.Assert mErH.AppErr(Err.Number) = 6
+    Debug.Assert mErH.AppErr(err.Number) = 6
 
 xt: mErH.EoP ErrSrc(PROC)
     Exit Sub

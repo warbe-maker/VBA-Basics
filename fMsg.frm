@@ -12,7 +12,6 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
 Option Explicit
 ' -------------------------------------------------------------------------------
 ' UserForm fMsg
@@ -169,7 +168,7 @@ exit_sub:
     Exit Sub
     
 eh:
-    Debug.Print Err.Description: Stop: Resume
+    Debug.Print err.Description: Stop: Resume
 End Sub
 
 Private Sub CollectDesignControls()
@@ -211,7 +210,7 @@ Private Sub CollectDesignControls()
 
 xt: Exit Sub
     
-eh: Debug.Print Err.Description: Stop: Resume
+eh: Debug.Print err.Description: Stop: Resume
 End Sub
 
 Private Sub ProvideCollection(ByRef cll As Collection)
@@ -782,7 +781,7 @@ Private Sub Collect(ByRef into As Variant, _
 
 xt: Exit Sub
     
-eh: Debug.Print Err.Description: Stop: Resume
+eh: Debug.Print err.Description: Stop: Resume
 End Sub
 
  
@@ -975,7 +974,7 @@ Private Sub ResizeAndReposition()
     
 xt: Exit Sub
     
-eh: Debug.Print Err.Description: Stop: Resume
+eh: Debug.Print err.Description: Stop: Resume
 End Sub
 
 Private Sub ResizeAndRepositionAreas()
@@ -1049,7 +1048,7 @@ Private Sub ResizeAndRepositionButtonRows()
     
 xt: Exit Sub
     
-eh: Debug.Print Err.Description: Stop: Resume
+eh: Debug.Print err.Description: Stop: Resume
 End Sub
 
 Private Sub ResizeAndRepositionButtons()
@@ -1087,7 +1086,7 @@ Private Sub ResizeAndRepositionButtons()
         
 xt: Exit Sub
     
-eh: Debug.Print Err.Description: Stop: Resume
+eh: Debug.Print err.Description: Stop: Resume
 End Sub
 
 Private Sub ResizeAndRepositionButtonsArea()
@@ -1129,7 +1128,7 @@ Private Sub ResizeAndRepositionButtonsArea()
     
 xt: Exit Sub
     
-eh: Debug.Print Err.Description: Stop: Resume
+eh: Debug.Print err.Description: Stop: Resume
 End Sub
 
 Private Sub ResizeAndRepositionButtonsFrame()
@@ -1156,7 +1155,7 @@ Private Sub ResizeAndRepositionButtonsFrame()
     
 xt: Exit Sub
     
-eh: Debug.Print Err.Description: Stop: Resume
+eh: Debug.Print err.Description: Stop: Resume
 End Sub
 
 Private Sub ResizeAndRepositionMsgArea()
@@ -1179,7 +1178,7 @@ Private Sub ResizeAndRepositionMsgArea()
     
 xt: Exit Sub
     
-eh: Debug.Print Err.Description: Stop: Resume
+eh: Debug.Print err.Description: Stop: Resume
 End Sub
 
 Private Sub ResizeAndRepositionMsgSections()
@@ -1251,7 +1250,7 @@ Private Sub ResizeAndRepositionMsgSections()
     
 xt: Exit Sub
     
-eh: Debug.Print Err.Description: Stop: Resume
+eh: Debug.Print err.Description: Stop: Resume
 End Sub
 
 Public Sub Setup()
@@ -1319,7 +1318,7 @@ Public Sub Setup()
     
 xt: Exit Sub
 
-eh: Debug.Print Err.Description: Stop: Resume
+eh: Debug.Print err.Description: Stop: Resume
 End Sub
 
 Private Sub SetupButton(ByVal buttonrow As Long, _
@@ -1352,7 +1351,7 @@ Private Sub SetupButton(ByVal buttonrow As Long, _
     
 xt: Exit Sub
     
-eh: Debug.Print Err.Description: Stop: Resume
+eh: Debug.Print err.Description: Stop: Resume
 End Sub
 
 Private Sub SetupButtons(ByVal vbuttons As Variant)
@@ -1399,7 +1398,7 @@ Private Sub SetupButtons(ByVal vbuttons As Variant)
     
 xt: Exit Sub
     
-eh: Debug.Print Err.Description: Stop: Resume
+eh: Debug.Print err.Description: Stop: Resume
 End Sub
 
 ' Setup the reply buttons based on the comma delimited string of button captions
@@ -1454,7 +1453,7 @@ Private Sub SetupButtonsFromCollection(ByVal cllButtons As Collection)
     
 xt: Exit Sub
     
-eh: Debug.Print Err.Description: Stop: Resume
+eh: Debug.Print err.Description: Stop: Resume
 End Sub
 
 Private Sub SetupButtonsFromString(ByVal sButtons As String)
@@ -1519,7 +1518,7 @@ Private Sub SetupButtonsFromValue(ByVal lButtons As Long)
     
 xt: Exit Sub
     
-eh: Debug.Print Err.Description: Stop: Resume
+eh: Debug.Print err.Description: Stop: Resume
 End Sub
 
 ' Setup a message section with its label when one is specified
@@ -1584,7 +1583,7 @@ Private Sub SetupMsgSection(ByVal section As Long)
     
 xt: Exit Sub
     
-eh: Debug.Print Err.Description: Stop: Resume
+eh: Debug.Print err.Description: Stop: Resume
 End Sub
 
 ' Setup the applied monospaced message section (section) with the text (text),
@@ -1644,7 +1643,7 @@ Private Sub SetupMsgSectionMonoSpaced(ByVal section As Long, _
     
 xt: Exit Sub
     
-eh: Debug.Print Err.Description: Stop: Resume
+eh: Debug.Print err.Description: Stop: Resume
 End Sub
 
 ' Setup the proportional spaced Message Section (section) with the text (text)
@@ -1709,7 +1708,7 @@ Private Sub SetupMsgSectionsMonoSpaced()
     
 xt: Exit Sub
     
-eh: Debug.Print Err.Description: Stop: Resume
+eh: Debug.Print err.Description: Stop: Resume
 End Sub
 
 Private Sub SetupMsgSectionsPropSpaced()
@@ -1724,7 +1723,7 @@ Private Sub SetupMsgSectionsPropSpaced()
     
 xt: Exit Sub
     
-eh: Debug.Print Err.Description: Stop: Resume
+eh: Debug.Print err.Description: Stop: Resume
 End Sub
 
 ' When a specific font name and/or size is specified, the extra title label is actively used

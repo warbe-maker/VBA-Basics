@@ -114,7 +114,6 @@ End Property
 Private Property Get DsplyLnIndnttn(Optional ByRef entry As Collection) As String
     DsplyLnIndnttn = Repeat("|  ", ItmLvl(entry))
 End Property
-
 Private Property Get ItmArgs(Optional ByRef entry As Collection) As Variant
     ItmArgs = entry("I")(POS_ITMARGS)
 End Property
@@ -130,7 +129,7 @@ End Property
 Private Property Get ItmInf(Optional ByRef entry As Collection) As String
     On Error Resume Next ' in case this has never been collected
     ItmInf = entry("I")(POS_ITMINF)
-    If Err.Number <> 0 Then ItmInf = vbNullString
+    If err.Number <> 0 Then ItmInf = vbNullString
 End Property
 
 Private Property Get ItmLvl(Optional ByRef entry As Collection) As Long
@@ -148,7 +147,7 @@ End Property
 Private Property Get NtryScsElpsd(Optional ByRef entry As Collection) As Currency
     On Error Resume Next
     NtryScsElpsd = entry("SE")
-    If Err.Number <> 0 Then NtryScsElpsd = Space$(Len(sFrmtScsElpsd))
+    If err.Number <> 0 Then NtryScsElpsd = Space$(Len(sFrmtScsElpsd))
 End Property
 
 Private Property Let NtryScsElpsd(Optional ByRef entry As Collection, ByRef cy As Currency)
@@ -158,7 +157,7 @@ End Property
 Private Property Get NtryScsGrss(Optional ByRef entry As Collection) As Currency
     On Error Resume Next ' in case no value exists (the case for each begin entry)
     NtryScsGrss = entry("SG")
-    If Err.Number <> 0 Then NtryScsGrss = Space$(Len(sFrmtScsGrss))
+    If err.Number <> 0 Then NtryScsGrss = Space$(Len(sFrmtScsGrss))
 End Property
 
 Private Property Let NtryScsGrss(Optional ByRef entry As Collection, ByRef cy As Currency)
@@ -168,7 +167,7 @@ End Property
 Private Property Get NtryScsNt(Optional ByRef entry As Collection) As Double
     On Error Resume Next
     NtryScsNt = entry("SN")
-    If Err.Number <> 0 Then NtryScsNt = Space$(Len(sFrmtScsNt))
+    If err.Number <> 0 Then NtryScsNt = Space$(Len(sFrmtScsNt))
 End Property
 
 Private Property Let NtryScsNt(Optional ByRef entry As Collection, ByRef dbl As Double)
@@ -178,7 +177,7 @@ End Property
 Private Property Get NtryScsOvrhdItm(Optional ByRef entry As Collection) As Double
     On Error Resume Next
     NtryScsOvrhdItm = entry("SOI")
-    If Err.Number <> 0 Then NtryScsOvrhdItm = Space$(Len(sFrmtScsOvrhdItm))
+    If err.Number <> 0 Then NtryScsOvrhdItm = Space$(Len(sFrmtScsOvrhdItm))
 End Property
 
 Private Property Let NtryScsOvrhdItm(Optional ByRef entry As Collection, ByRef dbl As Double)
@@ -188,7 +187,7 @@ End Property
 Private Property Get NtryScsOvrhdNtry(Optional ByRef entry As Collection) As Double
     On Error Resume Next
     NtryScsOvrhdNtry = entry("SON")
-    If Err.Number <> 0 Then NtryScsOvrhdNtry = Space$(Len(sFrmtScsOvrhdItm))
+    If err.Number <> 0 Then NtryScsOvrhdNtry = Space$(Len(sFrmtScsOvrhdItm))
 End Property
 
 Private Property Let NtryScsOvrhdNtry(Optional ByRef entry As Collection, ByRef dbl As Double)
@@ -206,7 +205,7 @@ End Property
 Private Property Get NtryTcksGrss(Optional ByRef entry As Collection) As Currency
     On Error Resume Next
     NtryTcksGrss = entry("TG")
-    If Err.Number <> 0 Then NtryTcksGrss = 0
+    If err.Number <> 0 Then NtryTcksGrss = 0
 End Property
 
 Private Property Let NtryTcksGrss(Optional ByRef entry As Collection, ByRef cy As Currency)
@@ -216,7 +215,7 @@ End Property
 Private Property Get NtryTcksNt(Optional ByRef entry As Collection) As Currency
     On Error Resume Next
     NtryTcksNt = entry("TN")
-    If Err.Number <> 0 Then NtryTcksNt = 0
+    If err.Number <> 0 Then NtryTcksNt = 0
 End Property
 
 Private Property Let NtryTcksNt(Optional ByRef entry As Collection, ByRef cy As Currency)
@@ -226,7 +225,7 @@ End Property
 Private Property Get NtryTcksOvrhdItm(Optional ByRef entry As Collection) As Currency
     On Error Resume Next
     NtryTcksOvrhdItm = entry("TOI")
-    If Err.Number <> 0 Then NtryTcksOvrhdItm = 0
+    If err.Number <> 0 Then NtryTcksOvrhdItm = 0
 End Property
 
 Private Property Let NtryTcksOvrhdItm(Optional ByRef entry As Collection, ByRef cy As Currency)
@@ -236,7 +235,7 @@ End Property
 Private Property Get NtryTcksOvrhdNtry(Optional ByRef entry As Collection) As Currency
     On Error Resume Next
     NtryTcksOvrhdNtry = entry("TON")
-    If Err.Number <> 0 Then NtryTcksOvrhdNtry = 0
+    If err.Number <> 0 Then NtryTcksOvrhdNtry = 0
 End Property
 
 Private Property Let NtryTcksOvrhdNtry(Optional ByRef entry As Collection, ByRef cy As Currency)
@@ -467,6 +466,10 @@ eh: ErrMsg err_source:=ErrSrc(PROC)
     Set cllTrc = Nothing
 End Function
 
+Public Sub Pause()
+    cyTcksPauseStart = SysCrrntTcks
+End Sub
+
 Public Sub Continue()
     cyTcksPaused = cyTcksPaused + (SysCrrntTcks - cyTcksPauseStart)
 End Sub
@@ -547,59 +550,6 @@ Private Function DsplyAbout() As String
       & "> When an error had been displayed the trace had been paused and continued when the user had pressed a button. " & _
         "  For a correct trace of an item's execution time any paused times had been subtracted."
 
-End Function
-
-Private Function DsplyArgName(ByVal s As String) As Boolean
-    If Right(s, 1) = ":" _
-    Or Right(s, 1) = "=" _
-    Or Right(s, 2) = ": " _
-    Or Right(s, 2) = " :" _
-    Or Right(s, 2) = "= " _
-    Or Right(s, 2) = " =" _
-    Or Right(s, 3) = " : " _
-    Or Right(s, 3) = " = " _
-    Then DsplyArgName = True
-End Function
-
-Private Function DsplyArgs(ByVal entry As Collection) As String
-' -------------------------------------------------------------
-' Returns a string with the collection of the traced arguments
-' Any entry ending with a ":" or "=" is an arguments name with
-' its value in the subsequent item.
-' -------------------------------------------------------------
-    Dim va()    As Variant
-    Dim i       As Long
-    Dim sL      As String
-    Dim sR      As String
-    
-    On Error Resume Next
-    va = ItmArgs(entry)
-    If Err.Number <> 0 Then Exit Function
-    i = LBound(va)
-    If Err.Number <> 0 Then Exit Function
-    
-    For i = i To UBound(va)
-        If DsplyArgs = vbNullString Then
-            ' This is the very first argument
-            If DsplyArgName(va(i)) Then
-                ' The element is the name of an argument followed by a subsequent value
-                DsplyArgs = "|  " & va(i) & CStr(va(i + 1))
-                i = i + 1
-            Else
-                sL = ">": sR = "<"
-                DsplyArgs = "|  Argument values: " & sL & va(i) & sR
-            End If
-        Else
-            If DsplyArgName(va(i)) Then
-                ' The element is the name of an argument followed by a subsequent value
-                DsplyArgs = DsplyArgs & ", " & va(i) & CStr(va(i + 1))
-                i = i + 1
-            Else
-                sL = ">": sR = "<"
-                DsplyArgs = DsplyArgs & "  " & sL & va(i) & sR
-            End If
-        End If
-    Next i
 End Function
 
 Private Function DsplyFtr(ByVal lLenHeaderData As Long) ' Displayed trace footer
@@ -726,6 +676,59 @@ Public Function DsplyHdrCntrAbv(ByVal s1 As String, _
         DsplyHdrCntrAbv = sLeft & DsplyHdrCntrAbv & sRight
     End If
     
+End Function
+
+Private Function DsplyArgs(ByVal entry As Collection) As String
+' -------------------------------------------------------------
+' Returns a string with the collection of the traced arguments
+' Any entry ending with a ":" or "=" is an arguments name with
+' its value in the subsequent item.
+' -------------------------------------------------------------
+    Dim va()    As Variant
+    Dim i       As Long
+    Dim sL      As String
+    Dim sR      As String
+    
+    On Error Resume Next
+    va = ItmArgs(entry)
+    If err.Number <> 0 Then Exit Function
+    i = LBound(va)
+    If err.Number <> 0 Then Exit Function
+    
+    For i = i To UBound(va)
+        If DsplyArgs = vbNullString Then
+            ' This is the very first argument
+            If DsplyArgName(va(i)) Then
+                ' The element is the name of an argument followed by a subsequent value
+                DsplyArgs = "|  " & va(i) & CStr(va(i + 1))
+                i = i + 1
+            Else
+                sL = ">": sR = "<"
+                DsplyArgs = "|  Argument values: " & sL & va(i) & sR
+            End If
+        Else
+            If DsplyArgName(va(i)) Then
+                ' The element is the name of an argument followed by a subsequent value
+                DsplyArgs = DsplyArgs & ", " & va(i) & CStr(va(i + 1))
+                i = i + 1
+            Else
+                sL = ">": sR = "<"
+                DsplyArgs = DsplyArgs & "  " & sL & va(i) & sR
+            End If
+        End If
+    Next i
+End Function
+
+Private Function DsplyArgName(ByVal s As String) As Boolean
+    If Right(s, 1) = ":" _
+    Or Right(s, 1) = "=" _
+    Or Right(s, 2) = ": " _
+    Or Right(s, 2) = " :" _
+    Or Right(s, 2) = "= " _
+    Or Right(s, 2) = " =" _
+    Or Right(s, 3) = " : " _
+    Or Right(s, 3) = " = " _
+    Then DsplyArgName = True
 End Function
 
 Private Function DsplyLn(ByVal entry As Collection) As String
@@ -986,8 +989,8 @@ Private Sub ErrMsg( _
     Dim sTitle      As String
     Dim sDetails    As String
     
-    If err_no = 0 Then err_no = Err.Number
-    If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
+    If err_no = 0 Then err_no = err.Number
+    If err_dscrptn = vbNullString Then err_dscrptn = err.Description
     If err_line = 0 Then err_line = Erl
     
     ErrMsgMatter err_source:=err_source, err_no:=err_no, err_line:=err_line, err_dscrptn:=err_dscrptn, msg_title:=sTitle, msg_details:=sDetails
@@ -1193,10 +1196,6 @@ Private Function NtryTcksOvrhdItmMax() As Double
 
 End Function
 
-Public Sub Pause()
-    cyTcksPauseStart = SysCrrntTcks
-End Sub
-
 Private Function Repeat(ByVal s As String, _
                         ByVal n As Long) As String
 ' ------------------------------------------------
@@ -1208,14 +1207,6 @@ Private Function Repeat(ByVal s As String, _
         Repeat = Repeat & s
     Next i
     
-End Function
-
-Private Function Space(ByVal l As Long) As String
-' --------------------------------------------------
-' Unifies the VB differences SPACE$ and Space$ which
-' lead to code diferences where there aren't any.
-' --------------------------------------------------
-    Space = VBA.Space$(l)
 End Function
 
 Private Function StckEd(ByVal id As String, _
@@ -1296,6 +1287,11 @@ Public Sub Terminate()
     Set cllStck = Nothing
     cyTcksPaused = 0
 End Sub
+
+Private Function TrcLast() As Collection
+    If cllTrc.Count <> 0 _
+    Then Set TrcLast = cllTrc(cllTrc.Count)
+End Function
 
 Private Sub TrcAdd(ByVal id As String, _
                    ByVal tcks As Currency, _
@@ -1397,10 +1393,5 @@ End Sub
 Private Function TrcIsEmpty() As Boolean
     TrcIsEmpty = cllTrc Is Nothing
     If Not TrcIsEmpty Then TrcIsEmpty = cllTrc.Count = 0
-End Function
-
-Private Function TrcLast() As Collection
-    If cllTrc.Count <> 0 _
-    Then Set TrcLast = cllTrc(cllTrc.Count)
 End Function
 
