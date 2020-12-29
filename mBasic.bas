@@ -577,14 +577,6 @@ Public Function SelectFolder( _
 
 End Function
 
-Public Function Space(ByVal l As Long) As String
-' --------------------------------------------------
-' Unifies the VB differences Space$ and Space$ which
-' lead to code diferences where there aren't any.
-' --------------------------------------------------
-    Space = Space$(l)
-End Function
-
 Private Sub ErrMsg( _
              ByVal err_source As String, _
     Optional ByVal err_no As Long = 0, _
