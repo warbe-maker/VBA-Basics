@@ -18,8 +18,8 @@ Private Sub EnvironmentVariables()
 Dim i As Long
     For i = 1 To 100
         On Error Resume Next
-        Debug.Print i & ". : " & Environ$(i) & """"
-        If err.Number <> 0 Then Exit For
+        Debug.Print i & ". : " & VBA.Environ$(i) & """"
+        If Err.Number <> 0 Then Exit For
     Next i
 End Sub
 
@@ -31,12 +31,9 @@ Public Sub Regression()
     mErH.BoP ErrSrc(PROC)
     mTest.Test_01_ArrayCompare
     mTest.Test_02_ArrayRemoveItems
-    mTest.Test_03_ArrayRemoveItems_Error_Conditions
-    mTest.Test_04_ArrayRemoveItems_Error_Display
-    mTest.Test_05_ArrayRemoveItems_Function
-    mTest.Test_06_ArrayToRange
-    mTest.Test_07_ArrayTrimm
-    mTest.Test_08_BaseName
+    mTest.Test_03_ArrayToRange
+    mTest.Test_04_ArrayTrimm
+    mTest.Test_05_BaseName
     mErH.EoP ErrSrc(PROC)
 
 xt: Exit Sub
@@ -49,7 +46,7 @@ eh: Select Case mErH.ErrMsg(err_source:=ErrSrc(PROC))
 End Sub
 
 Public Sub Test_01_ArrayCompare()
-    Const PROC  As String = "Test_06_ArrayToRange"
+    Const PROC  As String = "Test_03_ArrayToRange"
     
     On Error GoTo eh
     Dim a1      As Variant
@@ -110,7 +107,7 @@ Public Sub Test_01_ArrayCompare()
                                 ac_a2:=a2)
     On Error Resume Next
     Debug.Assert UBound(aDiff) >= 0
-    Debug.Assert err.Number = 9
+    Debug.Assert Err.Number = 9
     
 xt: mErH.EoP ErrSrc(PROC)
     Exit Sub
@@ -121,107 +118,8 @@ eh: Select Case mErH.ErrMsg(err_source:=ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_02_ArrayRemoveItems()
-' ---------------------------------
-' Whitebox and regression test.
-' Global error handling is used to
-' monitor error condition tests.
-' ---------------------------------
-Const PROC  As String = "Test_02_ArrayRemoveItems"
-
-    On Error GoTo eh
-    
-    mErH.BoP ErrSrc(PROC)
-    Test_05_ArrayRemoveItems_Function
-    Test_03_ArrayRemoveItems_Error_Conditions
-    Test_04_ArrayRemoveItems_Error_Display
-    
-xt: mErH.EoP ErrSrc(PROC)
-    Exit Sub
-
-eh: Select Case mErH.ErrMsg(err_source:=ErrSrc(PROC))
-        Case mErH.DebugOpt1ResumeError: Stop: Resume
-        Case mErH.DebugOpt2ResumeNext: Resume Next
-    End Select
-End Sub
-
-Public Sub Test_03_ArrayRemoveItems_Error_Conditions()
-    Const PROC  As String = "Test_03_ArrayRemoveItems_Error_Conditions"
-    
-    On Error GoTo eh
-    Dim aTest   As Variant
-    Dim a       As Variant
-    
-    mErH.BoP ErrSrc(PROC)
-
-    aTest = Split("1,2,3,4,5,6,7", ",") ' Test array
-        
-    ' Not an array
-    Set a = Nothing
-    On Error Resume Next
-    mBasic.ArrayRemoveItems a, 2
-    Debug.Assert mErH.AppErr(err.Number) = 1
-    
-    a = aTest
-    ' Missing parameter
-    On Error Resume Next
-    mBasic.ArrayRemoveItems a
-    Debug.Assert mErH.AppErr(err.Number) = 3
-    
-    ' Element out of boundary
-    On Error Resume Next
-    mBasic.ArrayRemoveItems a, Element:=8
-    Debug.Assert mErH.AppErr(err.Number) = 4
-    
-    ' Index out of boundary
-    On Error Resume Next
-    mBasic.ArrayRemoveItems a, Index:=7
-    Debug.Assert mErH.AppErr(err.Number) = 5
-    
-    ' Element plus number of elements out of boundary
-    On Error Resume Next
-    mBasic.ArrayRemoveItems a, Element:=7, NoOfElements:=2
-    Debug.Assert mErH.AppErr(err.Number) = 6
-
-xt: mErH.EoP ErrSrc(PROC)
-    Exit Sub
-
-eh: Select Case mErH.ErrMsg(err_source:=ErrSrc(PROC))
-        Case mErH.DebugOpt1ResumeError: Stop: Resume
-        Case mErH.DebugOpt2ResumeNext: Resume Next
-    End Select
-End Sub
-
-Public Sub Test_04_ArrayRemoveItems_Error_Display()
-    Const PROC  As String = "Test_04_ArrayRemoveItems_Error_Display"
-    
-    On Error GoTo eh
-    Dim aTest   As Variant
-    Dim a       As Variant
-    Dim v       As Variant
-    Dim i       As Long
-
-    aTest = Split("1,2,3,4,5,6,7", ",") ' Test array
-    
-    ReDim a(5, 2 To 8):    i = LBound(a, 2)
-    For Each v In aTest
-        a(1, i) = v:  i = i + 1
-    Next v
-    
-    mErH.BoP ErrSrc(PROC)
-    mBasic.ArrayRemoveItems a, Element:=3
-
-xt: mErH.EoP ErrSrc(PROC)
-    Exit Sub
-
-eh: Select Case mErH.ErrMsg(err_source:=ErrSrc(PROC))
-        Case mErH.DebugOpt1ResumeError: Stop: Resume
-        Case mErH.DebugOpt2ResumeNext: Resume Next
-    End Select
-End Sub
-
-Public Sub Test_05_ArrayRemoveItems_Function()
-    Const PROC  As String = "Test_05_ArrayRemoveItems_Function"
+Public Sub Test_02_1_ArrayRemoveItems_Function()
+    Const PROC  As String = "Test_02-1_ArrayRemoveItems_Function"
     
     On Error GoTo eh
     Dim aTest   As Variant
@@ -282,8 +180,78 @@ eh: Select Case mErH.ErrMsg(err_source:=ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_06_ArrayToRange()
-    Const PROC  As String = "Test_06_ArrayToRange"
+Public Sub Test_02_2_ArrayRemoveItems_Error_Conditions()
+    Const PROC  As String = "Test_02_2_ArrayRemoveItems_Error_Conditions"
+    
+    On Error GoTo eh
+    Dim aTest   As Variant
+    Dim a       As Variant
+    
+    mErH.BoP ErrSrc(PROC)
+
+    aTest = Split("1,2,3,4,5,6,7", ",") ' Test array
+        
+    ' Not an array
+    Set a = Nothing
+    On Error Resume Next
+    mBasic.ArrayRemoveItems a, 2
+    Debug.Assert mErH.AppErr(Err.Number) = 1
+    
+    a = aTest
+    ' Missing parameter
+    On Error Resume Next
+    mBasic.ArrayRemoveItems a
+    Debug.Assert mErH.AppErr(Err.Number) = 3
+    
+    ' Element out of boundary
+    On Error Resume Next
+    mBasic.ArrayRemoveItems a, Element:=8
+    Debug.Assert mErH.AppErr(Err.Number) = 4
+    
+    ' Index out of boundary
+    On Error Resume Next
+    mBasic.ArrayRemoveItems a, Index:=7
+    Debug.Assert mErH.AppErr(Err.Number) = 5
+    
+    ' Element plus number of elements out of boundary
+    On Error Resume Next
+    mBasic.ArrayRemoveItems a, Element:=7, NoOfElements:=2
+    Debug.Assert mErH.AppErr(Err.Number) = 6
+
+xt: mErH.EoP ErrSrc(PROC)
+    Exit Sub
+
+eh: Select Case mErH.ErrMsg(err_source:=ErrSrc(PROC))
+        Case mErH.DebugOpt1ResumeError: Stop: Resume
+        Case mErH.DebugOpt2ResumeNext: Resume Next
+    End Select
+End Sub
+
+Public Sub Test_02_ArrayRemoveItems()
+' ---------------------------------
+' Whitebox and regression test.
+' Global error handling is used to
+' monitor error condition tests.
+' ---------------------------------
+Const PROC  As String = "Test_02_ArrayRemoveItems"
+
+    On Error GoTo eh
+    
+    mErH.BoP ErrSrc(PROC)
+    Test_02_1_ArrayRemoveItems_Function
+    Test_02_2_ArrayRemoveItems_Error_Conditions
+    
+xt: mErH.EoP ErrSrc(PROC)
+    Exit Sub
+
+eh: Select Case mErH.ErrMsg(err_source:=ErrSrc(PROC))
+        Case mErH.DebugOpt1ResumeError: Stop: Resume
+        Case mErH.DebugOpt2ResumeNext: Resume Next
+    End Select
+End Sub
+
+Public Sub Test_03_ArrayToRange()
+    Const PROC  As String = "Test_03_ArrayToRange"
     
     On Error GoTo eh
     Dim a       As Variant
@@ -293,11 +261,11 @@ Public Sub Test_06_ArrayToRange()
     aTest = Split("1,2,3,4,5,6,7", ",") ' Test array
     a = aTest
 
-    wsBasicTest.UsedRange.ClearContents
-    mBasic.ArrayToRange a, wsBasicTest.celArrayToRangeTarget, True
-    mBasic.ArrayToRange a, wsBasicTest.rngArrayToRangeTarget, True
-    mBasic.ArrayToRange a, wsBasicTest.celArrayToRangeTarget
-    mBasic.ArrayToRange a, wsBasicTest.rngArrayToRangeTarget
+    wsBasic.UsedRange.ClearContents
+    mBasic.ArrayToRange a, wsBasic.celArrayToRangeTarget, True
+    mBasic.ArrayToRange a, wsBasic.rngArrayToRangeTarget, True
+    mBasic.ArrayToRange a, wsBasic.celArrayToRangeTarget
+    mBasic.ArrayToRange a, wsBasic.rngArrayToRangeTarget
 
 xt: mErH.EoP ErrSrc(PROC)
     Exit Sub
@@ -308,8 +276,8 @@ eh: Select Case mErH.ErrMsg(err_source:=ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_07_ArrayTrimm()
-    Const PROC = "Test_07_ArrayTrimm"
+Public Sub Test_04_ArrayTrimm()
+    Const PROC = "Test_04_ArrayTrimm"
     
     On Error GoTo eh
     Dim a       As Variant
@@ -334,7 +302,7 @@ eh: Select Case mErH.ErrMsg(err_source:=ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_08_BaseName()
+Public Sub Test_05_BaseName()
 ' -----------------------------------------------------
 ' Please note:
 ' The common error handler (module mErrHndlr) is used
@@ -342,7 +310,7 @@ Public Sub Test_08_BaseName()
 ' because the ErrHndlr passes on the error number to
 ' the (this) entry procedure
 ' -----------------------------------------------------
-    Const PROC  As String = "Test_08_BaseName"
+    Const PROC  As String = "Test_05_BaseName"
     
     On Error GoTo eh
     Dim wb      As Workbook
@@ -357,7 +325,7 @@ Public Sub Test_08_BaseName()
     mErH.BoP ErrSrc(PROC)
     Debug.Assert mBasic.BaseName(wb) = "Basic"                    ' Test with Workbook object
     Debug.Assert mBasic.BaseName(fl) = "Basic"                    ' Test with File object
-    Debug.Assert mBasic.BaseName(ThisWorkbook.Name) = "Basic"     ' Test with a file's name
+    Debug.Assert mBasic.BaseName(ThisWorkbook.name) = "Basic"     ' Test with a file's name
     Debug.Assert mBasic.BaseName(ThisWorkbook.FullName) = "Basic" ' Test with a file's full name
     Debug.Assert mBasic.BaseName("xxxx") = "xxxx"
     
@@ -374,3 +342,4 @@ eh: Select Case mErH.ErrMsg(err_source:=ErrSrc(PROC))
         Case mErH.DebugOpt2ResumeNext: Resume Next
     End Select
 End Sub
+

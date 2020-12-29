@@ -2,7 +2,7 @@ Attribute VB_Name = "mErH"
 Option Explicit
 Option Private Module
 ' -----------------------------------------------------------------------------------------------
-' Standard  Module mErrHndlr: Global error handling for any VBA Project.
+' Standard  Module mErH: Global error handling for any VBA Project.
 '
 ' Methods: - AppErr   Converts a positive number into a negative error number ensuring it not
 '                     conflicts with a VB Runtime Error. A negative error number is turned back into the
@@ -34,9 +34,7 @@ Option Private Module
 '
 ' W. Rauschenberger, Berlin, Nov 2020
 ' -----------------------------------------------------------------------------------------------
-
 Public Const CONCAT         As String = "||"
-
 Private cllErrPath          As Collection
 Private cllErrorPath        As Collection   ' managed by ErrPath... procedures exclusively
 Private dctStck             As Dictionary
@@ -146,7 +144,7 @@ Public Sub BoP(ByVal bop_id As String, _
 
 xt: Exit Sub
 
-eh: MsgBox err.Description, vbOKOnly, "Error in " & ErrSrc(PROC)
+eh: MsgBox Err.Description, vbOKOnly, "Error in " & ErrSrc(PROC)
     Stop: Resume
 End Sub
 
@@ -165,7 +163,7 @@ Public Sub BoTP(ByVal botp_id As String, _
 
 xt: Exit Sub
 
-eh: MsgBox err.Description, vbOKOnly, "Error in " & ErrSrc(PROC)
+eh: MsgBox Err.Description, vbOKOnly, "Error in " & ErrSrc(PROC)
     Stop: Resume
 End Sub
 
@@ -271,9 +269,9 @@ Private Function ErrArgs() As String
     
     On Error Resume Next
     va = vArguments
-    If err.Number <> 0 Then Exit Function
+    If Err.Number <> 0 Then Exit Function
     i = LBound(va)
-    If err.Number <> 0 Then Exit Function
+    If Err.Number <> 0 Then Exit Function
     
     For i = i To UBound(va)
         If ErrArgs = vbNullString Then
@@ -458,8 +456,8 @@ Public Function ErrMsg( _
     Dim lNo                 As Long
     Dim sLine               As String
         
-    If err_number = 0 Then err_number = err.Number
-    If err_dscrptn = vbNullString Then err_dscrptn = err.Description
+    If err_number = 0 Then err_number = Err.Number
+    If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
     If err_line = 0 Then err_line = Erl
     
     If ErrHndlrFailed(err_number, err_source, err_buttons) Then GoTo xt
@@ -498,7 +496,7 @@ Public Function ErrMsg( _
 #End If
         mErH.StckPop Itm:=err_source
         sInitErrInfo = vbNullString
-        err.Raise err_number, err_source, err_dscrptn
+        Err.Raise err_number, err_source, err_dscrptn
     End If
     
     If ErrBttns(err_buttons) > 1 _
@@ -540,9 +538,6 @@ Public Function ErrMsg( _
     End If
     
 xt:
-#If ExecTrace Then
-'    mTrc.Continue
-#End If
 End Function
 
 Private Sub ErrMsgMatter(ByVal err_source As String, _
@@ -576,7 +571,7 @@ Private Sub ErrMsgMatter(ByVal err_source As String, _
     msg_details = IIf(err_line <> 0, msg_type & msg_no & " in " & err_source & " (at line " & err_line & ")", msg_type & msg_no & " in " & err_source)
     msg_dscrptn = IIf(InStr(err_dscrptn, CONCAT) <> 0, Split(err_dscrptn, CONCAT)(0), err_dscrptn)
     If InStr(err_dscrptn, CONCAT) <> 0 Then msg_info = Split(err_dscrptn, CONCAT)(1)
-    msg_source = Application.Name & ":  " & Application.ActiveWindow.caption & ":  " & err_source
+    msg_source = Application.name & ":  " & Application.ActiveWindow.caption & ":  " & err_source
     
 End Sub
 
@@ -608,7 +603,7 @@ Private Function ErrPathErrMsg(ByVal msg_details As String, _
     If Not ErrPathIsEmpty Then
         '~~ When the error path is not empty and not only contains the error source procedure
         For i = cllErrorPath.Count To 1 Step -1
-            s = cllErrorPath.TrcEntryItem(i)
+            s = cllErrorPath.Item(i)
             If i = cllErrorPath.Count _
             Then ErrPathErrMsg = s _
             Else ErrPathErrMsg = ErrPathErrMsg & vbLf & Space(j * 2) & "|_" & s
@@ -653,7 +648,7 @@ End Function
 
 Public Function Space(ByVal l As Long) As String
 ' --------------------------------------------------
-' Unifies the VB differences SPACE$ and Space$ which
+' Unifies the VB differences VBA.Space$ and VBA.Space$ which
 ' lead to code diferences where there aren't any.
 ' --------------------------------------------------
     Space = VBA.Space$(l)
@@ -693,7 +688,7 @@ Private Function StckPop( _
     
 xt: Exit Function
 
-eh: MsgBox err.Description, vbOKOnly, "Error in " & ErrSrc(PROC)
+eh: MsgBox Err.Description, vbOKOnly, "Error in " & ErrSrc(PROC)
 End Function
 
 Private Sub StckPush(ByVal s As String)
