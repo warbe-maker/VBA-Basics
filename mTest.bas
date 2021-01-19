@@ -51,63 +51,87 @@ Public Sub Test_01_ArrayCompare()
     On Error GoTo eh
     Dim a1      As Variant
     Dim a2      As Variant
-    Dim aDiff   As Variant
+    Dim dctDiff As Variant
+    Dim v       As Variant
     
     mErH.BoP ErrSrc(PROC)
-    '~~ Test 1: One element is different
+    
+    '~~ Test 1: One element is different, empty elements are ignored
     a1 = Split("1,2,3,4,5,6,7", ",") ' Test array
     a2 = Split("1,2,3,x,5,6,7", ",") ' Test array
-    aDiff = mBasic.ArrayCompare(ac_a1:=a1, _
-                                ac_a2:=a2 _
-                                )
-    Debug.Assert UBound(aDiff) = 0
-                                
+    Set dctDiff = mBasic.ArrayCompare(ac_a1:=a1 _
+                                    , ac_a2:=a2 _
+                                     )
+    Debug.Assert dctDiff.Count = 1
+    For Each v In dctDiff
+        Debug.Print "Test 1: Item/line " & v & vbLf & dctDiff(v)
+    Next v
     
-    '~~ Test 2: The first array has less elements
+    '~~ Test 2: The first array has less elements, empty elements are ignored
     a1 = Split("1,2,3,4,5,6", ",") ' Test array
     a2 = Split("1,2,3,4,5,6,7", ",") ' Test array
-    aDiff = mBasic.ArrayCompare(ac_a1:=a1, _
-                                ac_a2:=a2)
-    Debug.Assert UBound(aDiff) = 0
-    
-    
-    '~~ Test 3: The second array has less elements
+    Set dctDiff = mBasic.ArrayCompare(ac_a1:=a1 _
+                                    , ac_a2:=a2 _
+                                     )
+    Debug.Assert dctDiff.Count = 1
+    For Each v In dctDiff
+        Debug.Print "Test 2: Item/line " & v & vbLf & dctDiff(v)
+    Next v
+        
+    '~~ Test 3: The second array has less elements, empty elements are ignored
     a1 = Split("1,2,3,4,5,6,7", ",") ' Test array
     a2 = Split("1,2,3,4,5,6", ",") ' Test array
-    aDiff = mBasic.ArrayCompare(ac_a1:=a1, _
-                                ac_a2:=a2)
-    Debug.Assert UBound(aDiff) = 0
+    Set dctDiff = mBasic.ArrayCompare(ac_a1:=a1 _
+                                    , ac_a2:=a2 _
+                                     )
+    Debug.Assert dctDiff.Count = 1
+    For Each v In dctDiff
+        Debug.Print "Test 3: Item/line " & v & vbLf & dctDiff(v)
+    Next v
     
-    '~~ Test 4: The arrays first elements are different (element in second array is empty)
+    '~~ Test 4: The arrays first elements are different, empty elements are ignored
     a1 = Split("1,2,3,4,5,6,7", ",") ' Test array
     a2 = Split(",2,3,4,5,6,7", ",") ' Test array
-    aDiff = mBasic.ArrayCompare(ac_a1:=a1, _
-                                ac_a2:=a2)
-    Debug.Assert UBound(aDiff) >= 0
+    Set dctDiff = mBasic.ArrayCompare(ac_a1:=a1 _
+                                    , ac_a2:=a2 _
+                                     )
+    Debug.Assert dctDiff.Count = 1
+    For Each v In dctDiff
+        Debug.Print "Test 4: Item/line " & v & vbLf & dctDiff(v)
+    Next v
+        
+    '~~ Test 5: The arrays first elements are different, empty elements are ignored
+    a1 = Split(",2,3,4,5,6,7", ",")     ' Test array
+    a2 = Split("1,2,3,4,5,6,7", ",")    ' Test array
+    Set dctDiff = mBasic.ArrayCompare(ac_a1:=a1 _
+                                    , ac_a2:=a2 _
+                                     )
+    Debug.Assert dctDiff.Count = 1
+    For Each v In dctDiff
+        Debug.Print "Test 5: Item/line " & v & vbLf & dctDiff(v)
+    Next v
     
+    '~~ Test 6: The second array has additional inserted elements, empty elements are ignored
+    a1 = Split("1,2,3,4,5,6,7", ",")        ' Test array
+    a2 = Split("1,2,3,x,y,z,4,5,6,7", ",")  ' Test array
+    Set dctDiff = mBasic.ArrayCompare(ac_a1:=a1 _
+                                    , ac_a2:=a2 _
+                                     )
+    Debug.Assert dctDiff.Count = 7
+    For Each v In dctDiff
+        Debug.Print "Test 6: Item/line " & v & vbLf & dctDiff(v)
+    Next v
     
-    '~~ Test 5: The arrays first elements are different (element in first array is empty)
-    a1 = Split(",2,3,4,5,6,7", ",") ' Test array
+    '~~ Test 7: The arrays are equal, empty elements are ignored
+    a1 = Split("1,2,3,4,5,6,7,,,", ",") ' Test array
     a2 = Split("1,2,3,4,5,6,7", ",") ' Test array
-    aDiff = mBasic.ArrayCompare(ac_a1:=a1, _
-                                ac_a2:=a2)
-    Debug.Assert UBound(aDiff) >= 0
-    
-    '~~ Test 5: The second array has additional inserted elements
-    a1 = Split("1,2,3,4,5,6,7", ",") ' Test array
-    a2 = Split("1,2,3,x,y,z,4,5,6,7", ",") ' Test array
-    aDiff = mBasic.ArrayCompare(ac_a1:=a1, _
-                                ac_a2:=a2)
-    Debug.Assert UBound(aDiff) >= 0
-    
-    '~~ Test 6: The arrays are equal
-    a1 = Split("1,2,3,4,5,6,7", ",") ' Test array
-    a2 = Split("1,2,3,4,5,6,7", ",") ' Test array
-    aDiff = mBasic.ArrayCompare(ac_a1:=a1, _
-                                ac_a2:=a2)
-    On Error Resume Next
-    Debug.Assert UBound(aDiff) >= 0
-    Debug.Assert Err.Number = 9
+    Set dctDiff = mBasic.ArrayCompare(ac_a1:=a1 _
+                                    , ac_a2:=a2 _
+                                     )
+    Debug.Assert dctDiff.Count = 0
+    For Each v In dctDiff
+        Debug.Print "Test 7: Item/line " & v & vbLf & dctDiff(v)
+    Next v
     
 xt: mErH.EoP ErrSrc(PROC)
     Exit Sub
