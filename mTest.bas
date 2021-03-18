@@ -39,8 +39,8 @@ Public Sub Regression()
 xt: Exit Sub
 
 eh: Select Case mErH.ErrMsg(err_source:=ErrSrc(PROC))
-        Case mErH.DebugOpt1ResumeError: Stop: Resume
-        Case mErH.DebugOpt2ResumeNext: Resume Next
+        Case mErH.DebugOptResumeErrorLine: Stop: Resume
+        Case mErH.DebugOptResumeNext: Resume Next
     End Select
     
 End Sub
@@ -137,8 +137,8 @@ xt: mErH.EoP ErrSrc(PROC)
     Exit Sub
 
 eh: Select Case mErH.ErrMsg(err_source:=ErrSrc(PROC))
-        Case mErH.DebugOpt1ResumeError: Stop: Resume
-        Case mErH.DebugOpt2ResumeNext: Resume Next
+        Case mErH.DebugOptResumeErrorLine: Stop: Resume
+        Case mErH.DebugOptResumeNext: Resume Next
     End Select
 End Sub
 
@@ -199,8 +199,8 @@ xt: mErH.EoP ErrSrc(PROC)
     Exit Sub
 
 eh: Select Case mErH.ErrMsg(err_source:=ErrSrc(PROC))
-        Case mErH.DebugOpt1ResumeError: Stop: Resume
-        Case mErH.DebugOpt2ResumeNext: Resume Next
+        Case mErH.DebugOptResumeErrorLine:  Stop: Resume
+        Case mErH.DebugOptResumeNext:       Resume Next
     End Select
 End Sub
 
@@ -246,8 +246,8 @@ xt: mErH.EoP ErrSrc(PROC)
     Exit Sub
 
 eh: Select Case mErH.ErrMsg(err_source:=ErrSrc(PROC))
-        Case mErH.DebugOpt1ResumeError: Stop: Resume
-        Case mErH.DebugOpt2ResumeNext: Resume Next
+        Case mErH.DebugOptResumeErrorLine: Stop: Resume
+        Case mErH.DebugOptResumeNext: Resume Next
     End Select
 End Sub
 
@@ -269,8 +269,8 @@ xt: mErH.EoP ErrSrc(PROC)
     Exit Sub
 
 eh: Select Case mErH.ErrMsg(err_source:=ErrSrc(PROC))
-        Case mErH.DebugOpt1ResumeError: Stop: Resume
-        Case mErH.DebugOpt2ResumeNext: Resume Next
+        Case mErH.DebugOptResumeErrorLine: Stop: Resume
+        Case mErH.DebugOptResumeNext: Resume Next
     End Select
 End Sub
 
@@ -295,8 +295,8 @@ xt: mErH.EoP ErrSrc(PROC)
     Exit Sub
     
 eh: Select Case mErH.ErrMsg(err_source:=ErrSrc(PROC))
-        Case mErH.DebugOpt1ResumeError: Stop: Resume
-        Case mErH.DebugOpt2ResumeNext: Resume Next
+        Case mErH.DebugOptResumeErrorLine: Stop: Resume
+        Case mErH.DebugOptResumeNext: Resume Next
     End Select
 End Sub
 
@@ -321,8 +321,8 @@ xt: mErH.EoP ErrSrc(PROC)
     Exit Sub
     
 eh: Select Case mErH.ErrMsg(err_source:=ErrSrc(PROC))
-        Case mErH.DebugOpt1ResumeError: Stop: Resume
-        Case mErH.DebugOpt2ResumeNext: Resume Next
+        Case mErH.DebugOptResumeErrorLine: Stop: Resume
+        Case mErH.DebugOptResumeNext: Resume Next
     End Select
 End Sub
 
@@ -362,8 +362,28 @@ xt: mErH.EoP ErrSrc(PROC)
     Exit Sub
     
 eh: Select Case mErH.ErrMsg(err_source:=ErrSrc(PROC))
-        Case mErH.DebugOpt1ResumeError: Stop: Resume
-        Case mErH.DebugOpt2ResumeNext: Resume Next
+        Case mErH.DebugOptResumeErrorLine: Stop: Resume
+        Case mErH.DebugOptResumeNext: Resume Next
     End Select
 End Sub
 
+Public Sub Test_06_NbSpd()
+    Debug.Assert Replace(Nbspd("     Ab c      "), Chr$(160), " ") = "  A b c  "
+End Sub
+
+Public Sub Test_07_Align()
+
+    Debug.Assert Align("Abcde", 8, AlignLeft, " ", "-") = "Abcde --"
+    Debug.Assert Align("Abcde", 8, AlignRight, " ", "-") = "-- Abcde"
+    Debug.Assert Align("Abcde", 8, AlignCentered, " ", "-") = " Abcde -"
+    Debug.Assert Align("Abcde", 7, AlignLeft, " ", "-") = "Abcde -"
+    Debug.Assert Align("Abcde", 7, AlignRight, " ", "-") = "- Abcde"
+    Debug.Assert Align("Abcde", 7, AlignCentered, " ", "-") = " Abcde "
+    Debug.Assert Align("Abcde", 6, AlignLeft, " ", "-") = "Abcde "
+    Debug.Assert Align("Abcde", 6, AlignRight, " ", "-") = " Abcde"
+    Debug.Assert Align("Abcde", 6, AlignCentered, " ", "-") = " Abcd "
+    Debug.Assert Align("Abcde", 5, AlignLeft, " ", "-") = "Abcde"
+    Debug.Assert Align("Abcde", 5, AlignRight, " ", "-") = " Abcd"
+    Debug.Assert Align("Abcde", 5, AlignCentered, " ", "-") = " Abc "
+    
+End Sub
