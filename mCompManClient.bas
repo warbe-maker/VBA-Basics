@@ -9,7 +9,7 @@ Option Explicit
 '                 - automatically export any changed VBComponent with
 '                   the Workbook_Before_Save event.
 '
-' W. Rauschenberger, Berlin Mar 2021
+' W. Rauschenberger, Berlin March 18 2021
 '
 ' See also Github repo:
 ' https://github.com/warbe-maker/Excel-VB-Components-Management-Services
