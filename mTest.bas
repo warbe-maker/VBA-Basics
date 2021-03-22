@@ -367,8 +367,10 @@ eh: Select Case mErH.ErrMsg(err_source:=ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_06_NbSpd()
-    Debug.Assert Replace(Nbspd("     Ab c      "), Chr$(160), " ") = "  A b c  "
+Public Sub Test_06_Spaced()
+    Dim s As String
+    s = Spaced("Ab c")
+    Debug.Assert Replace(s, Chr$(160), " ") = "A b  c"
 End Sub
 
 Public Sub Test_07_Align()
