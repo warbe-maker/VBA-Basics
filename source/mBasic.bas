@@ -99,34 +99,34 @@ Public Property Get MsgReply() As Variant:          MsgReply = vMsgReply:   End 
 Public Property Let MsgReply(ByVal v As Variant):   vMsgReply = v:          End Property
 
 Public Function Align( _
-                ByVal s As String, _
-                ByVal lngth As Long, _
-       Optional ByVal aligned As StringAlign = AlignLeft, _
-       Optional ByVal margin As String = vbNullString, _
-       Optional ByVal fill As String = " ") As String
+                ByVal align_s As String, _
+                ByVal align_lngth As Long, _
+       Optional ByVal align_mode As StringAlign = AlignLeft, _
+       Optional ByVal align_margin As String = vbNullString, _
+       Optional ByVal align_fill As String = " ") As String
 ' ---------------------------------------------------------
-' Returns a string (s) with a lenght (lngth)
-' aligned (aligned) filled with characters (fill).
+' Returns a string (align_s) with a lenght (align_lngth)
+' aligned (aligned) filled with characters (align_fill).
 ' ---------------------------------------------------------
     Dim SpaceLeft       As Long
     Dim LengthRemaining As Long
     
-    Select Case aligned
+    Select Case align_mode
         Case AlignLeft
-            If Len(s & margin) >= lngth _
-            Then Align = VBA.Left$(s & margin, lngth) _
-            Else Align = s & margin & VBA.String$(lngth - (Len(s & margin)), fill)
+            If Len(align_s & align_margin) >= align_lngth _
+            Then Align = VBA.Left$(align_s & align_margin, align_lngth) _
+            Else Align = align_s & align_margin & VBA.String$(align_lngth - (Len(align_s & align_margin)), align_fill)
         Case AlignRight
-            If Len(margin & s) >= lngth _
-            Then Align = VBA.Left$(margin & s, lngth) _
-            Else Align = VBA.String$(lngth - (Len(margin & s)), fill) & margin & s
+            If Len(align_margin & align_s) >= align_lngth _
+            Then Align = VBA.Left$(align_margin & align_s, align_lngth) _
+            Else Align = VBA.String$(align_lngth - (Len(align_margin & align_s)), align_fill) & align_margin & align_s
         Case AlignCentered
-            If Len(margin & s & margin) >= lngth Then
-                Align = margin & Left$(s, lngth - (2 * Len(margin))) & margin
+            If Len(align_margin & align_s & align_margin) >= align_lngth Then
+                Align = align_margin & Left$(align_s, align_lngth - (2 * Len(align_margin))) & align_margin
             Else
-                SpaceLeft = Max(1, ((lngth - Len(s) - (2 * Len(margin))) / 2))
-                Align = VBA.String$(SpaceLeft, fill) & margin & s & margin & VBA.String$(SpaceLeft, fill)
-                Align = VBA.Right$(Align, lngth)
+                SpaceLeft = Max(1, ((align_lngth - Len(align_s) - (2 * Len(align_margin))) / 2))
+                Align = VBA.String$(SpaceLeft, align_fill) & align_margin & align_s & align_margin & VBA.String$(SpaceLeft, align_fill)
+                Align = VBA.Right$(Align, align_lngth)
             End If
     End Select
 
@@ -539,7 +539,7 @@ Private Sub ErrMsg( _
 End Sub
 
 Private Function ErrSrc(ByVal sProc As String) As String
-    ErrSrc = ThisWorkbook.name & " mBasic." & sProc
+    ErrSrc = ThisWorkbook.Name & " mBasic." & sProc
 End Function
 
 Public Function IsCvName(ByVal v As Variant) As Boolean
