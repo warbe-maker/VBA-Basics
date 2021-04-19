@@ -80,7 +80,7 @@ Public Function Box(ByVal box_title As String, _
         '|| For testing purpose it may be appropriate to out-comment the Setup.  ||
         .Setup '                                                                 ||
         '+------------------------------------------------------------------------+
-        .show
+        .Show
     End With
     
     ' -----------------------------------------------------------------------------
@@ -185,7 +185,7 @@ Public Function Dsply(ByVal dsply_title As String, _
         '|| For testing purpose it may be appropriate to out-comment the Setup.  ||
         .Setup '                                                                 ||
         '+------------------------------------------------------------------------+
-        .show
+        .Show vbModal
     End With
     
     ' -----------------------------------------------------------------------------

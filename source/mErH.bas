@@ -327,19 +327,19 @@ Private Function ErrDsply( _
     '~~ Display the error message by means of the Common UserForm fMsg
     With fMsg
         .MsgTitle = sTitle
-        SctnLabel.text = "Error description:":  SctnText.text = sDscrptn
+        SctnLabel.Text = "Error description:":  SctnText.Text = sDscrptn
         .MsgLabel(1) = SctnLabel:               .MsgText(1) = SctnText
         
         If ErrArgs = vbNullString _
-        Then SctnLabel.text = "Error source:": SctnText.text = sSource & sLine: SctnText.Monospaced = True _
-        Else SctnLabel.text = "Error source:": SctnText.text = sSource & sLine & vbLf & "(with arguments: " & ErrArgs & ")"
+        Then SctnLabel.Text = "Error source:": SctnText.Text = sSource & sLine: SctnText.Monospaced = True _
+        Else SctnLabel.Text = "Error source:": SctnText.Text = sSource & sLine & vbLf & "(with arguments: " & ErrArgs & ")"
         SctnText.Monospaced = True
         .MsgLabel(2) = SctnLabel:   .MsgText(2) = SctnText
         
-        SctnLabel.text = "Error path (call stack):":    SctnText.text = sErrPath:    SctnText.Monospaced = True
+        SctnLabel.Text = "Error path (call stack):":    SctnText.Text = sErrPath:    SctnText.Monospaced = True
         .MsgLabel(3) = SctnLabel:                       .MsgText(3) = SctnText
         
-        SctnLabel.text = "About this error:":           SctnText.text = sInfo:       SctnText.Monospaced = False: SctnText.FontSize = 8.5
+        SctnLabel.Text = "About this error:":           SctnText.Text = sInfo:       SctnText.Monospaced = False: SctnText.FontSize = 8.5
         .MsgLabel(4) = SctnLabel:                       .MsgText(4) = SctnText
         
         .MsgButtons = err_buttons
@@ -576,7 +576,7 @@ Private Sub ErrMsgMatter(ByVal err_source As String, _
     msg_details = IIf(err_line <> 0, msg_type & msg_no & " in " & err_source & " (at line " & err_line & ")", msg_type & msg_no & " in " & err_source)
     msg_dscrptn = IIf(InStr(err_dscrptn, CONCAT) <> 0, Split(err_dscrptn, CONCAT)(0), err_dscrptn)
     If InStr(err_dscrptn, CONCAT) <> 0 Then msg_info = Split(err_dscrptn, CONCAT)(1)
-    msg_source = Application.Name & ":  " & Application.ActiveWindow.Caption & ":  " & err_source
+    msg_source = Application.Name ' & ":  " & Application.ActiveWindow.Caption & ":  " & err_source
     
 End Sub
 

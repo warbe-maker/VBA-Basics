@@ -145,7 +145,6 @@ Dim wVirtualScreenLeft              As Single
 Dim wVirtualScreenTop               As Single
 Dim wVirtualScreenWidth             As Single
 
-
 Private Sub UserForm_Initialize()
     Const PROC = "UserForm_Initialize"
     
@@ -201,10 +200,6 @@ Private Sub UserForm_Terminate()
     Set dctSectionsText = Nothing
 End Sub
 
-Public Property Let DefaultButton(ByVal vDefault As Variant)
-    vDefaultButton = vDefault
-End Property
-
 Private Property Get AppliedButtonRetVal(Optional ByVal Button As MSForms.CommandButton) As Variant
     AppliedButtonRetVal = dctApplButtonsRetVal(Button)
 End Property
@@ -245,6 +240,10 @@ Private Property Get ClickedButtonIndex(Optional ByVal cmb As MSForms.CommandBut
         End If
     Next v
 
+End Property
+
+Public Property Let DefaultButton(ByVal vDefault As Variant)
+    vDefaultButton = vDefault
 End Property
 
 Private Property Get DsgnButton(Optional ByVal row As Long, Optional ByVal Button As Long) As MSForms.CommandButton
@@ -384,7 +383,7 @@ Public Property Get MsgLabel( _
     Dim vArry() As Variant
     
     If dctSectionsLabel Is Nothing Then
-        MsgLabel.text = vbNullString
+        MsgLabel.Text = vbNullString
     Else
         If dctSectionsLabel.Exists(msg_section) Then
             vArry = dctSectionsLabel(msg_section)
@@ -395,9 +394,9 @@ Public Property Get MsgLabel( _
             MsgLabel.FontSize = vArry(4)
             MsgLabel.FontUnderline = vArry(5)
             MsgLabel.Monospaced = vArry(6)
-            MsgLabel.text = vArry(7)
+            MsgLabel.Text = vArry(7)
         Else
-            MsgLabel.text = vbNullString
+            MsgLabel.Text = vbNullString
         End If
     End If
 End Property
@@ -422,7 +421,7 @@ Public Property Let MsgLabel( _
         vArry(4) = msg_label.FontSize
         vArry(5) = msg_label.FontUnderline
         vArry(6) = msg_label.Monospaced
-        vArry(7) = msg_label.text
+        vArry(7) = msg_label.Text
         dctSectionsLabel.Add msg_section, vArry
     End If
 End Property
@@ -454,7 +453,7 @@ Public Property Get MsgText( _
     Dim Message As TypeMsgText
     
     If dctSectionsText Is Nothing Then
-        MsgText.text = vbNullString
+        MsgText.Text = vbNullString
     Else
         If dctSectionsText.Exists(msg_section) Then
             vArry = dctSectionsText(msg_section)
@@ -465,9 +464,9 @@ Public Property Get MsgText( _
             MsgText.FontSize = vArry(4)
             MsgText.FontUnderline = vArry(5)
             MsgText.Monospaced = vArry(6)
-            MsgText.text = vArry(7)
+            MsgText.Text = vArry(7)
         Else
-            MsgText.text = vbNullString
+            MsgText.Text = vbNullString
         End If
     End If
 
@@ -493,7 +492,7 @@ Public Property Let MsgText( _
         vArry(4) = msg_msg.FontSize
         vArry(5) = msg_msg.FontUnderline
         vArry(6) = msg_msg.Monospaced
-        vArry(7) = msg_msg.text
+        vArry(7) = msg_msg.Text
         dctSectionsText.Add msg_section, vArry
     End If
 End Property
@@ -1677,18 +1676,18 @@ Private Sub SetupMsgSection(ByVal msg_section As Long)
     frText.Width = frSection.Width
     tbText.Width = frSection.Width
         
-    If SectionMessage.text <> vbNullString Then
+    If SectionMessage.Text <> vbNullString Then
     
         AppliedControl = frArea
         AppliedControl = frSection
         AppliedControl = frText
         AppliedControl = tbText
                 
-        If SectionLabel.text <> vbNullString Then
+        If SectionLabel.Text <> vbNullString Then
             Set la = DsgnSectionLabel(msg_section)
             With la
                 .Width = Me.InsideWidth - (siHmarginFrames * 2)
-                .Caption = SectionLabel.text
+                .Caption = SectionLabel.Text
                 With .Font
                     If SectionLabel.Monospaced Then
                         If SectionLabel.FontName <> vbNullString Then .Name = SectionLabel.FontName Else .Name = LABEL_MONOSPACED_DEFAULT_FONT_NAME
@@ -1724,13 +1723,14 @@ eh: ErrMsg ErrSrc(PROC)
 End Sub
 
 Private Sub SetupMsgSectionMonoSpaced(ByVal msg_section As Long)
-' ------------------------------------------------------------
+' --------------------------------------------------------------
 ' Setup the applied monospaced message section (section) with
-' the text (text), and apply width and adjust surrounding
-' frames accordingly.
-' Note: All height adjustments except the one for the text
-'       box are done by the ResizeAndReposition
-' ------------------------------------------------------------
+' the text (text), and apply width and adjust surrounding frames
+' accordingly.
+' Note: All top and height adjustments - except the one for the
+'       text box itself are finally done by ResizeAndReposition
+'       services when all elements had been set up.
+' --------------------------------------------------------------
     Const PROC = "SetupMsgSectionMonoSpaced"
     
     On Error GoTo eh
@@ -1743,8 +1743,6 @@ Private Sub SetupMsgSectionMonoSpaced(ByVal msg_section As Long)
     '~~ Setup the textbox
     With tbText
         .Visible = True
-        .MultiLine = True
-        .WordWrap = False
         With .Font
             .Bold = SectionMsg.FontBold
             .Italic = SectionMsg.FontItalic
@@ -1753,8 +1751,10 @@ Private Sub SetupMsgSectionMonoSpaced(ByVal msg_section As Long)
             If SectionMsg.FontName <> vbNullString Then .Name = SectionMsg.FontName Else .Name = LABEL_MONOSPACED_DEFAULT_FONT_NAME
         End With
         If SectionMsg.FontColor <> 0 Then .ForeColor = SectionMsg.FontColor Else .ForeColor = rgbBlack
+        .MultiLine = True
+        .WordWrap = False
         .AutoSize = True
-        .Value = SectionMsg.text
+        .Value = SectionMsg.Text
         .AutoSize = False
         .SelStart = 0
         .Left = siHmarginFrames
@@ -1820,11 +1820,6 @@ Private Sub SetupMsgSectionPropSpaced(ByVal msg_section As Long)
     
     With tbText
         .Visible = True
-        .MultiLine = True
-        .AutoSize = True
-        .WordWrap = True
-        .Width = frText.Width - siHmarginFrames
-        .Value = SectionMsg.text
         With .Font
             If SectionMsg.FontName <> vbNullString Then .Name = SectionMsg.FontName Else .Name = TEXT_PROPSPACED_DEFAULT_FONT_NAME
             If SectionMsg.FontSize <> 0 Then .Size = SectionMsg.FontSize Else .Size = TEXT_PROPSPACED_DEFAULT_FONT_SIZE
@@ -1832,6 +1827,11 @@ Private Sub SetupMsgSectionPropSpaced(ByVal msg_section As Long)
             If SectionMsg.FontItalic Then .Italic = True
             If SectionMsg.FontUnderline Then .Underline = True
         End With
+        .MultiLine = True
+        .AutoSize = True
+        .WordWrap = True
+        .Width = frText.Width - siHmarginFrames
+        .Value = SectionMsg.Text
         If SectionMsg.FontColor <> 0 Then .ForeColor = SectionMsg.FontColor Else .ForeColor = rgbBlack
         .SelStart = 0
         .Left = HSPACE_LEFT
@@ -1856,7 +1856,7 @@ Private Sub SetupMsgSectionsMonoSpaced()
     
     For i = 1 To NO_OF_DESIGNED_SECTIONS
         Message = Me.MsgText(i)
-        If Message.Monospaced And Message.text <> vbNullString Then
+        If Message.Monospaced And Message.Text <> vbNullString Then
             SetupMsgSection i
         End If
     Next i
@@ -1876,7 +1876,7 @@ Private Sub SetupMsgSectionsPropSpaced()
     
     For i = 1 To NO_OF_DESIGNED_SECTIONS
         Message = MsgText(i)
-        If Not Message.Monospaced And Message.text <> vbNullString Then SetupMsgSection i
+        If Not Message.Monospaced And Message.Text <> vbNullString Then SetupMsgSection i
     Next i
     bDonePropSpacedSections = True
     bDoneMsgArea = True
@@ -1884,6 +1884,14 @@ Private Sub SetupMsgSectionsPropSpaced()
 xt: Exit Sub
     
 eh: ErrMsg ErrSrc(PROC)
+End Sub
+
+Private Sub SetupMsgSectionUpdated(ByVal msg_section As Long)
+' -----------------------------------------------------------
+' Triggered by the Textbox_AfterUpdate event, adjusts the
+' message form to the new sizeed Textbox.
+' ------------------------------------------------------
+'   Pending implementation
 End Sub
 
 Private Sub SetupTitle()
@@ -1945,6 +1953,12 @@ xt: Exit Sub
 eh: ErrMsg ErrSrc(PROC)
 End Sub
 
+Private Sub tbMsgSection1Text_AfterUpdate():    SetupMsgSectionUpdated 1:   End Sub
+Private Sub tbMsgSection2Text_AfterUpdate():    SetupMsgSectionUpdated 2:   End Sub
+Private Sub tbMsgSection3Text_AfterUpdate():    SetupMsgSectionUpdated 3:   End Sub
+Private Sub tbMsgSection4Text_AfterUpdate():    SetupMsgSectionUpdated 4:   End Sub
+'Private Sub tbMsgSection5Text_AfterUpdate():    SetupMsgSectionUpdated 5:   End Sub
+
 Private Sub UserForm_Activate()
 ' ---------------------------------------------------
 ' To avoid screen flicker the setup may has been done
@@ -1976,5 +1990,4 @@ Public Function VgridPos(ByVal si As Single) As Single
     Next i
 
 End Function
-
 
