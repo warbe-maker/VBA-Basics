@@ -132,25 +132,15 @@ Public Function Align( _
 
 End Function
 
-Public Function AppErr(ByVal lNo As Long) As Long
-' -------------------------------------------------------------------------------
-' Attention: This function is dedicated for being used with Err.Raise AppErr()
-'            in conjunction with the common error handling module mErrHndlr when
-'            the call stack is supported. The error number passed on to the entry
-'            procedure is interpreted when the error message is displayed.
-' The function ensures that a programmed (application) error numbers never
-' conflicts with VB error numbers by adding vbObjectError which turns it into a
-' negative value. In return, translates a negative error number back into an
-' Application error number. The latter is the reason why this function must never
-' be used with a true VB error number.
-' -------------------------------------------------------------------------------
-    
-    If lNo < 0 Then
-        AppErr = lNo - vbObjectError
-    Else
-        AppErr = vbObjectError + lNo
-    End If
-
+Private Function AppErr(ByVal lNo As Long) As Long
+' ------------------------------------------------------------------------------
+' Ensures that a programmed (i.e. an application) error numbers never conflicts
+' with the number of a VB runtime error. Thr function returns a given positive
+' number (lNo) with the vbObjectError added - which turns it into a negative
+' value. When the provided number is negative it returns the original positive
+' "application" error number e.g. for being displayed in an error message.
+' ------------------------------------------------------------------------------
+    AppErr = IIf(lNo < 0, lNo - vbObjectError, vbObjectError - lNo)
 End Function
 
 Public Function AppIsInstalled(ByVal sApp As String) As Boolean
