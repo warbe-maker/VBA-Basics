@@ -173,7 +173,7 @@ Public Function Progress( _
             '|| For testing purpose it may be appropriate to out-comment the Setup.  ||
             .Setup '                                                                 ||
             '+------------------------------------------------------------------------+
-            .Show vbModeless
+            .show vbModeless
             GoTo xt
         End With
     Else
@@ -187,6 +187,17 @@ Public Function Progress( _
 xt: Exit Function
 
 eh: ErrMsg ErrSrc(PROC)
+End Function
+
+Private Function AppErr(ByVal app_err_no As Long) As Long
+' ------------------------------------------------------------------------------
+' Ensures that a programmed (i.e. an application) error numbers never conflicts
+' with the number of a VB runtime error. Thr function returns a given positive
+' number (app_err_no) with the vbObjectError added - which turns it into a
+' negative value. When the provided number is negative it returns the original
+' positive "application" error number e.g. for being used with an error message.
+' ------------------------------------------------------------------------------
+    AppErr = IIf(app_err_no < 0, app_err_no - vbObjectError, vbObjectError - app_err_no)
 End Function
 
 Public Function Box(ByVal box_title As String, _
@@ -235,7 +246,7 @@ Public Function Box(ByVal box_title As String, _
         '|| For testing purpose it may be appropriate to out-comment the Setup.  ||
         .Setup '                                                                 ||
         '+------------------------------------------------------------------------+
-        .Show
+        .show
     End With
     Box = RepliedWith
 
@@ -487,11 +498,11 @@ Public Function Dsply(ByVal dsply_title As String, _
         .Setup '                                                                 ||
         If dsply_modeless Then
             DisplayDone = False
-            .Show vbModeless
+            .show vbModeless
             .top = 1
             .Left = 1
         Else
-            .Show vbModal
+            .show vbModal
         End If
     End With
     Dsply = RepliedWith
