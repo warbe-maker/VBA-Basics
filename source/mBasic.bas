@@ -514,18 +514,32 @@ End Function
 Private Sub ErrMsg( _
              ByVal err_source As String, _
     Optional ByVal err_no As Long = 0, _
-    Optional ByVal err_dscrptn As String = vbNullString)
-' ------------------------------------------------------
-' This Common Component does not have its own error
-' handling. Instead it passes on any error to the
-' caller's error handling.
-' ------------------------------------------------------
+    Optional ByVal err_dscrptn As String = vbNullString, _
+    Optional ByVal err_line As Long = 0)
+' ------------------------------------------------------------------------------
+' This 'Common VBA Component' uses only a kind of minimum error handling!
+' ------------------------------------------------------------------------------
+    Dim ErrNo   As Long
+    Dim ErrDesc As String
+    Dim ErrType As String
+    Dim errline As Long
+    Dim AtLine  As String
     
     If err_no = 0 Then err_no = Err.Number
-    If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
-
-    Err.Raise Number:=err_no, Source:=err_source, Description:=err_dscrptn
-
+    If err_no < 0 Then
+        ErrNo = AppErr(err_no)
+        ErrType = "Applicatin error "
+    Else
+        ErrNo = err_no
+        ErrType = "Runtime error "
+    End If
+    If err_dscrptn = vbNullString Then ErrDesc = Err.Description Else ErrDesc = err_dscrptn
+    If err_line = 0 Then errline = Erl
+    If err_line <> 0 Then AtLine = " at line " & err_line
+    MsgBox Title:=ErrType & ErrNo & " in " & err_source _
+         , Prompt:="Error : " & ErrDesc & vbLf & _
+                   "Source: " & err_source & AtLine _
+         , Buttons:=vbCritical
 End Sub
 
 Private Function ErrSrc(ByVal sProc As String) As String

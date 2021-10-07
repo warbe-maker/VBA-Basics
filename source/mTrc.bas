@@ -255,6 +255,17 @@ Private Property Get SysFrequency() As Currency
     SysFrequency = cySysFrequency
 End Property
 
+Private Function AppErr(ByVal app_err_no As Long) As Long
+' ------------------------------------------------------------------------------
+' Ensures that a programmed (i.e. an application) error numbers never conflicts
+' with the number of a VB runtime error. Thr function returns a given positive
+' number (app_err_no) with the vbObjectError added - which turns it into a
+' negative value. When the provided number is negative it returns the original
+' positive "application" error number e.g. for being used with an error message.
+' ------------------------------------------------------------------------------
+    AppErr = IIf(app_err_no < 0, app_err_no - vbObjectError, vbObjectError - app_err_no)
+End Function
+
 Public Sub BoC(ByVal boc_id As String, _
           ParamArray boc_arguments() As Variant)
 ' ----------------------------------------------
