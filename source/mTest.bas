@@ -14,6 +14,17 @@ Dim dctTest As Dictionary
 
 Private Property Get ErrSrc(Optional ByVal s As String) As String:  ErrSrc = "mTest." & s:  End Property
 
+Private Function AppErr(ByVal app_err_no As Long) As Long
+' ------------------------------------------------------------------------------
+' Ensures that a programmed (i.e. an application) error numbers never conflicts
+' with the number of a VB runtime error. Thr function returns a given positive
+' number (app_err_no) with the vbObjectError added - which turns it into a
+' negative value. When the provided number is negative it returns the original
+' positive "application" error number e.g. for being used with an error message.
+' ------------------------------------------------------------------------------
+    AppErr = IIf(app_err_no < 0, app_err_no - vbObjectError, vbObjectError - app_err_no)
+End Function
+
 Private Sub EnvironmentVariables()
 Dim i As Long
     For i = 1 To 100
@@ -219,28 +230,28 @@ Public Sub Test_02_2_ArrayRemoveItems_Error_Conditions()
     Set a = Nothing
     On Error Resume Next
     mBasic.ArrayRemoveItems a, 2
-    Debug.Assert mErH.AppErr(Err.Number) = 1
+    Debug.Assert AppErr(Err.Number) = 1
     
     a = aTest
     ' Missing parameter
     On Error Resume Next
     mBasic.ArrayRemoveItems a
-    Debug.Assert mErH.AppErr(Err.Number) = 3
+    Debug.Assert AppErr(Err.Number) = 3
     
     ' Element out of boundary
     On Error Resume Next
     mBasic.ArrayRemoveItems a, Element:=8
-    Debug.Assert mErH.AppErr(Err.Number) = 4
+    Debug.Assert AppErr(Err.Number) = 4
     
     ' Index out of boundary
     On Error Resume Next
     mBasic.ArrayRemoveItems a, Index:=7
-    Debug.Assert mErH.AppErr(Err.Number) = 5
+    Debug.Assert AppErr(Err.Number) = 5
     
     ' Element plus number of elements out of boundary
     On Error Resume Next
     mBasic.ArrayRemoveItems a, Element:=7, NoOfElements:=2
-    Debug.Assert mErH.AppErr(Err.Number) = 6
+    Debug.Assert AppErr(Err.Number) = 6
 
 xt: mErH.EoP ErrSrc(PROC)
     Exit Sub
@@ -349,7 +360,7 @@ Public Sub Test_05_BaseName()
     mErH.BoP ErrSrc(PROC)
     Debug.Assert mBasic.BaseName(wb) = "Basic"                    ' Test with Workbook object
     Debug.Assert mBasic.BaseName(fl) = "Basic"                    ' Test with File object
-    Debug.Assert mBasic.BaseName(ThisWorkbook.name) = "Basic"     ' Test with a file's name
+    Debug.Assert mBasic.BaseName(ThisWorkbook.Name) = "Basic"     ' Test with a file's name
     Debug.Assert mBasic.BaseName(ThisWorkbook.FullName) = "Basic" ' Test with a file's full name
     Debug.Assert mBasic.BaseName("xxxx") = "xxxx"
     
@@ -389,3 +400,17 @@ Public Sub Test_07_Align()
     Debug.Assert Align("Abcde", 5, AlignCentered, " ", "-") = " Abc "
     
 End Sub
+
+Public Sub Test_00_ErrMsg()
+    Const PROC = "Test_00_ErrMsg"
+    
+    On Error GoTo eh
+    Dim l As Long
+    l = l / 0
+    
+xt: Exit Sub
+
+eh: If mBasic.ErrMsg(PROC) = vbYes Then: Stop: Resume
+End Sub
+
+
