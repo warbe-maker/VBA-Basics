@@ -14,16 +14,6 @@ Dim dctTest As Dictionary
 
 Private Property Get ErrSrc(Optional ByVal s As String) As String:  ErrSrc = "mTest." & s:  End Property
 
-Private Function AppErr(ByVal app_err_no As Long) As Long
-' ------------------------------------------------------------------------------
-' Ensures that a programmed (i.e. an application) error numbers never conflicts
-' with the number of a VB runtime error. Thr function returns a given positive
-' number (app_err_no) with the vbObjectError added - which turns it into a
-' negative value. When the provided number is negative it returns the original
-' positive "application" error number e.g. for being used with an error message.
-' ------------------------------------------------------------------------------
-    AppErr = IIf(app_err_no < 0, app_err_no - vbObjectError, vbObjectError - app_err_no)
-End Function
 
 Private Sub EnvironmentVariables()
 Dim i As Long
@@ -230,28 +220,28 @@ Public Sub Test_02_2_ArrayRemoveItems_Error_Conditions()
     Set a = Nothing
     On Error Resume Next
     mBasic.ArrayRemoveItems a, 2
-    Debug.Assert AppErr(Err.Number) = 1
+    Debug.Assert mBasic.AppErr(Err.Number) = 1
     
     a = aTest
     ' Missing parameter
     On Error Resume Next
     mBasic.ArrayRemoveItems a
-    Debug.Assert AppErr(Err.Number) = 3
+    Debug.Assert mBasic.AppErr(Err.Number) = 3
     
     ' Element out of boundary
     On Error Resume Next
     mBasic.ArrayRemoveItems a, Element:=8
-    Debug.Assert AppErr(Err.Number) = 4
+    Debug.Assert mBasic.AppErr(Err.Number) = 4
     
     ' Index out of boundary
     On Error Resume Next
     mBasic.ArrayRemoveItems a, Index:=7
-    Debug.Assert AppErr(Err.Number) = 5
+    Debug.Assert mBasic.AppErr(Err.Number) = 5
     
     ' Element plus number of elements out of boundary
     On Error Resume Next
     mBasic.ArrayRemoveItems a, Element:=7, NoOfElements:=2
-    Debug.Assert AppErr(Err.Number) = 6
+    Debug.Assert mBasic.AppErr(Err.Number) = 6
 
 xt: mErH.EoP ErrSrc(PROC)
     Exit Sub
@@ -401,16 +391,49 @@ Public Sub Test_07_Align()
     
 End Sub
 
-Public Sub Test_00_ErrMsg()
-    Const PROC = "Test_00_ErrMsg"
+Public Sub Test_00a_AppErr()
+    Debug.Assert mBasic.AppErr(mBasic.AppErr(10)) = 10
+End Sub
+
+Public Sub Test_00b_ErrMsg()
+    Const PROC = "Test_00b_ErrMsg"
     
     On Error GoTo eh
     Dim l As Long
+    
+    '~~ 1. Test: Display an Application Error
+    Test_00b_ErrMsg_1 0
+    
+    '~~ 2. Test: Display a VB-Runtime-Error
     l = l / 0
     
 xt: Exit Sub
 
-eh: If mBasic.ErrMsg(PROC) = vbYes Then: Stop: Resume
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
+        Case vbYes: Stop: Resume
+        Case vbNo:  Stop: Resume Next
+        Case Else:  GoTo xt
+    End Select
 End Sub
 
+Private Sub Test_00b_ErrMsg_1(ByVal test_value As Long)
+' ------------------------------------------------------------------
+' Display an Application Error istead of a VB Runtime Error
+' ------------------------------------------------------------------
+    Const PROC = "Test_00b_ErrMsg_1"
+    
+    On Error GoTo eh
+    Dim l As Long
+    
+    If test_value = 0 _
+    Then Err.Raise mBasic.AppErr(1), ErrSrc(PROC), "Application Error test: The argument 'test_value' must not be 0!"
+    l = l / test_value
+    
+xt: Exit Sub
 
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
+        Case vbYes: Stop: Resume
+        Case vbNo:  Stop: Resume Next
+        Case Else:  GoTo xt
+    End Select
+End Sub

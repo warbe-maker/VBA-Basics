@@ -263,7 +263,7 @@ Private Function AppErr(ByVal app_err_no As Long) As Long
 ' negative value. When the provided number is negative it returns the original
 ' positive "application" error number e.g. for being used with an error message.
 ' ------------------------------------------------------------------------------
-    AppErr = IIf(app_err_no < 0, app_err_no - vbObjectError, vbObjectError - app_err_no)
+    If app_err_no >= 0 Then AppErr = app_err_no + vbObjectError Else AppErr = Abs(app_err_no - vbObjectError)
 End Function
 
 Public Sub BoC(ByVal boc_id As String, _
@@ -518,7 +518,7 @@ Public Sub Dsply()
     Next v
     sTrace = sTrace & vbLf & DsplyFtr(lLenHeader)
     With fMsg
-        .MsgWidthMaxSpecAsPoSS = 95
+        .MsgWidthMax = 95
         .MsgTitle = "Execution Trace, displayed because the Conditional Compile Argument ""ExecTrace = 1""!"
         
         SctnText.Text = sTrace:   SctnText.MonoSpaced = True
