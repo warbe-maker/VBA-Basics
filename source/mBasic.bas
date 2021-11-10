@@ -512,15 +512,16 @@ Public Function ElementOfIndex(ByVal a As Variant, _
 End Function
 
 Private Function ErrMsg(ByVal err_source As String, _
-              Optional ByVal err_no As Long = 0, _
-              Optional ByVal err_dscrptn As String = vbNullString, _
-              Optional ByVal err_line As Long = 0) As Variant
+               Optional ByVal err_no As Long = 0, _
+               Optional ByVal err_dscrptn As String = vbNullString, _
+               Optional ByVal err_line As Long = 0) As Variant
 ' ------------------------------------------------------------------------------
 ' This is a kind of universal error message which includes a debugging option.
-' It may be copied into any module - turned into a Private function. When the/my
-' Common VBA Error Handling Component (ErH) is installed and the Conditional
-' Compile Argument 'CommErHComp = 1' the error message will be displayed by
-' means of the Common VBA Message Component (fMsg, mMsg).
+' It may be copied into any module as a Private Function. The function works
+' "standalone" as well with (i.e. uses) the Common VBA Message Component
+' (fMsg,mMsg) and with the Common Error Handling Component (ErH) installed.
+' Either will be used with the Conditional Compile Argument 'CommMsgComp = 1'
+' and/or 'CommErHComp = 1' which provides a better designed error message.
 '
 ' Usage: When this procedure is copied as a Private Function into any desired
 '        module an error handling which consideres the possible Conditional
@@ -738,7 +739,7 @@ Public Function SelectFolder( _
     ' Open the select folder prompt
     With Application.FileDialog(msoFileDialogFolderPicker)
         .Title = sTitle
-        If .show = -1 Then ' if OK is pressed
+        If .Show = -1 Then ' if OK is pressed
             sFolder = .SelectedItems(1)
         End If
     End With
