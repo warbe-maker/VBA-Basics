@@ -172,6 +172,7 @@ Public Function ArrayCompare( _
     Const PROC = "ArrayCompare"
     
     On Error GoTo eh
+    Dim j       As Long
     Dim l       As Long
     Dim i       As Long
     Dim lMethod As VbCompareMethod
@@ -180,16 +181,21 @@ Public Function ArrayCompare( _
     If ac_ignore_case Then lMethod = vbTextCompare Else lMethod = vbBinaryCompare
     
     If Not mBasic.ArrayIsAllocated(ac_a1) And mBasic.ArrayIsAllocated(ac_a2) Then
+        If ac_ignore_empty Then mBasic.ArrayTrimm ac_a2
         For i = LBound(ac_a2) To UBound(ac_a2)
             dct.Add i + 1, "'" & ac_a2(i) & "'" & vbLf
         Next i
     ElseIf mBasic.ArrayIsAllocated(ac_a1) And Not mBasic.ArrayIsAllocated(ac_a2) Then
+        If ac_ignore_empty Then mBasic.ArrayTrimm ac_a1
         For i = LBound(ac_a1) To UBound(ac_a1)
             dct.Add i + 1, "'" & ac_a1(i) & "'" & vbLf
         Next i
     ElseIf Not mBasic.ArrayIsAllocated(ac_a1) And Not mBasic.ArrayIsAllocated(ac_a2) Then
         GoTo xt
     End If
+    
+    If ac_ignore_empty Then mBasic.ArrayTrimm ac_a1
+    If ac_ignore_empty Then mBasic.ArrayTrimm ac_a2
     
     l = 0
     For i = LBound(ac_a1) To Min(UBound(ac_a1), UBound(ac_a2))
@@ -301,28 +307,25 @@ Public Sub ArrayRemoveItems(ByRef va As Variant, _
                    Optional ByVal Element As Variant, _
                    Optional ByVal Index As Variant, _
                    Optional ByVal NoOfElements = 1)
-' ------------------------------------------------------
-' Returns the array (va) with the number of elements
-' (NoOfElements) removed whereby the start element may be
-' indicated by the element number 1,2,... (vElement) or
-' the index (Index) which must be within the array's
-' LBound to Ubound.
-' Any inapropriate provision of the parameters results
-' in a clear error message.
-' When the last item in an array is removed the returned
-' arry is erased (no longer allocated).
+' ------------------------------------------------------------------------------
+' Returns the array (va) with the number of elements (NoOfElements) removed
+' whereby the start element may be indicated by the element number 1,2,...
+' (vElement) or the index (Index) which must be within the array's LBound to
+' Ubound. Any inapropriate provision of arguments results in a clear error
+' message. When the last item in an array is removed the returned array is
+' erased (no longer allocated).
 '
-' Restriction: Works only with one dimensional array.
+' Restriction: Works only with one dimensional arrays.
 '
 ' W. Rauschenberger, Berlin Jan 2020
-' ------------------------------------------------------
+' ------------------------------------------------------------------------------
     Const PROC = "ArrayRemoveItems"
 
     On Error GoTo eh
     Dim a                   As Variant
     Dim iElement            As Long
     Dim iIndex              As Long
-    Dim NoOfElementsInArray    As Long
+    Dim NoOfElementsInArray As Long
     Dim i                   As Long
     Dim iNewUBound          As Long
     
@@ -333,7 +336,7 @@ Public Sub ArrayRemoveItems(ByRef va As Variant, _
         NoOfElementsInArray = UBound(a) - LBound(a) + 1
     End If
     If Not ArrayNoOfDims(a) = 1 Then
-'        Err.Raise AppErr(2), ErrSrc(PROC), "Array must not be multidimensional!"
+        Err.Raise AppErr(2), ErrSrc(PROC), "Array must not be multidimensional!"
     End If
     If Not IsNumeric(Element) And Not IsNumeric(Index) Then
         Err.Raise AppErr(3), ErrSrc(PROC), "Neither FromElement nor FromIndex is a numeric value!"
@@ -370,7 +373,11 @@ Public Sub ArrayRemoveItems(ByRef va As Variant, _
     
 xt: Exit Sub
 
-eh: ErrMsg ErrSrc(PROC)
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbYes: Stop: Resume
+        Case vbNo:  Stop: Resume Next
+        Case Else:  GoTo xt
+    End Select
 End Sub
 
 Public Sub ArrayToRange(ByVal vArr As Variant, _
@@ -400,13 +407,11 @@ eh: ErrMsg ErrSrc(PROC)
 End Sub
 
 Public Sub ArrayTrimm(ByRef a As Variant)
-' ---------------------------------------
-' Return the array (a) with all leading
-' and trailing blank items removed. Any
-' vbCr, vbCrLf, vbLf are ignored.
-' When the array contains only blank
-' items the returned array is erased.
-' ---------------------------------------
+' ------------------------------------------------------------------------------
+' Returns the array (a) with all leading and trailing blank items removed. Any
+' vbCr, vbCrLf, vbLf are ignored. When the array contains only blank items the
+' returned array is erased.
+' ------------------------------------------------------------------------------
     Const PROC  As String = "ArrayTrimm"
 
     On Error GoTo eh
@@ -748,12 +753,11 @@ Public Function SelectFolder( _
 End Function
 
 Public Function Spaced(ByVal s As String) As String
-' -------------------------------------------------
-' Returns a non-breaking-spaced string.
+' ----------------------------------------------------------------------------
+' Returns a non-breaking-spaced string with any spaces already in the string
+' doubled and leading or trailing spaces unstripped.
 ' Example: Spaced("Ab c") returns = "A b  c"
-' Note: Any provided leading abd trailing spaces
-'       unstripped, any included spaces a doubled.
-' -------------------------------------------------
+' ----------------------------------------------------------------------------
     Dim a() As Byte
     Dim i   As Long
     
@@ -764,4 +768,159 @@ Public Function Spaced(ByVal s As String) As String
         If Chr$(a(i)) = " " Then Spaced = Spaced & Chr$(160) Else Spaced = Spaced & Chr$(160) & Chr$(a(i))
     Next i
 
+End Function
+
+Public Function StackEd(ByVal stck As Collection, _
+               Optional ByRef stck_item As Variant = vbNullString, _
+               Optional ByRef stck_lvl As Long = 0) As Variant
+' ----------------------------------------------------------------------------
+' Common "Stacked" service.
+' - When an item (stck_item) is provided: Returns TRUE when the item
+'   (stck_item) is on the stack (stck). In case a stack level is provided,
+'   TRUE is returned when the item is stacked on the provided level, else
+'   FALSE is returned. In case no stack level is provided (stck_lvl = 0) the
+'   level of the stacked item is returned when on the stack else FALSE is
+'   returned
+' - When no item (stck_item) is provided and a stack level (stck_lvl <> 0)
+'   is provided: The item stacked on level (stck_lvl) is returned.
+' - When no item (stck_item) and no level (stck_lvl = 0) or a level > then
+'   the current top level is provided a vbNullString is returned.
+' Note: The item (stck_item) may be anything.
+' ----------------------------------------------------------------------------
+    Const PROC = "StckEd"
+    
+    On Error GoTo eh
+    Dim v       As Variant
+    Dim i       As Long
+    
+    If stck Is Nothing Then Set stck = New Collection
+    
+    If Not IsString(stck_item) And Not IsNumeric(stck_item) And Not IsObject(stck_item) Then
+        '~~ An argument stack item has not been provided
+        If stck_lvl = 0 Or stck_lvl > stck.Count Then GoTo xt
+        '~~ The item of the stack level is returned
+        If IsObject(stck(stck_lvl)) _
+        Then Set StackEd = stck(stck_lvl) _
+        Else StackEd = stck(stck_lvl)
+    Else
+        '~~ The provided stack item is either an object, a string, or numeric
+        For i = 1 To stck.Count
+            If IsObject(stck(i)) Then
+                Set v = stck(i)
+                If v Is stck_item Then
+                    If stck_lvl <> 0 Then
+                        If i = stck_lvl Then
+                            StackEd = True
+                            GoTo xt
+                        End If
+                    Else
+                        stck_lvl = i
+                    End If
+                    StackEd = True
+                    GoTo xt
+                End If
+            Else
+                v = stck(i)
+                If v = stck_item Then
+                    If stck_lvl <> 0 Then
+                        If i = stck_lvl Then
+                            StackEd = True
+                            GoTo xt
+                        End If
+                    Else
+                        stck_lvl = i
+                    End If
+                    StackEd = True
+                    GoTo xt
+                End If
+            End If
+        Next i
+    End If
+    
+xt: Exit Function
+
+eh: If ErrMsg(ErrSrc(PROC)) = vbYes Then: Stop: Resume
+End Function
+
+Public Function StackIsEmpty(ByVal stck As Collection) As Boolean
+' ----------------------------------------------------------------------------
+' Common Stack Empty check service. Returns True when either there is no stack
+' (stck Is Nothing) or when the stack is empty (items count is 0).
+' ----------------------------------------------------------------------------
+    StackIsEmpty = stck Is Nothing
+    If Not StackIsEmpty Then StackIsEmpty = stck.Count = 0
+End Function
+
+Public Function StackPop(ByVal stck As Collection) As Variant
+' ----------------------------------------------------------------------------
+' Common Stack Pop service. Returns the last item pushed on the stack (stck)
+' and removes the item from the stack. When the stack (stck) is empty a
+' vbNullString is returned.
+' ----------------------------------------------------------------------------
+    Const PROC = "StckPop"
+    
+    On Error GoTo eh
+    If StackIsEmpty(stck) Then GoTo xt
+    
+    On Error Resume Next
+    Set StackPop = stck(stck.Count)
+    If Err.Number <> 0 _
+    Then StackPop = stck(stck.Count)
+    stck.Remove stck.Count
+
+xt: Exit Function
+
+eh: If ErrMsg(ErrSrc(PROC)) = vbYes Then: Stop: Resume
+End Function
+
+Public Sub StackPush(ByRef stck As Collection, _
+                     ByVal stck_item As Variant)
+' ----------------------------------------------------------------------------
+' Common Stack Push service. Pushes (adds) an item (stck_item) to the stack
+' (stck). When the provided stack (stck) is Nothing the stack is created.
+' ----------------------------------------------------------------------------
+    Const PROC = "StckPush"
+    
+    On Error GoTo eh
+    If stck Is Nothing Then Set stck = New Collection
+    stck.Add stck_item
+
+xt: Exit Sub
+
+eh: If ErrMsg(ErrSrc(PROC)) = vbYes Then: Stop: Resume
+End Sub
+
+Public Function StackTop(ByVal stck As Collection) As Variant
+' ----------------------------------------------------------------------------
+' Common Stack Top service. Returns the top item from the stack (stck), i.e.
+' the item last pushed. If the stack is empty a vbNullString is returned.
+' ----------------------------------------------------------------------------
+    Const PROC = "StckTop"
+    
+    On Error GoTo eh
+    If StackIsEmpty(stck) Then GoTo xt
+    If IsObject(stck(stck.Count)) _
+    Then Set StackTop = stck(stck.Count) _
+    Else StackTop = stck(stck.Count)
+
+xt: Exit Function
+
+eh: If ErrMsg(ErrSrc(PROC)) = vbYes Then: Stop: Resume
+End Function
+
+Public Function IsString(ByVal v As Variant, _
+                Optional ByVal vbnullstring_is_a_string = False) As Boolean
+' ----------------------------------------------------------------------------
+' Returns TRUE when v is neither an object nor numeric.
+' ----------------------------------------------------------------------------
+    Dim s As String
+    On Error Resume Next
+    s = v
+    If Err.Number = 0 Then
+        If Not IsNumeric(v) Then
+            If (s = vbNullString And vbnullstring_is_a_string) _
+            Or s <> vbNullString _
+            Then IsString = True
+        End If
+    End If
 End Function

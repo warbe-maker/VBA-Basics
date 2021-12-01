@@ -245,7 +245,7 @@ Private Property Get DsgnBttn(Optional ByVal bttn_row As Long, Optional ByVal bt
     Set DsgnBttn = cllDsgnBttns(bttn_row)(bttn_no)
 End Property
 
-Private Property Get DsgnBttnRow(Optional ByVal row As Long) As Msforms.Frame:              Set DsgnBttnRow = cllDsgnBttnRows(row):                             End Property
+Private Property Get DsgnBttnRow(Optional ByVal lRow As Long) As Msforms.Frame:              Set DsgnBttnRow = cllDsgnBttnRows(lRow):                             End Property
 
 Private Property Get DsgnBttnRows() As Collection:                                          Set DsgnBttnRows = cllDsgnBttnRows:                                 End Property
 
