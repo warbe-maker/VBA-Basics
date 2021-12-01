@@ -26,11 +26,10 @@ Private Function ErrMsg(ByVal err_source As String, _
                Optional ByVal err_line As Long = 0) As Variant
 ' ------------------------------------------------------------------------------
 ' This is a kind of universal error message which includes a debugging option.
-' It may be copied into any module as a Private Function. The function works
-' "standalone" as well with (i.e. uses) the Common VBA Message Component
-' (fMsg,mMsg) and with the Common Error Handling Component (ErH) installed.
-' Either will be used with the Conditional Compile Argument 'CommMsgComp = 1'
-' and/or 'CommErHComp = 1' which provides a better designed error message.
+' It may be copied into any module - turned into a Private function. When the/my
+' Common VBA Error Handling Component (ErH) is installed and the Conditional
+' Compile Argument 'CommErHComp = 1' the error message will be displayed by
+' means of the Common VBA Message Component (fMsg, mMsg).
 '
 ' Usage: When this procedure is copied as a Private Function into any desired
 '        module an error handling which consideres the possible Conditional
@@ -71,6 +70,7 @@ Private Function ErrMsg(ByVal err_source As String, _
     Dim ErrText     As String
     Dim ErrTitle    As String
     Dim ErrType     As String
+    Dim ErrAbout    As String
     
     '~~ Obtain error information from the Err object for any argument not provided
     If err_no = 0 Then err_no = Err.Number
@@ -78,6 +78,13 @@ Private Function ErrMsg(ByVal err_source As String, _
     If err_source = vbNullString Then err_source = Err.Source
     If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
     If err_dscrptn = vbNullString Then err_dscrptn = "--- No error description available ---"
+    
+    If InStr(err_dscrptn, "||") <> 0 Then
+        ErrDesc = Split(err_dscrptn, "||")(0)
+        ErrAbout = Split(err_dscrptn, "||")(1)
+    Else
+        ErrDesc = err_dscrptn
+    End If
     
     '~~ Determine the type of error
     Select Case err_no
@@ -99,11 +106,15 @@ Private Function ErrMsg(ByVal err_source As String, _
     ErrTitle = Replace(ErrType & ErrNo & ErrSrc & ErrAtLine, "  ", " ")         ' assemble ErrTitle from available information
        
     ErrText = "Error: " & vbLf & _
-              err_dscrptn & vbLf & vbLf & _
+              ErrDesc & vbLf & vbLf & _
               "Source: " & vbLf & _
               err_source & ErrAtLine
+    If ErrAbout <> vbNullString _
+    Then ErrText = ErrText & vbLf & vbLf & _
+                  "About: " & vbLf & _
+                  ErrAbout
     
-#If Debugging = 1 Then
+#If Debugging Then
     ErrBttns = vbYesNoCancel
     ErrText = ErrText & vbLf & vbLf & _
               "Debugging:" & vbLf & _
@@ -114,10 +125,10 @@ Private Function ErrMsg(ByVal err_source As String, _
     ErrBttns = vbCritical
 #End If
     
-#If CommErHComp = 1 Then
+#If ErHComp Then
     '~~ When the Common VBA Error Handling Component (ErH) is installed/used by in the VB-Project
     ErrMsg = mErH.ErrMsg(err_source:=err_source, err_number:=err_no, err_dscrptn:=err_dscrptn, err_line:=err_line)
-    '~~ Translate back the elaborated reply buttons of mErrH.ErrMsg displays into Yes/No/Cancel
+    '~~ Translate back the elaborated reply buttons mErrH.ErrMsg displays and returns to the simple yes/No/Cancel
     '~~ replies with the VBA MsgBox.
     Select Case ErrMsg
         Case mErH.DebugOptResumeErrorLine:  ErrMsg = vbYes
@@ -125,8 +136,9 @@ Private Function ErrMsg(ByVal err_source As String, _
         Case Else:                          ErrMsg = vbCancel
     End Select
 #Else
-#If CommMsgComp = 1 Then
-    '~~ When the Common VBA Message Component (mMsg/fMsg) is not used/installed there might still be the
+    '~~ When the Common VBA Error Handling Component (ErH) is not used/installed there might still be the
+    '~~ Common VBA Message Component (Msg) be installed/used
+#If MsgComp Then
     ErrMsg = mMsg.ErrMsg(err_source:=err_source)
 #Else
     '~~ None of the Common Components is installed/used
@@ -137,8 +149,7 @@ Private Function ErrMsg(ByVal err_source As String, _
 #End If
 End Function
 
-Private Property Get ErrSrc(Optional ByVal s As String) As String:  ErrSrc = "mTest." & s:  End Property
-
+Private Property Get ErrSrc(Optional ByVal s As String) As String:  ErrSrc = "mBasicTest." & s:  End Property
 
 Public Function AppErr(ByVal app_err_no As Long) As Long
 ' ------------------------------------------------------------------------------
@@ -166,15 +177,15 @@ Public Sub Regression()
     On Error GoTo eh
     
     mErH.BoP ErrSrc(PROC)
-    mTest.Test_01_ArrayCompare
-    mTest.Test_02_ArrayRemoveItems
-    mTest.Test_03_ArrayToRange
-    mTest.Test_04_ArrayTrimm
-    mTest.Test_05_BaseName
-    mTest.Test_05_BaseName
-    mTest.Test_06_Spaced
-    mTest.Test_07_Align
-    mTest.Test_08_Stack
+    mBasicTest.Test_01_ArrayCompare
+    mBasicTest.Test_02_ArrayRemoveItems
+    mBasicTest.Test_03_ArrayToRange
+    mBasicTest.Test_04_ArrayTrimm
+    mBasicTest.Test_05_BaseName
+    mBasicTest.Test_05_BaseName
+    mBasicTest.Test_06_Spaced
+    mBasicTest.Test_07_Align
+    mBasicTest.Test_08_Stack
     mErH.EoP ErrSrc(PROC)
 
 xt: Exit Sub
@@ -633,4 +644,27 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
         Case vbNo:  Stop: Resume Next
         Case Else:  GoTo xt
     End Select
+End Sub
+
+Public Sub Test___Timer()
+
+    Dim i As Long
+    Dim SecsMin     As Currency
+    Dim SecsMax     As Currency
+    Dim SecsElapsed As Currency
+    Dim SecsWait    As Single
+    
+    SecsWait = 0.000001
+    
+    SecsMin = 100000
+    For i = 1 To 20
+        DoEvents
+        mBasic.TimerBegin
+        Application.Wait Now() + SecsWait
+        SecsElapsed = TimerEnd
+        SecsMin = mBasic.Min(SecsMin, SecsElapsed)
+        SecsMax = mBasic.Max(SecsMax, SecsElapsed)
+    Next i
+    Debug.Print "Application.Wait Now() + " & SecsWait & " waits from " & SecsMin * 1000 & " to " & SecsMax * 1000 & " msec"
+    
 End Sub

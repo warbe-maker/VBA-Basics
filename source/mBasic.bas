@@ -2,22 +2,21 @@ Attribute VB_Name = "mBasic"
 Option Private Module
 Option Explicit
 ' ----------------------------------------------------------------------------
-' Standard Module mTest: Declarations, procedures, methods and function
-'       likely to be required in any VB-Project.
+' Standard Module mTest
+' Declarations, procedures, methods and function likely to be required in any
+' VB-Project. When only single procedures are applicable they as well may be
+' copied into any VB-Project's component.
 '
-' Note: 1. Procedures of the mBasic module do not use the Common VBA Error Handler.
-'          However, this test module uses the mErrHndlr module for test purpose.
+' Note: Procedures of the mBasic module do not use the Common VBA Error
+'       Handler. However, this test module uses the mErrHndlr module for
+'       test purpose.
 '
-'       2. This module is developed, tested, and maintained in the dedicated
-'          Common Component Workbook Basic.xlsm available on Github
-'          https://Github.com/warbe-maker/VBA-Basic-Procedures
-'
-' Methods:
-' - AppErr              Converts a positive error number into a negative one which
-'                       ensures non conflicting application error numbers since
-'                       they are not mixed up with positive VB error numbers. In
-'                       return a negative error number is turned back into its
-'                       original positive Application Error Number.
+' Public Procedures/Functions:
+' - AppErr              Converts a positive error number into a negative to
+'                       ensures an error number not conflicting with runt time
+'                       or other system error numbers. In return a negative
+'                       error number is turned back into its original positive
+'                       'Application Error' number.
 ' - AppIsInstalled      Returns TRUE when a named exec is found in the system path
 ' - ArrayCompare        Compares two one-dimensional arrays. Returns an array with
 '                       al different items
@@ -29,16 +28,28 @@ Option Explicit
 ' - ArrayTrim           Removes any leading or trailing empty items.
 ' - CleanTrim           Clears a string from any unprinable characters.
 ' - ErrMsg              Displays a common error message by means of the VB MsgBox.
+' - TimedDoEvents       Performs a DoEvent by taking the elapsed time printed
+'                       in VBE's immediate window
+' - TimerBegin          Starts a timer (counting system ticks)
+' - TimerEnd            Returns the elapsed system ticks converted to milliseconds
 '
-' Requires Reference to:
-' - "Microsoft Scripting Runtime"
-' - "Microsoft Visual Basic Application Extensibility .."
+' Requires:             Reference to:
+'                       "Microsoft Scripting Runtime"
+'                       "Microsoft Visual Basic Application Extensibility .."
 '
-' W. Rauschenberger, Berlin Sept 2020
+' See: https://Github.com/warbe-maker/VBA-Basic-Procedures
+'
+' W. Rauschenberger, Berlin Nov. 2021
 ' ----------------------------------------------------------------------------
 ' Basic declarations potentially uesefull in any project
 Public Declare PtrSafe Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
 Public Declare PtrSafe Function GetSystemMetrics32 Lib "user32" Alias "GetSystemMetrics" (ByVal nIndex As Long) As Long
+
+' Timer means
+Private Declare PtrSafe Function getFrequency Lib "kernel32" _
+Alias "QueryPerformanceFrequency" (TimerSystemFrequency As Currency) As Long
+Private Declare PtrSafe Function getTickCount Lib "kernel32" _
+Alias "QueryPerformanceCounter" (cyTickCount As Currency) As Long
 
 'Functions to get DPI
 Private Declare PtrSafe Function GetDC Lib "user32" (ByVal hWnd As Long) As Long
@@ -94,9 +105,24 @@ Public Enum StringAlign
     AlignCentered = 3
 End Enum
 
+Private cyTimerTicksBegin       As Currency
+Private cyTimerTicksEnd         As Currency
+Private TimerSystemFrequency    As Currency
+
 Public Property Get MsgReply() As Variant:          MsgReply = vMsgReply:   End Property
 
 Public Property Let MsgReply(ByVal v As Variant):   vMsgReply = v:          End Property
+
+Private Property Get SysFrequency() As Currency
+    If TimerSystemFrequency = 0 Then getFrequency TimerSystemFrequency
+    SysFrequency = TimerSystemFrequency
+End Property
+
+Private Property Get TimerSecsElapsed() As Currency:        TimerSecsElapsed = TimerTicksElapsed / SysFrequency:        End Property
+
+Private Property Get TimerSysCurrentTicks() As Currency:    getTickCount TimerSysCurrentTicks:  End Property
+
+Private Property Get TimerTicksElapsed() As Currency:       TimerTicksElapsed = cyTimerTicksEnd - cyTimerTicksBegin:    End Property
 
 Public Function Align( _
                 ByVal align_s As String, _
@@ -522,11 +548,10 @@ Private Function ErrMsg(ByVal err_source As String, _
                Optional ByVal err_line As Long = 0) As Variant
 ' ------------------------------------------------------------------------------
 ' This is a kind of universal error message which includes a debugging option.
-' It may be copied into any module as a Private Function. The function works
-' "standalone" as well with (i.e. uses) the Common VBA Message Component
-' (fMsg,mMsg) and with the Common Error Handling Component (ErH) installed.
-' Either will be used with the Conditional Compile Argument 'CommMsgComp = 1'
-' and/or 'CommErHComp = 1' which provides a better designed error message.
+' It may be copied into any module - turned into a Private function. When the/my
+' Common VBA Error Handling Component (ErH) is installed and the Conditional
+' Compile Argument 'CommErHComp = 1' the error message will be displayed by
+' means of the Common VBA Message Component (fMsg, mMsg).
 '
 ' Usage: When this procedure is copied as a Private Function into any desired
 '        module an error handling which consideres the possible Conditional
@@ -567,6 +592,7 @@ Private Function ErrMsg(ByVal err_source As String, _
     Dim ErrText     As String
     Dim ErrTitle    As String
     Dim ErrType     As String
+    Dim ErrAbout    As String
     
     '~~ Obtain error information from the Err object for any argument not provided
     If err_no = 0 Then err_no = Err.Number
@@ -574,6 +600,13 @@ Private Function ErrMsg(ByVal err_source As String, _
     If err_source = vbNullString Then err_source = Err.Source
     If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
     If err_dscrptn = vbNullString Then err_dscrptn = "--- No error description available ---"
+    
+    If InStr(err_dscrptn, "||") <> 0 Then
+        ErrDesc = Split(err_dscrptn, "||")(0)
+        ErrAbout = Split(err_dscrptn, "||")(1)
+    Else
+        ErrDesc = err_dscrptn
+    End If
     
     '~~ Determine the type of error
     Select Case err_no
@@ -595,11 +628,15 @@ Private Function ErrMsg(ByVal err_source As String, _
     ErrTitle = Replace(ErrType & ErrNo & ErrSrc & ErrAtLine, "  ", " ")         ' assemble ErrTitle from available information
        
     ErrText = "Error: " & vbLf & _
-              err_dscrptn & vbLf & vbLf & _
+              ErrDesc & vbLf & vbLf & _
               "Source: " & vbLf & _
               err_source & ErrAtLine
+    If ErrAbout <> vbNullString _
+    Then ErrText = ErrText & vbLf & vbLf & _
+                  "About: " & vbLf & _
+                  ErrAbout
     
-#If Debugging = 1 Then
+#If Debugging Then
     ErrBttns = vbYesNoCancel
     ErrText = ErrText & vbLf & vbLf & _
               "Debugging:" & vbLf & _
@@ -610,10 +647,10 @@ Private Function ErrMsg(ByVal err_source As String, _
     ErrBttns = vbCritical
 #End If
     
-#If CommErHComp = 1 Then
+#If ErHComp Then
     '~~ When the Common VBA Error Handling Component (ErH) is installed/used by in the VB-Project
     ErrMsg = mErH.ErrMsg(err_source:=err_source, err_number:=err_no, err_dscrptn:=err_dscrptn, err_line:=err_line)
-    '~~ Translate back the elaborated reply buttons of mErrH.ErrMsg displays into Yes/No/Cancel
+    '~~ Translate back the elaborated reply buttons mErrH.ErrMsg displays and returns to the simple yes/No/Cancel
     '~~ replies with the VBA MsgBox.
     Select Case ErrMsg
         Case mErH.DebugOptResumeErrorLine:  ErrMsg = vbYes
@@ -621,8 +658,9 @@ Private Function ErrMsg(ByVal err_source As String, _
         Case Else:                          ErrMsg = vbCancel
     End Select
 #Else
-#If CommMsgComp = 1 Then
-    '~~ When the Common VBA Message Component (mMsg/fMsg) is not used/installed there might still be the
+    '~~ When the Common VBA Error Handling Component (ErH) is not used/installed there might still be the
+    '~~ Common VBA Message Component (Msg) be installed/used
+#If MsgComp Then
     ErrMsg = mMsg.ErrMsg(err_source:=err_source)
 #Else
     '~~ None of the Common Components is installed/used
@@ -661,6 +699,23 @@ Public Function IsPath(ByVal v As Variant) As Boolean
         End If
     End If
 
+End Function
+
+Public Function IsString(ByVal v As Variant, _
+                Optional ByVal vbnullstring_is_a_string = False) As Boolean
+' ----------------------------------------------------------------------------
+' Returns TRUE when v is neither an object nor numeric.
+' ----------------------------------------------------------------------------
+    Dim s As String
+    On Error Resume Next
+    s = v
+    If Err.Number = 0 Then
+        If Not IsNumeric(v) Then
+            If (s = vbNullString And vbnullstring_is_a_string) _
+            Or s <> vbNullString _
+            Then IsString = True
+        End If
+    End If
 End Function
 
 Public Sub MakeFormResizable()
@@ -908,19 +963,53 @@ xt: Exit Function
 eh: If ErrMsg(ErrSrc(PROC)) = vbYes Then: Stop: Resume
 End Function
 
-Public Function IsString(ByVal v As Variant, _
-                Optional ByVal vbnullstring_is_a_string = False) As Boolean
-' ----------------------------------------------------------------------------
-' Returns TRUE when v is neither an object nor numeric.
-' ----------------------------------------------------------------------------
-    Dim s As String
-    On Error Resume Next
-    s = v
-    If Err.Number = 0 Then
-        If Not IsNumeric(v) Then
-            If (s = vbNullString And vbnullstring_is_a_string) _
-            Or s <> vbNullString _
-            Then IsString = True
-        End If
-    End If
+Public Sub TimedDoEvents(ByVal tde_source As String)
+    Debug.Print "> DoEvents in '" & tde_source & "'"
+    mBasic.TimerBegin
+    DoEvents
+    Debug.Print "< DoEvents in '" & tde_source & "' (" & TimerEnd & " msec elapsed)"
+End Sub
+
+Public Sub TimerBegin()
+    cyTimerTicksBegin = TimerSysCurrentTicks
+End Sub
+
+Public Function TimerEnd() As Currency
+    cyTimerTicksEnd = TimerSysCurrentTicks
+    TimerEnd = TimerSecsElapsed * 1000
 End Function
+
+Private Sub BoP(ByVal b_proc As String, _
+           ParamArray b_arguments() As Variant)
+' ------------------------------------------------------------------------------
+' Begin of Procedure stub. The service is handed over to the corresponding
+' procedures in the Common mTrc Component (Execution Trace) or the Common mErH
+' Component (Error Handler) provided the components are installed which is
+' indicated by the corresponding Conditional Compile Arguments ErHComp = 1 and
+' TrcComp = 1.
+' ------------------------------------------------------------------------------
+    Dim s As String
+    If UBound(b_arguments) >= 0 Then s = Join(b_arguments, ",")
+#If ErHComp = 1 Then
+    mErH.BoP b_proc, s
+#ElseIf ExecTrace = 1 And TrcComp = 1 Then
+    mTrc.BoP b_proc, s
+#End If
+End Sub
+
+Private Sub EoP(ByVal e_proc As String, _
+       Optional ByVal e_inf As String = vbNullString)
+' ------------------------------------------------------------------------------
+' End of Procedure stub. The service is handed over to the corresponding
+' procedures in the Common mTrc Component (Execution Trace) or the Common mErH
+' Component (Error Handler) provided the components are installed which is
+' indicated by the corresponding Conditional Compile Arguments ErHComp = 1 and
+' TrcComp = 1.
+' ------------------------------------------------------------------------------
+#If ErHComp = 1 Then
+    mErH.EoP e_proc
+#ElseIf ExecTrace = 1 And TrcComp = 1 Then
+    mTrc.EoP e_proc, e_inf
+#End If
+End Sub
+
