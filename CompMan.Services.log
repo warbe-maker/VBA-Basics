@@ -1,0 +1,18 @@
+22-02-15 23:37:38 Update Outdated (by Addin) for Basic.xlsm: 
+22-02-15 23:37:38 -------------------------------------------
+22-02-15 23:37:39 UserForm           fMsg .........: Used Common Component up-to-date
+22-02-15 23:37:39 Standard-Module    mCompManClient: Used Common Component up-to-date
+22-02-15 23:37:39 Standard-Module    mErH .........: Used Common Component up-to-date
+22-02-15 23:37:39 Standard-Module    mMsg .........: Used Common Component up-to-date
+22-02-15 23:37:39 Standard-Module    mTrc .........: Used Common Component up-to-date
+22-02-15 23:51:22 ==========================================
+22-02-15 23:51:22 Export Changed (by Addin) for Basic.xlsm: 
+22-02-15 23:51:22 ------------------------------------------
+22-02-15 23:51:23 UserForm           fMsg .........: Used Common Component code unchanged
+22-02-15 23:51:23 Standard-Module    mBasicTest ...: Other component unchanged
+22-02-15 23:51:23 Standard-Module    mCompManClient: Used Common Component code unchanged
+22-02-15 23:51:23 Standard-Module    mErH .........: Used Common Component code unchanged
+22-02-15 23:51:23 Standard-Module    mMsg .........: Used Common Component code unchanged
+22-02-15 23:51:23 Standard-Module    mTrc .........: Used Common Component code unchanged
+22-02-15 23:51:23 Workbook           wbBasic ......: Other component unchanged
+22-02-15 23:51:23 Worksheet CodeName wsBasic ......: Other component unchanged
