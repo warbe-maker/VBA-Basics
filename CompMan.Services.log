@@ -1,18 +1,51 @@
-22-02-15 23:37:38 Update Outdated (by Addin) for Basic.xlsm: 
-22-02-15 23:37:38 -------------------------------------------
-22-02-15 23:37:39 UserForm           fMsg .........: Used Common Component up-to-date
-22-02-15 23:37:39 Standard-Module    mCompManClient: Used Common Component up-to-date
-22-02-15 23:37:39 Standard-Module    mErH .........: Used Common Component up-to-date
-22-02-15 23:37:39 Standard-Module    mMsg .........: Used Common Component up-to-date
-22-02-15 23:37:39 Standard-Module    mTrc .........: Used Common Component up-to-date
-22-02-15 23:51:22 ==========================================
-22-02-15 23:51:22 Export Changed (by Addin) for Basic.xlsm: 
-22-02-15 23:51:22 ------------------------------------------
-22-02-15 23:51:23 UserForm           fMsg .........: Used Common Component code unchanged
-22-02-15 23:51:23 Standard-Module    mBasicTest ...: Other component unchanged
-22-02-15 23:51:23 Standard-Module    mCompManClient: Used Common Component code unchanged
-22-02-15 23:51:23 Standard-Module    mErH .........: Used Common Component code unchanged
-22-02-15 23:51:23 Standard-Module    mMsg .........: Used Common Component code unchanged
-22-02-15 23:51:23 Standard-Module    mTrc .........: Used Common Component code unchanged
-22-02-15 23:51:23 Workbook           wbBasic ......: Other component unchanged
-22-02-15 23:51:23 Worksheet CodeName wsBasic ......: Other component unchanged
+22-02-16 11:14:02 Update Outdated (by Addin) for Basic.xlsm: 
+22-02-16 11:14:02 -------------------------------------------
+22-02-16 11:14:02 UserForm           fMsg .........: Used Common Component up-to-date
+22-02-16 11:14:02 Standard-Module    mCompManClient: Used Common Component up-to-date
+22-02-16 11:14:02 Standard-Module    mErH .........: Used Common Component up-to-date
+22-02-16 11:14:02 Standard-Module    mMsg .........: Used Common Component up-to-date
+22-02-16 11:14:02 Standard-Module    mTrc .........: Outdated Used Common Component! (Export-Files 'E:\Ablage\Excel VBA\DevAndTest\Common-VBA-Basic-Services\source\mTrc.bas' differs from 'E:\Ablage\Excel VBA\DevAndTest\Common-Components\mTrc.bas')
+22-02-16 11:14:04                                    DoEvents delayed continuation for 00012 msec)
+22-02-16 11:14:05                                    Workbook saved (DoEvents delayed continuation for 00061 msec)
+22-02-16 11:14:05                                    'mTrc' renamed to 'mTrc_RenamedByCompMan'
+22-02-16 11:14:05                                    'mTrc_RenamedByCompMan' removed (removal is postponed by Excel until process has finished)
+22-02-16 11:14:05                                    'mTrc' (re-)imported from 'E:\Ablage\Excel VBA\DevAndTest\Common-Components\mTrc.bas'
+22-02-16 11:14:05                                    'mTrc' exported to 'E:\Ablage\Excel VBA\DevAndTest\Common-VBA-Basic-Services\source\mTrc.bas'
+22-02-16 11:14:05                                    DoEvents delayed continuation for 00010 msec)
+22-02-16 11:14:06                                    Workbook saved (DoEvents delayed continuation for 00032 msec)
+22-02-16 11:14:06                                    Used Common Component renewed/updated by (re-)import of the Raw's Export File (E:\Ablage\Excel VBA\DevAndTest\Common-Components\mTrc.bas)
+22-02-16 11:24:39 ==========================================
+22-02-16 11:24:39 Export Changed (by Addin) for Basic.xlsm: 
+22-02-16 11:24:39 ------------------------------------------
+22-02-16 11:24:40 UserForm           fMsg .........: Used Common Component code unchanged
+22-02-16 11:24:40 Standard-Module    mBasicTest ...: Other component code modification exported
+22-02-16 11:24:40                                    Modification exported
+22-02-16 11:24:40 Standard-Module    mCompManClient: Used Common Component code unchanged
+22-02-16 11:24:40 Standard-Module    mErH .........: Used Common Component code unchanged
+22-02-16 11:24:40 Standard-Module    mMsg .........: Used Common Component code unchanged
+22-02-16 11:24:40 Standard-Module    mTrc .........: Used Common Component code unchanged
+22-02-16 11:24:40 Workbook           wbBasic ......: Other component unchanged
+22-02-16 11:24:40 Worksheet CodeName wsBasic ......: Other component unchanged
+22-02-16 11:25:09 ==========================================
+22-02-16 11:25:09 Export Changed (by Addin) for Basic.xlsm: 
+22-02-16 11:25:09 ------------------------------------------
+22-02-16 11:25:09 UserForm           fMsg .........: Used Common Component code unchanged
+22-02-16 11:25:09 Standard-Module    mBasicTest ...: Other component code modification exported
+22-02-16 11:25:09                                    Modification exported
+22-02-16 11:25:09 Standard-Module    mCompManClient: Used Common Component code unchanged
+22-02-16 11:25:09 Standard-Module    mErH .........: Used Common Component code unchanged
+22-02-16 11:25:10 Standard-Module    mMsg .........: Used Common Component code unchanged
+22-02-16 11:25:10 Standard-Module    mTrc .........: Used Common Component code unchanged
+22-02-16 11:25:10 Workbook           wbBasic ......: Other component unchanged
+22-02-16 11:25:10 Worksheet CodeName wsBasic ......: Other component unchanged
+22-02-16 11:25:23 ==========================================
+22-02-16 11:25:23 Export Changed (by Addin) for Basic.xlsm: 
+22-02-16 11:25:23 ------------------------------------------
+22-02-16 11:25:24 UserForm           fMsg .........: Used Common Component code unchanged
+22-02-16 11:25:24 Standard-Module    mBasicTest ...: Other component unchanged
+22-02-16 11:25:24 Standard-Module    mCompManClient: Used Common Component code unchanged
+22-02-16 11:25:24 Standard-Module    mErH .........: Used Common Component code unchanged
+22-02-16 11:25:24 Standard-Module    mMsg .........: Used Common Component code unchanged
+22-02-16 11:25:24 Standard-Module    mTrc .........: Used Common Component code unchanged
+22-02-16 11:25:24 Workbook           wbBasic ......: Other component unchanged
+22-02-16 11:25:24 Worksheet CodeName wsBasic ......: Other component unchanged

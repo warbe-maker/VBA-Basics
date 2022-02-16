@@ -1,200 +1,69 @@
-22-02-15 22:57:17                 >> Execution Trace result of the mBasic Regression test
-22-02-15 22:57:17 00,0000         |  >> mBasicTest.Regression
-22-02-15 22:57:17 00,0062         |  |  >> mBasicTest.Test_09_ErrMsg
-22-02-15 22:57:17 00,0072         |  |  |  >> mBasicTest.Test_09_1_ErrMsg
-22-02-15 22:57:17 00,0107 00,0035 |  |  |  << mBasicTest.Test_09_1_ErrMsg !!! Application Error 1  !!! 
-22-02-15 22:57:17 00,0120 00,0058 |  |  << mBasicTest.Test_09_ErrMsg !!! VB-Runtime Error 6  !!! 
-22-02-15 22:57:17 00,0134         |  |  >> mBasicTest.Test_03_ArrayToRange
-22-02-15 22:57:17 00,0273         |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,0279 00,0006 |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,0435         |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,0441 00,0006 |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,0825 00,0692 |  |  << mBasicTest.Test_03_ArrayToRange
-22-02-15 22:57:17 00,0836         |  |  >> mBasicTest.Test_02_0_ArrayRemoveItems
-22-02-15 22:57:17 00,0848         |  |  |  >> mBasicTest.Test_02-1_ArrayRemoveItems_Function
-22-02-15 22:57:17 00,0855         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,0860 00,0005 |  |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,0865         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,0869 00,0004 |  |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,0874         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,0878 00,0004 |  |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,0883         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,0886 00,0004 |  |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,0891         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,0895 00,0005 |  |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,0900         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,0905 00,0004 |  |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,0910         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,0914 00,0004 |  |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,0918 00,0071 |  |  |  << mBasicTest.Test_02-1_ArrayRemoveItems_Function
-22-02-15 22:57:17 00,0928         |  |  |  >> mBasicTest.Test_02_2_ArrayRemoveItems_Error_Conditions
-22-02-15 22:57:17 00,0933         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,0950 00,0017 |  |  |  |  << mBasic.ArrayRemoveItems !!! Application Error 1  !!! 
-22-02-15 22:57:17 00,0950         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,0963 00,0013 |  |  |  |  << mBasic.ArrayRemoveItems !!! Application Error 3  !!! 
-22-02-15 22:57:17 00,0963         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,0974 00,0011 |  |  |  |  << mBasic.ArrayRemoveItems !!! Application Error 4  !!! 
-22-02-15 22:57:17 00,0974         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,0988 00,0013 |  |  |  |  << mBasic.ArrayRemoveItems !!! Application Error 5  !!! 
-22-02-15 22:57:17 00,0988         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,1006 00,0018 |  |  |  |  << mBasic.ArrayRemoveItems !!! Application Error 6  !!! 
-22-02-15 22:57:17 00,1006 00,0078 |  |  |  << mBasicTest.Test_02_2_ArrayRemoveItems_Error_Conditions
-22-02-15 22:57:17 00,1012 00,0176 |  |  << mBasicTest.Test_02_0_ArrayRemoveItems
-22-02-15 22:57:17 00,1024         |  |  >> mBasicTest.Test_03_ArrayToRange
-22-02-15 22:57:17 00,1100 00,0076 |  |  << mBasicTest.Test_03_ArrayToRange
-22-02-15 22:57:17 00,1109         |  |  >> mBasicTest.Test_04_ArrayTrimm
-22-02-15 22:57:17 00,1115         |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,1119 00,0005 |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,1124         |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,1128 00,0004 |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,1133         |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,1138 00,0005 |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,1149         |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,1158 00,0009 |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,1164         |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,1168 00,0004 |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,1172         |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,1176 00,0004 |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,1180         |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,1184 00,0004 |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 22:57:17 00,1188 00,0079 |  |  << mBasicTest.Test_04_ArrayTrimm
-22-02-15 22:57:17 00,1203         |  |  >> mBasicTest.Test_05_BaseName
-22-02-15 22:57:17 00,1222 00,0019 |  |  << mBasicTest.Test_05_BaseName
-22-02-15 22:57:17 00,1228         |  |  >> mBasicTest.Test_05_BaseName
-22-02-15 22:57:17 00,1254 00,0026 |  |  << mBasicTest.Test_05_BaseName
-22-02-15 22:57:17 00,1271 00,1271 |  << mBasicTest.Regression
-22-02-15 22:57:17 00,1271 00,1271 << Execution Trace result of the mBasic Regression test. Impact on performance (caused by the trace) was 00,0005 seconds!
-
-22-02-15 23:03:50                 >> Execution Trace result of the mBasic Regression test
-22-02-15 23:03:50 00,0000         |  >> mBasicTest.Regression
-22-02-15 23:03:50 00,0030         |  |  >> mBasicTest.Test_09_ErrMsg
-22-02-15 23:03:50 00,0034         |  |  |  >> mBasicTest.Test_09_1_ErrMsg
-22-02-15 23:03:50 00,0047 00,0013 |  |  |  << mBasicTest.Test_09_1_ErrMsg !!! Application Error 1  !!! 
-22-02-15 23:03:50 00,0058 00,0028 |  |  << mBasicTest.Test_09_ErrMsg !!! VB-Runtime Error 6  !!! 
-22-02-15 23:03:50 00,0058         |  |  >> mBasicTest.Test_03_ArrayToRange
-22-02-15 23:03:50 00,0168         |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0174 00,0006 |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0312         |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0318 00,0006 |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0575 00,0517 |  |  << mBasicTest.Test_03_ArrayToRange
-22-02-15 23:03:50 00,0582         |  |  >> mBasicTest.Test_02_0_ArrayRemoveItems
-22-02-15 23:03:50 00,0586         |  |  |  >> mBasicTest.Test_02-1_ArrayRemoveItems_Function
-22-02-15 23:03:50 00,0590         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0594 00,0004 |  |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0598         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0602 00,0004 |  |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0606         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0610 00,0004 |  |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0615         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0618 00,0004 |  |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0622         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0627 00,0004 |  |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0631         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0634 00,0004 |  |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0639         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0642 00,0004 |  |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0646 00,0060 |  |  |  << mBasicTest.Test_02-1_ArrayRemoveItems_Function
-22-02-15 23:03:50 00,0650         |  |  |  >> mBasicTest.Test_02_2_ArrayRemoveItems_Error_Conditions
-22-02-15 23:03:50 00,0654         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0665 00,0012 |  |  |  |  << mBasic.ArrayRemoveItems !!! Application Error 1  !!! 
-22-02-15 23:03:50 00,0665         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0675 00,0010 |  |  |  |  << mBasic.ArrayRemoveItems !!! Application Error 3  !!! 
-22-02-15 23:03:50 00,0675         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0685 00,0010 |  |  |  |  << mBasic.ArrayRemoveItems !!! Application Error 4  !!! 
-22-02-15 23:03:50 00,0685         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0695 00,0010 |  |  |  |  << mBasic.ArrayRemoveItems !!! Application Error 5  !!! 
-22-02-15 23:03:50 00,0696         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0710 00,0015 |  |  |  |  << mBasic.ArrayRemoveItems !!! Application Error 6  !!! 
-22-02-15 23:03:50 00,0710 00,0060 |  |  |  << mBasicTest.Test_02_2_ArrayRemoveItems_Error_Conditions
-22-02-15 23:03:50 00,0714 00,0132 |  |  << mBasicTest.Test_02_0_ArrayRemoveItems
-22-02-15 23:03:50 00,0719         |  |  >> mBasicTest.Test_03_ArrayToRange
-22-02-15 23:03:50 00,0773 00,0055 |  |  << mBasicTest.Test_03_ArrayToRange
-22-02-15 23:03:50 00,0780         |  |  >> mBasicTest.Test_04_ArrayTrimm
-22-02-15 23:03:50 00,0785         |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0790 00,0004 |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0794         |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0799 00,0004 |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0803         |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0808 00,0004 |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0812         |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0815 00,0004 |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0819         |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0823 00,0004 |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0827         |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0830 00,0004 |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0835         |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0838 00,0004 |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:03:50 00,0842 00,0061 |  |  << mBasicTest.Test_04_ArrayTrimm
-22-02-15 23:03:50 00,0847         |  |  >> mBasicTest.Test_05_BaseName
-22-02-15 23:03:50 00,0865 00,0018 |  |  << mBasicTest.Test_05_BaseName
-22-02-15 23:03:50 00,0873         |  |  >> mBasicTest.Test_05_BaseName
-22-02-15 23:03:50 00,0894 00,0021 |  |  << mBasicTest.Test_05_BaseName
-22-02-15 23:03:50 00,0901 00,0901 |  << mBasicTest.Regression
-22-02-15 23:03:50 00,0901 00,0901 << Execution Trace result of the mBasic Regression test. Impact on performance (caused by the trace) was 00,0005 seconds!
-
-22-02-15 23:05:56                 >> Execution Trace result of the mBasic Regression test
-22-02-15 23:05:56 00,0000         |  >> mBasicTest.Regression
-22-02-15 23:05:56 00,0031         |  |  >> mBasicTest.Test_09_ErrMsg
-22-02-15 23:05:56 00,0035         |  |  |  >> mBasicTest.Test_09_1_ErrMsg
-22-02-15 23:05:56 00,0050 00,0015 |  |  |  << mBasicTest.Test_09_1_ErrMsg !!! Application Error 1  !!! 
-22-02-15 23:05:56 00,0059 00,0027 |  |  << mBasicTest.Test_09_ErrMsg !!! VB-Runtime Error 6  !!! 
-22-02-15 23:05:56 00,0059         |  |  >> mBasicTest.Test_03_ArrayToRange
-22-02-15 23:05:56 00,0152         |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0161 00,0009 |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0302         |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0308 00,0006 |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0596 00,0538 |  |  << mBasicTest.Test_03_ArrayToRange
-22-02-15 23:05:56 00,0603         |  |  >> mBasicTest.Test_02_0_ArrayRemoveItems
-22-02-15 23:05:56 00,0607         |  |  |  >> mBasicTest.Test_02-1_ArrayRemoveItems_Function
-22-02-15 23:05:56 00,0611         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0616 00,0004 |  |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0620         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0625 00,0004 |  |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0630         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0634 00,0004 |  |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0639         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0643 00,0004 |  |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0648         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0653 00,0005 |  |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0660         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0666 00,0006 |  |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0672         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0676 00,0004 |  |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0681 00,0074 |  |  |  << mBasicTest.Test_02-1_ArrayRemoveItems_Function
-22-02-15 23:05:56 00,0686         |  |  |  >> mBasicTest.Test_02_2_ArrayRemoveItems_Error_Conditions
-22-02-15 23:05:56 00,0690         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0704 00,0015 |  |  |  |  << mBasic.ArrayRemoveItems !!! Application Error 1  !!! 
-22-02-15 23:05:56 00,0705         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0718 00,0013 |  |  |  |  << mBasic.ArrayRemoveItems !!! Application Error 3  !!! 
-22-02-15 23:05:56 00,0718         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0731 00,0013 |  |  |  |  << mBasic.ArrayRemoveItems !!! Application Error 4  !!! 
-22-02-15 23:05:56 00,0731         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0743 00,0012 |  |  |  |  << mBasic.ArrayRemoveItems !!! Application Error 5  !!! 
-22-02-15 23:05:56 00,0743         |  |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0755 00,0012 |  |  |  |  << mBasic.ArrayRemoveItems !!! Application Error 6  !!! 
-22-02-15 23:05:56 00,0755 00,0069 |  |  |  << mBasicTest.Test_02_2_ArrayRemoveItems_Error_Conditions
-22-02-15 23:05:56 00,0759 00,0156 |  |  << mBasicTest.Test_02_0_ArrayRemoveItems
-22-02-15 23:05:56 00,0764         |  |  >> mBasicTest.Test_03_ArrayToRange
-22-02-15 23:05:56 00,0826 00,0062 |  |  << mBasicTest.Test_03_ArrayToRange
-22-02-15 23:05:56 00,0834         |  |  >> mBasicTest.Test_04_ArrayTrimm
-22-02-15 23:05:56 00,0840         |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0846 00,0006 |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0851         |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0856 00,0005 |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0861         |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0865 00,0004 |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0870         |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0874 00,0004 |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0878         |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0883 00,0004 |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0887         |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0892 00,0004 |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0895         |  |  |  >> mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0898 00,0003 |  |  |  << mBasic.ArrayRemoveItems
-22-02-15 23:05:56 00,0902 00,0068 |  |  << mBasicTest.Test_04_ArrayTrimm
-22-02-15 23:05:56 00,0907         |  |  >> mBasicTest.Test_05_BaseName
-22-02-15 23:05:56 00,0923 00,0016 |  |  << mBasicTest.Test_05_BaseName
-22-02-15 23:05:56 00,0928         |  |  >> mBasicTest.Test_05_BaseName
-22-02-15 23:05:56 00,0943 00,0015 |  |  << mBasicTest.Test_05_BaseName
-22-02-15 23:05:56 00,0948 00,0948 |  << mBasicTest.Regression
-22-02-15 23:05:56 00,0948 00,0948 << Execution Trace result of the mBasic Regression test. Impact on performance (caused by the trace) was 00,0004 seconds!
+22-02-16 11:15:43 Execution trace by 'Common VBA Execution Trace Service' (https://github.com/warbe-maker/Common-VBA-Execution-Trace-Service)
+22-02-16 11:15:43                 >> Regression Test module mTrc
+22-02-16 11:15:43 00,0000         |  >> mBasicTest.Regression
+22-02-16 11:15:43 00,0062         |  |  >> mBasicTest.Test_09_ErrMsg
+22-02-16 11:15:43 00,0071         |  |  |  >> mBasicTest.Test_09_1_ErrMsg
+22-02-16 11:15:43 00,0143 00,0072 |  |  |  << mBasicTest.Test_09_1_ErrMsg !!! Application Error 1  !!! 
+22-02-16 11:15:43 00,0146 00,0083 |  |  << mBasicTest.Test_09_ErrMsg !!! VB-Runtime Error 6  !!! 
+22-02-16 11:15:43 00,0164         |  |  >> mBasicTest.Test_03_ArrayToRange
+22-02-16 11:15:43 00,0249         |  |  |  >> mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0263 00,0014 |  |  |  << mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0336         |  |  |  >> mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0341 00,0005 |  |  |  << mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0503 00,0339 |  |  << mBasicTest.Test_03_ArrayToRange
+22-02-16 11:15:43 00,0511         |  |  >> mBasicTest.Test_02_0_ArrayRemoveItems
+22-02-16 11:15:43 00,0519         |  |  |  >> mBasicTest.Test_02-1_ArrayRemoveItems_Function
+22-02-16 11:15:43 00,0523         |  |  |  |  >> mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0526 00,0004 |  |  |  |  << mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0530         |  |  |  |  >> mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0534 00,0003 |  |  |  |  << mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0539         |  |  |  |  >> mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0545 00,0006 |  |  |  |  << mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0552         |  |  |  |  >> mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0555 00,0004 |  |  |  |  << mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0561         |  |  |  |  >> mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0565 00,0004 |  |  |  |  << mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0569         |  |  |  |  >> mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0573 00,0004 |  |  |  |  << mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0577         |  |  |  |  >> mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0581 00,0004 |  |  |  |  << mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0584 00,0065 |  |  |  << mBasicTest.Test_02-1_ArrayRemoveItems_Function
+22-02-16 11:15:43 00,0592         |  |  |  >> mBasicTest.Test_02_2_ArrayRemoveItems_Error_Conditions
+22-02-16 11:15:43 00,0596         |  |  |  |  >> mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0612 00,0017 |  |  |  |  << mBasic.ArrayRemoveItems !!! Application Error 1  !!! 
+22-02-16 11:15:43 00,0613         |  |  |  |  >> mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0623 00,0010 |  |  |  |  << mBasic.ArrayRemoveItems !!! Application Error 3  !!! 
+22-02-16 11:15:43 00,0623         |  |  |  |  >> mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0633 00,0010 |  |  |  |  << mBasic.ArrayRemoveItems !!! Application Error 4  !!! 
+22-02-16 11:15:43 00,0633         |  |  |  |  >> mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0643 00,0010 |  |  |  |  << mBasic.ArrayRemoveItems !!! Application Error 5  !!! 
+22-02-16 11:15:43 00,0643         |  |  |  |  >> mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0653 00,0010 |  |  |  |  << mBasic.ArrayRemoveItems !!! Application Error 6  !!! 
+22-02-16 11:15:43 00,0653 00,0061 |  |  |  << mBasicTest.Test_02_2_ArrayRemoveItems_Error_Conditions
+22-02-16 11:15:43 00,0657 00,0145 |  |  << mBasicTest.Test_02_0_ArrayRemoveItems
+22-02-16 11:15:43 00,0667         |  |  >> mBasicTest.Test_03_ArrayToRange
+22-02-16 11:15:43 00,0744 00,0077 |  |  << mBasicTest.Test_03_ArrayToRange
+22-02-16 11:15:43 00,0756         |  |  >> mBasicTest.Test_04_ArrayTrimm
+22-02-16 11:15:43 00,0761         |  |  |  >> mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0766 00,0005 |  |  |  << mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0771         |  |  |  >> mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0775 00,0004 |  |  |  << mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0779         |  |  |  >> mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0783 00,0004 |  |  |  << mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0787         |  |  |  >> mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0791 00,0004 |  |  |  << mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0795         |  |  |  >> mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0799 00,0004 |  |  |  << mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0803         |  |  |  >> mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0806 00,0004 |  |  |  << mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0810         |  |  |  >> mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0814 00,0004 |  |  |  << mBasic.ArrayRemoveItems
+22-02-16 11:15:43 00,0818 00,0062 |  |  << mBasicTest.Test_04_ArrayTrimm
+22-02-16 11:15:43 00,0830         |  |  >> mBasicTest.Test_05_BaseName
+22-02-16 11:15:43 00,0856 00,0026 |  |  << mBasicTest.Test_05_BaseName
+22-02-16 11:15:43 00,0865         |  |  >> mBasicTest.Test_05_BaseName
+22-02-16 11:15:43 00,0887 00,0022 |  |  << mBasicTest.Test_05_BaseName
+22-02-16 11:15:43 00,1119 00,1119 |  << mBasicTest.Regression
+22-02-16 11:15:43 00,1119 00,1119 << Regression Test module mTrc
+22-02-16 11:15:43                 Impact on the overall performance (caused by the trace itself): 00,0005 seconds!
+22-02-16 11:15:43 Execution trace by 'Common VBA Execution Trace Service' (https://github.com/warbe-maker/Common-VBA-Execution-Trace-Service)

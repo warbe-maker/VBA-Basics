@@ -214,8 +214,12 @@ Public Sub Regression()
     
     On Error GoTo eh
     
-    mErH.Regression = True
+    '~~ Initialization of a new Trace Log File for this Regression test
+    '~~ ! must be done prior the first BoP !
     mTrc.LogTitle = "Execution Trace result of the mBasic Regression test"
+    mTrc.LogTitle = "Regression Test module mTrc"
+    
+    mErH.Regression = True
     
     BoP ErrSrc(PROC)
     mBasicTest.Test_09_ErrMsg
@@ -231,7 +235,7 @@ Public Sub Regression()
     
 xt: EoP ErrSrc(PROC)
     mErH.Regression = False
-    mBasicTest.RegressionKeepLog
+    mTrc.Dsply
     Exit Sub
 
 eh: Select Case ErrMsg(ErrSrc(PROC))
