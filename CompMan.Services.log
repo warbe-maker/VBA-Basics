@@ -1,39 +1,30 @@
-22-02-17 19:30:07 Update Outdated (by Addin) for Basic.xlsm: 
-22-02-17 19:30:07 -------------------------------------------
-22-02-17 19:30:07 UserForm           fMsg .........: Used Common Component up-to-date
-22-02-17 19:30:07 Standard-Module    mCompManClient: Used Common Component up-to-date
-22-02-17 19:30:07 Standard-Module    mErH .........: Outdated Used Common Component! (Export-Files 'E:\Ablage\Excel VBA\DevAndTest\Common-VBA-Basic-Services\source\mErH.bas' differs from 'E:\Ablage\Excel VBA\DevAndTest\Common-Components\mErH.bas')
-22-02-17 19:30:10                                    DoEvents delayed continuation for 00008 msec)
-22-02-17 19:30:10                                    Workbook saved (DoEvents delayed continuation for 00009 msec)
-22-02-17 19:30:10                                    'mErH' renamed to 'mErH_RenamedByCompMan'
-22-02-17 19:30:10                                    'mErH_RenamedByCompMan' removed (removal is postponed by Excel until process has finished)
-22-02-17 19:30:10                                    'mErH' (re-)imported from 'E:\Ablage\Excel VBA\DevAndTest\Common-Components\mErH.bas'
-22-02-17 19:30:10                                    'mErH' exported to 'E:\Ablage\Excel VBA\DevAndTest\Common-VBA-Basic-Services\source\mErH.bas'
-22-02-17 19:30:10                                    DoEvents delayed continuation for 00024 msec)
-22-02-17 19:30:11                                    Workbook saved (DoEvents delayed continuation for 00008 msec)
-22-02-17 19:30:11                                    Used Common Component renewed/updated by (re-)import of the Raw's Export File (E:\Ablage\Excel VBA\DevAndTest\Common-Components\mErH.bas)
-22-02-17 19:30:11 Standard-Module    mMsg .........: Outdated Used Common Component! (Export-Files 'E:\Ablage\Excel VBA\DevAndTest\Common-VBA-Basic-Services\source\mMsg.bas' differs from 'E:\Ablage\Excel VBA\DevAndTest\Common-Components\mMsg.bas')
-22-02-17 19:30:13                                    DoEvents delayed continuation for 00008 msec)
-22-02-17 19:30:14                                    Workbook saved (DoEvents delayed continuation for 00022 msec)
-22-02-17 19:30:14                                    'mMsg' renamed to 'mMsg_RenamedByCompMan'
-22-02-17 19:30:14                                    'mMsg_RenamedByCompMan' removed (removal is postponed by Excel until process has finished)
-22-02-17 19:30:14                                    'mMsg' (re-)imported from 'E:\Ablage\Excel VBA\DevAndTest\Common-Components\mMsg.bas'
-22-02-17 19:30:14                                    'mMsg' exported to 'E:\Ablage\Excel VBA\DevAndTest\Common-VBA-Basic-Services\source\mMsg.bas'
-22-02-17 19:30:14                                    DoEvents delayed continuation for 00008 msec)
-22-02-17 19:30:14                                    Workbook saved (DoEvents delayed continuation for 00006 msec)
-22-02-17 19:30:14                                    Used Common Component renewed/updated by (re-)import of the Raw's Export File (E:\Ablage\Excel VBA\DevAndTest\Common-Components\mMsg.bas)
-22-02-17 19:30:14 Standard-Module    mTrc .........: Used Common Component up-to-date
-22-02-17 19:32:55 ==========================================
-22-02-17 19:32:55 Export Changed (by Addin) for Basic.xlsm: 
-22-02-17 19:32:55 ------------------------------------------
-22-02-17 19:32:56 UserForm           fMsg .........: Used Common Component code unchanged
-22-02-17 19:32:56 Standard-Module    mBasic .......: Hosted Raw Common Component code modified
-22-02-17 19:32:56                                    Hosted Raw Common Component code modified
-22-02-17 19:32:56                                    Exported, Revision Number increased, Export File copied to 'Common Components Folder'
-22-02-17 19:32:56 Standard-Module    mBasicTest ...: Other component unchanged
-22-02-17 19:32:56 Standard-Module    mCompManClient: Used Common Component code unchanged
-22-02-17 19:32:56 Standard-Module    mErH .........: Used Common Component code unchanged
-22-02-17 19:32:56 Standard-Module    mMsg .........: Used Common Component code unchanged
-22-02-17 19:32:56 Standard-Module    mTrc .........: Used Common Component code unchanged
-22-02-17 19:32:56 Workbook           wbBasic ......: Other component unchanged
-22-02-17 19:32:56 Worksheet CodeName wsBasic ......: Other component unchanged
+22-04-28 16:22:38 Update Outdated (by Addin) for Basic.xlsm: 
+22-04-28 16:22:38 -------------------------------------------
+22-04-28 16:22:38 UserForm           fMsg .........: 16:22:38:700 DoEvents paused the execution for 00008 msecs in 'mService.SaveWbk'
+22-04-28 16:22:39                                    16:22:39:010 DoEvents paused the execution for 00004 msecs in 'mService.SaveWbk'
+22-04-28 16:22:39                                    Outdated Used Common Component! (Export-Files 'E:\Ablage\Excel VBA\DevAndTest\Common-VBA-Basic-Services\source\fMsg.frm' differs from 'E:\Ablage\Excel VBA\DevAndTest\Common-Components\fMsg.frm')
+22-04-28 16:22:42                                    'fMsg' renamed to 'fMsg_RenamedByCompMan'
+22-04-28 16:22:44                                    'fMsg_RenamedByCompMan' removed (removal is postponed by Excel until process has finished)
+22-04-28 16:22:44                                    'fMsg' (re-)imported from 'E:\Ablage\Excel VBA\DevAndTest\Common-Components\fMsg.frm'
+22-04-28 16:22:44                                    'fMsg' exported to 'E:\Ablage\Excel VBA\DevAndTest\Common-VBA-Basic-Services\source\fMsg.frm'
+22-04-28 16:22:46                                    Used Common Component renewed/updated by (re-)import of the Raw's Export File (E:\Ablage\Excel VBA\DevAndTest\Common-Components\fMsg.frm)
+22-04-28 16:22:46 Standard-Module    mCompManClient: Used Common Component up-to-date
+22-04-28 16:22:46 Standard-Module    mErH .........: Outdated Used Common Component! (Export-Files 'E:\Ablage\Excel VBA\DevAndTest\Common-VBA-Basic-Services\source\mErH.bas' differs from 'E:\Ablage\Excel VBA\DevAndTest\Common-Components\mErH.bas')
+22-04-28 16:22:49                                    'mErH' renamed to 'mErH_RenamedByCompMan'
+22-04-28 16:22:49                                    'mErH_RenamedByCompMan' removed (removal is postponed by Excel until process has finished)
+22-04-28 16:22:49                                    'mErH' (re-)imported from 'E:\Ablage\Excel VBA\DevAndTest\Common-Components\mErH.bas'
+22-04-28 16:22:49                                    'mErH' exported to 'E:\Ablage\Excel VBA\DevAndTest\Common-VBA-Basic-Services\source\mErH.bas'
+22-04-28 16:22:51                                    Used Common Component renewed/updated by (re-)import of the Raw's Export File (E:\Ablage\Excel VBA\DevAndTest\Common-Components\mErH.bas)
+22-04-28 16:22:51 Standard-Module    mMsg .........: Used Common Component up-to-date
+22-04-28 16:22:51 Standard-Module    mTrc .........: Used Common Component up-to-date
+22-04-28 16:22:56 ==========================================
+22-04-28 16:22:56 Export Changed (by Addin) for Basic.xlsm: 
+22-04-28 16:22:56 ------------------------------------------
+22-04-28 16:22:56 UserForm           fMsg .........: Unchanged Used Common Component
+22-04-28 16:22:56 Standard-Module    mBasicTest ...: Unchanged component
+22-04-28 16:22:56 Standard-Module    mCompManClient: Unchanged Used Common Component
+22-04-28 16:22:56 Standard-Module    mErH .........: Unchanged Used Common Component
+22-04-28 16:22:56 Standard-Module    mMsg .........: Unchanged Used Common Component
+22-04-28 16:22:57 Standard-Module    mTrc .........: Unchanged Used Common Component
+22-04-28 16:22:57 Workbook           wbBasic ......: Unchanged component
+22-04-28 16:22:57 Worksheet CodeName wsBasic ......: Unchanged component
