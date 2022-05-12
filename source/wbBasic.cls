@@ -16,7 +16,7 @@ Private Sub Workbook_Open()
     '~~ CompMan Workbook_Open service 'UpdateRawClones':
     '~~ Executed by the Addin *) or via the development instance when open
     '~~ *) automatically available only when referenced by the VB-Project
-    mCompManClient.CompManService "UpdateOutdatedCommonComponents", HOSTED_RAWS
+    mCompManClient.CompManService "UpdateOutdatedCommonComponents", HOSTED_RAWS, True
     '~~ ------------------------------------------------------------------
 End Sub
 
