@@ -1,12 +1,13 @@
-22-05-12 19:50:44 01,8206         |  |  >> mCompMan.UpdateOutdatedCommonComponents
-22-05-12 19:50:44 01,8211         |  |  |  >> mCompMan.MaintainPropertiesOfHostedRawCommonComponents
-22-05-12 19:50:44 01,8497 00,0286 |  |  |  << mCompMan.MaintainPropertiesOfHostedRawCommonComponents
-22-05-12 19:50:44 01,8563         |  |  |  >> mUpdate.Outdated
-22-05-12 19:50:44 01,9123         |  |  |  |  >> mService.SaveWbk
-22-05-12 19:50:45 02,4193 00,5070 |  |  |  |  << mService.SaveWbk
-22-05-12 19:50:45 02,5223 00,6661 |  |  |  << mUpdate.Outdated
-22-05-12 19:50:45 02,5393 00,7187 |  |  << mCompMan.UpdateOutdatedCommonComponents
-22-05-12 19:50:45 02,5433 02,5433 |  << mRenew.Run
-22-05-12 19:50:45 02,5433 02,5433 << Update Outdated (by CompMan.xlsb) for Basic.xlsm: 
-22-05-12 19:50:45                 Impact on the overall performance (caused by the trace itself): 00,0040 seconds!
-22-05-12 19:50:45 Execution trace by 'Common VBA Execution Trace Service' (https://github.com/warbe-maker/Common-VBA-Execution-Trace-Service)
+22-05-18 10:52:33 Execution trace by 'Common VBA Execution Trace Service' (https://github.com/warbe-maker/Common-VBA-Execution-Trace-Service)
+22-05-18 10:52:33                 >> Update Outdated (by Addin) for Basic.xlsm: 
+22-05-18 10:52:33 00,0000         |  >> mCompMan.UpdateOutdatedCommonComponents
+22-05-18 10:52:33 00,0264         |  |  >> mCompMan.MaintainPropertiesOfHostedRawCommonComponents
+22-05-18 10:52:33 00,0887 00,0623 |  |  << mCompMan.MaintainPropertiesOfHostedRawCommonComponents
+22-05-18 10:52:33 00,1013         |  |  >> mUpdate.Outdated
+22-05-18 10:52:33 00,1591         |  |  |  >> mService.SaveWbk
+22-05-18 10:52:34 00,7090 00,5498 |  |  |  << mService.SaveWbk
+22-05-18 10:52:34 00,9871 00,8859 |  |  << mUpdate.Outdated
+22-05-18 10:52:34 00,9949 00,9949 |  << mCompMan.UpdateOutdatedCommonComponents
+22-05-18 10:52:34 00,9949 00,9949 << Update Outdated (by Addin) for Basic.xlsm: 
+22-05-18 10:52:34                 Impact on the overall performance (caused by the trace itself): 00,0077 seconds!
+22-05-18 10:52:34 Execution trace by 'Common VBA Execution Trace Service' (https://github.com/warbe-maker/Common-VBA-Execution-Trace-Service)
