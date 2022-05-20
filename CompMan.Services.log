@@ -1,9 +1,4 @@
-22-05-18 10:52:33 Update Outdated (by Addin) for Basic.xlsm: 
-22-05-18 10:52:33 -------------------------------------------
-22-05-18 10:52:33 Standard-Module    mCompManClient: 10:52:33:720 DoEvents paused the execution for 00073 msecs in 'mService.SaveWbk'
-22-05-18 10:52:34                                    10:52:34:190 DoEvents paused the execution for 00003 msecs in 'mService.SaveWbk'
-22-05-18 10:52:34 UserForm           fMsg .........: Used Common Component up-to-date
-22-05-18 10:52:34 Standard-Module    mCompManClient: Used Common Component up-to-date
-22-05-18 10:52:34 Standard-Module    mErH .........: Used Common Component up-to-date
-22-05-18 10:52:34 Standard-Module    mMsg .........: Used Common Component up-to-date
-22-05-18 10:52:34 Standard-Module    mTrc .........: Used Common Component up-to-date
+22-05-20 19:17:09 Update Outdated (by Addin) for Basic.xlsm: 
+22-05-20 19:17:09 -------------------------------------------
+22-05-20 19:17:09 Standard-Module    mCompManClient: 19:17:09:690 DoEvents paused the execution for 00009 msecs in 'mService.SaveWbk'
+22-05-20 19:17:09                                    19:17:09:920 DoEvents paused the execution for 00004 msecs in 'mService.SaveWbk'

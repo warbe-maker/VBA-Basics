@@ -1,13 +1,13 @@
-22-05-18 10:52:33 Execution trace by 'Common VBA Execution Trace Service' (https://github.com/warbe-maker/Common-VBA-Execution-Trace-Service)
-22-05-18 10:52:33                 >> Update Outdated (by Addin) for Basic.xlsm: 
-22-05-18 10:52:33 00,0000         |  >> mCompMan.UpdateOutdatedCommonComponents
-22-05-18 10:52:33 00,0264         |  |  >> mCompMan.MaintainPropertiesOfHostedRawCommonComponents
-22-05-18 10:52:33 00,0887 00,0623 |  |  << mCompMan.MaintainPropertiesOfHostedRawCommonComponents
-22-05-18 10:52:33 00,1013         |  |  >> mUpdate.Outdated
-22-05-18 10:52:33 00,1591         |  |  |  >> mService.SaveWbk
-22-05-18 10:52:34 00,7090 00,5498 |  |  |  << mService.SaveWbk
-22-05-18 10:52:34 00,9871 00,8859 |  |  << mUpdate.Outdated
-22-05-18 10:52:34 00,9949 00,9949 |  << mCompMan.UpdateOutdatedCommonComponents
-22-05-18 10:52:34 00,9949 00,9949 << Update Outdated (by Addin) for Basic.xlsm: 
-22-05-18 10:52:34                 Impact on the overall performance (caused by the trace itself): 00,0077 seconds!
-22-05-18 10:52:34 Execution trace by 'Common VBA Execution Trace Service' (https://github.com/warbe-maker/Common-VBA-Execution-Trace-Service)
+22-05-20 19:17:09 Execution trace by 'Common VBA Execution Trace Service' (https://github.com/warbe-maker/Common-VBA-Execution-Trace-Service)
+22-05-20 19:17:09                 >> Update Outdated (by Addin) for Basic.xlsm: 
+22-05-20 19:17:09 00,0000         >> mCompMan.UpdateOutdatedCommonComponents
+22-05-20 19:17:09 00,0099         |  >> mCompMan.MaintainPropertiesOfHostedRawCommonComponents
+22-05-20 19:17:09 00,0351 00,0252 |  << mCompMan.MaintainPropertiesOfHostedRawCommonComponents
+22-05-20 19:17:09 00,0408         |  >> mRenew.Outdated
+22-05-20 19:17:09 00,0706         |  |  >> mService.SaveWbk
+22-05-20 19:17:09 00,3261 00,2555 |  |  << mService.SaveWbk
+22-05-20 19:17:10 00,4964 00,4557 |  << mRenew.Outdated
+22-05-20 19:17:10 00,5010 00,5010 << mCompMan.UpdateOutdatedCommonComponents
+22-05-20 19:17:10 00,5010 00,5010 << Update Outdated (by Addin) for Basic.xlsm: 
+22-05-20 19:17:10                 Impact on the overall performance (caused by the trace itself): 00,0045 seconds!
+22-05-20 19:17:10 Execution trace by 'Common VBA Execution Trace Service' (https://github.com/warbe-maker/Common-VBA-Execution-Trace-Service)
