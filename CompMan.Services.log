@@ -1,8 +1,33 @@
-22-05-20 21:08:55 Update Outdated (by CompMan.xlsb) for Basic.xlsm: 
-22-05-20 21:08:55 --------------------------------------------------
-22-05-20 21:09:39 ==================================================
-22-05-20 21:09:39 Update Outdated (by CompMan.xlsb) for Basic.xlsm: 
-22-05-20 21:09:39 --------------------------------------------------
-22-05-20 21:10:37 ===========================================
-22-05-20 21:10:37 Update Outdated (by Addin) for Basic.xlsm: 
-22-05-20 21:10:37 -------------------------------------------
+22-07-23 22:14:10 UpdateOutdatedCommonComponents (by CompMan.xlsb) for Basic.xlsm: 
+22-07-23 22:14:10 -----------------------------------------------------------------
+22-07-23 22:14:41 ==========================================================
+22-07-23 22:14:41 ExportChangedComponents (by CompMan.xlsb) for Basic.xlsm: 
+22-07-23 22:14:41 ----------------------------------------------------------
+22-07-23 22:14:41 ==========================================================
+22-07-23 22:14:41 ExportChangedComponents (by CompMan.xlsb) for Basic.xlsm: 
+22-07-23 22:14:41 ----------------------------------------------------------
+22-07-23 22:14:42 UserForm                                                                                 fMsg .........: Unchanged Used Common Component
+22-07-23 22:14:42 Standard-Module                                                                          mBasic .......: Hosted Raw Common Component code modified
+22-07-23 22:14:42                                                                                                          Code modified of Hosted Raw Common Component
+22-07-23 22:14:42                                                                                                          Exported, Revision Number increased, Export File copied to 'Common Components Folder'
+22-07-23 22:14:42 Standard-Module                                                                          mBasicTest ...: Unchanged component
+22-07-23 22:14:42 Standard-Module                                                                          mCompManClient: Unchanged Used Common Component
+22-07-23 22:14:42 Standard-Module                                                                          mErH .........: Unchanged Used Common Component
+22-07-23 22:14:42 Standard-Module                                                                          mMsg .........: Unchanged Used Common Component
+22-07-23 22:14:42 Standard-Module                                                                          mTrc .........: Unchanged Used Common Component
+22-07-23 22:14:42 Workbook                                                                                 wbBasic ......: Unchanged component
+22-07-23 22:14:42 Worksheet                                                                                wsBasic ......: Unchanged component
+22-07-23 22:15:47 ==========================================================
+22-07-23 22:15:47 ExportChangedComponents (by CompMan.xlsb) for Basic.xlsm: 
+22-07-23 22:15:47 ----------------------------------------------------------
+22-07-23 22:15:47 ==========================================================
+22-07-23 22:15:47 ExportChangedComponents (by CompMan.xlsb) for Basic.xlsm: 
+22-07-23 22:15:47 ----------------------------------------------------------
+22-07-23 22:15:48 UserForm                                                                                 fMsg .........: Unchanged Used Common Component
+22-07-23 22:15:48 Standard-Module                                                                          mBasicTest ...: Modified code exported
+22-07-23 22:15:48 Standard-Module                                                                          mCompManClient: Unchanged Used Common Component
+22-07-23 22:15:48 Standard-Module                                                                          mErH .........: Unchanged Used Common Component
+22-07-23 22:15:48 Standard-Module                                                                          mMsg .........: Unchanged Used Common Component
+22-07-23 22:15:48 Standard-Module                                                                          mTrc .........: Unchanged Used Common Component
+22-07-23 22:15:48 Workbook                                                                                 wbBasic ......: Unchanged component
+22-07-23 22:15:48 Worksheet                                                                                wsBasic ......: Unchanged component
