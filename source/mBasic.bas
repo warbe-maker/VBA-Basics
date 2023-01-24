@@ -203,8 +203,8 @@ Public Function AppIsInstalled(ByVal exe As String) As Boolean
     AppIsInstalled = Environ$(i) Like "*" & exe & "*"
 End Function
 
-Public Function ArrayCompare(ByVal ac_a1 As Variant, _
-                             ByVal ac_a2 As Variant, _
+Public Function ArrayCompare(ByVal ac_v1 As Variant, _
+                             ByVal ac_v2 As Variant, _
                     Optional ByVal ac_stop_after As Long = 0, _
                     Optional ByVal ac_id1 As String = vbNullString, _
                     Optional ByVal ac_id2 As String = vbNullString, _
@@ -212,7 +212,7 @@ Public Function ArrayCompare(ByVal ac_a1 As Variant, _
                     Optional ByVal ac_ignore_empty As Boolean = True) As Dictionary
 ' --------------------------------------------------------------------------
 ' Returns a Dictionary with n (ac_stop_after) lines which are different
-' between array 1 (ac_a1) and array 2 (ac_a2) with the line number as the
+' between array 1 (ac_v1) and array 2 (ac_v2) with the line number as the
 ' key and the two different lines as item in the form: '<line>'vbLf'<line>'
 ' When no differnece is encountered the returned Dictionary is empty.
 ' When no ac_stop_after <> 0 is provided all lines different are returned
@@ -228,27 +228,27 @@ Public Function ArrayCompare(ByVal ac_a1 As Variant, _
     
     If ac_ignore_case Then lMethod = vbTextCompare Else lMethod = vbBinaryCompare
     
-    If Not mBasic.ArrayIsAllocated(ac_a1) And mBasic.ArrayIsAllocated(ac_a2) Then
-        If ac_ignore_empty Then mBasic.ArrayTrimm ac_a2
-        For i = LBound(ac_a2) To UBound(ac_a2)
-            dct.Add i + 1, "'" & ac_a2(i) & "'" & vbLf
+    If Not mBasic.ArrayIsAllocated(ac_v1) And mBasic.ArrayIsAllocated(ac_v2) Then
+        If ac_ignore_empty Then mBasic.ArrayTrimm ac_v2
+        For i = LBound(ac_v2) To UBound(ac_v2)
+            dct.Add i + 1, "'" & ac_v2(i) & "'" & vbLf
         Next i
-    ElseIf mBasic.ArrayIsAllocated(ac_a1) And Not mBasic.ArrayIsAllocated(ac_a2) Then
-        If ac_ignore_empty Then mBasic.ArrayTrimm ac_a1
-        For i = LBound(ac_a1) To UBound(ac_a1)
-            dct.Add i + 1, "'" & ac_a1(i) & "'" & vbLf
+    ElseIf mBasic.ArrayIsAllocated(ac_v1) And Not mBasic.ArrayIsAllocated(ac_v2) Then
+        If ac_ignore_empty Then mBasic.ArrayTrimm ac_v1
+        For i = LBound(ac_v1) To UBound(ac_v1)
+            dct.Add i + 1, "'" & ac_v1(i) & "'" & vbLf
         Next i
-    ElseIf Not mBasic.ArrayIsAllocated(ac_a1) And Not mBasic.ArrayIsAllocated(ac_a2) Then
+    ElseIf Not mBasic.ArrayIsAllocated(ac_v1) And Not mBasic.ArrayIsAllocated(ac_v2) Then
         GoTo xt
     End If
     
-    If ac_ignore_empty Then mBasic.ArrayTrimm ac_a1
-    If ac_ignore_empty Then mBasic.ArrayTrimm ac_a2
+    If ac_ignore_empty Then mBasic.ArrayTrimm ac_v1
+    If ac_ignore_empty Then mBasic.ArrayTrimm ac_v2
     
     l = 0
-    For i = LBound(ac_a1) To Min(UBound(ac_a1), UBound(ac_a2))
-        If StrComp(ac_a1(i), ac_a2(i), lMethod) <> 0 Then
-            dct.Add i + 1, "'" & ac_a1(i) & "'" & vbLf & "'" & ac_a2(i) & "'"
+    For i = LBound(ac_v1) To Min(UBound(ac_v1), UBound(ac_v2))
+        If StrComp(ac_v1(i), ac_v2(i), lMethod) <> 0 Then
+            dct.Add i + 1, "'" & ac_v1(i) & "'" & vbLf & "'" & ac_v2(i) & "'"
             l = l + 1
             If ac_stop_after <> 0 And l >= ac_stop_after Then
                 GoTo xt
@@ -256,18 +256,18 @@ Public Function ArrayCompare(ByVal ac_a1 As Variant, _
         End If
     Next i
     
-    If UBound(ac_a1) < UBound(ac_a2) Then
-        For i = UBound(ac_a1) + 1 To UBound(ac_a2)
-            dct.Add i + 1, "''" & vbLf & " '" & ac_a2(i) & "'"
+    If UBound(ac_v1) < UBound(ac_v2) Then
+        For i = UBound(ac_v1) + 1 To UBound(ac_v2)
+            dct.Add i + 1, "''" & vbLf & " '" & ac_v2(i) & "'"
             l = l + 1
             If ac_stop_after <> 0 And l >= ac_stop_after Then
                 GoTo xt
             End If
         Next i
         
-    ElseIf UBound(ac_a2) < UBound(ac_a1) Then
-        For i = UBound(ac_a2) + 1 To UBound(ac_a1)
-            dct.Add i + 1, "'" & ac_a1(i) & "'" & vbLf & "''"
+    ElseIf UBound(ac_v2) < UBound(ac_v1) Then
+        For i = UBound(ac_v2) + 1 To UBound(ac_v1)
+            dct.Add i + 1, "'" & ac_v1(i) & "'" & vbLf & "''"
             l = l + 1
             If ac_stop_after <> 0 And l >= ac_stop_after Then
                 GoTo xt
@@ -284,37 +284,71 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Function
 
-Public Function ArrayDiffers(ByVal a1 As Variant, _
-                             ByVal a2 As Variant) As Boolean
+Public Function ArrayDiffers(ByVal ad_v1 As Variant, _
+                             ByVal ad_v2 As Variant, _
+                    Optional ByVal ad_ignore_empty_items As Boolean = False, _
+                    Optional ByVal ad_comp_mode As VbCompareMethod = vbTextCompare) As Boolean
 ' ----------------------------------------------------------
-' Returns TRUE when array (a1) differs from array (a2).
+' Returns TRUE when array (ad_v1) differs from array (ad_v2).
 ' ----------------------------------------------------------
     Const PROC  As String = "ArrayDiffers"
     
     Dim i       As Long
+    Dim j       As Long
     Dim va()    As Variant
-
+    Dim s1      As String
+    Dim s2      As String
+    
     On Error GoTo eh
     
-    If Not mBasic.ArrayIsAllocated(a1) And mBasic.ArrayIsAllocated(a2) Then
-        va = a2
-    ElseIf mBasic.ArrayIsAllocated(a1) And Not mBasic.ArrayIsAllocated(a2) Then
-        va = a1
-    ElseIf Not mBasic.ArrayIsAllocated(a1) And Not mBasic.ArrayIsAllocated(a2) Then
+    If Not mBasic.ArrayIsAllocated(ad_v1) And mBasic.ArrayIsAllocated(ad_v2) Then
+        va = ad_v2
+    ElseIf mBasic.ArrayIsAllocated(ad_v1) And Not mBasic.ArrayIsAllocated(ad_v2) Then
+        va = ad_v1
+    ElseIf Not mBasic.ArrayIsAllocated(ad_v1) And Not mBasic.ArrayIsAllocated(ad_v2) Then
         GoTo xt
     End If
+
+    '~~ Leading and trailing empty items are ignored by default
+    mBasic.ArrayTrimm ad_v1
+    mBasic.ArrayTrimm ad_v2
     
-    On Error Resume Next
-    ArrayDiffers = Join(a1) <> Join(a2)
-    If Err.Number = 0 Then GoTo xt
-    
-    '~~ At least one of the joins resulted in a string exeeding the maximum possible lenght
-    For i = LBound(a1) To Min(UBound(a1), UBound(a2))
-        If a1(i) <> a2(i) Then
-            ArrayDiffers = True
-            Exit Function
+    If Not ad_ignore_empty_items Then
+        On Error Resume Next
+        If Not ad_ignore_empty_items Then
+            On Error Resume Next
+            ArrayDiffers = Join(ad_v1) <> Join(ad_v2)
+            If Err.Number = 0 Then GoTo xt
+            '~~ At least one of the joins resulted in a string exeeding the maximum possible lenght
+            For i = LBound(ad_v1) To Min(UBound(ad_v1), UBound(ad_v2))
+                If ad_v1(i) <> ad_v2(i) Then
+                    ArrayDiffers = True
+                    Exit Function
+                End If
+            Next i
         End If
-    Next i
+    Else
+        i = LBound(ad_v1)
+        j = LBound(ad_v2)
+        For i = i To mBasic.Min(UBound(ad_v1), UBound(ad_v2))
+            While Len(ad_v1(i)) = 0 And i + 1 <= UBound(ad_v1)
+                i = i + 1
+            Wend
+            While Len(ad_v2(j)) = 0 And j + 1 <= UBound(ad_v2)
+                j = j + 1
+            Wend
+            If i <= UBound(ad_v1) And j <= UBound(ad_v2) Then
+                If StrComp(ad_v1(i), ad_v2(j), ad_comp_mode) <> 0 Then
+                    ArrayDiffers = True
+                    GoTo xt
+                End If
+            End If
+            j = j + 1
+        Next i
+        If j < UBound(ad_v2) Then
+            ArrayDiffers = True
+        End If
+    End If
     
 xt: Exit Function
 
@@ -381,7 +415,6 @@ Public Sub ArrayRemoveItems(ByRef ri_va As Variant, _
     Dim i                   As Long
     Dim iNewUBound          As Long
     
-    BoP ErrSrc(PROC)
     If Not mBasic.ArrayIsAllocated(ri_va) Then
         Err.Raise AppErr(1), ErrSrc(PROC), "Array not provided!"
     Else
@@ -424,8 +457,7 @@ Public Sub ArrayRemoveItems(ByRef ri_va As Variant, _
     If iNewUBound < 0 Then Erase a Else ReDim Preserve a(LBound(a) To iNewUBound)
     ri_va = a
     
-xt: EoP ErrSrc(PROC)
-    Exit Sub
+xt: Exit Sub
 
 eh: Select Case ErrMsg(ErrSrc(PROC))
         Case vbYes: Stop: Resume
@@ -510,12 +542,15 @@ Public Function BaseName(ByVal v As Variant) As String
     
     On Error GoTo eh
     Dim fso As New FileSystemObject
+    Dim fle As File
     
     With fso
         Select Case TypeName(v)
             Case "String":      BaseName = .GetBaseName(v)
             Case "Workbook":    BaseName = .GetBaseName(v.FullName)
-            Case "File":        BaseName = .GetBaseName(v.ShortName)
+            Case "File"
+                Set fle = v
+                BaseName = .GetBaseName(fle.Name)
             Case Else:          Err.Raise AppErr(1), ErrSrc(PROC), "The parameter (v) is neither a string nor a File or Workbook object (TypeName = '" & TypeName(v) & "')!"
         End Select
     End With
@@ -618,7 +653,7 @@ Public Sub EoC(ByVal eoc_id As String, ParamArray b_arguments() As Variant)
 ' ------------------------------------------------------------------------------
     Dim s As String: If UBound(b_arguments) >= 0 Then s = Join(b_arguments, ",")
 #If ExecTrace = 1 Then
-    mTrc.BoC eoc_id, s
+    mTrc.EoC eoc_id, s
 #End If
 End Sub
 

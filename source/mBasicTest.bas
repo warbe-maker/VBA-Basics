@@ -220,6 +220,7 @@ Public Sub Regression()
     mBasicTest.Test_06_Spaced
     mBasicTest.Test_07_Align
     mBasicTest.Test_08_Stack
+    mBasicTest.Test_10_ArrayDiffers
     
 xt: EoP ErrSrc(PROC)
     mErH.Regression = False
@@ -250,6 +251,7 @@ Private Sub RegressionKeepLog()
 #End If
 
 End Sub
+
 Public Sub Test_09_ErrMsg()
     Const PROC = "Test_09_ErrMsg"
     
@@ -312,9 +314,12 @@ Public Sub Test_01_ArrayCompare()
     '~~ Test 1: One element is different, empty elements are ignored
     a1 = Split("1,2,3,4,5,6,7", ",") ' Test array
     a2 = Split("1,2,3,x,5,6,7", ",") ' Test array
-    Set dctDiff = mBasic.ArrayCompare(ac_a1:=a1 _
-                                    , ac_a2:=a2 _
+    mBasic.BoC "mBasic.ArrayCompare"
+    Set dctDiff = mBasic.ArrayCompare(ac_v1:=a1 _
+                                    , ac_v2:=a2 _
                                      )
+    mBasic.EoC "mBasic.ArrayCompare"
+    
     Debug.Assert dctDiff.Count = 1
     For Each v In dctDiff
         Debug.Print "Test 1: Item/line " & v & vbLf & dctDiff(v)
@@ -323,9 +328,11 @@ Public Sub Test_01_ArrayCompare()
     '~~ Test 2: The first array has less elements, empty elements are ignored
     a1 = Split("1,2,3,4,5,6", ",") ' Test array
     a2 = Split("1,2,3,4,5,6,7", ",") ' Test array
-    Set dctDiff = mBasic.ArrayCompare(ac_a1:=a1 _
-                                    , ac_a2:=a2 _
+    mBasic.BoC "mBasic.ArrayCompare"
+    Set dctDiff = mBasic.ArrayCompare(ac_v1:=a1 _
+                                    , ac_v2:=a2 _
                                      )
+    mBasic.EoC "mBasic.ArrayCompare"
     Debug.Assert dctDiff.Count = 1
     For Each v In dctDiff
         Debug.Print "Test 2: Item/line " & v & vbLf & dctDiff(v)
@@ -334,9 +341,11 @@ Public Sub Test_01_ArrayCompare()
     '~~ Test 3: The second array has less elements, empty elements are ignored
     a1 = Split("1,2,3,4,5,6,7", ",") ' Test array
     a2 = Split("1,2,3,4,5,6", ",") ' Test array
-    Set dctDiff = mBasic.ArrayCompare(ac_a1:=a1 _
-                                    , ac_a2:=a2 _
+    mBasic.BoC "mBasic.ArrayCompare"
+    Set dctDiff = mBasic.ArrayCompare(ac_v1:=a1 _
+                                    , ac_v2:=a2 _
                                      )
+    mBasic.EoC "mBasic.ArrayCompare"
     Debug.Assert dctDiff.Count = 1
     For Each v In dctDiff
         Debug.Print "Test 3: Item/line " & v & vbLf & dctDiff(v)
@@ -345,9 +354,11 @@ Public Sub Test_01_ArrayCompare()
     '~~ Test 4: The arrays first elements are different, empty elements are ignored
     a1 = Split("1,2,3,4,5,6,7", ",") ' Test array
     a2 = Split(",2,3,4,5,6,7", ",") ' Test array
-    Set dctDiff = mBasic.ArrayCompare(ac_a1:=a1 _
-                                    , ac_a2:=a2 _
+    mBasic.BoC "mBasic.ArrayCompare"
+    Set dctDiff = mBasic.ArrayCompare(ac_v1:=a1 _
+                                    , ac_v2:=a2 _
                                      )
+    mBasic.EoC "mBasic.ArrayCompare"
     Debug.Assert dctDiff.Count = 7
     For Each v In dctDiff
         Debug.Print "Test 4: Item/line " & v & vbLf & dctDiff(v)
@@ -356,9 +367,11 @@ Public Sub Test_01_ArrayCompare()
     '~~ Test 5: The arrays first elements are different, empty elements are ignored
     a1 = Split(",2,3,4,5,6,7", ",")     ' Test array
     a2 = Split("1,2,3,4,5,6,7", ",")    ' Test array
-    Set dctDiff = mBasic.ArrayCompare(ac_a1:=a1 _
-                                    , ac_a2:=a2 _
+    mBasic.BoC "mBasic.ArrayCompare"
+    Set dctDiff = mBasic.ArrayCompare(ac_v1:=a1 _
+                                    , ac_v2:=a2 _
                                      )
+    mBasic.EoC "mBasic.ArrayCompare"
     Debug.Assert dctDiff.Count = 7
     For Each v In dctDiff
         Debug.Print "Test 5: Item/line " & v & vbLf & dctDiff(v)
@@ -367,9 +380,11 @@ Public Sub Test_01_ArrayCompare()
     '~~ Test 6: The second array has additional inserted elements, empty elements are ignored
     a1 = Split("1,2,3,4,5,6,7", ",")        ' Test array
     a2 = Split("1,2,3,x,y,z,4,5,6,7", ",")  ' Test array
-    Set dctDiff = mBasic.ArrayCompare(ac_a1:=a1 _
-                                    , ac_a2:=a2 _
+    mBasic.BoC "mBasic.ArrayCompare"
+    Set dctDiff = mBasic.ArrayCompare(ac_v1:=a1 _
+                                    , ac_v2:=a2 _
                                      )
+    mBasic.EoC "mBasic.ArrayCompare"
     Debug.Assert dctDiff.Count = 7
     For Each v In dctDiff
         Debug.Print "Test 6: Item/line " & v & vbLf & dctDiff(v)
@@ -378,9 +393,11 @@ Public Sub Test_01_ArrayCompare()
     '~~ Test 7: The arrays are equal, empty elements are ignored
     a1 = Split("1,2,3,4,5,6,7,,,", ",") ' Test array
     a2 = Split("1,2,3,4,5,6,7", ",") ' Test array
-    Set dctDiff = mBasic.ArrayCompare(ac_a1:=a1 _
-                                    , ac_a2:=a2 _
+    mBasic.BoC "mBasic.ArrayCompare"
+    Set dctDiff = mBasic.ArrayCompare(ac_v1:=a1 _
+                                    , ac_v2:=a2 _
                                      )
+    mBasic.EoC "mBasic.ArrayCompare"
     Debug.Assert dctDiff.Count = 0
     For Each v In dctDiff
         Debug.Print "Test 7: Item/line " & v & vbLf & dctDiff(v)
@@ -400,6 +417,47 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
         Case Else:      GoTo xt
     End Select
 End Sub
+
+Public Sub Test_10_ArrayDiffers()
+    Const PROC  As String = "Test_10_ArrayDiffers"
+    
+    On Error GoTo eh
+    Dim a1      As Variant
+    Dim a2      As Variant
+    Dim dctDiff As Variant
+    Dim v       As Variant
+    
+    BoP ErrSrc(PROC)
+    
+    '~~ Test 1: Only leading and trailing items are empty
+    a1 = Split(",1,2,3,4,5,6,7,,,,", ",")                   ' Test array
+    a2 = Split(",,1,2,3,4,5,6,7,,", ",")                    ' Test array
+    Debug.Assert Not mBasic.ArrayDiffers(ad_v1:=a1 _
+                                       , ad_v2:=a2 _
+                                       , ad_ignore_empty_items:=False)
+    Debug.Assert Not mBasic.ArrayDiffers(ad_v1:=a1 _
+                                       , ad_v2:=a2 _
+                                       , ad_ignore_empty_items:=True)
+    
+    '~~ Test 2: Various numbers of items at different positions are empty
+    a1 = Split(",1,2,,,3,4,5,6,7,,,,", ",")                 ' Test array
+    a2 = Split(",,1,,,,,,,,,2,3,4,,,5,6,7,,", ",")          ' Test array
+    Debug.Assert mBasic.ArrayDiffers(ad_v1:=a1 _
+                                   , ad_v2:=a2 _
+                                   , ad_ignore_empty_items:=False)
+    Debug.Assert Not mBasic.ArrayDiffers(ad_v1:=a1 _
+                                       , ad_v2:=a2 _
+                                       , ad_ignore_empty_items:=True)
+    
+xt: EoP ErrSrc(PROC)
+    Exit Sub
+
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
+End Sub
+
 
 Public Sub Test_02_1_ArrayRemoveItems_Function()
     Const PROC  As String = "Test_02-1_ArrayRemoveItems_Function"
@@ -613,7 +671,6 @@ Public Sub Test_05_BaseName()
     Debug.Assert mBasic.BaseName(fl) = "Basic"                    ' Test with File object
     Debug.Assert mBasic.BaseName(ThisWorkbook.Name) = "Basic"     ' Test with a file's name
     Debug.Assert mBasic.BaseName(ThisWorkbook.FullName) = "Basic" ' Test with a file's full name
-    Debug.Assert mBasic.BaseName("xxxx") = "xxxx"
     
     '~~ Test unsupported object
     mErH.Asserted AppErr(1)

@@ -117,7 +117,7 @@ Public Type TypeMsgText
 End Type
 
 Public Type TypeMsgSect:    Label As TypeMsgLabel:  Text As TypeMsgText:    End Type
-Public Type TypeMsg:        Section(1 To 4) As TypeMsgSect:                 End Type
+Public Type TypeMsg:        Section(1 To 8) As TypeMsgSect:                 End Type
 
 Public Enum enStartupPosition     ' ---------------------------
     enManual = 0                  ' Used to position the
@@ -243,7 +243,7 @@ Public Sub ButtonAppRun(ByRef bar_dct As Dictionary, _
     For Each v In bar_arguments
         If TypeName(v) = "Error" Then
             Err.Raise Number:=AppErr(1) _
-                    , source:=ErrSrc(PROC) _
+                    , Source:=ErrSrc(PROC) _
                     , Description:="The ParamArray argument (bar_arguments) contains empty elements but empty elements " & _
                                    "are not supported/possible!" & "||" & _
                                    "Application.Run supports only positional but not named arguments. When only some of " & _
@@ -715,7 +715,7 @@ Public Function ErrMsg(ByVal err_source As String, _
     '~~ Obtain error information from the Err object for any argument not provided
     If err_number = 0 Then err_number = Err.Number
     If err_line = 0 Then err_line = Erl
-    If err_source = vbNullString Then err_source = Err.source
+    If err_source = vbNullString Then err_source = Err.Source
     If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
     If err_dscrptn = vbNullString Then err_dscrptn = "--- No error description available ---"
         
@@ -1207,7 +1207,7 @@ Private Sub ShowAtRange(ByVal sar_form As Object, _
     ConvertPixelsToPoints PosLeft, PosTop, PosLeft, PosTop
 
     With sar_form
-       .StartupPosition = 0
+       .StartUpPosition = 0
        .Left = PosLeft
        .Top = PosTop
     End With
