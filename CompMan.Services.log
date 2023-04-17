@@ -1,13 +1,13 @@
-23-04-11 19:50:32 Export Changed Components (by Add-in) for Basic.xlsm: 
-23-04-11 19:50:32 ------------------------------------------------------
-23-04-11 19:50:33 UserForm        fMsg .........: Unchanged Used Common Component
-23-04-11 19:50:33 Standard-Module mBasic .......: Hosted Raw Common Component code modified
-23-04-11 19:50:33                                 Code modified of Hosted Raw Common Component
-23-04-11 19:50:33                                 Exported, Revision Number increased, Export File copied to 'Common Components Folder'
-23-04-11 19:50:33 Standard-Module mBasicTest ...: Unchanged component
-23-04-11 19:50:33 Standard-Module mCompManClient: Unchanged Used Common Component
-23-04-11 19:50:33 Standard-Module mErH .........: Unchanged Used Common Component
-23-04-11 19:50:33 Standard-Module mMsg .........: Unchanged Used Common Component
-23-04-11 19:50:33 Standard-Module mTrc .........: Unchanged Used Common Component
-23-04-11 19:50:33 Workbook        wbBasic ......: Unchanged component
-23-04-11 19:50:33 Worksheet       wsBasic ......: Unchanged component
+23-04-15 15:13:54 Export Changed Components (by CompMan.xlsb) for Basic.xlsm: 
+23-04-15 15:13:54 ------------------------------------------------------------
+23-04-15 15:13:55 UserForm        fMsg .........: Unchanged Used Common Component
+23-04-15 15:13:55 Standard-Module mBasic .......: Hosted Raw Common Component code modified
+23-04-15 15:13:55                                 Code modified of Hosted Raw Common Component
+23-04-15 15:13:55                                 Exported, Revision Number increased, Export File copied to 'Common Components Folder'
+23-04-15 15:13:55 Standard-Module mBasicTest ...: Unchanged component
+23-04-15 15:13:55 Standard-Module mCompManClient: Unchanged Used Common Component
+23-04-15 15:13:55 Standard-Module mErH .........: Unchanged Used Common Component
+23-04-15 15:13:55 Standard-Module mMsg .........: Unchanged Used Common Component
+23-04-15 15:13:55 Standard-Module mTrc .........: Unchanged Used Common Component
+23-04-15 15:13:55 Workbook        wbBasic ......: Unchanged component
+23-04-15 15:13:55 Worksheet       wsBasic ......: Unchanged component

@@ -1,6 +1,7 @@
 Attribute VB_Name = "mBasicTest"
 Option Private Module
 Option Explicit
+
 ' ----------------------------------------------------------------------------
 ' Standard Module mTest: Dedicate for the test of mBasic procedures.
 '
@@ -17,8 +18,6 @@ Option Explicit
 '
 ' W. Rauschenberger, Berlin Now 2021
 ' ----------------------------------------------------------------------------
-Dim dctTest As Dictionary
-
 Private Property Get ErrSrc(Optional ByVal s As String) As String:  ErrSrc = "mBasicTest." & s:  End Property
 
 Private Sub BoP(ByVal b_proc As String, ParamArray b_arguments() As Variant)
@@ -46,15 +45,6 @@ Private Sub BoP(ByVal b_proc As String, ParamArray b_arguments() As Variant)
 #End If
 End Sub
 
-Private Sub EnvironmentVariables()
-Dim i As Long
-    For i = 1 To 100
-        On Error Resume Next
-        Debug.Print i & ". : " & VBA.Environ$(i) & """"
-        If Err.Number <> 0 Then Exit For
-    Next i
-End Sub
-
 Private Sub EoP(ByVal e_proc As String, _
        Optional ByVal e_inf As String = vbNullString)
 ' ------------------------------------------------------------------------------
@@ -79,64 +69,23 @@ Private Sub EoP(ByVal e_proc As String, _
 #End If
 End Sub
 
-Public Function ErrMsg(ByVal err_source As String, _
-              Optional ByVal err_no As Long = 0, _
-              Optional ByVal err_dscrptn As String = vbNullString, _
-              Optional ByVal err_line As Long = 0) As Variant
+Public Function ErrMsg(ByVal err_src As String, _
+              Optional ByVal err_dsc As String = vbNullString) As Variant
 ' ------------------------------------------------------------------------------
-' Universal error message display service. Displays a debugging option button
-' when the Conditional Compile Argument 'Debugging = 1' and an optional
-' additional "About the error:" section when information is concatenated with
-' the error message by two vertical bars (||).
+' Universal error message including a debugging option button (when Conditional
+' Compile Argument 'Debugging = 1') and an optional additional "About:" section
+' when an error description argument (err_dsc) is provided with an additional
+' string concatenated by two vertical bars (||).
 '
-' May be copied as Private Function into any module. Considers the Common VBA
-' Message Service and the Common VBA Error Services as optional components.
-' When neither is installed the error message is displayed by the VBA.MsgBox.
-'
-' Usage: Example with the Conditional Compile Argument 'Debugging = 1'
-'
-'        Private/Public <procedure-name>
-'            Const PROC = "<procedure-name>"
-'
-'            On Error Goto eh
-'            ....
-'        xt: Exit Sub/Function/Property
-'
-'        eh: Select Case ErrMsg(ErrSrc(PROC))
-'               Case vbResume:  Stop: Resume
-'               Case Else:      GoTo xt
-'            End Select
-'        End Sub/Function/Property
-'
-' Note:  The above may seem to be a lot of code but will be a godsend in case
-'        of an error!
-'
-' Uses:
-' - AppErr For programmed application errors (Err.Raise AppErr(n), ....) to
-'          turn tem into negative and in the error mesaage back into a positive
-'          number.
-' - ErrSrc To provide an unambigous procedure name - prefixed by the module name
-'
-' W. Rauschenberger Berlin, Nov 2021
-'
-' See:
-' https://warbe-maker.github.io/vba/common/2022/02/15/Personal-and-public-Common-Components.html
+' Uses: AppErr  For programmed application errors (Err.Raise AppErr(n), ....)
+'               to turn them into negative and in the error message back into
+'               its origin positive number.
+'       ErrSrc  To provide an unambiguous procedure name prefixed with the
+'               module's name.
 ' ------------------------------------------------------------------------------
-#If ErHComp = 1 Then
-    '~~ When Common VBA Error Services (mErH) is availabel in the VB-Project
-    '~~ (which includes the mMsg component) the mErh.ErrMsg service is invoked.
-    ErrMsg = mErH.ErrMsg(err_source, err_no, err_dscrptn, err_line): GoTo xt
-#ElseIf MsgComp = 1 Then
-    '~~ When (only) the Common Message Service (mMsg, fMsg) is available in the
-    '~~ VB-Project, mMsg.ErrMsg is invoked for the display of the error message.
-    ErrMsg = mMsg.ErrMsg(err_source, err_no, err_dscrptn, err_line): GoTo xt
-#End If
-    '~~ When neither of the Common Component is available in the VB-Project
-    '~~ the error message is displayed by means of the VBA.MsgBox
     Dim ErrBttns    As Variant
     Dim ErrAtLine   As String
     Dim ErrDesc     As String
-    Dim ErrLine     As Long
     Dim ErrNo       As Long
     Dim ErrSrc      As String
     Dim ErrText     As String
@@ -145,39 +94,37 @@ Public Function ErrMsg(ByVal err_source As String, _
     Dim ErrAbout    As String
         
     '~~ Obtain error information from the Err object for any argument not provided
-    If err_no = 0 Then err_no = Err.Number
-    If err_line = 0 Then ErrLine = Erl
-    If err_source = vbNullString Then err_source = Err.Source
-    If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
-    If err_dscrptn = vbNullString Then err_dscrptn = "--- No error description available ---"
+    If err_src = vbNullString Then err_src = Err.source
+    If err_dsc = vbNullString Then err_dsc = Err.Description
+    If err_dsc = vbNullString Then err_dsc = "--- No error description available ---"
     
     '~~ Consider extra information is provided with the error description
-    If InStr(err_dscrptn, "||") <> 0 Then
-        ErrDesc = Split(err_dscrptn, "||")(0)
-        ErrAbout = Split(err_dscrptn, "||")(1)
+    If InStr(err_dsc, "||") <> 0 Then
+        ErrDesc = Split(err_dsc, "||")(0)
+        ErrAbout = Split(err_dsc, "||")(1)
     Else
-        ErrDesc = err_dscrptn
+        ErrDesc = err_dsc
     End If
     
     '~~ Determine the type of error
-    Select Case err_no
+    Select Case Err.Number
         Case Is < 0
-            ErrNo = AppErr(err_no)
+            ErrNo = AppErr(Err.Number)
             ErrType = "Application Error "
         Case Else
-            ErrNo = err_no
-            If err_dscrptn Like "*DAO*" _
-            Or err_dscrptn Like "*ODBC*" _
-            Or err_dscrptn Like "*Oracle*" _
+            ErrNo = Err.Number
+            If err_dsc Like "*DAO*" _
+            Or err_dsc Like "*ODBC*" _
+            Or err_dsc Like "*Oracle*" _
             Then ErrType = "Database Error " _
             Else ErrType = "VB Runtime Error "
     End Select
     
-    If err_source <> vbNullString Then ErrSrc = " in: """ & err_source & """"   ' assemble ErrSrc from available information"
-    If err_line <> 0 Then ErrAtLine = " at line " & err_line                    ' assemble ErrAtLine from available information
-    ErrTitle = Replace(ErrType & ErrNo & ErrSrc & ErrAtLine, "  ", " ")         ' assemble ErrTitle from available information
+    If err_src <> vbNullString Then ErrSrc = " in: """ & err_src & """" ' assemble ErrSrc from available information"
+    If Erl <> 0 Then ErrAtLine = " at line " & Erl                      ' assemble ErrAtLine from available information
+    ErrTitle = Replace(ErrType & ErrNo & ErrSrc & ErrAtLine, "  ", " ") ' assemble ErrTitle from available information
        
-    ErrText = "Error: " & vbLf & ErrDesc & vbLf & vbLf & "Source: " & vbLf & err_source & ErrAtLine
+    ErrText = "Error: " & vbLf & ErrDesc & vbLf & vbLf & "Source: " & vbLf & err_src & ErrAtLine
     If ErrAbout <> vbNullString Then ErrText = ErrText & vbLf & vbLf & "About: " & vbLf & ErrAbout
     
 #If Debugging Then
@@ -187,7 +134,7 @@ Public Function ErrMsg(ByVal err_source As String, _
     ErrBttns = vbCritical
 #End If
     ErrMsg = MsgBox(Title:=ErrTitle, Prompt:=ErrText, Buttons:=ErrBttns)
-xt:
+
 End Function
 
 Public Sub Regression()
@@ -206,7 +153,6 @@ Public Sub Regression()
     '~~ ! must be done prior the first BoP !
     mTrc.LogTitle = "Execution Trace result of the mBasic Regression test"
     mTrc.LogTitle = "Regression Test module mTrc"
-    
     mErH.Regression = True
     
     BoP ErrSrc(PROC)
@@ -225,73 +171,6 @@ Public Sub Regression()
 xt: EoP ErrSrc(PROC)
     mErH.Regression = False
     mTrc.Dsply
-    Exit Sub
-
-eh: Select Case ErrMsg(ErrSrc(PROC))
-        Case vbResume:  Stop: Resume
-        Case Else:      GoTo xt
-    End Select
-End Sub
-
-Private Sub RegressionKeepLog()
-    Dim sFile As String
-
-#If ExecTrace = 1 Then
-#If MsgComp = 1 Or ErHComp = 1 Then
-    '~~ avoid the error message when the Conditional Compile Argument 'MsgComp = 0'!
-    mTrc.Dsply
-#End If
-    '~~ Keep the regression test result
-    With New FileSystemObject
-        sFile = .GetParentFolderName(mTrc.LogFile) & "\RegressionTest.log"
-        If .FileExists(sFile) Then .DeleteFile (sFile)
-        .GetFile(mTrc.LogFile).Name = "RegressionTest.log"
-    End With
-    mTrc.Terminate
-#End If
-
-End Sub
-
-Public Sub Test_09_ErrMsg()
-    Const PROC = "Test_09_ErrMsg"
-    
-    On Error GoTo eh
-    Dim l As Long
-    
-    BoP ErrSrc(PROC)
-    '~~ 1. Test: Display an Application Error
-    Test_09_1_ErrMsg 0
-    
-    '~~ 2. Test: Display a VB-Runtime-Error
-    mErH.Asserted 6 ' Skip display when mErh.Regression = True
-    l = l / 0
-    
-xt: EoP ErrSrc(PROC)
-    Exit Sub
-
-eh: Select Case ErrMsg(ErrSrc(PROC))
-        Case vbResume:  Stop: Resume
-        Case Else:      GoTo xt
-    End Select
-End Sub
-
-Private Sub Test_09_1_ErrMsg(ByVal test_value As Long)
-' ------------------------------------------------------------------
-' Display an Application Error istead of a VB Runtime Error
-' ------------------------------------------------------------------
-    Const PROC = "Test_09_1_ErrMsg"
-    
-    On Error GoTo eh
-    Dim l As Long
-    
-    BoP ErrSrc(PROC)
-    
-    mErH.Asserted AppErr(1) ' skip display of error message when mErH.Regression = True
-    If test_value = 0 _
-    Then Err.Raise AppErr(1), ErrSrc(PROC), "Application Error test: The argument 'test_value' must not be 0!"
-    l = l / test_value
-    
-xt: EoP ErrSrc(PROC)
     Exit Sub
 
 eh: Select Case ErrMsg(ErrSrc(PROC))
@@ -418,38 +297,26 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_10_ArrayDiffers()
-    Const PROC  As String = "Test_10_ArrayDiffers"
-    
+Public Sub Test_02_0_ArrayRemoveItems()
+' ----------------------------------------------------------------------------
+' Whitebox and regression test. Global error handling is used to monitor error
+' condition tests.
+' ----------------------------------------------------------------------------
+    Const PROC = "Test_02_0_ArrayRemoveItems"
+
     On Error GoTo eh
-    Dim a1      As Variant
-    Dim a2      As Variant
-    Dim dctDiff As Variant
-    Dim v       As Variant
     
     BoP ErrSrc(PROC)
-    
-    '~~ Test 1: Only leading and trailing items are empty
-    a1 = Split(",1,2,3,4,5,6,7,,,,", ",")                   ' Test array
-    a2 = Split(",,1,2,3,4,5,6,7,,", ",")                    ' Test array
-    Debug.Assert Not mBasic.ArrayDiffers(ad_v1:=a1 _
-                                       , ad_v2:=a2 _
-                                       , ad_ignore_empty_items:=False)
-    Debug.Assert Not mBasic.ArrayDiffers(ad_v1:=a1 _
-                                       , ad_v2:=a2 _
-                                       , ad_ignore_empty_items:=True)
-    
-    '~~ Test 2: Various numbers of items at different positions are empty
-    a1 = Split(",1,2,,,3,4,5,6,7,,,,", ",")                 ' Test array
-    a2 = Split(",,1,,,,,,,,,2,3,4,,,5,6,7,,", ",")          ' Test array
-    Debug.Assert mBasic.ArrayDiffers(ad_v1:=a1 _
-                                   , ad_v2:=a2 _
-                                   , ad_ignore_empty_items:=False)
-    Debug.Assert Not mBasic.ArrayDiffers(ad_v1:=a1 _
-                                       , ad_v2:=a2 _
-                                       , ad_ignore_empty_items:=True)
+    Test_02_1_ArrayRemoveItems_Function
+    Test_02_2_ArrayRemoveItems_Error_Conditions
     
 xt: EoP ErrSrc(PROC)
+#If ExecTrace = 1 Then
+    If Not mErH.Regression Then
+        mTrc.Dsply
+        Kill mTrc.LogFile
+    End If
+#End If
     Exit Sub
 
 eh: Select Case ErrMsg(ErrSrc(PROC))
@@ -457,7 +324,6 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
         Case Else:      GoTo xt
     End Select
 End Sub
-
 
 Public Sub Test_02_1_ArrayRemoveItems_Function()
     Const PROC  As String = "Test_02-1_ArrayRemoveItems_Function"
@@ -560,34 +426,6 @@ Public Sub Test_02_2_ArrayRemoveItems_Error_Conditions()
     mBasic.ArrayRemoveItems ri_va:=a, ri_element:=7, ri_no_of_elements:=2
     
 xt: EoP ErrSrc(PROC)
-    Exit Sub
-
-eh: Select Case ErrMsg(ErrSrc(PROC))
-        Case vbResume:  Stop: Resume
-        Case Else:      GoTo xt
-    End Select
-End Sub
-
-Public Sub Test_02_0_ArrayRemoveItems()
-' ----------------------------------------------------------------------------
-' Whitebox and regression test. Global error handling is used to monitor error
-' condition tests.
-' ----------------------------------------------------------------------------
-    Const PROC = "Test_02_0_ArrayRemoveItems"
-
-    On Error GoTo eh
-    
-    BoP ErrSrc(PROC)
-    Test_02_1_ArrayRemoveItems_Function
-    Test_02_2_ArrayRemoveItems_Error_Conditions
-    
-xt: EoP ErrSrc(PROC)
-#If ExecTrace = 1 Then
-    If Not mErH.Regression Then
-        mTrc.Dsply
-        Kill mTrc.LogFile
-    End If
-#End If
     Exit Sub
 
 eh: Select Case ErrMsg(ErrSrc(PROC))
@@ -761,6 +599,106 @@ Public Sub Test_08_Stack()
         Debug.Assert mBasic.StackPop(Stack) = 10 * i
     Next i
 
+xt: Exit Sub
+
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
+End Sub
+
+Private Sub Test_09_1_ErrMsg(ByVal test_value As Long)
+' ------------------------------------------------------------------
+' Display an Application Error istead of a VB Runtime Error
+' ------------------------------------------------------------------
+    Const PROC = "Test_09_1_ErrMsg"
+    
+    On Error GoTo eh
+    Dim l As Long
+    
+    BoP ErrSrc(PROC)
+    
+    mErH.Asserted AppErr(1) ' skip display of error message when mErH.Regression = True
+    If test_value = 0 _
+    Then Err.Raise AppErr(1), ErrSrc(PROC), "The argument 'test_value' must not be 0!"
+    l = l / test_value
+    
+xt: EoP ErrSrc(PROC)
+    Exit Sub
+
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      On Error GoTo -1:   GoTo xt
+    End Select
+End Sub
+
+Public Sub Test_09_ErrMsg()
+    Const PROC = "Test_09_ErrMsg"
+    
+    On Error GoTo eh
+    Dim l As Long
+    
+    BoP ErrSrc(PROC)
+    '~~ 1. Test: Display an Application Error
+    Test_09_1_ErrMsg 0
+    
+    '~~ 2. Test: Display a VB-Runtime-Error
+    mErH.Asserted 6 ' Skip display when mErh.Regression = True
+    l = l / 0
+    
+xt: EoP ErrSrc(PROC)
+    Exit Sub
+
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      On Error GoTo -1:   GoTo xt
+    End Select
+End Sub
+
+Public Sub Test_10_ArrayDiffers()
+    Const PROC  As String = "Test_10_ArrayDiffers"
+    
+    On Error GoTo eh
+    Dim a1      As Variant
+    Dim a2      As Variant
+    
+    BoP ErrSrc(PROC)
+    
+    '~~ Test 1: Only leading and trailing items are empty
+    a1 = Split(",1,2,3,4,5,6,7,,,,", ",")                   ' Test array
+    a2 = Split(",,1,2,3,4,5,6,7,,", ",")                    ' Test array
+    Debug.Assert Not mBasic.ArrayDiffers(ad_v1:=a1 _
+                                       , ad_v2:=a2 _
+                                       , ad_ignore_empty_items:=False)
+    Debug.Assert Not mBasic.ArrayDiffers(ad_v1:=a1 _
+                                       , ad_v2:=a2 _
+                                       , ad_ignore_empty_items:=True)
+    
+    '~~ Test 2: Various numbers of items at different positions are empty
+    a1 = Split(",1,2,,,3,4,5,6,7,,,,", ",")                 ' Test array
+    a2 = Split(",,1,,,,,,,,,2,3,4,,,5,6,7,,", ",")          ' Test array
+    Debug.Assert mBasic.ArrayDiffers(ad_v1:=a1 _
+                                   , ad_v2:=a2 _
+                                   , ad_ignore_empty_items:=False)
+    Debug.Assert Not mBasic.ArrayDiffers(ad_v1:=a1 _
+                                       , ad_v2:=a2 _
+                                       , ad_ignore_empty_items:=True)
+    
+xt: EoP ErrSrc(PROC)
+    Exit Sub
+
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
+End Sub
+
+Public Sub Test_ErrMsg()
+    Const PROC = "Test_ErrMsg"
+    
+    On Error GoTo eh
+    Err.Raise AppErr(10), ErrSrc(PROC), "This is an application error" & "||" & "This is an optional additional info about the error."
+    
 xt: Exit Sub
 
 eh: Select Case ErrMsg(ErrSrc(PROC))
