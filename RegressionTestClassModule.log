@@ -1,0 +1,5 @@
+23-06-16 19:02:41 Execution trace by 'Common VBA Execution Trace Service' (https://github.com/warbe-maker/Common-VBA-Execution-Trace-Service)
+23-06-16 19:02:41                 >> Regression Test module clsTrc
+23-06-16 19:02:41 00,0000         |  >> mTrcTest.Regression_Test
+23-06-16 19:02:41 00,0064         |  |  >> mTrcTest.Regression_Test_03_Execution_Trace
+23-06-16 19:02:41 00,0070         |  |  |  >> mTrcTest.Regression_Test_03_Execution_Trace_TestProc_6a
