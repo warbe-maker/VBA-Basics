@@ -20,29 +20,77 @@ Option Explicit
 ' ----------------------------------------------------------------------------
 Private Property Get ErrSrc(Optional ByVal s As String) As String:  ErrSrc = "mBasicTest." & s:  End Property
 
-Private Sub BoP(ByVal b_proc As String, ParamArray b_arguments() As Variant)
+Private Sub BoC(ByVal b_id As String, ParamArray b_arguments() As Variant)
 ' ------------------------------------------------------------------------------
-' Common 'Begin of Procedure' indication.
-' - Serves for a comprehensive display of an error message when the Common VBA
-'   Error Services Component mErH is installed and the Conditional Compile
-'   Argument 'ErHComp = 1'
-' - Serves for the execution trace when the Common VBA Execution Trace Service
-'   Component mTrc is installed and the Conditional Compile Argument
-'   'ExecTrace = 1'.
-' - May alternatively be copied as a Private procedure into any component when
-'   this mBasic component is not installed but the mErH and or mTrc services
-'   are
-' Note: Because the error handling also hands over an 'End of Procedure' to the
-'       mTrc component (when installed and 'ExecTrace = 1') an explicit call of
-'       mTrc.EoP is only performed when mErH is not installed/in use.
+' Common '(B)egin-(o)f-(C)ode' interface for the Common VBA Execution Trace
+' service.
+' - To be copied into any module which makes use of this trace service.
+' - When the used Conditional Compile Argument is 0 or not set at all.
+' - Important! The begin id (b_id) has to be identical with the paired EoC
+'              statement.
 ' ------------------------------------------------------------------------------
     Dim s As String
-    If UBound(b_arguments) >= 0 Then s = Join(b_arguments, ",")
+    If Not IsMissing(b_arguments) Then s = Join(b_arguments, ",")
+
+#If XcTrc_mTrc = 1 Then
+    mTrc.BoC b_id, s
+#ElseIf XcTrc_clsTrc = 1 Then
+    Trc.BoC b_id, s
+#End If
+
+End Sub
+
+Private Sub BoP(ByVal b_proc As String, ParamArray b_arguments() As Variant)
+' ------------------------------------------------------------------------------
+' Common 'Begin of Procedure' interface for the 'Common VBA Error Services' and
+' the 'Common VBA Execution Trace Service' (only in case the first one is not
+' installed/activated).
+' Note 1: The services, when installed, are activated by the
+'         | Cond. Comp. Arg.        | Installed component |
+'         |-------------------------|---------------------|
+'         | ErHComp = 1             | mErH                |
+'         | XcTrc_mTrc = 1          | mTrc                |
+'         | XcTrc_clsTrc = 1        | clsTrc              |
+'         I.e. both components are independant from each other!
+' Note 2: This procedure is obligatory for any VB-Component using either the
+'         the 'Common VBA Error Services' and/or the 'Common VBA Execution
+'         Trace Service'.
+' ------------------------------------------------------------------------------
+    Dim s As String
+    If Not IsMissing(b_arguments) Then s = Join(b_arguments, ";")
+
 #If ErHComp = 1 Then
+    '~~ The error handling also hands over to the mTrc/clsTrc component when
+    '~~ either of the two is installed.
     mErH.BoP b_proc, s
-#ElseIf ExecTrace = 1 Then
+#ElseIf ExecTraceByclsTrc = 1 Then
+    '~~ mErH is not installed but the mTrc is
+    Trc.BoP b_proc, s
+#ElseIf ExecTraceBymTrc = 1 Then
+    '~~ mErH neither mTrc is installed but clsTrc is
     mTrc.BoP b_proc, s
 #End If
+
+End Sub
+
+Private Sub EoC(ByVal e_id As String, ParamArray e_arguments() As Variant)
+' ------------------------------------------------------------------------------
+' Common '(E)nd-(o)f-(C)ode' interface for the Common VBA Execution Trace
+' service.
+' - To be copied into any module which makes use of this trace service.
+' - When the used Conditional Compile Argument is 0 or not set at all.
+' - Important! The end id (b_id) has to be identical with the paired EoC
+'              statement.
+' ------------------------------------------------------------------------------
+    Dim s As String
+    If Not IsMissing(e_arguments) Then s = Join(e_arguments, ",")
+
+#If XcTrc_mTrc = 1 Then
+    mTrc.EoC e_id, s
+#ElseIf XcTrc_clsTrc = 1 Then
+    Trc.EoC e_id, s
+#End If
+
 End Sub
 
 Private Sub EoP(ByVal e_proc As String, Optional ByVal e_inf As String = vbNullString)
@@ -51,11 +99,11 @@ Private Sub EoP(ByVal e_proc As String, Optional ByVal e_inf As String = vbNullS
 ' the 'Common VBA Execution Trace Service' (only in case the first one is not
 ' installed/activated).
 ' Note 1: The services, when installed, are activated by the
-'         | Cond. Comp. Arg.             | Installed component |
-'         |------------------------------|---------------------|
-'         | ExecTraceBymTrc = 1          | mTrc                |
-'         | ExecTraceByclsTrc = 1        | clsTrc              |
-'         | ErHComp = 1                  | mErH                |
+'         | Cond. Comp. Arg.        | Installed component |
+'         |-------------------------|---------------------|
+'         | ErHComp = 1             | mErH                |
+'         | XcTrc_mTrc = 1          | mTrc                |
+'         | XcTrc_clsTrc = 1        | clsTrc              |
 '         I.e. both components are independant from each other!
 ' Note 2: This procedure is obligatory for any VB-Component using either the
 '         the 'Common VBA Error Services' and/or the 'Common VBA Execution
@@ -73,23 +121,46 @@ Private Sub EoP(ByVal e_proc As String, Optional ByVal e_inf As String = vbNullS
 
 End Sub
 
-Public Function ErrMsg(ByVal err_src As String, _
-              Optional ByVal err_dsc As String = vbNullString) As Variant
+Private Function ErrMsg(ByVal err_source As String, _
+               Optional ByVal err_no As Long = 0, _
+               Optional ByVal err_dscrptn As String = vbNullString, _
+               Optional ByVal err_line As Long = 0) As Variant
 ' ------------------------------------------------------------------------------
-' Universal error message including a debugging option button (when Conditional
-' Compile Argument 'Debugging = 1') and an optional additional "About:" section
-' when an error description argument (err_dsc) is provided with an additional
-' string concatenated by two vertical bars (||).
+' Universal error message display service which displays a debugging option
+' button when the Conditional Compile Argument 'Debugging = 1', displays an
+' optional additional "About:" section when the err_dscrptn has an additional
+' string concatenated by two vertical bars (||), and displays the error message
+' by means of VBA.MsgBox when neither the Common Component mErH (indicated by
+' the Conditional Compile Argument "ErHComp = 1", nor the Common Component mMsg
+' (idicated by the Conditional Compile Argument "MsgComp = 1") is installed.
 '
 ' Uses: AppErr  For programmed application errors (Err.Raise AppErr(n), ....)
-'               to turn them into negative and in the error message back into
+'               to turn them into a negative and in the error message back into
 '               its origin positive number.
-'       ErrSrc  To provide an unambiguous procedure name prefixed with the
-'               module's name.
-' ------------------------------------------------------------------------------
+'       ErrSrc  To provide an unambiguous procedure name by prefixing is with
+'               the module name.
+'
+' W. Rauschenberger Berlin, Apr 2023
+'
+' See: https://github.com/warbe-maker/VBA-Error
+' ------------------------------------------------------------------------------' ------------------------------------------------------------------------------
+#If ErHComp = 1 Then
+    '~~ When Common VBA Error Services (mErH) is availabel in the VB-Project
+    '~~ (which includes the mMsg component) the mErh.ErrMsg service is invoked.
+    ErrMsg = mErH.ErrMsg(err_source, err_no, err_dscrptn, err_line): GoTo xt
+    GoTo xt
+#ElseIf MsgComp = 1 Then
+    '~~ When (only) the Common Message Service (mMsg, fMsg) is available in the
+    '~~ VB-Project, mMsg.ErrMsg is invoked for the display of the error message.
+    ErrMsg = mMsg.ErrMsg(err_source, err_no, err_dscrptn, err_line): GoTo xt
+    GoTo xt
+#End If
+    '~~ When neither of the Common Component is available in the VB-Project
+    '~~ the error message is displayed by means of the VBA.MsgBox
     Dim ErrBttns    As Variant
     Dim ErrAtLine   As String
     Dim ErrDesc     As String
+    Dim ErrLine     As Long
     Dim ErrNo       As Long
     Dim ErrSrc      As String
     Dim ErrText     As String
@@ -98,37 +169,39 @@ Public Function ErrMsg(ByVal err_src As String, _
     Dim ErrAbout    As String
         
     '~~ Obtain error information from the Err object for any argument not provided
-    If err_src = vbNullString Then err_src = Err.source
-    If err_dsc = vbNullString Then err_dsc = Err.Description
-    If err_dsc = vbNullString Then err_dsc = "--- No error description available ---"
+    If err_no = 0 Then err_no = Err.Number
+    If err_line = 0 Then ErrLine = Erl
+    If err_source = vbNullString Then err_source = Err.source
+    If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
+    If err_dscrptn = vbNullString Then err_dscrptn = "--- No error description available ---"
     
     '~~ Consider extra information is provided with the error description
-    If InStr(err_dsc, "||") <> 0 Then
-        ErrDesc = Split(err_dsc, "||")(0)
-        ErrAbout = Split(err_dsc, "||")(1)
+    If InStr(err_dscrptn, "||") <> 0 Then
+        ErrDesc = Split(err_dscrptn, "||")(0)
+        ErrAbout = Split(err_dscrptn, "||")(1)
     Else
-        ErrDesc = err_dsc
+        ErrDesc = err_dscrptn
     End If
     
     '~~ Determine the type of error
-    Select Case Err.Number
+    Select Case err_no
         Case Is < 0
-            ErrNo = AppErr(Err.Number)
+            ErrNo = AppErr(err_no)
             ErrType = "Application Error "
         Case Else
-            ErrNo = Err.Number
-            If err_dsc Like "*DAO*" _
-            Or err_dsc Like "*ODBC*" _
-            Or err_dsc Like "*Oracle*" _
+            ErrNo = err_no
+            If err_dscrptn Like "*DAO*" _
+            Or err_dscrptn Like "*ODBC*" _
+            Or err_dscrptn Like "*Oracle*" _
             Then ErrType = "Database Error " _
             Else ErrType = "VB Runtime Error "
     End Select
     
-    If err_src <> vbNullString Then ErrSrc = " in: """ & err_src & """" ' assemble ErrSrc from available information"
-    If Erl <> 0 Then ErrAtLine = " at line " & Erl                      ' assemble ErrAtLine from available information
-    ErrTitle = Replace(ErrType & ErrNo & ErrSrc & ErrAtLine, "  ", " ") ' assemble ErrTitle from available information
+    If err_source <> vbNullString Then ErrSrc = " in: """ & err_source & """"   ' assemble ErrSrc from available information"
+    If err_line <> 0 Then ErrAtLine = " at line " & err_line                    ' assemble ErrAtLine from available information
+    ErrTitle = Replace(ErrType & ErrNo & ErrSrc & ErrAtLine, "  ", " ")         ' assemble ErrTitle from available information
        
-    ErrText = "Error: " & vbLf & ErrDesc & vbLf & vbLf & "Source: " & vbLf & err_src & ErrAtLine
+    ErrText = "Error: " & vbLf & ErrDesc & vbLf & vbLf & "Source: " & vbLf & err_source & ErrAtLine
     If ErrAbout <> vbNullString Then ErrText = ErrText & vbLf & vbLf & "About: " & vbLf & ErrAbout
     
 #If Debugging Then
@@ -138,16 +211,20 @@ Public Function ErrMsg(ByVal err_src As String, _
     ErrBttns = vbCritical
 #End If
     ErrMsg = MsgBox(Title:=ErrTitle, Prompt:=ErrText, Buttons:=ErrBttns)
-
+xt:
 End Function
 
 Public Sub Regression()
 ' ------------------------------------------------------------------------------
-' This Regression test requires the Conditional Compile Argument 'ErHComp = 1'
-' to run uninterrupted with all errors asserted.
-'
-' When not set the mErH.Regression = True setting and the mErH.Asserted settings
-' will have no effect and all errors are displayed.
+' This Regression test:
+' - uses the Common VBA Execution Trace service (mTrc) to trace/log the
+'   performed tests
+' - uses the Common VBA Message Service (fMsg/mMsg) to provide well designed
+'   error messages (requires the Conditional Compile Argument MsgComp = 1)
+' - requires the Conditional Compile Argument 'ErHComp = 1' to run
+'   uninterrupted with all errors asserted. When not set the code line
+'   mErH.Regression = True setting and the code line mErH.Asserted not have any
+'   effect and all errors are displayed.
 ' ------------------------------------------------------------------------------
     Const PROC = "Regression"
     
@@ -156,8 +233,9 @@ Public Sub Regression()
     '~~ Initialization of a new Trace Log File for this Regression test
     '~~ ! must be done prior the first BoP !
     mTrc.LogTitle = "Execution Trace result of the mBasic Regression test"
-    mTrc.LogTitle = "Regression Test module mTrc"
+    mTrc.NewLog
     mErH.Regression = True
+'    mErH.Asserted AppErr(1)
     
     BoP ErrSrc(PROC)
     mBasicTest.Test_09_ErrMsg
@@ -197,11 +275,12 @@ Public Sub Test_01_ArrayCompare()
     '~~ Test 1: One element is different, empty elements are ignored
     a1 = Split("1,2,3,4,5,6,7", ",") ' Test array
     a2 = Split("1,2,3,x,5,6,7", ",") ' Test array
-    mBasic.BoC "mBasic.ArrayCompare"
+    
+    BoC "mBasic.ArrayCompare"
     Set dctDiff = mBasic.ArrayCompare(ac_v1:=a1 _
                                     , ac_v2:=a2 _
                                      )
-    mBasic.EoC "mBasic.ArrayCompare"
+    EoC "mBasic.ArrayCompare"
     
     Debug.Assert dctDiff.Count = 1
     For Each v In dctDiff
@@ -211,11 +290,13 @@ Public Sub Test_01_ArrayCompare()
     '~~ Test 2: The first array has less elements, empty elements are ignored
     a1 = Split("1,2,3,4,5,6", ",") ' Test array
     a2 = Split("1,2,3,4,5,6,7", ",") ' Test array
-    mBasic.BoC "mBasic.ArrayCompare"
+    
+    BoC "mBasic.ArrayCompare"
     Set dctDiff = mBasic.ArrayCompare(ac_v1:=a1 _
                                     , ac_v2:=a2 _
                                      )
-    mBasic.EoC "mBasic.ArrayCompare"
+    EoC "mBasic.ArrayCompare"
+    
     Debug.Assert dctDiff.Count = 1
     For Each v In dctDiff
         Debug.Print "Test 2: Item/line " & v & vbLf & dctDiff(v)
@@ -224,11 +305,11 @@ Public Sub Test_01_ArrayCompare()
     '~~ Test 3: The second array has less elements, empty elements are ignored
     a1 = Split("1,2,3,4,5,6,7", ",") ' Test array
     a2 = Split("1,2,3,4,5,6", ",") ' Test array
-    mBasic.BoC "mBasic.ArrayCompare"
+    BoC "mBasic.ArrayCompare"
     Set dctDiff = mBasic.ArrayCompare(ac_v1:=a1 _
                                     , ac_v2:=a2 _
                                      )
-    mBasic.EoC "mBasic.ArrayCompare"
+    EoC "mBasic.ArrayCompare"
     Debug.Assert dctDiff.Count = 1
     For Each v In dctDiff
         Debug.Print "Test 3: Item/line " & v & vbLf & dctDiff(v)
@@ -237,11 +318,13 @@ Public Sub Test_01_ArrayCompare()
     '~~ Test 4: The arrays first elements are different, empty elements are ignored
     a1 = Split("1,2,3,4,5,6,7", ",") ' Test array
     a2 = Split(",2,3,4,5,6,7", ",") ' Test array
-    mBasic.BoC "mBasic.ArrayCompare"
+    
+    BoC "mBasic.ArrayCompare"
     Set dctDiff = mBasic.ArrayCompare(ac_v1:=a1 _
                                     , ac_v2:=a2 _
                                      )
-    mBasic.EoC "mBasic.ArrayCompare"
+    EoC "mBasic.ArrayCompare"
+    
     Debug.Assert dctDiff.Count = 7
     For Each v In dctDiff
         Debug.Print "Test 4: Item/line " & v & vbLf & dctDiff(v)
@@ -250,11 +333,11 @@ Public Sub Test_01_ArrayCompare()
     '~~ Test 5: The arrays first elements are different, empty elements are ignored
     a1 = Split(",2,3,4,5,6,7", ",")     ' Test array
     a2 = Split("1,2,3,4,5,6,7", ",")    ' Test array
-    mBasic.BoC "mBasic.ArrayCompare"
+    BoC "mBasic.ArrayCompare"
     Set dctDiff = mBasic.ArrayCompare(ac_v1:=a1 _
                                     , ac_v2:=a2 _
                                      )
-    mBasic.EoC "mBasic.ArrayCompare"
+    EoC "mBasic.ArrayCompare"
     Debug.Assert dctDiff.Count = 7
     For Each v In dctDiff
         Debug.Print "Test 5: Item/line " & v & vbLf & dctDiff(v)
@@ -263,11 +346,11 @@ Public Sub Test_01_ArrayCompare()
     '~~ Test 6: The second array has additional inserted elements, empty elements are ignored
     a1 = Split("1,2,3,4,5,6,7", ",")        ' Test array
     a2 = Split("1,2,3,x,y,z,4,5,6,7", ",")  ' Test array
-    mBasic.BoC "mBasic.ArrayCompare"
+    BoC "mBasic.ArrayCompare"
     Set dctDiff = mBasic.ArrayCompare(ac_v1:=a1 _
                                     , ac_v2:=a2 _
                                      )
-    mBasic.EoC "mBasic.ArrayCompare"
+    EoC "mBasic.ArrayCompare"
     Debug.Assert dctDiff.Count = 7
     For Each v In dctDiff
         Debug.Print "Test 6: Item/line " & v & vbLf & dctDiff(v)
@@ -276,17 +359,18 @@ Public Sub Test_01_ArrayCompare()
     '~~ Test 7: The arrays are equal, empty elements are ignored
     a1 = Split("1,2,3,4,5,6,7,,,", ",") ' Test array
     a2 = Split("1,2,3,4,5,6,7", ",") ' Test array
-    mBasic.BoC "mBasic.ArrayCompare"
+    BoC "mBasic.ArrayCompare"
     Set dctDiff = mBasic.ArrayCompare(ac_v1:=a1 _
                                     , ac_v2:=a2 _
                                      )
-    mBasic.EoC "mBasic.ArrayCompare"
+    EoC "mBasic.ArrayCompare"
     Debug.Assert dctDiff.Count = 0
     For Each v In dctDiff
         Debug.Print "Test 7: Item/line " & v & vbLf & dctDiff(v)
     Next v
     
 xt: EoP ErrSrc(PROC)
+
 #If ExecTrace = 1 Then
     If Not mErH.Regression Then
         mTrc.Dsply

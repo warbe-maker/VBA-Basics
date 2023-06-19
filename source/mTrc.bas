@@ -1,19 +1,16 @@
 Attribute VB_Name = "mTrc"
 Option Explicit
 ' ----------------------------------------------------------------------------
-' Standard Module  mTrc: Services to trace the execution  of procedures and
-' ====================== code snippets. The elapsed execution time of traced
-'                        items comes with the highest possible precision. The
-'                        trace result is written to a log file which ensures
-'                        at least a partial trace when the execution
-'                        exceptionally terminates.
-'                        When this module is installed the sevices are
-'                        triggered/activated by the Conditional Compile
-'                        Argument 'ExecTrace = 1'. When the module is
-'                        installed and the Conditional Compile Argument is
-'                        turned to 'ExecTrace = 0' all services are disabled
-'                        thus avoiding any effect on the performance - which
-'                        is already very little when the services are active.
+' Standard Module  mTrc: Common VBA Execution Trace Service to trace the
+' ====================== execution of procedures and code snippets with the
+' highest possible precision regarding the measured elapsed execution time.
+' The trace log is written to a file which ensures at least a partial trace
+' in case the execution terminates by exception. When this module is installed
+' the availability of the sevice is triggered/activated by the Conditional
+' Compile Argument 'XcTrc_mTrc = 1'. When the Conditional Compile
+' Argument is 0 all services are disabled even when the module is installed,
+' avoiding any effect on the performance though the effect very little anyway.
+'
 ' Public services:
 ' ----------------
 ' - BoC      Indicates the (B)egin (o)f the execution trace of a (C)ode
@@ -27,17 +24,18 @@ Option Explicit
 ' - Dsply    Displays the content of the trace log file.
 ' - EoC      Indicates the (E)nd (o)f the execution trace of a (C)ode snippet.
 ' - EoP      Indicates the (E)nd (o)f the execution trace of a (P)rocedure.
-' - Pause    Stops the execution traces time taking, e.g. while an error
-'            message is displayed.
 ' - LogInfo  Explicitly writes an entry to the trace lof file by considering
 '            the current nesting level.
+' - Pause    Stops the execution traces time taking, e.g. while an error
+'            message is displayed.
+' - README   Displays the README in the corresponding public GitHub rebo.
 '
 ' Public Properties:
 ' ------------------
-' - LogFileFullName Get/Let The full name of a desired trace log file which
-'                           defaults to the ActiveWorkbook's path and the
-'                           ActiveWorkbook's BaseName suffixed with
-'                           ".ExecTrace.log".
+' - FileFullName r/w The full name of the trace-log-file, defaults to
+'                    ThisWorkbook's named "ExecTrace.log".
+' - KeepDays     w   Specifies the number of days a trace-log-file is kept
+'                    until it is deleted and re-created.
 '
 ' Uses (for test purpose only!):
 ' ------------------------------
@@ -65,10 +63,10 @@ Private fso As New FileSystemObject
     ' The 'minimum error handling' aproach implemented with this module and
     ' provided by the ErrMsg function uses the VBA.MsgBox to display an error
     ' message which includes a debugging option to resume the error line
-    ' provided the Conditional Compile Argument 'Debugging = 1'.
+    ' provided the Cond. Comp. Arg. 'Debugging = 1'.
     ' This declaration allows the mTrc module to work completely autonomous.
     ' It becomes obsolete when the mMsg/fMsg module is installed 1) which must
-    ' be indicated by the Conditional Compile Argument MsgComp = 1
+    ' be indicated by the Cond. Comp. Arg. MsgComp = 1
     '
     ' 1) See https://github.com/warbe-maker/Common-VBA-Message-Service for
     '    how to install an use.
@@ -121,9 +119,9 @@ Private Const DIR_END_ID        As String = "<"     ' End procedure or code trac
 Private Const TRC_INFO_DELIM    As String = " !!! "
 Private Const TRC_LOG_SEC_FRMT  As String = "00.0000 "
 
-Private cyTcksAtStart       As Currency         ' Trace log to file
-Private LastNtry            As Collection       '
+Private bLogToFileSuspended As Boolean
 Private cySysFrequency      As Currency         ' Execution Trace SysFrequency (initialized with init)
+Private cyTcksAtStart       As Currency         ' Trace log to file
 Private cyTcksOvrhdItm      As Currency         ' Execution Trace time accumulated by caused by the time tracking itself
 Private cyTcksOvrhdTrc      As Currency         ' Overhead ticks caused by the collection of a traced item's entry
 Private cyTcksOvrhdTrcStrt  As Currency         ' Overhead ticks caused by the collection of a traced item's entry
@@ -131,13 +129,16 @@ Private cyTcksPaused        As Currency         ' Accumulated with procedure Con
 Private cyTcksPauseStart    As Currency         ' Set with procedure Pause
 Private dtTraceBegin        As Date             ' Initialized at start of execution trace
 Private iTrcLvl             As Long             ' Increased with each begin entry and decreased with each end entry
-Private sFirstTraceItem     As String
-Private sLogFileFullName    As String           ' When not vbNullString the trace is written into file and tzhe display is suspended
+Private LastNtry            As Collection       '
+Private lKeepDays           As Long
 Private oLogFile            As TextStream
+Private sFileFullName       As String           ' Defaults to the When vbNullString the trace is written into file and the display is suspended
+Private sFileName           As String
+Private sFirstTraceItem     As String
 Private sLogTitle           As String
+Private sPath               As String
 Private Trace               As Collection       ' Collection of begin and end trace entries
 Private TraceStack          As Collection       ' Trace stack for the trace log written to a file
-Private bLogToFileSuspended As Boolean
 
 Private Property Get DIR_BEGIN_CODE() As String:            DIR_BEGIN_CODE = DIR_BEGIN_ID:                  End Property
 
@@ -146,6 +147,54 @@ Private Property Get DIR_BEGIN_PROC() As String:            DIR_BEGIN_PROC = VBA
 Private Property Get DIR_END_CODE() As String:              DIR_END_CODE = DIR_END_ID:                      End Property
 
 Private Property Get DIR_END_PROC() As String:              DIR_END_PROC = VBA.String$(2, DIR_END_ID):      End Property
+
+Public Property Get FileFullName() As String
+    If sFileFullName = vbNullString Then
+        '~~ Initialize defaults when yet not specified
+        sFileName = fso.GetBaseName(ThisWorkbook.Name) & ".ExecTrace.log"
+        sPath = ThisWorkbook.Path
+        FileFullName = sPath & "\" & sFileName ' creates the file
+    Else
+        FileFullName = sFileFullName
+    End If
+End Property
+
+Public Property Let FileFullName(ByVal s As String)
+' ----------------------------------------------------------------------------
+' Specifies the trace log-file's name and location, by the way maintains the
+' Path and the FileName property.
+' ----------------------------------------------------------------------------
+    Dim lDaysAge As Long
+    
+    With fso
+        If sFileFullName <> s Then
+            '~~ Either the trace log-file's name has yet not been initialized
+            '~~ or the name is not/no longer the one previously used
+            If .FileExists(sFileFullName) Then .DeleteFile sFileFullName
+        End If
+        
+        sFileFullName = s
+        sPath = .GetParentFolderName(s)
+        If Not .FileExists(FileFullName) Then .CreateTextFile FileFullName
+        sFileName = .GetFileName(s)
+        
+        '~~ In case the file already existed it may have passed the KeepDays limit
+        lDaysAge = VBA.DateDiff("d", .GetFile(sFileFullName).DateLastAccessed, Now())
+        If lDaysAge > lKeepDays Then
+            .DeleteFile sFileFullName
+            .CreateTextFile sFileFullName
+        End If
+    End With
+
+End Property
+
+Public Property Let FileName(ByVal s As String)
+    If fso.GetExtensionName(s) = vbNullString Then
+        s = s & ".log"
+    End If
+    sFileName = s
+    sFileFullName = Replace(sPath & "\" & sFileName, "\\", "\")
+End Property
 
 Private Property Get ItmArgs(Optional ByRef trc_entry As Collection) As Variant
     ItmArgs = trc_entry("I")(enPosItmArgs)
@@ -173,19 +222,21 @@ Private Property Get ItmTcks(Optional ByRef trc_entry As Collection) As Currency
     ItmTcks = trc_entry("I")(enItmTcks)
 End Property
 
+Public Property Let KeepDays(ByVal l As Long):  lKeepDays = l:  End Property
+
 Private Property Let Log(ByVal tl_string As String)
 ' ----------------------------------------------------------------------------
-' Writes the string (tl_string) to the LogFileFullName provided one exists.
-' Precondition: A LogFileFullName is specified (mTrc.LogFileFullName() = "xx").
+' Writes the string (tl_string) to the FileFullName provided one exists.
+' Precondition: A FileFullName is specified (mTrc.FileFullName() = "xx").
 ' ----------------------------------------------------------------------------
     Const PROC = "Log-Let"
     
     On Error GoTo eh
     Dim oFile   As TextStream
     
-    If Not sLogFileFullName = vbNullString Then
-        If fso.FileExists(sLogFileFullName) Then
-            Set oFile = fso.OpenTextFile(sLogFileFullName, ForAppending)
+    If Not sFileFullName = vbNullString Then
+        If fso.FileExists(sFileFullName) Then
+            Set oFile = fso.OpenTextFile(sFileFullName, ForAppending)
             oFile.WriteLine tl_string
         End If
     End If
@@ -198,97 +249,14 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Property
 
-Public Property Get LogFileFullName(Optional ByVal tl_append As Boolean = False) As String
-' ----------------------------------------------------------------------------
-' Provides the file-spec of a new or existing log-file provide log to file is
-' not explicitly suspended.
-' ----------------------------------------------------------------------------
-    Const PROC = "LogFileFullName-Get"
-    
-    On Error GoTo eh
-    
-    tl_append = tl_append
-    If sLogFileFullName = vbNullString And Not LogSuspended Then
-        '~~ Return a new default log-file
-        LogFileFullName = GetLogFile
-    End If
-    
-    LogFileFullName = sLogFileFullName
-    
-xt: Exit Property
-
-eh: Select Case ErrMsg(ErrSrc(PROC))
-        Case vbResume:  Stop: Resume
-        Case Else:      GoTo xt
-    End Select
-End Property
-
-Public Property Let LogFileFullName(Optional ByVal tl_append As Boolean = False, _
-                                             ByVal tl_file As String)
-' ----------------------------------------------------------------------------
-' Provides a LogFileFullName, for appending (tl_append = True) or for writing. When
-' no oLogFile exists, one is created. When tl_file is vbNullString the trace
-' log to file is suspended, i.e. the trace is displayed.
-' ----------------------------------------------------------------------------
-    Const PROC = "LogFileFullName-Let"
-    
-    On Error GoTo eh
-    
-#If ExecTrace = 1 Then
-    If tl_file = vbNullString Then
-        mTrc.LogSuspended = True
-    Else
-        With fso
-            If Not .FileExists(tl_file) Then
-                .CreateTextFile tl_file ' skipping the optional boolean for overwrite if exists as we already checked that the file doesn't exist.
-            Else
-                If Not tl_append Then
-                    .DeleteFile tl_file, True
-                    .CreateTextFile tl_file ' skipping the optional boolean for overwrite if exists as we already checked that the file doesn't exist.
-                End If
-            End If
-            
-            '~~ An explicite specified log-file makes a default log-file obsolete
-            If tl_file <> vbNullString And tl_file <> mTrc.LogFileFullNameDefault Then
-                If .FileExists(mTrc.LogFileFullNameDefault) Then .DeleteFile mTrc.LogFileFullNameDefault, True
-            End If
-        End With
-    
-        sLogFileFullName = tl_file
-    End If
-#Else
-    With fso
-        If .FileExists(tl_file) Then
-            On Error Resume Next
-            .DeleteFile tl_file, True
-        End If
-    End With
-#End If
-    
-xt: Exit Property
-
-eh: Select Case ErrMsg(ErrSrc(PROC))
-        Case vbResume:  Stop: Resume
-        Case Else:      GoTo xt
-    End Select
-End Property
-
-Public Property Get LogFileFullNameDefault() As String
-' ----------------------------------------------------------------------------
-' Default name for the trace-log-file which is the ActiveWorkbook's parent
-' folder followed by the ActiveWorkbook's name with a suffix ".ExecTrace.log".
-' ----------------------------------------------------------------------------
-    LogFileFullNameDefault = ActiveWorkbook.Path & "\" & fso.GetBaseName(ActiveWorkbook.Name) & ".ExecTrace.log"
-End Property
-
 Public Property Let LogInfo(ByVal tl_inf As String)
 ' ----------------------------------------------------------------------------
-' Write an info line (tl_inf) to the trace log file (sLogFileFullName)
+' Write an info line (tl_inf) to the trace log file (sFileFullName)
 ' ----------------------------------------------------------------------------
-#If ExecTrace = 1 Then
+#If XcTrc_mTrc = 1 Then
     Dim s As String
     
-    If sLogFileFullName <> vbNullString Then
+    If sFileFullName <> vbNullString Then
         s = LogLinePrefix & String(Len(TRC_LOG_SEC_FRMT) * 2, " ") & RepeatStrng("|  ", LogInfoLvl) & "|  " & tl_inf
         Log = s
     End If
@@ -316,6 +284,33 @@ End Property
 Private Property Let NtryTcksOvrhdNtry(Optional ByRef trc_entry As Collection, ByRef cy As Currency)
     If trc_entry Is Nothing Then Set trc_entry = New Collection
     trc_entry.Add cy, "TON"
+End Property
+
+Public Property Let Path(ByVal v As Variant)
+' -----------------------------------------------------------------------------------
+' Specifies the location (folder) for the log file based on the provided information
+' which may be a string, a Workbook, or a folder object.
+' -----------------------------------------------------------------------------------
+    Const PROC = "Path-Let"
+    Dim wbk As Workbook
+    Dim fld As Folder
+    
+    Select Case VarType(v)
+        Case VarType(v) = vbString
+            sPath = v
+        Case VarType(v) = vbObject
+            If TypeOf v Is Workbook Then
+                Set wbk = v
+                sPath = wbk.Path
+            ElseIf TypeOf v Is Folder Then
+                Set fld = v
+                sPath = fld.Path
+            Else
+                Err.Raise AppErr(1), ErrSrc(PROC), "The provided argument is neither a string specifying a " & _
+                                                   "folder's path, nor a Workbook object, nor a Folder object!"
+            End If
+    End Select
+    
 End Property
 
 Private Property Get SplitStr(ByRef s As String)
@@ -355,7 +350,7 @@ Public Sub BoC(ByVal boc_id As String, _
 ' ----------------------------------------------------------------------------
 ' Begin of code sequence trace.
 ' ----------------------------------------------------------------------------
-#If ExecTrace = 1 Then
+#If XcTrc_mTrc = 1 Then
     Dim cll             As Collection
     Dim vArguments()    As Variant
     
@@ -371,10 +366,10 @@ Public Sub BoP(ByVal bop_id As String, _
 ' ----------------------------------------------------------------------------
 ' Begin of procedure trace.
 ' ----------------------------------------------------------------------------
-#If ExecTrace = 1 Then
     Dim cll           As Collection
     Dim vArguments()  As Variant
     
+#If XcTrc_mTrc = 1 Then
     cyTcksOvrhdTrcStrt = SysCrrntTcks
     vArguments = bop_arguments
     If TrcIsEmpty Then
@@ -390,6 +385,7 @@ Public Sub BoP(ByVal bop_id As String, _
     TrcBgn trc_id:=bop_id, trc_dir:=DIR_BEGIN_PROC, trc_args:=vArguments, trc_cll:=cll
     cyTcksOvrhdTrc = SysCrrntTcks - cyTcksOvrhdTrcStrt ' overhead ticks caused by the collection of the begin trace entry
 #End If
+
 End Sub
 
 Public Sub BoP_ErH(ByVal bopeh_id As String, _
@@ -397,9 +393,9 @@ Public Sub BoP_ErH(ByVal bopeh_id As String, _
 ' ----------------------------------------------------------------------------
 ' Begin of procedure trace, specifically for being used by the mErH module.
 ' ----------------------------------------------------------------------------
-#If ExecTrace = 1 Then
     Dim cll As Collection
     
+#If XcTrc_mTrc = 1 Then
     cyTcksOvrhdTrcStrt = SysCrrntTcks
     If TrcIsEmpty Then
         Initialize
@@ -428,11 +424,7 @@ Public Sub Dsply()
 ' Display service using ShellRun to open the log-file by means of the
 ' application associated with the log-file's file-extenstion.
 ' ----------------------------------------------------------------------------
-    If LogFileFullName <> vbNullString Then
-        ShellRun LogFileFullName, WIN_NORMAL
-    Else
-        ShellRun LogFileFullNameDefault, WIN_NORMAL
-    End If
+    ShellRun FileFullName, WIN_NORMAL
 End Sub
 
 Private Function DsplyArgName(ByVal s As String) As Boolean
@@ -493,7 +485,7 @@ Public Sub EoC(ByVal eoc_id As String, _
 ' ----------------------------------------------------
 ' End of the trace of a code sequence.
 ' ----------------------------------------------------
-#If ExecTrace = 1 Then
+#If XcTrc_mTrc = 1 Then
     Dim cll As Collection
     
     cyTcksOvrhdTrcStrt = SysCrrntTcks
@@ -510,7 +502,7 @@ Public Sub EoP(ByVal eop_id As String, _
 ' ----------------------------------------------------
 ' End of the trace of a procedure.
 ' ----------------------------------------------------
-#If ExecTrace = 1 Then
+#If XcTrc_mTrc = 1 Then
     Dim cll As Collection
     
     cyTcksOvrhdTrcStrt = SysCrrntTcks
@@ -531,7 +523,7 @@ Private Function ErrMsg(ByVal err_source As String, _
                Optional ByVal err_line As Long = 0) As Variant
 ' ------------------------------------------------------------------------------
 ' Universal error message display service including a debugging option
-' (Conditional Compile Argument 'Debugging = 1') and an optional additional
+' (Cond. Comp. Arg. 'Debugging = 1') and an optional additional
 ' "about the error" information which may be connected to an error message by
 ' two vertical bars (||).
 '
@@ -539,12 +531,12 @@ Private Function ErrMsg(ByVal err_source As String, _
 ' (On error Goto eh).
 '
 ' The function considers the Common VBA Error Handling Component (ErH) which
-' may be installed (Conditional Compile Argument 'ErHComp = 1') and/or the
+' may be installed (Cond. Comp. Arg. 'ErHComp = 1') and/or the
 ' Common VBA Message Display Component (mMsg) installed (Conditional Compile
 ' Argument 'MsgComp = 1'). Only when none of the two is installed the error
 ' message is displayed by means of the VBA.MsgBox.
 '
-' Usage: Example with the Conditional Compile Argument 'Debugging = 1'
+' Usage: Example with the Cond. Comp. Arg. 'Debugging = 1'
 '
 '        Private/Public <procedure-name>
 '            Const PROC = "<procedure-name>"
@@ -688,59 +680,69 @@ End Function
 '
 'End Sub
 
-Private Function GetLogFile(Optional ByVal glf_spec As String = vbNullString, _
-                            Optional ByVal glf_append As Boolean = False) As String
+'Private Function GetLogFile(Optional ByVal glf_spec As String = vbNullString, _
+'                            Optional ByVal glf_append As Boolean = False) As String
+'' ----------------------------------------------------------------------------
+'' Returns the file-spec string of an existing or new file (glf_spec). When
+'' no file (glf_spec) is specified the returned string point to an existing or
+'' new default log-file.
+'' Note: A provided default log-file is always new ((glf_appen) is ignored).
+'' ----------------------------------------------------------------------------
+'    Const PROC = "GetLogFile"
+'
+'    On Error GoTo eh
+'    Dim sFile       As String
+'    Dim oFl         As File
+'    Dim sDefault    As String
+'
+'    sDefault = mTrc.FileFullNameDefault
+'    If glf_spec = vbNullString Then
+'        '~~ When no Trace-Logfile had been specified prior using
+'        '~~ a default FileFullName is created/re-used
+'        sFile = sDefault
+'    Else
+'        '~~ When a file has been specified which is not identical with the default log file
+'        '~~ an existing default log-file is deleted
+'        sFile = glf_spec
+'    End If
+'
+'    With fso
+'        '~~ When a specified log-file is provided an existing default log-file is deleted
+'        '~~ provided the specified is not identical with the default
+'        If sFile <> sDefault And glf_spec <> sDefault Then
+'            If .FileExists(sDefault) Then .DeleteFile sDefault, True
+'        End If
+'
+'        If Not .FileExists(sFile) Then
+'            .CreateTextFile sFile ' skipping the optional boolean for overwrite if exists as we already checked that the file doesn't exist.
+'        Else
+'            .DeleteFile sFile, True
+'            .CreateTextFile sFile ' skipping the optional boolean for overwrite if exists as we already checked that the file doesn't exist.
+'        End If
+'    End With
+'
+'    GetLogFile = sFile
+'
+'xt: Exit Function
+'
+'eh: Select Case ErrMsg(ErrSrc(PROC))
+'        Case vbResume:  Stop: Resume
+'        Case Else:      GoTo xt
+'    End Select
+'End Function
+
+Public Sub Initialize()
 ' ----------------------------------------------------------------------------
-' Returns the file-spec string of an existing or new file (glf_spec). When
-' no file (glf_spec) is specified the returned string point to an existing or
-' new default log-file.
-' Note: A provided default log-file is always new ((glf_appen) is ignored).
+' - Initializes defaults - when yet no other had been specified
+' - Initializes the means for a new trace log
 ' ----------------------------------------------------------------------------
-    Const PROC = "GetLogFile"
     
-    On Error GoTo eh
-    Dim sFile       As String
-    Dim oFl         As File
-    Dim sDefault    As String
+    '~~ Initialize defaults - when yet no other had been specified
+    If sFileName = vbNullString Then sFileName = "ExecTrace.log"
+    If sPath = vbNullString Then sPath = ThisWorkbook.Path
+    If sFileFullName = vbNullString Then FileFullName = sPath & "\" & sFileName ' creates the file
     
-    sDefault = mTrc.LogFileFullNameDefault
-    If glf_spec = vbNullString Then
-        '~~ When no Trace-Logfile had been specified prior using
-        '~~ a default LogFileFullName is created/re-used
-        sFile = sDefault
-    Else
-        '~~ When a file has been specified which is not identical with the default log file
-        '~~ an existing default log-file is deleted
-        sFile = glf_spec
-    End If
-    
-    With fso
-        '~~ When a specified log-file is provided an existing default log-file is deleted
-        '~~ provided the specified is not identical with the default
-        If sFile <> sDefault And glf_spec <> sDefault Then
-            If .FileExists(sDefault) Then .DeleteFile sDefault, True
-        End If
-        
-        If Not .FileExists(sFile) Then
-            .CreateTextFile sFile ' skipping the optional boolean for overwrite if exists as we already checked that the file doesn't exist.
-        Else
-            .DeleteFile sFile, True
-            .CreateTextFile sFile ' skipping the optional boolean for overwrite if exists as we already checked that the file doesn't exist.
-        End If
-    End With
-    
-    GetLogFile = sFile
-
-xt: Exit Function
-
-eh: Select Case ErrMsg(ErrSrc(PROC))
-        Case vbResume:  Stop: Resume
-        Case Else:      GoTo xt
-    End Select
-End Function
-
-Private Sub Initialize()
-    
+    '~~ Initialize the means for a new trace log
     Set Trace = New Collection
     Set LastNtry = Nothing
     dtTraceBegin = Now()
@@ -774,8 +776,8 @@ End Function
 
 Private Sub LogBgn(ByVal tl_ntry As Collection)
 ' ----------------------------------------------------------------------------
-' Write an begin trace line to the trace log file (sLogFileFullName). If none
-' had been provided via the LogFileFullName property the trace log file defaults
+' Write an begin trace line to the trace log file (sFileFullName). If none
+' had been provided via the FileFullName property the trace log file defaults
 ' to the default in the Workbook's parent folder (mTrc.LogFileFullNameDefault).
 ' ----------------------------------------------------------------------------
     Const PROC = "LogBgn"
@@ -788,17 +790,11 @@ Private Sub LogBgn(ByVal tl_ntry As Collection)
     StckPush TraceStack, tl_ntry
     
     If TraceStack.Count = 1 Then
-        If sLogFileFullName = vbNullString Then
-            '~~ Provide a default log file not appended when no one had been specified
-            s = mTrc.LogFileFullNameDefault
-            mTrc.LogFileFullName(False) = s
-        End If
-        
         '~~ When the very first trace entry had been pushed on the stack
         '~~ Provide a trace separator and a trace header
         cyTcksAtStart = ItmTcks(tl_ntry)
     
-        If fso.GetFile(sLogFileFullName).Size > 0 Then
+        If fso.GetFile(sFileFullName).Size > 0 Then
             Log = vbNullString ' empty separator line when appended
         End If
         
@@ -826,26 +822,6 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub LogClear()
-' ----------------------------------------------------------------------------
-' When a log-file-spec is known (sLogFileFullName <> vbNullString), an existing
-' trace-log-file is deleted and the current specified log-file is
-' re-establishedis.
-' Note: This service is primarily used for testing purpose.
-' ----------------------------------------------------------------------------
-    With fso
-        If .FileExists(sLogFileFullName) _
-        Then .DeleteFile sLogFileFullName, True
-        If .FileExists(LogFileFullNameDefault) _
-        Then .DeleteFile LogFileFullNameDefault
-        
-        If sLogFileFullName <> vbNullString _
-        Then .CreateTextFile sLogFileFullName _
-        Else .CreateTextFile LogFileFullNameDefault
-    End With
-    
-End Sub
-
 Private Function LogElapsedSecs(ByVal et_ticks_end As Currency, _
                                      ByVal et_ticks_start As Currency) As String
     LogElapsedSecs = Format(CDec(et_ticks_end - et_ticks_start) / CDec(SysFrequency), TRC_LOG_SEC_FRMT)
@@ -857,7 +833,7 @@ End Function
 
 Private Sub LogEnd(ByVal tl_ntry As Collection)
 ' ----------------------------------------------------------------------------
-' Write an end trace line to the trace log file (sLogFileFullName) - provided one
+' Write an end trace line to the trace log file (sFileFullName) - provided one
 ' had been specified - with the execution time calculated in seconds. When the
 ' TraceStack is empty write an additional End trace footer line.
 ' ----------------------------------------------------------------------------
@@ -873,7 +849,7 @@ Private Sub LogEnd(ByVal tl_ntry As Collection)
     ElapsedSecsTotal = LogElapsedSecsTotal(ItmTcks(tl_ntry))
     ElapsedSecs = LogElapsedSecs(et_ticks_end:=ItmTcks(tl_ntry), et_ticks_start:=ItmTcks(BgnNtry))
     
-    If Not sLogFileFullName = vbNullString Then
+    If Not sFileFullName = vbNullString Then
         sLogText = LogLinePrefix & ElapsedSecsTotal & ElapsedSecs & RepeatStrng("|  ", ItmLvl(tl_ntry)) & ItmDir(tl_ntry) & " " & ItmId(tl_ntry) & ItmInf(tl_ntry)
         Log = sLogText
         If TraceStack.Count = 1 Then
@@ -927,6 +903,17 @@ Private Function Max(ParamArray va() As Variant) As Variant
     
 End Function
 
+Public Sub NewLog()
+' ----------------------------------------------------------------------------
+' Deletes an existing trace log-file and creates a new one.
+' ----------------------------------------------------------------------------
+    With fso
+        If .FileExists(FileFullName) Then .DeleteFile FileFullName, True
+        .CreateTextFile FileFullName
+    End With
+    
+End Sub
+
 Private Function Ntry(ByVal ntry_tcks As Currency, _
                       ByVal ntry_dir As String, _
                       ByVal ntry_id As String, _
@@ -964,6 +951,20 @@ End Function
 
 Public Sub Pause()
     cyTcksPauseStart = SysCrrntTcks
+End Sub
+
+Public Sub README(Optional ByVal r_bookmark As String = vbNullString)
+' ----------------------------------------------------------------------
+'
+' ----------------------------------------------------------------------
+    Const BASE_URL As String = ""
+    
+    If r_bookmark = vbNullString Then
+        ShellRun BASE_URL
+    Else
+        ShellRun BASE_URL & Replace("#" & r_bookmark, "##", "#")
+    End If
+
 End Sub
 
 Private Function RepeatStrng( _
@@ -1172,6 +1173,7 @@ Private Sub TrcAdd(ByVal trc_id As String, _
     
     If Not bAlreadyAdded Then
         Set trc_ntry = Ntry(ntry_tcks:=trc_tcks, ntry_dir:=trc_dir, ntry_id:=trc_id, ntry_lvl:=trc_lvl, ntry_inf:=trc_inf, ntry_args:=trc_args)
+        If Trace Is Nothing Then Set Trace = New Collection
         Trace.Add trc_ntry
         
         If trc_dir Like DIR_BEGIN_CODE & "*" Then
