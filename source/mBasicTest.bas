@@ -63,10 +63,10 @@ Private Sub BoP(ByVal b_proc As String, ParamArray b_arguments() As Variant)
     '~~ The error handling also hands over to the mTrc/clsTrc component when
     '~~ either of the two is installed.
     mErH.BoP b_proc, s
-#ElseIf ExecTraceByclsTrc = 1 Then
+#ElseIf XcTrc_clsTrc = 1 Then
     '~~ mErH is not installed but the mTrc is
     Trc.BoP b_proc, s
-#ElseIf ExecTraceBymTrc = 1 Then
+#ElseIf XcTrc_mTrc = 1 Then
     '~~ mErH neither mTrc is installed but clsTrc is
     mTrc.BoP b_proc, s
 #End If
@@ -113,9 +113,9 @@ Private Sub EoP(ByVal e_proc As String, Optional ByVal e_inf As String = vbNullS
     '~~ The error handling also hands over to the mTrc component when 'ExecTrace = 1'
     '~~ so the Else is only for the case the mTrc is installed but the merH is not.
     mErH.EoP e_proc
-#ElseIf ExecTraceByclsTrc = 1 Then
+#ElseIf XcTrc_clsTrc = 1 Then
     Trc.EoP e_proc, e_inf
-#ElseIf ExecTraceBymTrc = 1 Then
+#ElseIf XcTrc_mTrc = 1 Then
     mTrc.EoP e_proc, e_inf
 #End If
 
@@ -204,7 +204,7 @@ Private Function ErrMsg(ByVal err_source As String, _
     ErrText = "Error: " & vbLf & ErrDesc & vbLf & vbLf & "Source: " & vbLf & err_source & ErrAtLine
     If ErrAbout <> vbNullString Then ErrText = ErrText & vbLf & vbLf & "About: " & vbLf & ErrAbout
     
-#If Debugging Then
+#If Debugging = 1 Then
     ErrBttns = vbYesNo
     ErrText = ErrText & vbLf & vbLf & "Debugging:" & vbLf & "Yes    = Resume Error Line" & vbLf & "No     = Terminate"
 #Else
@@ -221,10 +221,11 @@ Public Sub Regression()
 '   performed tests
 ' - uses the Common VBA Message Service (fMsg/mMsg) to provide well designed
 '   error messages (requires the Conditional Compile Argument MsgComp = 1)
-' - requires the Conditional Compile Argument 'ErHComp = 1' to run
-'   uninterrupted with all errors asserted. When not set the code line
-'   mErH.Regression = True setting and the code line mErH.Asserted not have any
-'   effect and all errors are displayed.
+' - requires the Conditional Compile Arguments:
+'   Debugging = 1 : ErHComp = 1 : MsgComp = 1 : XcTrc_mTrc = 1
+'   last but not least to run uninterrupted with all errors asserted.
+'   When mErH.Regression is not set to True any mErH.Asserted does not have any
+'   effect, i.e. all errors are displayed one by one.
 ' ------------------------------------------------------------------------------
     Const PROC = "Regression"
     
@@ -232,10 +233,10 @@ Public Sub Regression()
     
     '~~ Initialization of a new Trace Log File for this Regression test
     '~~ ! must be done prior the first BoP !
-    mTrc.LogTitle = "Execution Trace result of the mBasic Regression test"
-    mTrc.NewLog
+    mTrc.FileName = "RegressionTest.ExecTrace.log"
+    mTrc.Title = "Execution Trace result of the mBasic Regression test"
+    mTrc.NewFile
     mErH.Regression = True
-'    mErH.Asserted AppErr(1)
     
     BoP ErrSrc(PROC)
     mBasicTest.Test_09_ErrMsg
