@@ -1,43 +1,43 @@
-23-06-22 11:42:17 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
-23-06-22 11:42:17                 >> Execution Trace result of the mBasic Regression test
-23-06-22 11:42:17 00,0000         |  >> mBasicTest.Regression
-23-06-22 11:42:17 00,0006         |  |  >> mBasicTest.Test_09_ErrMsg
-23-06-22 11:42:17 00,0008         |  |  |  >> mBasicTest.Test_09_1_ErrMsg
-23-06-22 11:42:17 00,0013 00,0005 |  |  |  << mBasicTest.Test_09_1_ErrMsg
-23-06-22 11:42:17 00,0019 00,0013 |  |  << mBasicTest.Test_09_ErrMsg
-23-06-22 11:42:17 00,0020         |  |  >> mBasicTest.Test_03_ArrayToRange
-23-06-22 11:42:17 00,0025         |  |  |  > mBasic.ArrayCompare
-23-06-22 11:42:17 00,0029 00,0005 |  |  |  < mBasic.ArrayCompare
-23-06-22 11:42:17 00,0065         |  |  |  > mBasic.ArrayCompare
-23-06-22 11:42:17 00,0069 00,0005 |  |  |  < mBasic.ArrayCompare
-23-06-22 11:42:17 00,0098         |  |  |  > mBasic.ArrayCompare
-23-06-22 11:42:17 00,0103 00,0005 |  |  |  < mBasic.ArrayCompare
-23-06-22 11:42:17 00,0131         |  |  |  > mBasic.ArrayCompare
-23-06-22 11:42:17 00,0135 00,0005 |  |  |  < mBasic.ArrayCompare
-23-06-22 11:42:17 00,0228         |  |  |  > mBasic.ArrayCompare
-23-06-22 11:42:17 00,0233 00,0005 |  |  |  < mBasic.ArrayCompare
-23-06-22 11:42:17 00,0506         |  |  |  > mBasic.ArrayCompare
-23-06-22 11:42:17 00,0510 00,0004 |  |  |  < mBasic.ArrayCompare
-23-06-22 11:42:17 00,0602         |  |  |  > mBasic.ArrayCompare
-23-06-22 11:42:17 00,0607 00,0005 |  |  |  < mBasic.ArrayCompare
-23-06-22 11:42:17 00,0617 00,0596 |  |  << mBasicTest.Test_03_ArrayToRange
-23-06-22 11:42:17 00,0621         |  |  >> mBasicTest.Test_02_0_ArrayRemoveItems
-23-06-22 11:42:17 00,0624         |  |  |  >> mBasicTest.Test_02-1_ArrayRemoveItems_Function
-23-06-22 11:42:17 00,0627 00,0003 |  |  |  << mBasicTest.Test_02-1_ArrayRemoveItems_Function
-23-06-22 11:42:17 00,0630         |  |  |  >> mBasicTest.Test_02_2_ArrayRemoveItems_Error_Conditions
-23-06-22 11:42:17 00,0647 00,0018 |  |  |  << mBasicTest.Test_02_2_ArrayRemoveItems_Error_Conditions
-23-06-22 11:42:17 00,0651 00,0030 |  |  << mBasicTest.Test_02_0_ArrayRemoveItems
-23-06-22 11:42:17 00,0654         |  |  >> mBasicTest.Test_03_ArrayToRange
-23-06-22 11:42:17 00,0683 00,0029 |  |  << mBasicTest.Test_03_ArrayToRange
-23-06-22 11:42:17 00,0687         |  |  >> mBasicTest.Test_04_ArrayTrimm
-23-06-22 11:42:17 00,0691 00,0004 |  |  << mBasicTest.Test_04_ArrayTrimm
-23-06-22 11:42:17 00,0694         |  |  >> mBasicTest.Test_05_BaseName
-23-06-22 11:42:17 00,0703 00,0009 |  |  << mBasicTest.Test_05_BaseName
-23-06-22 11:42:17 00,0707         |  |  >> mBasicTest.Test_05_BaseName
-23-06-22 11:42:17 00,0717 00,0010 |  |  << mBasicTest.Test_05_BaseName
-23-06-22 11:42:17 00,0721         |  |  >> mBasicTest.Test_10_ArrayDiffers
-23-06-22 11:42:17 00,0726 00,0005 |  |  << mBasicTest.Test_10_ArrayDiffers
-23-06-22 11:42:17 00,0729 00,0729 |  << mBasicTest.Regression
-23-06-22 11:42:17 00,0729 00,0729 << Execution Trace result of the mBasic Regression test
-23-06-22 11:42:17                 Impact on the overall performance (caused by the trace itself): 0,3 milliseconds!
-23-06-22 11:42:17 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+23-06-22 16:04:58 Execution trace by 'Common VBA Execution Trace Service (clsTrc)' (https://github.com/warbe-maker/VBA-Trace)
+23-06-22 16:04:58                 >> Execution Trace result of the mBasic Regression test
+23-06-22 16:04:58 00,0000         |  >> mBasicTest.Regression
+23-06-22 16:04:58 00,0060         |  |  >> mBasicTest.Test_09_ErrMsg
+23-06-22 16:04:58 00,0069         |  |  |  >> mBasicTest.Test_09_1_ErrMsg
+23-06-22 16:04:58 00,0100 00,0031 |  |  |  << mBasicTest.Test_09_1_ErrMsg !!! Application Error 1  !!! 
+23-06-22 16:04:58 00,0102 00,0041 |  |  << mBasicTest.Test_09_ErrMsg !!! VB-Runtime Error 6  !!! 
+23-06-22 16:04:58 00,0107         |  |  >> mBasicTest.Test_03_ArrayToRange
+23-06-22 16:04:58 00,0113         |  |  |  > mBasic.ArrayCompare
+23-06-22 16:04:58 00,0133 00,0021 |  |  |  < mBasic.ArrayCompare
+23-06-22 16:04:58 00,0158         |  |  |  > mBasic.ArrayCompare
+23-06-22 16:04:58 00,0162 00,0003 |  |  |  < mBasic.ArrayCompare
+23-06-22 16:04:58 00,0182         |  |  |  > mBasic.ArrayCompare
+23-06-22 16:04:58 00,0185 00,0003 |  |  |  < mBasic.ArrayCompare
+23-06-22 16:04:58 00,0201         |  |  |  > mBasic.ArrayCompare
+23-06-22 16:04:58 00,0208 00,0007 |  |  |  < mBasic.ArrayCompare
+23-06-22 16:04:58 00,0284         |  |  |  > mBasic.ArrayCompare
+23-06-22 16:04:58 00,0288 00,0004 |  |  |  < mBasic.ArrayCompare
+23-06-22 16:04:58 00,0375         |  |  |  > mBasic.ArrayCompare
+23-06-22 16:04:58 00,0378 00,0004 |  |  |  < mBasic.ArrayCompare
+23-06-22 16:04:58 00,0463         |  |  |  > mBasic.ArrayCompare
+23-06-22 16:04:58 00,0466 00,0004 |  |  |  < mBasic.ArrayCompare
+23-06-22 16:04:58 00,0475 00,0368 |  |  << mBasicTest.Test_03_ArrayToRange
+23-06-22 16:04:58 00,0479         |  |  >> mBasicTest.Test_02_0_ArrayRemoveItems
+23-06-22 16:04:58 00,0484         |  |  |  >> mBasicTest.Test_02-1_ArrayRemoveItems_Function
+23-06-22 16:04:58 00,0487 00,0003 |  |  |  << mBasicTest.Test_02-1_ArrayRemoveItems_Function
+23-06-22 16:04:58 00,0492         |  |  |  >> mBasicTest.Test_02_2_ArrayRemoveItems_Error_Conditions
+23-06-22 16:04:58 00,0513 00,0021 |  |  |  << mBasicTest.Test_02_2_ArrayRemoveItems_Error_Conditions
+23-06-22 16:04:58 00,0516 00,0037 |  |  << mBasicTest.Test_02_0_ArrayRemoveItems
+23-06-22 16:04:58 00,0521         |  |  >> mBasicTest.Test_03_ArrayToRange
+23-06-22 16:04:58 00,0573 00,0052 |  |  << mBasicTest.Test_03_ArrayToRange
+23-06-22 16:04:58 00,0579         |  |  >> mBasicTest.Test_04_ArrayTrimm
+23-06-22 16:04:58 00,0582 00,0004 |  |  << mBasicTest.Test_04_ArrayTrimm
+23-06-22 16:04:58 00,0597         |  |  >> mBasicTest.Test_05_BaseName
+23-06-22 16:04:58 00,0611 00,0014 |  |  << mBasicTest.Test_05_BaseName
+23-06-22 16:04:58 00,0615         |  |  >> mBasicTest.Test_05_BaseName
+23-06-22 16:04:58 00,0624 00,0010 |  |  << mBasicTest.Test_05_BaseName
+23-06-22 16:04:58 00,0643         |  |  >> mBasicTest.Test_10_ArrayDiffers
+23-06-22 16:04:58 00,0650 00,0007 |  |  << mBasicTest.Test_10_ArrayDiffers
+23-06-22 16:04:58 00,0653 00,0653 |  << mBasicTest.Regression
+23-06-22 16:04:58 00,0653 00,0653 << Execution Trace result of the mBasic Regression test
+23-06-22 16:04:58                 Impact on the overall performance (caused by the trace itself): 0,3 milliseconds!
+23-06-22 16:04:58 Execution trace by 'Common VBA Execution Trace Service (clsTrc)' (https://github.com/warbe-maker/VBA-Trace)

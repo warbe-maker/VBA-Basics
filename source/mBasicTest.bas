@@ -18,6 +18,8 @@ Option Explicit
 '
 ' W. Rauschenberger, Berlin Now 2021
 ' ----------------------------------------------------------------------------
+Public Trc As clsTrc
+
 Private Property Get ErrSrc(Optional ByVal s As String) As String:  ErrSrc = "mBasicTest." & s:  End Property
 
 Private Sub BoC(ByVal b_id As String, ParamArray b_arguments() As Variant)
@@ -233,9 +235,19 @@ Public Sub Regression()
     
     '~~ Initialization of a new Trace Log File for this Regression test
     '~~ ! must be done prior the first BoP !
+#If XcTrc_mTrc = 1 Then
     mTrc.FileName = "RegressionTest.ExecTrace.log"
     mTrc.Title = "Execution Trace result of the mBasic Regression test"
     mTrc.NewFile
+#ElseIf XcTrc_clsTrc = 1 Then
+    Set Trc = New clsTrc
+    With Trc
+        .FileName = "RegressionTest.ExecTrace.log"
+        .Title = "Execution Trace result of the mBasic Regression test"
+        .NewFile
+    End With
+#End If
+
     mErH.Regression = True
     
     BoP ErrSrc(PROC)
@@ -253,7 +265,11 @@ Public Sub Regression()
     
 xt: EoP ErrSrc(PROC)
     mErH.Regression = False
+#If XcTrc_mTrc = 1 Then
     mTrc.Dsply
+#ElseIf XcTrc_clsTrc = 1 Then
+    Trc.Dsply
+#End If
     Exit Sub
 
 eh: Select Case ErrMsg(ErrSrc(PROC))
