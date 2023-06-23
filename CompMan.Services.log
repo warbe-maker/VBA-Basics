@@ -1,14 +1,27 @@
-23-06-23-01:19:23  Update Outdated Common Components (by CompMan.xlsb) for Basic.xlsm 
-23-06-23-01:19:23 ------------------------------------------------------------------
-23-06-23-01:19:23  Class-Module    clsTrc .........: Used Common Component
-23-06-23-01:19:23  UserForm        fMsg ...........: Used Common Component
-23-06-23-01:19:23  Standard-Module mCompManClient .: Used Common Component
-23-06-23-01:19:23  Standard-Module mErH ...........: Used Common Component
-23-06-23-01:19:23  Standard-Module mMsg ...........: Used Common Component
-23-06-23-01:19:23  Standard-Module mTrc ...........: Used Common Component
-23-06-23-01:19:23  Class-Module    clsTrc .........: Used Common Component is up-to-date
-23-06-23-01:19:27  UserForm        fMsg ...........: Used Common Component is up-to-date
-23-06-23-01:19:27  Standard-Module mCompManClient .: Used Common Component is up-to-date
-23-06-23-01:19:27  Standard-Module mErH ...........: Used Common Component is up-to-date
-23-06-23-01:19:27  Standard-Module mMsg ...........: Used Common Component is up-to-date
-23-06-23-01:19:27  Standard-Module mTrc ...........: Used Common Component is up-to-date
+23-06-23-10:59:38  Update Outdated Common Components (by CompMan.xlsb) for Basic.xlsm 
+23-06-23-10:59:38 -------------------------------------------------------------------
+23-06-23-10:59:38  Class-Module    clsTrc .........: Used Common Component identified
+23-06-23-10:59:38  UserForm        fMsg ...........: Used Common Component identified
+23-06-23-10:59:38  Standard-Module mCompManClient .: Used Common Component identified
+23-06-23-10:59:38  Standard-Module mErH ...........: Used Common Component identified
+23-06-23-10:59:38  Standard-Module mMsg ...........: Used Common Component identified
+23-06-23-10:59:38  Standard-Module mTrc ...........: Used Common Component identified
+23-06-23-10:59:38  Class-Module    clsTrc .........: Used Common Component is up-to-date
+23-06-23-10:59:42  UserForm        fMsg ...........: Used Common Component is up-to-date
+23-06-23-10:59:42  Standard-Module mCompManClient .: Used Common Component is up-to-date
+23-06-23-10:59:42  Standard-Module mErH ...........: Used Common Component is up-to-date
+23-06-23-10:59:42  Standard-Module mMsg ...........: Used Common Component is up-to-date
+23-06-23-10:59:42  Standard-Module mTrc ...........: Used Common Component is up-to-date
+23-06-23-11:59:53 ==================================================================
+23-06-23-11:59:53        Export Changed Components (by Add-in) for Basic.xlsm       
+23-06-23-11:59:53 ------------------------------------------------------------------
+23-06-23-11:59:53  Class-Module    clsTrc .........: Unchanged used Common Component
+23-06-23-11:59:53  UserForm        fMsg ...........: Unchanged used Common Component
+23-06-23-11:59:53  Standard-Module mBasic .........: Unchanged hosted raw Common Component
+23-06-23-11:59:53  Standard-Module mBasicTest .....: Unchanged VBComponent
+23-06-23-11:59:53  Standard-Module mCompManClient .: Unchanged used Common Component
+23-06-23-11:59:53  Standard-Module mErH ...........: Unchanged used Common Component
+23-06-23-11:59:53  Standard-Module mMsg ...........: Unchanged used Common Component
+23-06-23-11:59:53  Standard-Module mTrc ...........: Unchanged used Common Component
+23-06-23-11:59:53  Workbook        wbBasic ........: Unchanged VBComponent
+23-06-23-11:59:53  Worksheet       wsBasic ........: Unchanged VBComponent
