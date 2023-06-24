@@ -263,6 +263,7 @@ Public Sub Regression()
     mBasicTest.Test_08_Stack
     mBasicTest.Test_10_ArrayDiffers
     mBasicTest.Test_20_Timer
+    mBasicTest.Test_21_TimedDoEvents
     
 xt: EoP ErrSrc(PROC)
     mErH.Regression = False
@@ -288,6 +289,7 @@ Public Sub Test_01_ArrayCompare()
     Dim dctDiff As Variant
     Dim v       As Variant
     
+    If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
     BoP ErrSrc(PROC)
     
     '~~ Test 1: One element is different, empty elements are ignored
@@ -412,6 +414,7 @@ Public Sub Test_02_0_ArrayRemoveItems()
 
     On Error GoTo eh
     
+    If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
     BoP ErrSrc(PROC)
     Test_02_1_ArrayRemoveItems_Function
     Test_02_2_ArrayRemoveItems_Error_Conditions
@@ -440,6 +443,7 @@ Public Sub Test_02_1_ArrayRemoveItems_Function()
     Dim v       As Variant
     Dim i       As Long
     
+    If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
     BoP ErrSrc(PROC)
     aTest = Split("1,2,3,4,5,6,7", ",") ' Test array
     
@@ -505,6 +509,7 @@ Public Sub Test_02_2_ArrayRemoveItems_Error_Conditions()
     Dim aTest   As Variant
     Dim a       As Variant
     
+    If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
     BoP ErrSrc(PROC)
     aTest = Split("1,2,3,4,5,6,7", ",") ' Test array
         
@@ -547,6 +552,7 @@ Public Sub Test_03_ArrayToRange()
     Dim a       As Variant
     Dim aTest   As Variant
     
+    If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
     BoP ErrSrc(PROC)
     aTest = Split("1,2,3,4,5,6,7", ",") ' Test array
     a = aTest
@@ -573,6 +579,7 @@ Public Sub Test_04_ArrayTrimm()
     Dim a       As Variant
     Dim aTest   As Variant
     
+    If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
     BoP ErrSrc(PROC)
     aTest = Split(" , ,1,2,3,4,5,6,7, , , ", ",") ' Test array
     a = aTest
@@ -605,6 +612,7 @@ Public Sub Test_05_BaseName()
     Dim fl      As File
     
     '~~ Prepare for tests
+    If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
     Set wb = ThisWorkbook
     With New FileSystemObject
         Set fl = .GetFile(wb.FullName)
@@ -636,13 +644,22 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
 End Sub
 
 Public Sub Test_06_Spaced()
+    Const PROC = "Test_06_Spaced"
+    
+    If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
+    mBasic.BoP ErrSrc(PROC)
     Dim s As String
     s = Spaced("Ab c")
     Debug.Assert Replace(s, Chr$(160), " ") = "A b  c"
+
+xt: mBasic.EoP ErrSrc(PROC)
 End Sub
 
 Public Sub Test_07_Align()
-
+    Const PROC = "Test_07_Align"
+    
+    If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
+    mBasic.BoP ErrSrc(PROC)
     Debug.Assert Align("Abcde", 8, AlignLeft, " ", "-") = "Abcde --"
     Debug.Assert Align("Abcde", 8, AlignRight, " ", "-") = "-- Abcde"
     Debug.Assert Align("Abcde", 8, AlignCentered, " ", "-") = " Abcde -"
@@ -656,6 +673,7 @@ Public Sub Test_07_Align()
     Debug.Assert Align("Abcde", 5, AlignRight, " ", "-") = " Abcd"
     Debug.Assert Align("Abcde", 5, AlignCentered, " ", "-") = " Abc "
     
+xt: mBasic.EoP ErrSrc(PROC)
 End Sub
 
 Public Sub Test_08_Stack()
@@ -666,6 +684,8 @@ Public Sub Test_08_Stack()
     Dim Level   As Long
     Dim i       As Long
     
+    If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
+    mBasic.BoP ErrSrc(PROC)
     ' Test 1: Push/Pop an object
     Debug.Assert mBasic.StackIsEmpty(Stack) = True
     mBasic.StackPush Stack, wsBasic
@@ -705,7 +725,8 @@ Public Sub Test_08_Stack()
         Debug.Assert mBasic.StackPop(Stack) = 10 * i
     Next i
 
-xt: Exit Sub
+xt: mBasic.EoP ErrSrc(PROC)
+    Exit Sub
 
 eh: Select Case ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
@@ -722,6 +743,7 @@ Private Sub Test_09_1_ErrMsg(ByVal test_value As Long)
     On Error GoTo eh
     Dim l As Long
     
+    If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
     BoP ErrSrc(PROC)
     
     mErH.Asserted AppErr(1) ' skip display of error message when mErH.Regression = True
@@ -744,6 +766,7 @@ Public Sub Test_09_ErrMsg()
     On Error GoTo eh
     Dim l As Long
     
+    If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
     BoP ErrSrc(PROC)
     '~~ 1. Test: Display an Application Error
     Test_09_1_ErrMsg 0
@@ -768,6 +791,7 @@ Public Sub Test_10_ArrayDiffers()
     Dim a1      As Variant
     Dim a2      As Variant
     
+    If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
     BoP ErrSrc(PROC)
     
     '~~ Test 1: Only leading and trailing items are empty
@@ -825,6 +849,7 @@ Public Sub Test_20_Timer()
     Dim cEnd        As Currency
     Dim cElapsed    As Currency
     
+    If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
     mBasic.BoP ErrSrc(PROC)
     SecsWait = 0.000001
     
@@ -841,4 +866,14 @@ Public Sub Test_20_Timer()
     mBasic.EoP ErrSrc(PROC), "Returned for ""Application.Wait Now() + 0,000001"": min=" & SecsMin & " milliseconds, max=" & SecsMax & " milliseconds"
 
 End Sub
+
+Private Sub Test_21_TimedDoEvents()
+    Const PROC = "Test_21_TimedDoEvents"
+    
+    If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
+    mBasic.BoP ErrSrc(PROC)
+    mBasic.TimedDoEvents ErrSrc(PROC)
+    mBasic.EoP ErrSrc(PROC)
+End Sub
+
 

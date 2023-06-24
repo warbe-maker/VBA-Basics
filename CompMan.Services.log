@@ -97,3 +97,32 @@
 23-06-24-15:31:28  Standard-Module mTrc ...........: Unchanged used Common Component
 23-06-24-15:31:28  Workbook        wbBasic ........: Unchanged VBComponent
 23-06-24-15:31:28  Worksheet       wsBasic ........: Unchanged VBComponent
+23-06-24-16:11:21 ==================================================================
+23-06-24-16:11:21     Export Changed Components (by CompMan.xlsb) for Basic.xlsm    
+23-06-24-16:11:21 ------------------------------------------------------------------
+23-06-24-16:11:21  Class-Module    clsTrc .........: Unchanged used Common Component
+23-06-24-16:11:21  UserForm        fMsg ...........: Unchanged used Common Component
+23-06-24-16:11:21  Standard-Module mBasic .........: Hosted Raw Common Component code modified
+23-06-24-16:11:21                                    Modified hosted Common Component e x p o r t e d !
+23-06-24-16:11:21                                    Modified hosted Common Component's Revision Number increased to 2023-06-24.003
+23-06-24-16:11:21                                    Modified hosted Common Component's Export-File copied to D:\Ablage\Excel VBA\DevAndTest\Common-Components
+23-06-24-16:11:21  Standard-Module mBasicTest .....: Modified VBComponent e x p o r t e d !
+23-06-24-16:11:21  Standard-Module mCompManClient .: Unchanged used Common Component
+23-06-24-16:11:21  Standard-Module mErH ...........: Unchanged used Common Component
+23-06-24-16:11:21  Standard-Module mMsg ...........: Unchanged used Common Component
+23-06-24-16:11:21  Standard-Module mTrc ...........: Unchanged used Common Component
+23-06-24-16:11:21  Workbook        wbBasic ........: Unchanged VBComponent
+23-06-24-16:11:21  Worksheet       wsBasic ........: Unchanged VBComponent
+23-06-24-16:11:29 ==================================================================
+23-06-24-16:11:29     Export Changed Components (by CompMan.xlsb) for Basic.xlsm    
+23-06-24-16:11:29 ------------------------------------------------------------------
+23-06-24-16:11:29  Class-Module    clsTrc .........: Unchanged used Common Component
+23-06-24-16:11:29  UserForm        fMsg ...........: Unchanged used Common Component
+23-06-24-16:11:29  Standard-Module mBasic .........: Unchanged hosted raw Common Component
+23-06-24-16:11:29  Standard-Module mBasicTest .....: Unchanged VBComponent
+23-06-24-16:11:29  Standard-Module mCompManClient .: Unchanged used Common Component
+23-06-24-16:11:29  Standard-Module mErH ...........: Unchanged used Common Component
+23-06-24-16:11:29  Standard-Module mMsg ...........: Unchanged used Common Component
+23-06-24-16:11:29  Standard-Module mTrc ...........: Unchanged used Common Component
+23-06-24-16:11:29  Workbook        wbBasic ........: Unchanged VBComponent
+23-06-24-16:11:29  Worksheet       wsBasic ........: Unchanged VBComponent

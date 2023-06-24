@@ -1213,7 +1213,7 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Function
 
-Public Function TimedDoEvents() As String
+Public Function TimedDoEvents(Optional t_source As String = vbNullString) As String
 ' ---------------------------------------------------------------------------
 ' For the execution of a DoEvents statement. Provides the information in
 ' which procedure it had been executed and the msecs delay it has caused.
@@ -1236,7 +1236,8 @@ Public Function TimedDoEvents() As String
     DoEvents
     mBasic.TimerEnd cBegin, cEnd, cElapsed, TIMER_FORMAT
     
-    TimedDoEvents = Format((cElapsed / SysFrequency) * 1000, TIMER_FORMAT) & " milliseconds"
+    If t_source <> vbNullString Then t_source = Trim(Replace(t_source & ":", "::", ":")) & " "
+    TimedDoEvents = t_source & Format((cElapsed / SysFrequency) * 1000, TIMER_FORMAT) & " milliseconds"
     Debug.Print TimedDoEvents
     
 End Function
