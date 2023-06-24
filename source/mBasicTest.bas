@@ -262,6 +262,7 @@ Public Sub Regression()
     mBasicTest.Test_07_Align
     mBasicTest.Test_08_Stack
     mBasicTest.Test_10_ArrayDiffers
+    mBasicTest.Test_20_Timer
     
 xt: EoP ErrSrc(PROC)
     mErH.Regression = False
@@ -812,26 +813,32 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test___Timer()
-
+Public Sub Test_20_Timer()
+    Const PROC = "Test_20_Timer"
+    
     Dim i As Long
     Dim SecsMin     As Currency
     Dim SecsMax     As Currency
     Dim SecsElapsed As Currency
     Dim SecsWait    As Single
+    Dim cBegin      As Currency
+    Dim cEnd        As Currency
+    Dim cElapsed    As Currency
     
+    mBasic.BoP ErrSrc(PROC)
     SecsWait = 0.000001
     
     SecsMin = 100000
     For i = 1 To 20
-        DoEvents
-        mBasic.TimerBegin
+        mBasic.TimerBegin cBegin
         Application.Wait Now() + SecsWait
-        SecsElapsed = TimerEnd
-        SecsMin = mBasic.Min(SecsMin, SecsElapsed)
-        SecsMax = mBasic.Max(SecsMax, SecsElapsed)
+        mBasic.TimerEnd cBegin, , cEnd
+        TimerEnd cBegin, cEnd, cElapsed, "00.0000"
+        SecsMin = mBasic.Min(SecsMin, (cElapsed / mBasic.SysFrequency) * 1000)
+        SecsMax = mBasic.Max(SecsMax, (cElapsed / mBasic.SysFrequency) * 1000)
     Next i
-    Debug.Print "Application.Wait Now() + " & SecsWait & " waits from " & SecsMin * 1000 & " to " & SecsMax * 1000 & " msec"
-    
+    Debug.Print """Application.Wait Now() + " & SecsWait & """ waits from min " & SecsMin * 1000 & " to max " & SecsMax * 1000 & " milliseconds (with a precision of " & mBasic.SysFrequency & " ticks per second)"
+    mBasic.EoP ErrSrc(PROC), "Returned for ""Application.Wait Now() + 0,000001"": min=" & SecsMin & " milliseconds, max=" & SecsMax & " milliseconds"
+
 End Sub
 
