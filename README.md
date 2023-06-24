@@ -35,8 +35,8 @@ This is a (personal) collection of services used every now and then n VB-Project
 
 
 [^1]: It goes without saying that my VB-Projects use this _mBasic_ component. However, all my _Common Components_ use some services as `Private Sub` copy. This keeps them 100% autonomous, i.e. independent from this and other components but still serve my personal use of them. The service i am talking about are:  
-- _BoP/EoP_, and _ErrMsg_ to keep them independent from the _[Common VBA Error Services][2]_
--  _BoP/EoP_, _BoC/EoC_ to keep the use of the _[Common VBA Execution Trace Service][3]_ optional
+-&nbsp;_BoP/EoP_, and _ErrMsg_ to keep them independent from the _[Common VBA Error Services][2]_  
+-&nbsp;_BoP/EoP_, _BoC/EoC_ to keep the use of the _[Common VBA Execution Trace Service][3]_ optional
 
 [^2]: S=Sub, F=Function, P=Property (r=read/Get, w=write/Let)
 
