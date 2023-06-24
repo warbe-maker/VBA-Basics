@@ -1218,24 +1218,26 @@ Public Function TimedDoEvents() As String
 ' For the execution of a DoEvents statement. Provides the information in
 ' which procedure it had been executed and the msecs delay it has caused.
 '
-' Note: DoEvents every now and then is able to solve timing problems. When
-'       looking at the description of its effect this often appears
-'       miraculous. However, when it helps ... . But DoEvents allow keyboard
-'       interaction while a process executes. In case of a loop - and when
-'       the DoEvents lies within it, this may be a godsend. But it as well
-'       may cause unpredictable results. This little procedure at least
-'       documents in the Immediate window when (with milliseconds) and where
-'       it had been executed.
+' Background: DoEvents every now and then are concidered to solve problems.
+'             However, when looking at the description of DoEvents its effect
+'             may appears miraculous. However, stil when it helps is should
+'             be known that DoEvents allow keyboard interaction while a
+'             process executes. In case of a loop with embedded DoEvents,
+'             this may be a godsend. But it as well may cause unpredictable
+'             results. This little procedure at least documents in VBE's
+'             immediate window the resulting performace delay in milliseconds.
 ' ---------------------------------------------------------------------------
+    Const TIMER_FORMAT = "00.0000"
     Dim cBegin      As Currency
     Dim cEnd        As Currency
     Dim cElapsed    As Currency
     
     mBasic.TimerBegin cBegin
     DoEvents
-    mBasic.TimerEnd cBegin, cElapsed, , cEnd
+    mBasic.TimerEnd cBegin, cEnd, cElapsed, TIMER_FORMAT
     
-    TimedDoEvents = Format((cElapsed / SysFrequency) * 1000, "00.0000") & " milliseconds"
+    TimedDoEvents = Format((cElapsed / SysFrequency) * 1000, TIMER_FORMAT) & " milliseconds"
+    Debug.Print TimedDoEvents
     
 End Function
 
