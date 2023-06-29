@@ -811,34 +811,30 @@ Public Function ErrMsg(ByVal err_source As String, _
     If err_source = vbNullString Then err_source = Err.source
     If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
     If err_dscrptn = vbNullString Then err_dscrptn = "--- No error description available ---"
-    
-    '~~ Consider extra information is provided with the error description
+    '~~ About
+    ErrDesc = err_dscrptn
     If InStr(err_dscrptn, "||") <> 0 Then
         ErrDesc = Split(err_dscrptn, "||")(0)
         ErrAbout = Split(err_dscrptn, "||")(1)
+    End If
+    '~~ Type of error
+    If err_no < 0 Then
+        ErrType = "Application Error ": ErrNo = AppErr(err_no)
     Else
-        ErrDesc = err_dscrptn
+        ErrType = "VB Runtime Error ":  ErrNo = err_no
+        If err_dscrptn Like "*DAO*" _
+        Or err_dscrptn Like "*ODBC*" _
+        Or err_dscrptn Like "*Oracle*" _
+        Then ErrType = "Database Error "
     End If
     
-    '~~ Determine the type of error
-    Select Case err_no
-        Case Is < 0
-            ErrNo = AppErr(err_no)
-            ErrType = "Application Error "
-        Case Else
-            ErrNo = err_no
-            If err_dscrptn Like "*DAO*" _
-            Or err_dscrptn Like "*ODBC*" _
-            Or err_dscrptn Like "*Oracle*" _
-            Then ErrType = "Database Error " _
-            Else ErrType = "VB Runtime Error "
-    End Select
-    
-    If err_source <> vbNullString Then ErrSrc = " in: """ & err_source & """"   ' assemble ErrSrc from available information"
-    If err_line <> 0 Then ErrAtLine = " at line " & err_line                    ' assemble ErrAtLine from available information
-    ErrTitle = Replace(ErrType & ErrNo & ErrSrc & ErrAtLine, "  ", " ")         ' assemble ErrTitle from available information
-       
-    ErrText = "Error: " & vbLf & ErrDesc & vbLf & vbLf & "Source: " & vbLf & err_source & ErrAtLine
+    '~~ Title
+    If err_source <> vbNullString Then ErrSrc = " in: """ & err_source & """"
+    If err_line <> 0 Then ErrAtLine = " at line " & err_line
+    ErrTitle = Replace(ErrType & ErrNo & ErrSrc & ErrAtLine, "  ", " ")
+    '~~ Description
+    ErrText = "Error: " & vbLf & ErrDesc
+    '~~ About
     If ErrAbout <> vbNullString Then ErrText = ErrText & vbLf & vbLf & "About: " & vbLf & ErrAbout
     
 #If Debugging = 1 Then
@@ -1213,10 +1209,10 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Function
 
-Public Function TimedDoEvents(Optional t_source As String = vbNullString) As String
+Public Function TimedDoEvents(Optional t_source As String = vbNullString, _
+                              Optional t_debug_print As Boolean = False) As String
 ' ---------------------------------------------------------------------------
-' For the execution of a DoEvents statement. Provides the information in
-' which procedure it had been executed and the msecs delay it has caused.
+' Returns the elapsed time in seconds of DoEvents statement.
 '
 ' Background: DoEvents every now and then are concidered to solve problems.
 '             However, when looking at the description of DoEvents its effect
@@ -1227,7 +1223,7 @@ Public Function TimedDoEvents(Optional t_source As String = vbNullString) As Str
 '             results. This little procedure at least documents in VBE's
 '             immediate window the resulting performace delay in milliseconds.
 ' ---------------------------------------------------------------------------
-    Const TIMER_FORMAT = "00.0000"
+    Const TIMER_FORMAT = "0.00000"
     Dim cBegin      As Currency
     Dim cEnd        As Currency
     Dim cElapsed    As Currency
@@ -1235,10 +1231,9 @@ Public Function TimedDoEvents(Optional t_source As String = vbNullString) As Str
     mBasic.TimerBegin cBegin
     DoEvents
     mBasic.TimerEnd cBegin, cEnd, cElapsed, TIMER_FORMAT
-    
-    If t_source <> vbNullString Then t_source = Trim(Replace(t_source & ":", "::", ":")) & " "
-    TimedDoEvents = t_source & Format((cElapsed / SysFrequency) * 1000, TIMER_FORMAT) & " milliseconds"
-    Debug.Print TimedDoEvents
+    If t_source <> vbNullString Then t_source = " (" & Trim(t_source) & ")"
+    TimedDoEvents = Format((cElapsed / SysFrequency) * 1000, TIMER_FORMAT) & " seconds " & t_source
+    If t_debug_print Then Debug.Print TimedDoEvents
     
 End Function
 
