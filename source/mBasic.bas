@@ -70,7 +70,7 @@ Option Explicit
 ' Microsoft Scripting Runtime
 ' Microsoft Visual Basic Application Extensibility ..
 '
-' W. Rauschenberger, Berlin Jul 2023
+' W. Rauschenberger, Berlin Aug 2023
 ' See https://github.com/warbe-maker/VBA-Basics (with README servie)
 ' ----------------------------------------------------------------------------
 Public Const DCONCAT    As String = "||"    ' For concatenating and error with a general message (info) to the error description
