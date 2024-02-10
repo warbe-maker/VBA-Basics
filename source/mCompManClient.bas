@@ -1,17 +1,19 @@
 Attribute VB_Name = "mCompManClient"
 Option Explicit
 ' ----------------------------------------------------------------------------
-' Standard Module mCompManClient: CompMan client interface. To be imported
-' =============================== into any Workbook for - potentially - being
-' serviced by CompMan's "Export Changed Components",
-'                       "Update Outdated Common Components",
-'                    or "Synchronize VB-Projects" service.
+' Standard Module mCompManClient: CompMan client interface. The component is
+' =============================== to be imported into any Workbook/VB-Project
+' for being serviced by CompMan's Export Changed Components, Update
+' Outdated Common Components, or the Synchronize VB-Projects service.
 '
-' W. Rauschenberger, Berlin Oct 2023
+' W. Rauschenberger, Berlin Dec 2023
 '
 ' See https://github.com/warbe-maker/VB-Components-Management
 ' ----------------------------------------------------------------------------
 ' --- The below constants must not be changed to Private since they are used byCompMan
+Private Const COMPMAN_ADDIN             As String = "CompMan.xlam"
+Private Const vbResume                  As Long = 6 ' return value (equates to vbYes)
+
 Public Const COMPMAN_DEVLP              As String = "CompMan.xlsb"
 Public Const SRVC_EXPORT_ALL            As String = "ExportAll"
 Public Const SRVC_EXPORT_ALL_DSPLY      As String = "Export All Components"
@@ -21,16 +23,13 @@ Public Const SRVC_SYNCHRONIZE           As String = "SynchronizeVBProjects"
 Public Const SRVC_SYNCHRONIZE_DSPLY     As String = "Synchronize VB-Projects"
 Public Const SRVC_UPDATE_OUTDATED       As String = "UpdateOutdatedCommonComponents"
 Public Const SRVC_UPDATE_OUTDATED_DSPLY As String = "Update Outdated Common Components"
-' --- The above constants must not be changed to Private since they are used byCompMan
-
-Private Const COMPMAN_ADDIN             As String = "CompMan.xlam"
-Private Const vbResume                  As Long = 6 ' return value (equates to vbYes)
+Public Const SRVC_RELEASE_PENDING_CHANGES_DSPLY As String = "Release pending changes"
+Public Const SRVC_RELEASE_PENDING_CHANGES   As String = "ReleaseService"
 
 Private Busy                            As Boolean ' prevent parallel execution of a service
 Private sEventsLvl                      As String
 Private bWbkExecChange                  As Boolean
 
-' --- Begin of declarations to get all Workbooks of all running Excel instances
 Private Declare PtrSafe Function FindWindowEx Lib "user32" Alias "FindWindowExA" (ByVal hWnd1 As LongPtr, ByVal hWnd2 As LongPtr, ByVal lpsz1 As String, ByVal lpsz2 As String) As LongPtr
 Private Declare PtrSafe Function GetClassName Lib "user32" Alias "GetClassNameA" (ByVal hWnd As LongPtr, ByVal lpClassName As String, ByVal nMaxCount As LongPtr) As LongPtr
 Private Declare PtrSafe Function IIDFromString Lib "ole32" (ByVal lpsz As LongPtr, ByRef lpiid As UUID) As LongPtr
@@ -81,11 +80,11 @@ Private Property Let DisplayedServiceStatus(ByVal s As String)
     End With
 End Property
 
-Private Property Get IsAddinInstance() As Boolean
+Public Property Get IsAddinInstance() As Boolean
     IsAddinInstance = ThisWorkbook.Name = COMPMAN_ADDIN
 End Property
 
-Private Property Get IsDevInstance() As Boolean
+Public Property Get IsDevInstance() As Boolean
     IsDevInstance = ThisWorkbook.Name = mCompManClient.COMPMAN_DEVLP
 End Property
 
@@ -142,8 +141,8 @@ Public Sub CompManService(ByVal c_service_proc As String, _
     
     On Error GoTo eh
     Dim sServicingWbkName   As String
-        
-'    If c_service_proc = mCompManClient.SRVC_EXPORT_CHANGED And ThisWorkbook.Saved Then GoTo xt
+           
+    If ActiveWindow.Caption <> ThisWorkbook.Name Then Exit Sub ' Any restored, e.g. (Version ..) is ignored
     
     Progress p_service_name:=ServiceName(c_service_proc) _
            , p_serviced_wbk_name:=ThisWorkbook.Name
@@ -180,13 +179,6 @@ Public Sub CompManService(ByVal c_service_proc As String, _
                , p_serviced_wbk_name:=ThisWorkbook.Name _
                , p_service_info:="Workbook saved (CompMan-Service not applicable)"
     End If
-'    If Not ThisWorkbook.Saved Then
-'        With Application
-'            .DisplayAlerts = False
-'            ThisWorkbook.Save
-'            .DisplayAlerts = True
-'        End With
-'    End If
     
 xt: Busy = False
     mCompManClient.Events ErrSrc(PROC) & "." & c_service_proc, True
@@ -203,57 +195,27 @@ Private Function ErrMsg(ByVal err_source As String, _
                Optional ByVal err_dscrptn As String = vbNullString, _
                Optional ByVal err_line As Long = 0) As Variant
 ' ------------------------------------------------------------------------------
-' Universal error message display service including a debugging option active
-' when the Conditional Compile Argument 'Debugging = 1' and an optional
-' additional "About the error:" section displaying text connected to an error
-' message by two vertical bars (||).
+' Universal error message display service which displays:
+' - a debugging option button
+' - an "About:" section when the err_dscrptn has an additional string
+'   concatenated by two vertical bars (||)
+' - the error message either by means of the Common VBA Message Service
+'   (fMsg/mMsg) when installed (indicated by Cond. Comp. Arg. `mMsg = 1` or by
+'   means of the VBA.MsgBox in case not.
 '
-' A copy of this function is used in each procedure with an error handling
-' (On error Goto eh).
+' Uses: AppErr  For programmed application errors (Err.Raise AppErr(n), ....)
+'               to turn them into a negative and in the error message back into
+'               its origin positive number.
 '
-' The function considers the Common VBA Error Handling Component (ErH) which
-' may be installed (Conditional Compile Argument 'ErHComp = 1') and/or the
-' Common VBA Message Display Component (mMsg) installed (Conditional Compile
-' Argument 'MsgComp = 1'). Only when none of the two is installed the error
-' message is displayed by means of the VBA.MsgBox.
-'
-' Usage: Example with the Conditional Compile Argument 'Debugging = 1'
-'
-'        Private/Public <procedure-name>
-'            Const PROC = "<procedure-name>"
-'
-'            On Error Goto eh
-'            ....
-'        xt: Exit Sub/Function/Property
-'
-'        eh: Select Case ErrMsg(ErrSrc(PROC))
-'               Case vbResume:  Stop: Resume
-'               Case Else:      GoTo xt
-'            End Select
-'        End Sub/Function/Property
-'
-'        The above may appear a lot of code lines but will be a godsend in case
-'        of an error!
-'
-' Uses:  - For programmed application errors (Err.Raise AppErr(n), ....) the
-'          function AppErr will be used which turns the positive number into a
-'          negative one. The error message will regard a negative error number
-'          as an 'Application Error' and will use AppErr to turn it back for
-'          the message into its original positive number. Together with the
-'          ErrSrc there will be no need to maintain numerous different error
-'          numbers for a VB-Project.
-'        - The caller provides the source of the error through the module
-'          specific function ErrSrc(PROC) which adds the module name to the
-'          procedure name.
-'
-' W. Rauschenberger Berlin, Nov 2021
+' W. Rauschenberger Berlin, Jan 2024
+' See: https://github.com/warbe-maker/VBA-Error
 ' ------------------------------------------------------------------------------
-#If ErHComp = 1 Then
+#If mErH = 1 Then
     '~~ When Common VBA Error Services (mErH) is availabel in the VB-Project
     '~~ (which includes the mMsg component) the mErh.ErrMsg service is invoked.
     ErrMsg = mErH.ErrMsg(err_source, err_no, err_dscrptn, err_line)
     GoTo xt
-#ElseIf MsgComp = 1 Then
+#ElseIf mMsg = 1 Then
     '~~ When (only) the Common Message Service (mMsg, fMsg) is available in the
     '~~ VB-Project, mMsg.ErrMsg is invoked for the display of the error message.
     ErrMsg = mMsg.ErrMsg(err_source, err_no, err_dscrptn, err_line)
@@ -275,7 +237,7 @@ Private Function ErrMsg(ByVal err_source As String, _
     '~~ Obtain error information from the Err object for any argument not provided
     If err_no = 0 Then err_no = Err.Number
     If err_line = 0 Then ErrLine = Erl
-    If err_source = vbNullString Then err_source = Err.source
+    If err_source = vbNullString Then err_source = Err.Source
     If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
     If err_dscrptn = vbNullString Then err_dscrptn = "--- No error description available ---"
     
@@ -314,16 +276,11 @@ Private Function ErrMsg(ByVal err_source As String, _
                   "About: " & vbLf & _
                   ErrAbout
     
-#If Debugging Then
     ErrBttns = vbYesNo
     ErrText = ErrText & vbLf & vbLf & _
               "Debugging:" & vbLf & _
               "Yes    = Resume Error Line" & vbLf & _
               "No     = Terminate"
-#Else
-    ErrBttns = vbCritical
-#End If
-    
     ErrMsg = MsgBox(Title:=ErrTitle _
                   , Prompt:=ErrText _
                   , Buttons:=ErrBttns)
@@ -347,9 +304,6 @@ Public Sub Events(ByVal e_src As String, _
     
     On Error GoTo eh
     Static sLastExecWrkbk   As String
-    Dim v                   As Variant
-    Dim wbk                 As Workbook
-    Dim dct                 As Dictionary
     
     If e_reset Then
         sEventsLvl = vbNullString
@@ -486,7 +440,7 @@ Public Sub Progress(ByVal p_service_name As String, _
            Optional ByVal p_no_comps_serviced As Long = 0, _
            Optional ByVal p_no_comps_outdated As Long = 0, _
            Optional ByVal p_no_comps_total As Long = 0, _
-           Optional ByVal p_no_comps_ignored As Long = 0, _
+           Optional ByVal p_no_comps_skipped As Long = 0, _
            Optional ByVal p_service_info As String = vbNullString)
 ' --------------------------------------------------------------------------
 ' Universal message of the export and the update service's progress in the
@@ -503,52 +457,52 @@ Public Sub Progress(ByVal p_service_name As String, _
 ' Export ... (by CompMan....) for ......: 1 of 50 exported (clsServices)
 ' --------------------------------------------------------------------------
     Const PROC                  As String = "Progress"
-    Const SRVC_PROGRESS_SCHEME  As String = "<srvc> <by> <serviced>: <n> of <m> <dots> <op> <info>"
+    Const SRVC_PROGRESS_SCHEME  As String = "<srvc> <by> <serviced>: <n> of <m> <op> <info> <dots>"
     
     On Error GoTo eh
     Dim sMsg    As String
     Dim lDots   As Long
+    Dim sFormat As String
     
     sMsg = Replace(SRVC_PROGRESS_SCHEME, "<srvc>", p_service_name)
     sMsg = Replace(sMsg, "<serviced>", "for " & p_serviced_wbk_name)
+    
     If p_by_servicing_wbk_name <> vbNullString _
     Then sMsg = Replace(sMsg, "<by>", "(by " & p_by_servicing_wbk_name & ")") _
     Else sMsg = Replace(sMsg, "<by>", vbNullString)
     
-    If p_progress_figures Then
-        sMsg = Replace(sMsg, "<n>", p_no_comps_serviced)
-        If p_no_comps_outdated <> 0 Then
-            sMsg = Replace(sMsg, "<m>", p_no_comps_outdated)
-        Else
-            sMsg = Replace(sMsg, "<m>", p_no_comps_total)
-        End If
-        sMsg = Replace(sMsg, "<op>", p_service_op)
-        lDots = p_no_comps_total - p_no_comps_ignored - p_no_comps_serviced
-        If lDots >= 0 Then
-            sMsg = Replace(sMsg, "<dots>", String(lDots, "."))
-        Else
-            sMsg = Replace(sMsg, "<dots>", vbNullString)
-        End If
+    If p_no_comps_total < 100 Then sFormat = "#0" Else sFormat = "##0"
+    
+    lDots = p_no_comps_total - p_no_comps_skipped - p_no_comps_serviced
+    If lDots >= 0 Then
+        sMsg = Replace(sMsg, "<dots>", String(lDots, "."))
     Else
-        sMsg = Replace(sMsg, "<n>", vbNullString)
-        sMsg = Replace(sMsg, "of <m>", vbNullString)
-        sMsg = Replace(sMsg, "<op>", vbNullString)
         sMsg = Replace(sMsg, "<dots>", vbNullString)
-        sMsg = sMsg & " please wait!"
+    End If
+    
+    If p_service_op <> vbNullString _
+    Then sMsg = Replace(sMsg, "<op>", p_service_op) _
+    Else sMsg = Replace(sMsg, "<op>", "please wait!")
+    
+    If p_progress_figures Then
+        sMsg = Replace(sMsg, "<n>", Format(p_no_comps_serviced, sFormat))
+        If p_no_comps_outdated <> 0 _
+        Then sMsg = Replace(sMsg, "<m>", Format(p_no_comps_outdated, sFormat)) _
+        Else sMsg = Replace(sMsg, "<m>", Format(p_no_comps_total, sFormat))
+    Else
+        sMsg = Replace(sMsg, "<n> of <m>", vbNullString)
     End If
     
     sMsg = Replace(sMsg, "<info>", p_service_info)
     sMsg = Replace(sMsg, "  ", " ")
     If Len(sMsg) > 255 Then sMsg = Left(sMsg, 250) & " ..."
     With Application
-        .ScreenUpdating = False
+        .StatusBar = vbNullString
         .StatusBar = Trim(sMsg)
-        .ScreenUpdating = True
     End With
-    
 xt: Exit Sub
 
-eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
+eh: Select Case ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select

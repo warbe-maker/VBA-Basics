@@ -34,9 +34,9 @@ Private Sub BoC(ByVal b_id As String, ParamArray b_arguments() As Variant)
     Dim s As String
     If Not IsMissing(b_arguments) Then s = Join(b_arguments, ",")
 
-#If XcTrc_mTrc = 1 Then
+#If mTrc = 1 Then
     mTrc.BoC b_id, s
-#ElseIf XcTrc_clsTrc = 1 Then
+#ElseIf clsTrc = 1 Then
     Trc.BoC b_id, s
 #End If
 
@@ -61,14 +61,14 @@ Private Sub BoP(ByVal b_proc As String, ParamArray b_arguments() As Variant)
     Dim s As String
     If Not IsMissing(b_arguments) Then s = Join(b_arguments, ";")
 
-#If ErHComp = 1 Then
+#If mErH = 1 Then
     '~~ The error handling also hands over to the mTrc/clsTrc component when
     '~~ either of the two is installed.
     mErH.BoP b_proc, s
-#ElseIf XcTrc_clsTrc = 1 Then
+#ElseIf clsTrc = 1 Then
     '~~ mErH is not installed but the mTrc is
     Trc.BoP b_proc, s
-#ElseIf XcTrc_mTrc = 1 Then
+#ElseIf mTrc = 1 Then
     '~~ mErH neither mTrc is installed but clsTrc is
     mTrc.BoP b_proc, s
 #End If
@@ -87,9 +87,9 @@ Private Sub EoC(ByVal e_id As String, ParamArray e_arguments() As Variant)
     Dim s As String
     If Not IsMissing(e_arguments) Then s = Join(e_arguments, ",")
 
-#If XcTrc_mTrc = 1 Then
+#If mTrc = 1 Then
     mTrc.EoC e_id, s
-#ElseIf XcTrc_clsTrc = 1 Then
+#ElseIf clsTrc = 1 Then
     Trc.EoC e_id, s
 #End If
 
@@ -111,13 +111,13 @@ Private Sub EoP(ByVal e_proc As String, Optional ByVal e_inf As String = vbNullS
 '         the 'Common VBA Error Services' and/or the 'Common VBA Execution
 '         Trace Service'.
 ' ------------------------------------------------------------------------------
-#If ErHComp = 1 Then
+#If mErH = 1 Then
     '~~ The error handling also hands over to the mTrc component when 'ExecTrace = 1'
     '~~ so the Else is only for the case the mTrc is installed but the merH is not.
     mErH.EoP e_proc
-#ElseIf XcTrc_clsTrc = 1 Then
+#ElseIf clsTrc = 1 Then
     Trc.EoP e_proc, e_inf
-#ElseIf XcTrc_mTrc = 1 Then
+#ElseIf mTrc = 1 Then
     mTrc.EoP e_proc, e_inf
 #End If
 
@@ -146,12 +146,12 @@ Private Function ErrMsg(ByVal err_source As String, _
 '
 ' See: https://github.com/warbe-maker/VBA-Error
 ' ------------------------------------------------------------------------------' ------------------------------------------------------------------------------
-#If ErHComp = 1 Then
+#If mErH = 1 Then
     '~~ When Common VBA Error Services (mErH) is availabel in the VB-Project
     '~~ (which includes the mMsg component) the mErh.ErrMsg service is invoked.
     ErrMsg = mErH.ErrMsg(err_source, err_no, err_dscrptn, err_line): GoTo xt
     GoTo xt
-#ElseIf MsgComp = 1 Then
+#ElseIf mMsg = 1 Then
     '~~ When (only) the Common Message Service (mMsg, fMsg) is available in the
     '~~ VB-Project, mMsg.ErrMsg is invoked for the display of the error message.
     ErrMsg = mMsg.ErrMsg(err_source, err_no, err_dscrptn, err_line): GoTo xt
@@ -173,7 +173,7 @@ Private Function ErrMsg(ByVal err_source As String, _
     '~~ Obtain error information from the Err object for any argument not provided
     If err_no = 0 Then err_no = Err.Number
     If err_line = 0 Then ErrLine = Erl
-    If err_source = vbNullString Then err_source = Err.source
+    If err_source = vbNullString Then err_source = Err.Source
     If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
     If err_dscrptn = vbNullString Then err_dscrptn = "--- No error description available ---"
     
@@ -205,13 +205,8 @@ Private Function ErrMsg(ByVal err_source As String, _
        
     ErrText = "Error: " & vbLf & ErrDesc & vbLf & vbLf & "Source: " & vbLf & err_source & ErrAtLine
     If ErrAbout <> vbNullString Then ErrText = ErrText & vbLf & vbLf & "About: " & vbLf & ErrAbout
-    
-#If Debugging = 1 Then
     ErrBttns = vbYesNo
     ErrText = ErrText & vbLf & vbLf & "Debugging:" & vbLf & "Yes    = Resume Error Line" & vbLf & "No     = Terminate"
-#Else
-    ErrBttns = vbCritical
-#End If
     ErrMsg = MsgBox(Title:=ErrTitle, Prompt:=ErrText, Buttons:=ErrBttns)
 xt:
 End Function
@@ -235,11 +230,11 @@ Public Sub Regression()
     
     '~~ Initialization of a new Trace Log File for this Regression test
     '~~ ! must be done prior the first BoP !
-#If XcTrc_mTrc = 1 Then
+#If mTrc = 1 Then
     mTrc.FileName = "RegressionTest.ExecTrace.log"
     mTrc.Title = "Execution Trace result of the mBasic Regression test"
     mTrc.NewFile
-#ElseIf XcTrc_clsTrc = 1 Then
+#ElseIf clsTrc = 1 Then
     Set Trc = New clsTrc
     With Trc
         .FileName = "RegressionTest.ExecTrace.log"
@@ -251,7 +246,6 @@ Public Sub Regression()
     mErH.Regression = True
     
     BoP ErrSrc(PROC)
-    mBasicTest.Test_09_ErrMsg
     mBasicTest.Test_01_ArrayCompare
     mBasicTest.Test_02_0_ArrayRemoveItems
     mBasicTest.Test_03_ArrayToRange
@@ -267,9 +261,9 @@ Public Sub Regression()
     
 xt: EoP ErrSrc(PROC)
     mErH.Regression = False
-#If XcTrc_mTrc = 1 Then
+#If mTrc = 1 Then
     mTrc.Dsply
-#ElseIf XcTrc_clsTrc = 1 Then
+#ElseIf clsTrc = 1 Then
     Trc.Dsply
 #End If
     Exit Sub
@@ -391,10 +385,10 @@ Public Sub Test_01_ArrayCompare()
     
 xt: EoP ErrSrc(PROC)
 
-#If ExecTrace = 1 Then
+#If clsTrace = 1 Then
     If Not mErH.Regression Then
-        mTrc.Dsply
-        Kill mTrc.LogFile
+        Trc.Dsply
+        Kill Trc.LogFile
     End If
 #End If
     Exit Sub
@@ -420,10 +414,10 @@ Public Sub Test_02_0_ArrayRemoveItems()
     Test_02_2_ArrayRemoveItems_Error_Conditions
     
 xt: EoP ErrSrc(PROC)
-#If ExecTrace = 1 Then
+#If clsTrace = 1 Then
     If Not mErH.Regression Then
-        mTrc.Dsply
-        Kill mTrc.LogFile
+        Trc.Dsply
+        Kill Trc.LogFile
     End If
 #End If
     Exit Sub
@@ -629,10 +623,10 @@ Public Sub Test_05_BaseName()
     mBasic.BaseName wb.Worksheets(1)
     
 xt: EoP ErrSrc(PROC)
-#If ExecTrace = 1 Then
+#If clsTrace = 1 Then
     If Not mErH.Regression Then
-        mTrc.Dsply
-        Kill mTrc.LogFile
+        Trc.Dsply
+        Kill Trc.LogFile
     End If
 #End If
     Exit Sub
@@ -731,56 +725,6 @@ xt: mBasic.EoP ErrSrc(PROC)
 eh: Select Case ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
-    End Select
-End Sub
-
-Private Sub Test_09_1_ErrMsg(ByVal test_value As Long)
-' ------------------------------------------------------------------
-' Display an Application Error istead of a VB Runtime Error
-' ------------------------------------------------------------------
-    Const PROC = "Test_09_1_ErrMsg"
-    
-    On Error GoTo eh
-    Dim l As Long
-    
-    If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
-    BoP ErrSrc(PROC)
-    
-    mErH.Asserted AppErr(1) ' skip display of error message when mErH.Regression = True
-    If test_value = 0 _
-    Then Err.Raise AppErr(1), ErrSrc(PROC), "The argument 'test_value' must not be 0!"
-    l = l / test_value
-    
-xt: EoP ErrSrc(PROC)
-    Exit Sub
-
-eh: Select Case ErrMsg(ErrSrc(PROC))
-        Case vbResume:  Stop: Resume
-        Case Else:      On Error GoTo -1:   GoTo xt
-    End Select
-End Sub
-
-Public Sub Test_09_ErrMsg()
-    Const PROC = "Test_09_ErrMsg"
-    
-    On Error GoTo eh
-    Dim l As Long
-    
-    If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
-    BoP ErrSrc(PROC)
-    '~~ 1. Test: Display an Application Error
-    Test_09_1_ErrMsg 0
-    
-    '~~ 2. Test: Display a VB-Runtime-Error
-    mErH.Asserted 6 ' Skip display when mErh.Regression = True
-    l = l / 0
-    
-xt: EoP ErrSrc(PROC)
-    Exit Sub
-
-eh: Select Case ErrMsg(ErrSrc(PROC))
-        Case vbResume:  Stop: Resume
-        Case Else:      On Error GoTo -1:   GoTo xt
     End Select
 End Sub
 

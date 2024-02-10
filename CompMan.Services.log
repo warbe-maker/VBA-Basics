@@ -1,25 +1,17 @@
-23-12-08-15:02:38 =========================================================================================================================================================
-23-12-08-15:02:38                                               Update Outdated Common Components (by Add-in) for Basic.xlsm                                               
-23-12-08-15:02:38 ---------------------------------------------------------------------------------------------------------------------------------------------------------
-23-12-08-15:02:38  Class-Module    clsTrc .........: Component is up-to-date! Revision-Number has been set to to 2023-08-26.001 (the raw's in the Common Components Folder)
-23-12-08-15:02:38                                    Used Common Component is up-to-date
-23-12-08-15:02:48  Standard-Module mBasic .........: Used Common Component is up-to-date
-23-12-08-15:02:49  Standard-Module mTrc ...........: Component is up-to-date! Revision-Number has been set to to 2023-06-23.002 (the raw's in the Common Components Folder)
-23-12-08-15:02:49                                    Used Common Component is up-to-date
-23-12-08-15:02:54  UserForm        fMsg ...........: Outdated used Common Component - last modified in   c l s L o g   - updated by re-import of the Export-File in the Common-Components folder
-23-12-08-15:03:04  Standard-Module mCompManClient .: Outdated used Common Component - last modified in   c l s L o g   - updated by re-import of the Export-File in the Common-Components folder
-23-12-08-15:03:07  Standard-Module mErH ...........: Outdated used Common Component - last modified in   c l s L o g   - updated by re-import of the Export-File in the Common-Components folder
-23-12-08-15:03:11  Standard-Module mMsg ...........: Outdated used Common Component - last modified in   c l s L o g   - updated by re-import of the Export-File in the Common-Components folder
-23-12-08-15:03:38 ==================================================================
-23-12-08-15:03:38        Export Changed Components (by Add-in) for Basic.xlsm       
-23-12-08-15:03:38 ------------------------------------------------------------------
-23-12-08-15:03:38  Class-Module    clsTrc .........: Unchanged Common Component used
-23-12-08-15:03:38  UserForm        fMsg ...........: Unchanged Common Component used
-23-12-08-15:03:38  Standard-Module mBasic .........: Unchanged Common Component hosted ignored
-23-12-08-15:03:38  Standard-Module mBasicTest .....: Unchanged VBComponent ignored
-23-12-08-15:03:38  Standard-Module mCompManClient .: Unchanged Common Component used
-23-12-08-15:03:38  Standard-Module mErH ...........: Unchanged Common Component used
-23-12-08-15:03:39  Standard-Module mMsg ...........: Unchanged Common Component used
-23-12-08-15:03:39  Standard-Module mTrc ...........: Unchanged Common Component used
-23-12-08-15:03:39  Workbook        wbBasic ........: Unchanged VBComponent ignored
-23-12-08-15:03:39  Worksheet       wsBasic ........: Unchanged VBComponent ignored
+24-02-10-18:44:41 ==================================================================================================================================================================================
+24-02-10-18:44:41                                                            Update Outdated Common Components (by Add-in) for Basic.xlsm                                                           
+24-02-10-18:44:41 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+24-02-10-18:44:41  Class-Module    clsTrc .........: Outdated used Common Component - last modified in   T r c . x l s m   - updated by re-import of the Export-File in the Common-Components folder
+24-02-10-18:44:44  UserForm        fMsg ...........: Outdated used Common Component - last modified in   C o m p M a n . x l s b   - updated by re-import of the Export-File in the Common-Components folder
+24-02-10-18:44:49  Standard-Module mBasic .........: Outdated hosted Common Component - last modified in   P r i v P r o f . x l s b   - updated by re-import of the Export-File in the Common-Components folder
+24-02-10-18:44:52  Standard-Module mCompManClient .: Outdated used Common Component - last modified in   C o m p M a n . x l s b   - updated by re-import of the Export-File in the Common-Components folder
+24-02-10-18:44:54  Standard-Module mErH ...........: Outdated used Common Component - last modified in   L o g . x l s b   - updated by re-import of the Export-File in the Common-Components folder
+24-02-10-18:44:56  Standard-Module mMsg ...........: Outdated used Common Component - last modified in   L o g . x l s b   - updated by re-import of the Export-File in the Common-Components folder
+24-02-10-18:44:57  Standard-Module mTrc ...........: Outdated used Common Component - last modified in   T r c . x l s m   - updated by re-import of the Export-File in the Common-Components folder
+24-02-10-19:01:11 =====================================================================
+24-02-10-19:01:11         Export Changed Components (by Add-in) for Basic.xlsm         
+24-02-10-19:01:11 ---------------------------------------------------------------------
+24-02-10-19:01:11  Standard-Module mBasicTest .: Modified VBComponent e x p o r t e d !
+24-02-10-19:01:12  Standard-Module mBasic .....: Modified Common Component: e x p o r t e d !
+24-02-10-19:01:12                                Modified Common Component: Last modification info changed from 2024-02-08-14-08-52 (UTC) to 2024-02-10-18-01-12 (UTC)
+24-02-10-19:01:12                                Modified Common Component: Pending Release registered

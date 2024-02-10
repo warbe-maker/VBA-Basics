@@ -24,15 +24,16 @@ Option Explicit
 '
 ' Uses components:
 ' ----------------
-' fMsg/mMsg   Used only when installed and activated by the Cond. Comp. Arg. `MsgComp = 1`
-' mTrc        Used only by the test environment and only when activated by the Cond. Comp.
-'             Arg. `XcTrc_mTrc = 1`
+' fMsg/mMsg   Used only when installed and activated by the Cond. Comp. Arg.
+'             `mMsg = 1`
+' mTrc/clsTrc Used only by the test environment and only when activated by the
+'             Cond. Comp. Arg. `mTrc = 1`
 '
 ' Requires:
 ' ---------
 ' Reference to "Microsoft Scripting Runtime"
 '
-' W. Rauschenberger, Berlin, Oct 2023
+' W. Rauschenberger, Berlin, Jan 2024
 '
 ' See https://github.com/warbe-maker/VBA-Error
 ' See https://warbe-maker.github.io/vba/common/2020/10/02/Comprehensive-Common-VBA-Error-Handler.html
@@ -51,8 +52,6 @@ Private Declare PtrSafe Function apiShellExecute Lib "shell32.dll" _
     As Long
 ' Window Constants
 Private Const WIN_NORMAL = 1         'Open Normal
-Private Const WIN_MAX = 3            'Open Maximized
-Private Const WIN_MIN = 2            'Open Minimized
 ' ShellRun Error Codes
 Private Const ERROR_SUCCESS = 32&
 Private Const ERROR_NO_ASSOC = 31&
@@ -60,12 +59,9 @@ Private Const ERROR_OUT_OF_MEM = 0&
 Private Const ERROR_FILE_NOT_FOUND = 2&
 Private Const ERROR_PATH_NOT_FOUND = 3&
 Private Const ERROR_BAD_FORMAT = 11&
-Private Const WS_THICKFRAME As Long = &H40000
-Private Const GWL_STYLE As Long = -16
 ' End of ShellRun declarations ---------------------------------------------
 
 
-Private Const ErrMsgDefaultButton   As Long = vbOKOnly
 Private Const GITHUB_REPO_URL       As String = "https://github.com/warbe-maker/VBA-Error"
 
 Private cllErrPath          As Collection   ' managed by ErrPath... procedures exclusively
@@ -119,10 +115,10 @@ End Function
 Public Sub README(Optional ByVal r_bookmark As String = vbNullString)
     
     If r_bookmark = vbNullString Then
-        mBasic.ShellRun GITHUB_REPO_URL
+        ShellRun GITHUB_REPO_URL
     Else
         r_bookmark = Replace("#" & r_bookmark, "##", "#") ' add # if missing
-        mBasic.ShellRun GITHUB_REPO_URL & r_bookmark
+        ShellRun GITHUB_REPO_URL & r_bookmark
     End If
 
 End Sub
@@ -190,11 +186,11 @@ Public Sub BoP(ByVal b_id As String, _
         Set cllRecentErrors = Nothing: Set cllRecentErrors = New Collection
     End If
     StackPush ProcStack, b_id
-#If XcTrc_clsTrc Then   ' when clsTrc is installed and active
+#If mTrc = 1 Then               ' when mTrc is installed and active
+    mTrc.BoP_ErH b_id, b_args
+#ElseIf clsTrc = 1 Then         ' when clsTrc is installed and active
     If Trc Is Nothing Then Set Trc = New clsTrc
     Trc.BoP_ErH b_id, b_args
-#ElseIf XcTrc_mTrc Then ' when mTrc is installed and active
-    mTrc.BoP_ErH b_id, b_args
 #End If
 End Sub
 
@@ -203,10 +199,10 @@ Public Sub EoP(ByVal e_id As String, _
 ' ------------------------------------------------------------------------------
 ' Trace and pop from proc-stack the 'Eegin of a Procedure'.
 ' ------------------------------------------------------------------------------
-#If XcTrc_clsTrc = 1 Then   ' when clsTrc is installed and active
-    Trc.EoP e_id, e_args
-#ElseIf XcTrc_mTrc = 1 Then ' when mTrc is installed and active
+#If mTrc = 1 Then       ' when mTrc is installed and active
     mTrc.EoP e_id, e_args
+#ElseIf clsTrc = 1 Then ' when clsTrc is installed and active
+    Trc.EoP e_id, e_args
 #End If
     If StackTop(ProcStack) = e_id Then StackPop ProcStack
 End Sub
@@ -239,10 +235,7 @@ Private Property Get BoPArguments() As String
     Const PROC = "BoPArguments-Get"
     
     On Error GoTo eh
-    Dim i       As Long
-    Dim sL      As String
-    Dim sR      As String
-    Dim s       As String
+    Dim s As String
     
     If ArrayIsAllocated(vArguments) Then
         s = Join(vArguments, ", ")
@@ -425,9 +418,9 @@ Public Function ErrMsg(ByVal err_source As String, _
         ' !! will thus only be available to the extent the stack had been maintained by   !!
         ' !! BoP/EoP statements on the way down to the error raising procedure.           !!
         ErrPathAdd err_source
-#If XcTrc_mTrc = 1 Then
+#If mTrc = 1 Then
         mTrc.EoP err_source, "!! " & sType & lNo & " " & sLine & " !!"
-#ElseIf XcTrc_clsTrc = 1 Then
+#ElseIf clsTrc = 1 Then
         Trc.EoP err_source, "!! " & sType & lNo & " " & sLine & " !!"
 #End If
         sInitErrInfo = vbNullString
@@ -468,11 +461,7 @@ End Function
 Private Sub ErrMsgButtons(ByRef err_buttons As Variant)
     Dim cll As New Collection
 
-#If Debugging = 1 Then
     Set cll = mMsg.Buttons(cll, vbResumeOk)
-#Else
-    Set cll = mMsg.Buttons(cll, ErrMsgDefaultButton)
-#End If
     Set err_buttons = cll
 End Sub
 
@@ -502,17 +491,16 @@ Private Function ErrMsgDsply(ByVal err_source As String, _
     Dim sType       As String
     Dim lNo         As Long
     Dim ErrMsgText  As udtMsg
-    Dim SctnText    As udtMsgText
     Dim sMsg        As String ' The MsgBox Prompt string
     Dim lBttns      As Long
     
-#If XcTrc_clsTrc = 1 Then
-    '~~ When this component is used with clsTrc installed and activated (Cond. Comp.Arg. `XcTrc_clsTrc = 1`
+#If mTrc = 1 Then
+    '~~ When this component is used with clsTrc installed and activated (Cond. Comp.Arg. `clsTrc = 1`
     '~~ the using VB-Project must have `Public Trc As clsTrc` and `Set Trc = New clsTrc` codelines in
     '~~ one of its components! If not the below code line will cause an error.
-    Trc.Pause
-#ElseIf XcTrc_mTrc = 1 Then
-    mTrc.Pause ' prevent useless timing values by exempting the display and wait time for the reply
+    mTrc.Pause
+#ElseIf clsTrc = 1 Then
+    Trc.Pause ' prevent useless timing values by exempting the display and wait time for the reply
 #End If
     ErrMsgMatter err_source:=err_source _
                , err_no:=err_number _
@@ -527,16 +515,6 @@ Private Function ErrMsgDsply(ByVal err_source As String, _
                , msg_type:=sType _
                , msg_no:=lNo
     sErrPath = ErrPathErrMsg(sType & lNo & " " & sLine)
-#If Debugging = 0 Then
-    If sLine = vbNullString Then sLine = "at line ?  *)"
-    '~~ In case no error line is provided with the error message (commonly the case)
-    '~~ a hint regarding the Cond. Comp. Arg. which may be used to get
-    '~~ an option which supports 'resuming' it will be displayed.
-    If sAbout <> vbNullString Then sAbout = sAbout & vbLf & vbLf
-    sAbout = sAbout & "*) When the code line which raised the error is missing set the Cond. Comp. Arg. 'Debugging = 1'." & _
-                    "The addtionally displayed button <Resume error Line> replies with vbResume and the the error handling: " & _
-                    "    If mErH.ErrMsg(ErrSrc(PROC) = vbResume Then Stop: Resume   makes debugging extremely quick and easy."
-#End If
     
     '~~ Skip the display when this is a regression test with the error explicitly already asserted
     If bRegression And ErrIsAsserted(err_no_asserted) Then GoTo xt
@@ -595,7 +573,6 @@ Private Function ErrMsgDsply(ByVal err_source As String, _
         .Label.FontColor = rgbBlue
     End With
     
-#If Debugging = 1 Then
     With ErrMsgText.Section(5)
         With .Label
             .Text = "Resume Error Line"
@@ -604,38 +581,30 @@ Private Function ErrMsgDsply(ByVal err_source As String, _
         .Text.Text = "Pressing this button and twice F8 leads straight to the code line which raised the error. " & _
                      "(button is displayed because the Cond. Comp. Argument 'Debugging = 1')."
     End With
-#End If
-    
-#If MsgComp = 1 Then
+
+    Application.EnableEvents = True ' set to TRUE in case FALSE
+#If mMsg = 1 Then
     ErrMsgDsply = mMsg.Dsply(dsply_title:=sTitle _
                            , dsply_msg:=ErrMsgText _
                            , dsply_width_max:=60 _
-                           , dsply_label_spec:="R50" _
+                           , dsply_Label_spec:="R50" _
                            , dsply_buttons:=mMsg.Buttons(err_buttons))
 #Else
-#If Debugging = 1 Then
     lBttns = vbYesNo
     sMsg = sMsg & vbLf & vbLf & "Debugging:" & vbLf & "Yes    = Resume Error Line" & vbLf & "No     = Terminate"
-#Else
-    lBttns = vbCritical
-#End If
     ErrMsgDsply = VBA.MsgBox(Title:=sTitle _
                             , Prompt:=sMsg _
                             , Buttons:=lBttns)
 #End If
 
 xt:
-#If XcTrc_mTrc = 1 Then
+#If mTrc = 1 Then
     mTrc.EoP err_source, sType & lNo & " " & sLine
     mTrc.Continue ' when the user has replied by pressinbg a button the execution timer continues
-#ElseIf XcTrc_clsTrc = 1 Then
+#ElseIf clsTrc = 1 Then
     Trc.EoP err_source, sType & lNo & " " & sLine
     Trc.Continue ' when the user has replied by pressinbg a button the execution timer continues
 #End If
-
-End Function
-
-Private Function ErrMsgDsplyMyMsgBox(b) As Variant
 
 End Function
 
@@ -708,7 +677,6 @@ Private Function ErrPathErrMsg(ByVal msg_details As String) As String
 ' ----------------------------------------------------------------------------
     Dim i   As Long
     Dim j   As Long
-    Dim s   As String
     
     ErrPathErrMsg = vbNullString
     If Not ErrPathIsEmpty Then
@@ -807,10 +775,9 @@ Public Function StackPop(ByVal stck As Collection, _
         End If
     End If
     
-    On Error Resume Next
-    Set StackPop = stck(stck.Count) ' last pushed item is an object
-    If Err.Number <> 0 _
-    Then StackPop = stck(stck.Count)
+    If IsObject(stck(stck.Count)) _
+    Then Set StackPop = stck(stck.Count) _
+    Else StackPop = stck(stck.Count)
     stck.Remove stck.Count
 
 xt: Exit Function

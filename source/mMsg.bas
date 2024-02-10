@@ -21,7 +21,7 @@ Option Explicit
 '
 ' Requires:   Reference to "Microsoft Scripting Runtime"
 '
-' W. Rauschenberger, Berlin Sep 2023
+' W. Rauschenberger, Berlin Jan 2024
 ' See: https://github.com/warbe-maker/VBA-Message
 ' ------------------------------------------------------------------------------
 Public Const MSG_LIMIT_WIDTH_MIN_PERCENTAGE     As Long = 15
@@ -113,8 +113,6 @@ Private Const SM_CMONITORS              As Long = 80    ' number of display moni
 Private Const MONITOR_CCHDEVICENAME     As Long = 32    ' device name fixed length
 Private Const MONITOR_PRIMARY           As Long = 1
 Private Const MONITOR_DEFAULTTONULL     As Long = 0
-Private Const MONITOR_DEFAULTTOPRIMARY  As Long = 1
-Private Const MONITOR_DEFAULTTONEAREST  As Long = 2
 Private Type RECT
     Left As Long
     Top As Long
@@ -133,11 +131,8 @@ Private Enum DevCap     ' GetDeviceCaps nIndex (video displays)
     VERTSIZE = 6        ' height in millimeters
     HORZRES = 8         ' width in pixels
     VERTRES = 10        ' height in pixels
-    BITSPIXEL = 12      ' color bits per pixel
     LOGPIXELSX = 88     ' horizontal DPI (assumed by Windows)
     LOGPIXELSY = 90     ' vertical DPI (assumed by Windows)
-    COLORRES = 108      ' actual color resolution (bits per pixel)
-    VREFRESH = 116      ' vertical refresh rate (Hz)
 End Enum
 
 Private Const ERROR_BAD_FORMAT = 11&
@@ -147,10 +142,6 @@ Private Const ERROR_OUT_OF_MEM = 0&
 Private Const ERROR_PATH_NOT_FOUND = 3&
 Private Const ERROR_SUCCESS = 32&
 Private Const GITHUB_REPO_URL       As String = "https://github.com/warbe-maker/VBA-Message"
-Private Const SM_CXVIRTUALSCREEN    As Long = &H4E&     ' calculating
-Private Const SM_CYVIRTUALSCREEN    As Long = &H4F&     ' the
-Private Const SM_XVIRTUALSCREEN     As Long = &H4C&     ' display's
-Private Const SM_YVIRTUALSCREEN     As Long = &H4D&     ' DPI in points
 Private Const TWIPSPERINCH          As Long = 1440      ' -------------
 
 Private Declare PtrSafe Function CreateDC Lib "gdi32" Alias "CreateDCA" (ByVal lpDriverName As String, ByVal lpDeviceName As String, ByVal lpOutput As String, lpInitData As LongPtr) As LongPtr
@@ -170,7 +161,6 @@ Private Declare PtrSafe Function ReleaseDC Lib "user32" (ByVal hWnd As LongPtr, 
 #Else
     Private Declare PtrSafe Sub Sleep Lib "kernel32" (ByVal ms As Long)
 #End If
-Private Declare PtrSafe Function GetSystemMetrics32 Lib "user32" Alias "GetSystemMetrics" (ByVal nIndex As Long) As Long
 Private Declare PtrSafe Function apiShellExecute Lib "shell32.dll" _
     Alias "ShellExecuteA" _
     (ByVal hWnd As Long, _
@@ -184,8 +174,6 @@ Private Declare PtrSafe Function apiShellExecute Lib "shell32.dll" _
 Private Const WIN_NORMAL = 1         'Open Normal
 '***Error Codes***
 Private bModeLess           As Boolean
-Private lPixelsPerInchX     As Long
-Private lPixelsPerInchY     As Long
 Private fMonitor            As fMsg
 Public MsgInstances         As Dictionary    ' Collection of (possibly still)  active form instances
 
@@ -372,7 +360,7 @@ Public Sub BttnAppRun(ByRef b_dct As Dictionary, _
     For Each v In b_arguments
         If TypeName(v) = "Error" Then
             Err.Raise Number:=AppErr(1) _
-                    , source:=ErrSrc(PROC) _
+                    , Source:=ErrSrc(PROC) _
                     , Description:="The ParamArray argument (b_arguments) contains empty elements but empty elements " & _
                                    "are not supported/possible!" & "||" & _
                                    "Application.Run supports only positional but not named arguments. When only some of " & _
@@ -703,8 +691,10 @@ Public Function Dsply(ByVal dsply_title As String, _
     Dim i       As Long
     Dim MsgForm As fMsg
 
-#If ExecTrace = 1 Then
+#If mTrc = 1 Then
     mTrc.Pause
+#ElseIf clsTrc = 1 Then
+    Trc.Pause
 #End If
     
     If Not BttnArgsAreValid(dsply_buttons) _
@@ -764,8 +754,10 @@ Public Function Dsply(ByVal dsply_title As String, _
     Dsply = mMsg.RepliedWith
     
 xt:
-#If ExecTrace = 1 Then
+#If mTrc = 1 Then
     mTrc.Continue
+#ElseIf clsTrc = 1 Then
+    Trc.Continue
 #End If
     Exit Function
 
@@ -797,7 +789,7 @@ Public Function ErrMsg(ByVal err_source As String, _
     '~~ Obtain error information from the Err object for any argument not provided
     If err_number = 0 Then err_number = Err.Number
     If err_line = 0 Then err_line = Erl
-    If err_source = vbNullString Then err_source = Err.source
+    If err_source = vbNullString Then err_source = Err.Source
     If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
     If err_dscrptn = vbNullString Then err_dscrptn = "--- No error description available ---"
         
@@ -831,11 +823,7 @@ Public Function ErrMsg(ByVal err_source As String, _
     ErrTitle = ErrType & " " & ErrNo & " in: '" & err_source & "'" & ErrAtLine
     
     '~~ Prepare the Error Reply Buttons
-#If Debugging = 1 Then
     Set ErrButtons = mMsg.Buttons(vbResumeOk)
-#Else
-    Set ErrButtons = mMsg.Buttons(err_buttons)
-#End If
         
     '~~ Display the error message by means of the mMsg's Dsply function
     iSect = 1
@@ -872,7 +860,6 @@ Public Function ErrMsg(ByVal err_source As String, _
             .Text.Text = ErrAbout
         End If
     End With
-#If Debugging = 1 Then
     iSect = iSect + 1
     With ErrMsgText.Section(iSect)
         With .Label
@@ -883,7 +870,6 @@ Public Function ErrMsg(ByVal err_source As String, _
                      "Cond. Comp. Argument 'Debugging = 1'. Pressing this button " & _
                      "and twice F8 leads straight to the code line which raised the error."
     End With
-#End If
     mMsg.Dsply dsply_title:=ErrTitle _
              , dsply_msg:=ErrMsgText _
              , dsply_Label_spec:="R40" _
@@ -1121,10 +1107,10 @@ End Function
 Public Sub README(Optional ByVal r_bookmark As String = vbNullString)
     
     If r_bookmark = vbNullString Then
-        mBasic.ShellRun GITHUB_REPO_URL
+        ShellRun GITHUB_REPO_URL
     Else
         r_bookmark = Replace("#" & r_bookmark, "##", "#") ' add # if missing
-        mBasic.ShellRun GITHUB_REPO_URL & r_bookmark
+        ShellRun GITHUB_REPO_URL & r_bookmark
     End If
         
 End Sub
@@ -1136,7 +1122,7 @@ Private Function RoundUp(ByVal v As Variant) As Variant
     RoundUp = Int(v) + (v - Int(v) + 0.5) \ 1
 End Function
 
-Public Function Screen(ByVal Item As enScreen) As Variant
+Public Function Screen(ByVal item As enScreen) As Variant
 ' -------------------------------------------------------------------------
 ' Return display screen Item for monitor displaying ActiveWindow
 ' Patterned after Excel's built-in information functions CELL and INFO
@@ -1170,7 +1156,6 @@ Public Function Screen(ByVal Item As enScreen) As Variant
     Dim tMonitorInfo    As MONITORINFOEX
     Dim nMonitors       As Integer
     Dim vResult         As Variant
-    Dim sItem           As String
     
     Application.Volatile
     nMonitors = GetSystemMetrics(SM_CMONITORS)
@@ -1202,7 +1187,7 @@ Public Function Screen(ByVal Item As enScreen) As Variant
         tMonitorInfo.dwFlags = MONITOR_PRIMARY
         tMonitorInfo.szDevice = "PRIMARY" & vbNullChar
     End If
-    Select Case Item
+    Select Case item
         Case enAdjustmentfactor:    xHSizeSq = GetDeviceCaps(hDC, DevCap.HORZSIZE) ^ 2
                                     xVSizeSq = GetDeviceCaps(hDC, DevCap.VERTSIZE) ^ 2
                                     xPix = GetDeviceCaps(hDC, DevCap.HORZRES) ^ 2 + GetDeviceCaps(hDC, DevCap.VERTRES) ^ 2
@@ -1305,10 +1290,9 @@ Private Function StackPop(ByVal stck As Collection) As Variant
     On Error GoTo eh
     If StackIsEmpty(stck) Then GoTo xt
     
-    On Error Resume Next
-    Set StackPop = stck(stck.Count)
-    If Err.Number <> 0 _
-    Then StackPop = stck(stck.Count)
+    If IsObject(stck(stck.Count)) _
+    Then Set StackPop = stck(stck.Count) _
+    Else StackPop = stck(stck.Count)
     stck.Remove stck.Count
 
 xt: Exit Function

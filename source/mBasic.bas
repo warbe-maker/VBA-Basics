@@ -70,7 +70,7 @@ Option Explicit
 ' Reference to "Microsoft Scripting Runtime"
 ' Reference to "Microsoft Visual Basic Application Extensibility .."
 '
-' W. Rauschenberger, Berlin Oct 2023
+' W. Rauschenberger, Berlin Jan 2024
 ' See https://github.com/warbe-maker/VBA-Basics (with README servie)
 ' ----------------------------------------------------------------------------
 Public Const DCONCAT    As String = "||"    ' For concatenating and error with a general message (info) to the error description
@@ -86,7 +86,6 @@ Public Const DSPACE     As String = " "
 Public Const DEXCL      As String = "!"
 Public Const DQUOTE     As String = """"    ' one " character
 
-Private Const GITHUB_REPO_URL = "https://github.com/warbe-maker/VBA-Basics"
 ' Common xl constants grouped ----------------------------
 Public Enum YesNo   ' ------------------------------------
     xlYes = 1       ' System constants (identical values)
@@ -146,8 +145,6 @@ Private Declare PtrSafe Function apiShellExecute Lib "shell32.dll" _
 
 '***App Window Constants***
 Private Const WIN_NORMAL = 1         'Open Normal
-Private Const WIN_MAX = 3            'Open Maximized
-Private Const WIN_MIN = 2            'Open Minimized
 
 '***Error Codes***
 Private Const ERROR_SUCCESS = 32&
@@ -159,7 +156,6 @@ Private Const ERROR_BAD_FORMAT = 11&
 Private Const WS_THICKFRAME As Long = &H40000
 Private Const GWL_STYLE As Long = -16
 
-Private vMsgReply               As Variant
 Private cyTimerTicksBegin       As Currency
 Private cyTimerTicksEnd         As Currency
 Private TimerSystemFrequency    As Currency
@@ -181,7 +177,6 @@ Public Function KeySort(ByRef s_dct As Dictionary) As Dictionary
     Dim vKey    As Variant
     Dim arr()   As Variant
     Dim Temp    As Variant
-    Dim Txt     As String
     Dim i       As Long
     Dim j       As Long
     
@@ -209,7 +204,7 @@ Public Function KeySort(ByRef s_dct As Dictionary) As Dictionary
     '~~ Transfer based on sorted keys
     For i = LBound(arr) To UBound(arr)
         vKey = arr(i)
-        dct.Add Key:=vKey, Item:=s_dct.Item(vKey)
+        dct.Add Key:=vKey, item:=s_dct.item(vKey)
     Next i
     
 xt: Set s_dct = dct
@@ -238,8 +233,7 @@ Public Function Align(ByVal a_strng As String, _
 ' Returns a string (a_strng) with a lenght (a_lngth) aligned (a_mode) filled
 ' with characters (a_fill).
 ' ----------------------------------------------------------------------------
-    Dim SpaceLeft       As Long
-    Dim LengthRemaining As Long
+    Dim SpaceLeft As Long
     
     Select Case a_mode
         Case AlignLeft
@@ -288,8 +282,6 @@ End Function
 Public Function ArrayCompare(ByVal ac_v1 As Variant, _
                              ByVal ac_v2 As Variant, _
                     Optional ByVal ac_stop_after As Long = 0, _
-                    Optional ByVal ac_id1 As String = vbNullString, _
-                    Optional ByVal ac_id2 As String = vbNullString, _
                     Optional ByVal ac_ignore_case As Boolean = True, _
                     Optional ByVal ac_ignore_empty As Boolean = True) As Dictionary
 ' --------------------------------------------------------------------------
@@ -302,7 +294,6 @@ Public Function ArrayCompare(ByVal ac_v1 As Variant, _
     Const PROC = "ArrayCompare"
     
     On Error GoTo eh
-    Dim j       As Long
     Dim l       As Long
     Dim i       As Long
     Dim lMethod As VbCompareMethod
@@ -378,8 +369,6 @@ Public Function ArrayDiffers(ByVal ad_v1 As Variant, _
     Dim i       As Long
     Dim j       As Long
     Dim va()    As Variant
-    Dim s1      As String
-    Dim s2      As String
     
     On Error GoTo eh
     
@@ -440,13 +429,14 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Function
 
-Public Function ArrayIsAllocated(arr As Variant) As Boolean
+Public Function ArrayIsAllocated(ByVal arry As Variant) As Boolean
+' ----------------------------------------------------------------------------
+' Retunrs TRUE when the array (arry) is allocated, i.e. has at least one item.
+' ----------------------------------------------------------------------------
     
     On Error Resume Next
-    ArrayIsAllocated = _
-    IsArray(arr) _
-    And Not IsError(LBound(arr, 1)) _
-    And LBound(arr, 1) <= UBound(arr, 1)
+    ArrayIsAllocated = UBound(arry) >= LBound(arry)
+    On Error GoTo -1
     
 End Function
 
@@ -620,10 +610,9 @@ Public Function BaseName(ByVal v As Variant) As String
     Const PROC  As String = "BaseName"
     
     On Error GoTo eh
-    Dim fso As New FileSystemObject
     Dim fle As File
     
-    With fso
+    With New FileSystemObject
         Select Case TypeName(v)
             Case "String":      BaseName = .GetBaseName(v)
             Case "Workbook":    BaseName = .GetBaseName(v.FullName)
@@ -649,9 +638,9 @@ Public Sub BoC(ByVal b_id As String, _
 ' Obligatory copy Private for any VB-Component using the service but not having
 ' the mBasic common component installed.
 ' ------------------------------------------------------------------------------
-#If XcTrc_mTrc = 1 Then         ' when mTrc is installed and active
+#If mTrc = 1 Then         ' when mTrc is installed and active
     mTrc.BoC b_id, b_args
-#ElseIf XcTrc_clsTrc = 1 Then   ' when clsTrc is installed and active
+#ElseIf clsTrc = 1 Then   ' when clsTrc is installed and active
     Trc.BoC b_id, b_args
 #End If
 End Sub
@@ -664,12 +653,12 @@ Public Sub BoP(ByVal b_proc As String, _
 ' Obligatory copy Private for any VB-Component using the service but not having
 ' the mBasic common component installed.
 ' ------------------------------------------------------------------------------
-#If ErHComp Then          ' serves the mTrc/clsTrc when installed and active
+#If mErH Then          ' serves the mTrc/clsTrc when installed and active
     mErH.BoP b_proc, b_args
-#ElseIf XcTrc_clsTrc Then ' when only clsTrc is installed and active
+#ElseIf clsTrc Then ' when only clsTrc is installed and active
     If Trc Is Nothing Then Set Trc = New clsTrc
     Trc.BoP b_proc, b_args
-#ElseIf XcTrc_mTrc Then   ' when only mTrc is installed and activate
+#ElseIf mTrc Then   ' when only mTrc is installed and activate
     mTrc.BoP b_proc, b_args
 #End If
 End Sub
@@ -733,9 +722,9 @@ Public Sub EoC(ByVal e_id As String, _
 ' Obligatory copy Private for any VB-Component using the service but not having
 ' the mBasic common component installed.
 ' ------------------------------------------------------------------------------
-#If XcTrc_mTrc = 1 Then         ' when mTrc is installed and active
+#If mTrc = 1 Then         ' when mTrc is installed and active
     mTrc.EoC e_id, e_args
-#ElseIf XcTrc_clsTrc = 1 Then   ' when clsTrc is installed and active
+#ElseIf clsTrc = 1 Then   ' when clsTrc is installed and active
     Trc.EoC e_id, e_args
 #End If
 End Sub
@@ -748,11 +737,11 @@ Public Sub EoP(ByVal e_proc As String, _
 ' Obligatory copy Private for any VB-Component using the service but not having
 ' the mBasic common component installed.
 ' ------------------------------------------------------------------------------
-#If ErHComp = 1 Then          ' serves the mTrc/clsTrc when installed and active
+#If mErH = 1 Then          ' serves the mTrc/clsTrc when installed and active
     mErH.EoP e_proc, e_args
-#ElseIf XcTrc_clsTrc = 1 Then ' when only clsTrc is installed and active
+#ElseIf clsTrc = 1 Then ' when only clsTrc is installed and active
     Trc.EoP e_proc, e_args
-#ElseIf XcTrc_mTrc = 1 Then   ' when only mTrc is installed and activate
+#ElseIf mTrc = 1 Then   ' when only mTrc is installed and activate
     mTrc.EoP e_proc, e_args
 #End If
 End Sub
@@ -762,29 +751,27 @@ Public Function ErrMsg(ByVal err_source As String, _
               Optional ByVal err_dscrptn As String = vbNullString, _
               Optional ByVal err_line As Long = 0) As Variant
 ' ------------------------------------------------------------------------------
-' Universal error message display service. Obligatory copy Private for any
-' VB-Component using the common error service but not having the mBasic common
-' component installed.
-' Displays: - a debugging option button when the Cond. Comp. Arg. 'Debugging = 1'
-'           - an optional additional "About:" section when the err_dscrptn has
-'             an additional string concatenated by two vertical bars (||)
-'           - the error message by means of the Common VBA Message Service
-'             (fMsg/mMsg) when installed and active (Cond. Comp. Arg.
-'             `MsgComp = 1`)
+' Universal error message display service which displays:
+' - a debugging option button
+' - an "About:" section when the err_dscrptn has an additional string
+'   concatenated by two vertical bars (||)
+' - the error message either by means of the Common VBA Message Service
+'   (fMsg/mMsg) when installed (indicated by Cond. Comp. Arg. `mMsg = 1` or by
+'   means of the VBA.MsgBox in case not.
 '
 ' Uses: AppErr  For programmed application errors (Err.Raise AppErr(n), ....)
 '               to turn them into a negative and in the error message back into
 '               its origin positive number.
 '
-' W. Rauschenberger Berlin, June 2023
+' W. Rauschenberger Berlin, Jan 2024
 ' See: https://github.com/warbe-maker/VBA-Error
 ' ------------------------------------------------------------------------------
-#If ErHComp = 1 Then
+#If mErH = 1 Then
     '~~ When Common VBA Error Services (mErH) is availabel in the VB-Project
     '~~ (which includes the mMsg component) the mErh.ErrMsg service is invoked.
     ErrMsg = mErH.ErrMsg(err_source, err_no, err_dscrptn, err_line): GoTo xt
     GoTo xt
-#ElseIf MsgComp = 1 Then
+#ElseIf mMsg = 1 Then
     '~~ When (only) the Common Message Service (mMsg, fMsg) is available in the
     '~~ VB-Project, mMsg.ErrMsg is invoked for the display of the error message.
     ErrMsg = mMsg.ErrMsg(err_source, err_no, err_dscrptn, err_line): GoTo xt
@@ -806,7 +793,7 @@ Public Function ErrMsg(ByVal err_source As String, _
     '~~ Obtain error information from the Err object for any argument not provided
     If err_no = 0 Then err_no = Err.Number
     If err_line = 0 Then ErrLine = Erl
-    If err_source = vbNullString Then err_source = Err.source
+    If err_source = vbNullString Then err_source = Err.Source
     If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
     If err_dscrptn = vbNullString Then err_dscrptn = "--- No error description available ---"
     '~~ About
@@ -835,12 +822,8 @@ Public Function ErrMsg(ByVal err_source As String, _
     '~~ About
     If ErrAbout <> vbNullString Then ErrText = ErrText & vbLf & vbLf & "About: " & vbLf & ErrAbout
     
-#If Debugging = 1 Then
     ErrBttns = vbYesNo
     ErrText = ErrText & vbLf & vbLf & "Debugging:" & vbLf & "Yes    = Resume Error Line" & vbLf & "No     = Terminate"
-#Else
-    ErrBttns = vbCritical
-#End If
     ErrMsg = MsgBox(Title:=ErrTitle, Prompt:=ErrText, Buttons:=ErrBttns)
 xt:
 End Function
@@ -960,21 +943,21 @@ Public Function ProgramIsInstalled(ByVal sProgram As String) As Boolean
         ProgramIsInstalled = InStr(Environ$(18), sProgram) <> 0
 End Function
 
-Public Sub README(Optional ByVal r_url As String = vbNullString, _
+Public Sub README(Optional ByVal r_base_url As String = vbNullString, _
                   Optional ByVal r_bookmark As String = vbNullString)
 ' ----------------------------------------------------------------------------
-' Displays the given url (r_url) with the given bookmark (r_bookmark) in the
+' Displays the given url (r_base_url) with the given bookmark (r_bookmark) in the
 ' computer's default browser. When no url is provided it defaults to this
 ' component's README url in the public GitHub repo.
 ' ----------------------------------------------------------------------------
-    If r_url = vbNullString _
-    Then r_url = "https://github.com/warbe-maker/VBA-Basics"
+    If r_base_url = vbNullString _
+    Then r_base_url = "https://github.com/warbe-maker/VBA-Basics"
     
     If r_bookmark = vbNullString Then
-        mBasic.ShellRun r_url
+        mBasic.ShellRun r_base_url
     Else
         r_bookmark = Replace("#" & r_bookmark, "##", "#") ' add # if missing
-        mBasic.ShellRun r_url & r_bookmark
+        mBasic.ShellRun r_base_url & r_bookmark
     End If
         
 End Sub
@@ -1152,10 +1135,9 @@ Public Function StackPop(ByVal stck As Collection) As Variant
     On Error GoTo eh
     If StackIsEmpty(stck) Then GoTo xt
     
-    On Error Resume Next
-    Set StackPop = stck(stck.Count)
-    If Err.Number <> 0 _
-    Then StackPop = stck(stck.Count)
+    If IsObject(stck(stck.Count)) _
+    Then Set StackPop = stck(stck.Count) _
+    Else StackPop = stck(stck.Count)
     stck.Remove stck.Count
 
 xt: Exit Function
