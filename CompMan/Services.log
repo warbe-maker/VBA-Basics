@@ -1,0 +1,18 @@
+24-05-23-19:20:47 ====================================================================================================================================================================
+24-05-23-19:20:47                                                  Update Outdated Common Components (by CompMan.xlsb) for Basic.xlsm                                                 
+24-05-23-19:20:47 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+24-05-23-19:20:47  UserForm        fMsg ...........: Component is up-to-date! Revision-Number has been set to to 2024-02-08-14-35-34 (UTC) (the raw's in the Common Components Folder)
+24-05-23-19:20:47                                    Used Common Component is up-to-date
+24-05-23-19:20:48  Standard-Module mErH ...........: Component is up-to-date! Revision-Number has been set to to 2024-01-24-16-47-51 (UTC) (the raw's in the Common Components Folder)
+24-05-23-19:20:48                                    Used Common Component is up-to-date
+24-05-23-19:20:57  Standard-Module mCompManClient .: Outdated used Common Component - last modified in   C o m p M a n . x l s b   - updated by re-import of the Export-File in the Common-Components folder
+24-05-23-19:21:05  Standard-Module mMsg ...........: Outdated used Common Component - last modified in   P r i v P r o f . x l s b   - updated by re-import of the Export-File in the Common-Components folder
+24-05-23-19:21:14  Standard-Module mTrc ...........: Outdated used Common Component - last modified in   T r c . x l s m   - updated by re-import of the Export-File in the Common-Components folder
+24-05-23-19:24:12 =================================================================
+24-05-23-19:24:12    Export Changed Components (by CompMan.xlsb) for Basic.xlsm    
+24-05-23-19:24:12 -----------------------------------------------------------------
+24-05-23-19:24:12  Standard-Module mBasic .: Modified VBComponent e x p o r t e d !
+24-05-23-19:27:19 =================================================================
+24-05-23-19:27:19    Export Changed Components (by CompMan.xlsb) for Basic.xlsm    
+24-05-23-19:27:19 -----------------------------------------------------------------
+24-05-23-19:27:19  Standard-Module mBasic .: Modified VBComponent e x p o r t e d !

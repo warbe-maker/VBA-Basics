@@ -70,7 +70,7 @@ Option Explicit
 ' Reference to "Microsoft Scripting Runtime"
 ' Reference to "Microsoft Visual Basic Application Extensibility .."
 '
-' W. Rauschenberger, Berlin Jan 2024
+' W. Rauschenberger, Berlin May 2024
 ' See https://github.com/warbe-maker/VBA-Basics (with README servie)
 ' ----------------------------------------------------------------------------
 Public Const DCONCAT    As String = "||"    ' For concatenating and error with a general message (info) to the error description
@@ -112,9 +112,9 @@ Private Declare PtrSafe Function getTickCount Lib "kernel32" _
 Alias "QueryPerformanceCounter" (cyTickCount As Currency) As Long
 
 'Functions to get DPI
-Private Declare PtrSafe Function GetDC Lib "user32" (ByVal hWnd As Long) As Long
+Private Declare PtrSafe Function GetDC Lib "user32" (ByVal hwnd As Long) As Long
 Private Declare PtrSafe Function GetDeviceCaps Lib "gdi32" (ByVal hDC As Long, ByVal nIndex As Long) As Long
-Private Declare PtrSafe Function ReleaseDC Lib "user32" (ByVal hWnd As Long, ByVal hDC As Long) As Long
+Private Declare PtrSafe Function ReleaseDC Lib "user32" (ByVal hwnd As Long, ByVal hDC As Long) As Long
 Private Const LOGPIXELSX = 88               ' Pixels/inch in X
 Private Const POINTS_PER_INCH As Long = 72  ' A point is defined as 1/72 inches
 Private Declare PtrSafe Function GetForegroundWindow _
@@ -122,20 +122,20 @@ Private Declare PtrSafe Function GetForegroundWindow _
 
 Private Declare PtrSafe Function GetWindowLongPtr _
   Lib "User32.dll" Alias "GetWindowLongA" _
-    (ByVal hWnd As LongPtr, _
+    (ByVal hwnd As LongPtr, _
      ByVal nIndex As Long) _
   As LongPtr
 
 Private Declare PtrSafe Function SetWindowLongPtr _
   Lib "User32.dll" Alias "SetWindowLongA" _
-    (ByVal hWnd As LongPtr, _
+    (ByVal hwnd As LongPtr, _
      ByVal nIndex As LongPtr, _
      ByVal dwNewLong As LongPtr) _
   As LongPtr
 
 Private Declare PtrSafe Function apiShellExecute Lib "shell32.dll" _
     Alias "ShellExecuteA" _
-    (ByVal hWnd As Long, _
+    (ByVal hwnd As Long, _
     ByVal lpOperation As String, _
     ByVal lpFile As String, _
     ByVal lpParameters As String, _
@@ -256,17 +256,16 @@ Public Function Align(ByVal a_strng As String, _
 
 End Function
 
-Public Function AppErr(ByVal app_err_no As Long) As Long
+Public Function AppErr(ByVal a_err_no As Long) As Long
 ' ----------------------------------------------------------------------------
 ' Ensures that a programmed 'Application' error number not conflicts with the
 ' number of a 'VB Runtime Error' or any other system error. Returns a given
-' positive 'Application Error' number (app_err_no) as a negative by adding the
+' positive 'Application Error' number (a_err_no) as a negative by adding the
 ' system constant vbObjectError. Returns the original 'Application Error'
 ' number when called with a negative error number.
-' Obligatory copy Private for any VB-Component using the service but not
-' having the mBasic common component installed.
+' Obligatory Private in any autonomous Common Component.
 ' ----------------------------------------------------------------------------
-    If app_err_no >= 0 Then AppErr = app_err_no + vbObjectError Else AppErr = Abs(app_err_no - vbObjectError)
+    If a_err_no >= 0 Then AppErr = a_err_no + vbObjectError Else AppErr = Abs(a_err_no - vbObjectError)
 End Function
 
 Public Function AppIsInstalled(ByVal exe As String) As Boolean
@@ -887,13 +886,13 @@ Public Sub MakeFormResizable()
     Const GWL_STYLE As Long = (-16)
     
     Dim lStyle As LongPtr
-    Dim hWnd As LongPtr
+    Dim hwnd As LongPtr
     Dim RetVal
 
-    hWnd = GetForegroundWindow
+    hwnd = GetForegroundWindow
     
-    lStyle = GetWindowLongPtr(hWnd, GWL_STYLE Or WS_THICKFRAME)
-    RetVal = SetWindowLongPtr(hWnd, GWL_STYLE, lStyle)
+    lStyle = GetWindowLongPtr(hwnd, GWL_STYLE Or WS_THICKFRAME)
+    RetVal = SetWindowLongPtr(hwnd, GWL_STYLE, lStyle)
 
 End Sub
 

@@ -61,7 +61,7 @@ Option Explicit
 ' ----------------------------------------------------------------------------
 Private Const GITHUB_REPO_URL As String = "https://github.com/warbe-maker/VBA-Trace"
 
-Private fso As New FileSystemObject
+Private FSo As New FileSystemObject
 
 Public Enum enDsplydInfo
     Detailed = 1
@@ -78,7 +78,7 @@ End Enum
 
 Private Declare PtrSafe Function apiShellExecute Lib "shell32.dll" _
     Alias "ShellExecuteA" _
-    (ByVal hWnd As Long, _
+    (ByVal hwnd As Long, _
     ByVal lpOperation As String, _
     ByVal lpFile As String, _
     ByVal lpParameters As String, _
@@ -118,7 +118,6 @@ Private iTrcLvl             As Long             ' Increased with each begin entr
 Private LastNtry            As Collection       '
 Private lKeepDays           As Long
 Private sFileFullName       As String           ' Defaults to the When vbNullString the trace is written into file and the display is suspended
-Private sFileName           As String
 Private sFirstTraceItem     As String
 Private sTitle              As String
 Private sPath               As String
@@ -133,59 +132,45 @@ Private Property Get DIR_END_CODE() As String:              DIR_END_CODE = DIR_E
 Private Property Get DIR_END_PROC() As String:              DIR_END_PROC = VBA.String$(2, DIR_END_ID):      End Property
 
 Public Property Get FileFullName() As String
+' ----------------------------------------------------------------------------
+' When yet there is no trace output file specified, the file defaults to
+' "ExecTrace.log" in the application's parent folder.
+' ----------------------------------------------------------------------------
 
-    If sFileFullName = vbNullString _
-    Then FileFullName = Path & "\" & FileName _
-    Else FileFullName = sFileFullName
+    If sFileFullName = vbNullString Then
+        FileFullName = DefaultFileName
+    Else
+        FileFullName = sFileFullName
+    End If
     
-    With fso
-        If Not .FileExists(FileFullName) Then .CreateTextFile FileFullName
-    End With
+End Property
 
+Public Property Get DefaultFileName() As String
+    DefaultFileName = ThisWorkbook.Path & "\" & "ExecTrace.log"
 End Property
 
 Public Property Let FileFullName(ByVal s As String)
 ' ----------------------------------------------------------------------------
 ' Specifies the trace-log-file's name and location, thereby maintaining the
-' Path and the FileName property.
+' Path and the sFileFullName property.
 ' ----------------------------------------------------------------------------
     Dim lDaysAge As Long
+    Dim sDefault As String
     
-    With fso
-        If sFileFullName <> s Then
-            '~~ Either the trace-log-file's name has yet not been initialized
-            '~~ or the name is not/no longer the one previously used
-            If .FileExists(sFileFullName) Then .DeleteFile sFileFullName
+    sFileFullName = s
+    With FSo
+        If .FileExists(s) Then
+            '~~ In case the file already existed it may have passed the KeepDays limit
+            lDaysAge = VBA.DateDiff("d", .GetFile(sFileFullName).DateLastAccessed, Now())
+            If lDaysAge > KeepDays Then
+                .DeleteFile sFileFullName
+            End If
         End If
-        
-        sFileFullName = s
-        sPath = .GetParentFolderName(s)
-        If Not .FileExists(FileFullName) Then .CreateTextFile FileFullName
-        sFileName = .GetFileName(s)
-        
-        '~~ In case the file already existed it may have passed the KeepDays limit
-        lDaysAge = VBA.DateDiff("d", .GetFile(sFileFullName).DateLastAccessed, Now())
-        If lDaysAge > KeepDays Then
-            .DeleteFile sFileFullName
-            .CreateTextFile sFileFullName
+        If s <> DefaultFileName Then
+            If .FileExists(DefaultFileName) Then .DeleteFile DefaultFileName
         End If
     End With
 
-End Property
-
-Public Property Get FileName() As String
-
-    If sFileName = vbNullString _
-    Then FileName = "ExecTrace.log" _
-    Else FileName = sFileName
-    
-End Property
-
-Public Property Let FileName(ByVal s As String)
-    If fso.GetExtensionName(s) = vbNullString Then
-        s = s & ".log"
-    End If
-    sFileName = s
 End Property
 
 Private Property Get ItmArgs(Optional ByRef t_entry As Collection) As Variant
@@ -218,28 +203,65 @@ End Property
 
 Public Property Let KeepDays(ByVal l As Long):  lKeepDays = l:  End Property
 
-Private Property Let Log(ByVal tl_string As String)
+Private Function StringAsFile(ByVal s_strng As String, _
+                     Optional ByRef s_file As Variant = vbNullString, _
+                     Optional ByVal s_file_new As Boolean = False) As File
 ' ----------------------------------------------------------------------------
-' Writes the string (tl_string) to the FileFullName provided one exists.
-' Precondition: A FileFullName is specified (mTrc.FileFullName() = "xx").
+' Writes a string (s_strng) to a file (s_file) which might be a file object or
+' a file's full name. When no file (s_file) is provided, a temporary file is
+' returned.
+' Note 1: Only when the string has sub-strings delimited by vbCrLf the string
+'         is written a records/lines.
+' Note 2: When the string has the alternate split indicator "|&|" this one is
+'         replaced by vbCrLf.
+' Note when copied: Originates in mVarTrans
+'                   See https://github.com/warbe-maker/Excel_VBA_VarTrans
 ' ----------------------------------------------------------------------------
-    Const PROC = "Log-Let"
     
-    On Error GoTo eh
-    Dim oFile   As TextStream
-    
-    With fso
-        If Not .FileExists(FileFullName) Then .CreateTextFile (FileFullName)
-        Set oFile = .OpenTextFile(FileFullName, ForAppending)
-        oFile.WriteLine tl_string
-    End With
-    
-xt: Exit Property
-    
-eh: Select Case ErrMsg(ErrSrc(PROC))
-        Case vbResume:  Stop: Resume
-        Case Else:      GoTo xt
+    Select Case True
+        Case s_file = vbNullString: s_file = TempFile(, ".trc")
+        Case TypeName(s_file) = "File": s_file = s_file.Path
     End Select
+    
+    If s_file_new _
+    Then Open s_file For Output As #1 _
+    Else Open s_file For Append As #1
+    Print #1, s_strng
+    Close #1
+    Set StringAsFile = FSo.GetFile(s_file)
+    
+End Function
+
+Private Function TempFile(Optional ByVal f_path As String = vbNullString, _
+                          Optional ByVal f_extension As String = ".txt", _
+                          Optional ByVal f_create_as_textstream As Boolean = True) As String
+' ------------------------------------------------------------------------------
+' Returns the full file name of a temporary randomly named file. When a path
+' (f_path) is omitted in the CurDir path, else in at the provided folder.
+' The returned temporary file is registered in cllTestFiles for being removed
+' either explicitely with TestFilesRemove or implicitly when the class
+' terminates.
+' ------------------------------------------------------------------------------
+    Dim sTemp As String
+    
+    If VBA.Left$(f_extension, 1) <> "." Then f_extension = "." & f_extension
+    sTemp = Replace(FSo.GetTempName, ".tmp", f_extension)
+    If f_path = vbNullString Then f_path = CurDir
+    sTemp = VBA.Replace(f_path & "\" & sTemp, "\\", "\")
+    TempFile = sTemp
+    If f_create_as_textstream Then FSo.CreateTextFile sTemp
+
+End Function
+
+Private Property Let Log(ByVal l_line As String)
+' ----------------------------------------------------------------------------
+' Writes the string (l_line) to the FileFullName.
+' ----------------------------------------------------------------------------
+                
+    Open FileFullName For Append As #1
+    Print #1, l_line
+    Close #1
+    
 End Property
 
 Public Property Let LogInfo(ByVal tl_inf As String)
@@ -268,40 +290,6 @@ End Property
 Private Property Let NtryTcksOvrhdNtry(Optional ByRef t_entry As Collection, ByRef cy As Currency)
     If t_entry Is Nothing Then Set t_entry = New Collection
     t_entry.Add cy, "TON"
-End Property
-
-Public Property Get Path() As Variant
-    If sPath = vbNullString _
-    Then Path = ThisWorkbook.Path _
-    Else Path = sPath
-End Property
-
-Public Property Let Path(ByVal v As Variant)
-' -----------------------------------------------------------------------------------
-' Specifies the location (folder) for the log file based on the provided information
-' which may be a string, a Workbook, or a folder object.
-' -----------------------------------------------------------------------------------
-    Const PROC = "Path-Let"
-    Dim wbk As Workbook
-    Dim fld As Folder
-    
-    Select Case VarType(v)
-        Case VarType(v) = vbString
-            sPath = v
-        Case VarType(v) = vbObject
-            If TypeOf v Is Workbook Then
-                Set wbk = v
-                sPath = wbk.Path
-            ElseIf TypeOf v Is Folder Then
-                Set fld = v
-                sPath = fld.Path
-            Else
-                Err.Raise AppErr(1), ErrSrc(PROC), "The provided argument is neither a string specifying a " & _
-                                                   "folder's path, nor a Workbook object, nor a Folder object!"
-            End If
-    End Select
-    FileFullName = Path & "\" & FileName ' re-establishes it when not already existing
-    
 End Property
 
 Private Property Get SplitStr(ByRef s As String)
@@ -632,16 +620,20 @@ Private Sub LogBgn(ByVal l_ntry As Collection, _
     If TopNtry Is Nothing _
     Then ElapsedSecsTotal = vbNullString _
     Else ElapsedSecsTotal = LogElapsedSecsTotal(ItmTcks(l_ntry))
+    
     StckPush TraceStack, l_ntry
     
     If TraceStack.Count = 1 Then
+        '~~ Provide separator line (when file exists) and header
         cyTcksAtStart = ItmTcks(l_ntry)
     
         '~~ Trace-Log header
         s = LogText(l_elpsd_total:="Elapsed " _
-                  , l_elpsd_secs:="Length  " _
-                  , l_strng:="Execution trace by 'Common VBA Execution Trace Service (mTrc)' (" & GITHUB_REPO_URL & ")")
-        If fso.GetFile(FileFullName).Size > 0 Then Log = String(Len(s), "=")
+                    , l_elpsd_secs:="Length  " _
+                    , l_strng:="Execution trace by 'Common VBA Execution Trace Service (mTrc)' (" & GITHUB_REPO_URL & ")")
+        
+        '~~ Separator line
+        If FSo.FileExists(FileFullName) Then Log = String(Len(s), "=")
         Log = s
         
         '~~ Trace-Log title
@@ -656,7 +648,7 @@ Private Sub LogBgn(ByVal l_ntry As Collection, _
         End If
         '~~ Keep the ticks at start for the calculation of the elepased ticks with each entry
     End If
-        
+    
     ElapsedSecsTotal = LogElapsedSecsTotal(ItmTcks(l_ntry))
     Log = LogText(l_elpsd_total:=ElapsedSecsTotal _
                 , l_elpsd_secs:=ElapsedSecs _
@@ -835,16 +827,17 @@ Private Function Max(ParamArray va() As Variant) As Variant
     
 End Function
 
-Public Sub NewFile()
+Public Sub NewFile(Optional ByVal n_file As String = vbNullString)
 ' ----------------------------------------------------------------------------
-' Deletes an existing trace-log-file and creates a new one. Mainly used for
-' testing where a new trace-log-file is usually appropriate.
+' Specifies a new file's full name and deletes an existing one. When none
+' is specified and no FileFullName had been specified either, the file's
+' full name becomes a temp file
 ' ----------------------------------------------------------------------------
-    
-    With fso
-        If .FileExists(FileFullName) Then .DeleteFile FileFullName, True
-        .CreateTextFile FileFullName
+    If n_file = vbNullString Then n_file = FileFullName
+    With FSo
+        If .FileExists(n_file) Then .DeleteFile n_file, True
     End With
+    sFileFullName = n_file
     
 End Sub
 
