@@ -1,0 +1,31 @@
+Regression Test Summary
+-----------+-----------+-----------+---------------------------+-------------------------------------------------------------------------------+----------
+   Test    | Component | Component |         Procedure         |                                     Test                                      |   Test   
+    Id     |   Name    |   Type    |           Name            |                                  Description                                  |  Result  
+-----------+-----------+-----------+---------------------------+-------------------------------------------------------------------------------+----------
+ 0100-01.1 | mBasic    |           | Align                     | Align "Abcde" left 8, filled with " -"                                        |  Passed  
+ 0100-02.1 | mBasic    |           | Align                     | Align "Abcde" right 8, filled with "- "                                       |  Passed  
+ 0100-03.1 | mBasic    |           | Align                     | Align "Abcde" centered 8, filled with "- "                                    |  Passed  
+ 0100-04.1 | mBasic    |           | Align                     | Align "Abcde" centered 7, filled with "- "                                    |  Passed  
+ 0100-05.1 | mBasic    |           | Align                     | Align "Abcde" right 7, filled with "- "                                       |  Passed  
+ 0100-06.1 | mBasic    |           | Align                     | Align "Abcde" centered 7, filled with "-"                                     |  Passed  
+ 0100-07.1 | mBasic    |           | Align                     | Align "Abcde" left 7, filled with "-"                                         |  Passed  
+ 0100-08.1 | mBasic    |           | Align                     | Align "Abcde" right 6, filled with "-"                                        |  Passed  
+ 0100-09.1 | mBasic    |           | Align                     | Align "Abcde" centered 6, filled with "-"                                     |  Passed  
+ 0100-10.1 | mBasic    |           | Align                     | Align "Abcde" left 4, filled with "-"                                         |  Passed  
+ 0100-11.1 | mBasic    |           | Align                     | Align "Abcde" right 4, filled with "-"                                        |  Passed  
+ 0100-12.1 | mBasic    |           | Align                     | Align "Abcde" centered 4, filled with "-", with margin                        |  Passed  
+ 0200-01.1 | mBasic    |           | Arry                      | Write/Read array                                                              |  Passed  
+ 0200-02.1 | mBasic    |           | Arry                      | Write at any index, and read                                                  |  Passed  
+ 0200-03.1 | mBasic    |           | Arry                      | Replace at any index, and read                                                |  Passed  
+ 0200-04.1 | mBasic    |           | Arry                      | Return default from a non-existing or not allocated array                     |  Passed  
+ 0200-04.2 | mBasic    |           | Arry                      | Return 0 as the default from a non-existing or not allocated array            |  Passed  
+ 0210-01.1 | mBasic    |           | ArryAsRange, RangeAsArray | Transfer an array to a range                                                  |  Passed  
+ 0220-01.1 | mBasic    | Sub       | ArryCompare               | One element is different, empty elements are ignored                          |  Passed  
+ 0220-02.1 | mBasic    | Sub       | ArryCompare               | The first array has less elements, empty elements are ignored                 |  Passed  
+ 0220-03.1 | mBasic    | Sub       | ArryCompare               | The second array has less elements, empty elements are ignored                |  Passed  
+ 0220-04.1 | mBasic    | Sub       | ArryCompare               | The arrays first elements are different, empty elements are ignored           |  Passed  
+ 0220-05.1 | mBasic    | Sub       | ArryCompare               | The arrays first elements are different, empty elements are ignored           |  Passed  
+ 0220-06.1 | mBasic    | Sub       | ArryCompare               | The second array has additional inserted elements, empty elements are ignored |  Passed  
+ 0220-07.1 | mBasic    | Sub       | ArryCompare               | The arrays are equal, empty elements are ignored                              |  Passed  
+ 0400-1.1  | mBasic    | Function  | Spaced                    | A provided string is returned spaced with non-breaking spaces `Chr$(160)`     |  Passed  

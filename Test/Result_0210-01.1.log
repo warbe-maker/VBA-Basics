@@ -1,0 +1,11 @@
+Test Result Failed details: 0210-01.1  mBasic.ArryAsRange, RangeAsArray: Array to range, range to array
+----------+--------+-----------------
+   P/F    | Result | Result Expected 
+----------+--------+-----------------
+  Passed  | "X"    | "X"             
+  Failed  | ""     | "2"             
+  Failed  | ""     | "3"             
+  Failed  | ""     | "4"             
+  Failed  | ""     | "5"             
+  Failed  | ""     | "AAAA"          
+  Failed  |        | Z               

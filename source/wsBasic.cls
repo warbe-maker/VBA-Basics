@@ -9,6 +9,6 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
 Option Explicit
 
-Public Property Get celArrayToRangeTarget() As Range:   Set celArrayToRangeTarget = Me.Range("celArrayToRangeTarget"):  End Property
-Public Property Get rngArrayToRangeTarget() As Range:   Set rngArrayToRangeTarget = Me.Range("rngArrayToRangeTarget"):  End Property
+Public Property Get celArryAsRangeTarget() As Range:   Set celArryAsRangeTarget = Me.Range("celArryAsRangeTarget"):  End Property
+Public Property Get rngArryAsRangeTarget() As Range:   Set rngArryAsRangeTarget = Me.Range("rngArryAsRangeTarget"):  End Property
 

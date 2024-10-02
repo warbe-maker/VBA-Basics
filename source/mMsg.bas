@@ -1124,7 +1124,7 @@ Private Function RoundUp(ByVal v As Variant) As Variant
     RoundUp = Int(v) + (v - Int(v) + 0.5) \ 1
 End Function
 
-Public Function Screen(ByVal item As enScreen) As Variant
+Public Function Screen(ByVal Item As enScreen) As Variant
 ' -------------------------------------------------------------------------
 ' Return display screen Item for monitor displaying ActiveWindow
 ' Patterned after Excel's built-in information functions CELL and INFO
@@ -1148,6 +1148,8 @@ Public Function Screen(ByVal item As enScreen) As Variant
 ' EXAMPLE: =Screen("pixelsX")
 ' Function Returns #VALUE! for invalid Item
 ' -------------------------------------------------------------------------
+    Const PROC = "Screen"
+    
     Dim xHSizeSq        As Double
     Dim xVSizeSq        As Double
     Dim xPix            As Double
@@ -1168,17 +1170,17 @@ Public Function Screen(ByVal item As enScreen) As Variant
         hWnd = GetActiveWindow()
         hMonitor = MonitorFromWindow(hWnd, MONITOR_DEFAULTTONULL)
         If hMonitor = 0 Then
-            Debug.Print "ActiveWindow does not intersect a monitor"
+            Debug.Print ErrSrc(PROC) & ": " & "ActiveWindow does not intersect a monitor"
             hWnd = 0
         Else
             tMonitorInfo.cbSize = Len(tMonitorInfo)
             If GetMonitorInfo(hMonitor, tMonitorInfo) = False Then
-                Debug.Print "GetMonitorInfo failed"
+                Debug.Print ErrSrc(PROC) & ": " & "GetMonitorInfo failed"
                 hWnd = 0
             Else
                 hDC = CreateDC(tMonitorInfo.szDevice, 0, 0, 0)
                 If hDC = 0 Then
-                    Debug.Print "CreateDC failed"
+                    Debug.Print ErrSrc(PROC) & ": " & "CreateDC failed"
                     hWnd = 0
                 End If
             End If
@@ -1189,7 +1191,7 @@ Public Function Screen(ByVal item As enScreen) As Variant
         tMonitorInfo.dwFlags = MONITOR_PRIMARY
         tMonitorInfo.szDevice = "PRIMARY" & vbNullChar
     End If
-    Select Case item
+    Select Case Item
         Case enAdjustmentfactor:    xHSizeSq = GetDeviceCaps(hDC, DevCap.HORZSIZE) ^ 2
                                     xVSizeSq = GetDeviceCaps(hDC, DevCap.VERTSIZE) ^ 2
                                     xPix = GetDeviceCaps(hDC, DevCap.HORZRES) ^ 2 + GetDeviceCaps(hDC, DevCap.VERTRES) ^ 2
@@ -1414,22 +1416,39 @@ Private Function IsObject(ByVal i_var As Variant, _
     
 End Function
 
-Private Function CollectionAsString(ByVal v_items As Collection) As String
+Private Function CollectionAsString(ByVal c_coll As Collection, _
+                           Optional ByRef c_split As String = vbNullString) As String
 ' ----------------------------------------------------------------------------
-'
+' Returns a collection's (c_coll) items as string with the items delimited
+' by a vbCrLf. Itmes are converted into a string, if an item is an object its
+' Name property is used (an error is raised when the object has no Name
+' property.
+' Note when copied: Originates in mVarTrans
+'                   See https://github.com/warbe-maker/Excel_VBA_VarTrans
 ' ----------------------------------------------------------------------------
     Const PROC = "CollectionAsString"
     
     Dim s       As String
-    Dim sDelim  As String
     Dim sName   As String
+    Dim sSplit  As String
     Dim v       As Variant
+    Dim v2      As Variant
     
-    For Each v In v_items
-        If IsObject(v, sName) _
-        Then s = s & sDelim & sName _
-        Else s = s & sDelim & v
-        sDelim = vbCrLf
+    If c_split = vbNullString Then c_split = vbCrLf
+    For Each v In c_coll
+        Select Case True
+            Case IsObject(v, sName)
+                s = s & sSplit & sName
+                sSplit = c_split
+            Case TypeName(v) Like "*()"
+                For Each v2 In v
+                    s = s & sSplit & CStr(v2)
+                    sSplit = c_split
+                Next v2
+            Case Else
+                s = s & sSplit & v
+                sSplit = c_split
+        End Select
     Next v
     CollectionAsString = s
 

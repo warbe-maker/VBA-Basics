@@ -11,8 +11,8 @@ Option Explicit
 '       (mErH) are installed an error message is passed on to their corres-
 '       ponding service which provides a much better designed error message.
 '
-' Public Procedures, Functions, Services:
-' ---------------------------------------
+' Public Procedures and Properties:
+' ---------------------------------
 ' AppErr            Converts a positive error number into a negative to
 '                   ensures an error number not conflicting with a VB
 '                   run time error or any other system error number.
@@ -20,57 +20,68 @@ Option Explicit
 '                   with the negative Application Error number. 3)
 ' AppIsInstalled    Returns TRUE when a named exec is found in the system
 '                   path.
-' ArrayCompare      Returns a Dictionary with the provided number of items
-'                   (defaults to all) which differ between two one
+' Arry              Universal read/write array service.
+'                   Read:  Returns a provided default when a given array is
+'                          not allocated or a provided index is beyond/
+'                          outside the array's number of items (the default
+'                          defaults to vbNullString).
+'                   Write: - Adds an item (c_var) to an array (c_arr) when
+'                            no index is provided or adds it with the
+'                            provided index
+'                          - When an index is provided, the item is
+'                            inserted/updated at the given index, even when
+'                            the array yet doesn't exist or yet is not
+'                            allocated.
+' ArryAsRange       Transferres the content of a one- or two-dimensional
+'                   array to a range
+' ArryBase          Returns the component's actual Base Option.
+' ArryCompare       Returns a Dictionary with the provided number of items
+'                   (defaults to all) which differ between two one.
 '                   dimensional arrays. When no difference is encountered
 '                   the returned Dictionary is empty (Count = 0).
-' ArrayIsAllocated  Returns TRUE when the provided array has at least one item
-' ArrayNoOfDims     Returns the number of dimensions of an array.
-' ArrayRemoveItem   Removes an array's item by its index or element number.
-' ArrayToRange      Transferres the content of a one- or two-dimensional array
-'                   to a range
-' ArrayTrim         Removes any leading or trailing empty items.
-' Center            Returns a string centered within a string with a certain
-'                   length.
+' ArryDiffers       Returns TRUE when a provided array differs from annother.
+' ArryDims          Returns the number of dimensions of an array. An
+'                   unallocated dynamic array returns 0 dimensions.
+' ArryIsAllocated   Returns TRUE when the provided array has at least one
+'                   item
+' ArryItems         Returns the number of items in a multi-dimensional array
+'                   or a nested array. The latter is an array of which one or
+'                   more items again are arrays, possibly multi-dimensional.
+'                   An unallocated array returns 0.
+' ArryRemoveItem    Removes an array's item by its index or element number.
+' ArryTrim          Removes any leading or trailing empty items.
+' BaseName          Returns the file name of a provided argument without the
+'                   extension whereby the  argument may be a file or a file's
+'                   name or full name.
+' Center            Returns a provided string centered within a given length,
+'                   optionally filled with a provided string which defaults
+'                   to a single space.
 ' CleanTrim         Clears a string from any unprinable characters.
+' DelayedAction     Waits for a specified time and performs a provided action
+'                   whereby the action needs to be a fully specified
+'                   Application.Run action <workbook-name>!<comp>.<proc>
+'                   Specific: The action may be passed with up to 5 arguments.
+'                   Though optional none preceeding must be ommitted. I.e.
+'                   when the second argument is provided the first one is
+'                   obligatory.
+' Dict              Analog Arry, a universal Dictionary read, write,
+'                   increment, decrement, replace service
+' KeySort           Returns a given Dictionary sorted ascending by key.
 ' README            Displays the Common Component's README in the public
 '                   GitHub repo.
-' KeySort           Returns a given Dictionary sorted by key.
 ' ShellRun          Opens a folder, an email-app, a url, an Access instance,
 '                   etc.
 ' TimedDoEvents     Performs a DoEvent by taking the elapsed time printed in
 '                   VBE's immediate window
 ' TimerBegin        Starts a timer (counting system ticks)
 ' TimerEnd          Returns the elapsed system ticks converted to milliseconds
-''''
-'
-' Private procedures (for being copied into any module:
-' -----------------------------------------------------
-' AppErr            Application Error number (Err.Raise AppErr(n)
-' ErrSrc            Unambigous identification of a procedure - used with
-'                   BoP, EoP, and ErrMsg
-'
-' Public procedures which may be copied as Private 1):
-' -------------------------------------------------
-' BoP/EoP   Common 'Begin/End of Procedure' interface serving the
-'           'Common VBA Error Services' and - if not installed/activated the
-'           'Common VBA Execution Trace Service'.
-' BoC/EoC   Common 'Begin/End of Procedure' interface serving the
-'           'Common VBA Execution Trace Service' if installed/activated.
-' ErrMsg    Displays a common error message either by means of the VB MsgBox
-'           or by means of fMsg/mMsg and mErH depending on which is
-'           installed and activated by the corresp. Comd. Comp.Arguments.
-'
-' 1) The procedures may be copied as Private when the component aims for
-'    being independant from mBasic or mBasic is imported and and the
-'    procedures are used directly.
 '
 ' Requires:
 ' ---------
 ' Reference to "Microsoft Scripting Runtime"
 ' Reference to "Microsoft Visual Basic Application Extensibility .."
 '
-' W. Rauschenberger, Berlin May 2024
+' W. Rauschenberger, Berlin Sep 2024
 ' See https://github.com/warbe-maker/VBA-Basics (with README servie)
 ' ----------------------------------------------------------------------------
 Public Const DCONCAT    As String = "||"    ' For concatenating and error with a general message (info) to the error description
@@ -95,10 +106,10 @@ Public Enum xlOnOff ' ------------------------------------
     xlOn = 1        ' System constants (identical values)
     xlOff = -4146   ' grouped for being used as Enum Type.
 End Enum            ' ------------------------------------
-Public Enum StringAlign
-    AlignLeft = 1
-    AlignRight = 2
-    AlignCentered = 3
+Public Enum enAlign
+    enAlignLeft = 1
+    enAlignRight = 2
+    enAlignCentered = 3
 End Enum
 
 ' Basic declarations potentially uesefull in any VB-Project
@@ -112,9 +123,9 @@ Private Declare PtrSafe Function getTickCount Lib "kernel32" _
 Alias "QueryPerformanceCounter" (cyTickCount As Currency) As Long
 
 'Functions to get DPI
-Private Declare PtrSafe Function GetDC Lib "user32" (ByVal hwnd As Long) As Long
+Private Declare PtrSafe Function GetDC Lib "user32" (ByVal hWnd As Long) As Long
 Private Declare PtrSafe Function GetDeviceCaps Lib "gdi32" (ByVal hDC As Long, ByVal nIndex As Long) As Long
-Private Declare PtrSafe Function ReleaseDC Lib "user32" (ByVal hwnd As Long, ByVal hDC As Long) As Long
+Private Declare PtrSafe Function ReleaseDC Lib "user32" (ByVal hWnd As Long, ByVal hDC As Long) As Long
 Private Const LOGPIXELSX = 88               ' Pixels/inch in X
 Private Const POINTS_PER_INCH As Long = 72  ' A point is defined as 1/72 inches
 Private Declare PtrSafe Function GetForegroundWindow _
@@ -122,20 +133,20 @@ Private Declare PtrSafe Function GetForegroundWindow _
 
 Private Declare PtrSafe Function GetWindowLongPtr _
   Lib "User32.dll" Alias "GetWindowLongA" _
-    (ByVal hwnd As LongPtr, _
+    (ByVal hWnd As LongPtr, _
      ByVal nIndex As Long) _
   As LongPtr
 
 Private Declare PtrSafe Function SetWindowLongPtr _
   Lib "User32.dll" Alias "SetWindowLongA" _
-    (ByVal hwnd As LongPtr, _
+    (ByVal hWnd As LongPtr, _
      ByVal nIndex As LongPtr, _
      ByVal dwNewLong As LongPtr) _
   As LongPtr
 
 Private Declare PtrSafe Function apiShellExecute Lib "shell32.dll" _
     Alias "ShellExecuteA" _
-    (ByVal hwnd As Long, _
+    (ByVal hWnd As Long, _
     ByVal lpOperation As String, _
     ByVal lpFile As String, _
     ByVal lpParameters As String, _
@@ -160,63 +171,194 @@ Private cyTimerTicksBegin       As Currency
 Private cyTimerTicksEnd         As Currency
 Private TimerSystemFrequency    As Currency
 
-Public Property Get SysFrequency(Optional ByVal s_f As Currency = 0) As Currency
-    If s_f = 0 Then s_f = TimerSystemFrequency
-    If s_f = 0 Then getFrequency TimerSystemFrequency
-    SysFrequency = TimerSystemFrequency
+#If Not mMsg = 1 Then
+    ' -------------------------------------------------------------------------------
+    ' The 'minimum error handling' aproach implemented with this module and
+    ' provided by the ErrMsg function uses the VBA.MsgBox to display an error
+    ' message which includes a debugging option to resume the error line
+    ' provided the Conditional Compile Argument 'Debugging = 1'.
+    ' This declaration allows the mTrc module to work completely autonomous.
+    ' It becomes obsolete when the mMsg/fMsg module is installed which must
+    ' be indicated by the Conditional Compile Argument mMsg = 1.
+    ' See https://github.com/warbe-maker/Common-VBA-Message-Service
+    ' -------------------------------------------------------------------------------
+    Private Const vbResumeOk As Long = 7 ' Buttons value in mMsg.ErrMsg (pass on not supported)
+    Private Const vbResume   As Long = 6 ' return value (equates to vbYes)
+#End If
+
+Public Property Get Arry(Optional ByRef a_arr As Variant, _
+                         Optional ByVal a_index As Long = -1, _
+                         Optional ByVal a_default As Variant = vbNullString) As Variant
+' ----------------------------------------------------------------------------
+' Common array read aervice. Returns the item of a given array (c_arr) at a
+' given index. When the array is not allocated or the index is outside the
+' array's current boundaries a default is returned - which, when none had been
+' specified, defaults to vbNullString.
+'
+' W. Rauschenberger Berlin, Aug 2024
+' ----------------------------------------------------------------------------
+    Const PROC = "Arry-Get"
+    
+    Dim i As Long
+    
+    If IsArray(a_arr) Then
+        On Error Resume Next
+        i = LBound(a_arr)
+        If Err.Number = 0 Then
+            If a_index >= LBound(a_arr) And a_index <= UBound(a_arr) _
+            Then Arry = a_arr(a_index)
+        Else
+            Arry = a_default
+        End If
+    Else
+        Err.Raise AppErr(1), ErrSrc(PROC), "The provided argument (a_arr) is not an array!"
+    End If
+    
 End Property
 
-Public Function KeySort(ByRef s_dct As Dictionary) As Dictionary
-' ------------------------------------------------------------------------------
-' Returns the items in a Dictionary (s_dct) sorted by key.
-' ------------------------------------------------------------------------------
-    Const PROC  As String = "KeySort"
+Public Property Let Arry(Optional ByRef a_arr As Variant, _
+                         Optional ByVal a_index As Long = -9999, _
+                         Optional ByVal a_default As Variant = vbNullString, _
+                                  ByVal a_var As Variant)
+' ----------------------------------------------------------------------------
+' Common array write service. Returns an array (a_arr) with an item (c_var)
+' - either simply added or
+' - by having replaced an item at a given index
+' - by adding the item at a given index when UBound is less than the provided
+'   index.
+'
+' W. Rauschenberger Berlin, Aug 2024
+' ----------------------------------------------------------------------------
+    Const PROC = "Arry-Let"
     
-    On Error GoTo eh
-    Dim dct     As New Dictionary
-    Dim vKey    As Variant
-    Dim arr()   As Variant
-    Dim Temp    As Variant
-    Dim i       As Long
-    Dim j       As Long
+    Dim bIsAllocated As Boolean
+    Dim s            As String
     
-    If s_dct Is Nothing Then GoTo xt
-    If s_dct.Count = 0 Then GoTo xt
+    If IsArray(a_arr) Then
+        On Error GoTo -1
+        On Error Resume Next
+        bIsAllocated = UBound(a_arr) >= LBound(a_arr)
+        On Error GoTo eh
+    ElseIf VarType(a_arr) <> 0 Then
+        Err.Raise AppErr(1), ErrSrc(PROC), "Not a Variant type!"
+    End If
     
-    With s_dct
-        ReDim arr(0 To .Count - 1)
-        For i = 0 To .Count - 1
-            arr(i) = .Keys(i)
-        Next i
-    End With
-    
-    '~~ Bubble sort
-    For i = LBound(arr) To UBound(arr) - 1
-        For j = i + 1 To UBound(arr)
-            If arr(i) > arr(j) Then
-                Temp = arr(j)
-                arr(j) = arr(i)
-                arr(i) = Temp
-            End If
-        Next j
-    Next i
+    If bIsAllocated = True Then
+        '~~ The array has at least one item
+        If a_index = -9999 Then
+            '~~ When for an allocated array no index is provided, the item is added
+            ReDim Preserve a_arr(UBound(a_arr) + 1)
+            a_arr(UBound(a_arr)) = a_var
+        ElseIf a_index >= 0 And a_index <= UBound(a_arr) Then
+            '~~ Replace an existing item
+            a_arr(a_index) = a_var
+        ElseIf a_index > UBound(a_arr) Then
+            '~~ New item beyond current UBound
+            ReDim Preserve a_arr(a_index)
+            a_arr(a_index) = a_var
+        ElseIf a_index < LBound(a_arr) Then
+            Err.Raise AppErr(2), ErrSrc(PROC), "Index is less than LBound of array!"
+        End If
         
-    '~~ Transfer based on sorted keys
-    For i = LBound(arr) To UBound(arr)
-        vKey = arr(i)
-        dct.Add Key:=vKey, item:=s_dct.item(vKey)
-    Next i
+    ElseIf bIsAllocated = False Then
+        '~~ The array does yet not exist
+        If a_index = -9999 Then
+            '~~ When no index is provided the item is the first of a new array
+            '~~ which by the way considers the Base Option of the component in
+            '~~ which the service is used.
+            a_arr = Array(a_var)
+        ElseIf a_index >= 0 Then
+            '~~ Even when an index 0 is provided and the Base Option is 1 the
+            '~~ LBound of the returned arry will be 1
+            ReDim a_arr(a_index)
+            a_arr(a_index) = a_var
+        Else
+            Err.Raise AppErr(3), ErrSrc(PROC), "the provided index is less than 0!"
+        End If
+    End If
     
-xt: Set s_dct = dct
-    Set KeySort = dct
-    Set dct = Nothing
-    Exit Function
+xt: Exit Property
 
 eh: Select Case ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
-End Function
+End Property
+
+' ----------------------------------------------------------------------------
+' Universal Dictionary add, replace, increase item value service.
+' Specific: when the item is a string in the form "-n" or "+n" whereby n is a
+' numeric value, the item with the corresponding key is incremented or
+' decremented provided it exists or it is added with the negative or positive
+' value as item.
+' - Read:   Returns a default when an item is not existing
+' - Write: Adds an non-existing item or replaces an existing one.
+'
+' W. Rauschenberger Berlin, Aug 2024
+' ----------------------------------------------------------------------------
+Public Property Get Dict(Optional ByRef d_dct As Dictionary = Nothing, _
+                         Optional ByVal d_key As Variant, _
+                         Optional ByVal d_default As Variant = vbNullString) As Variant
+                         
+    If d_dct Is Nothing Then
+        If VarType(d_default) = vbObject Then Set Dict = d_default Else Dict = d_default
+    Else
+        If d_dct.Exists(d_key) Then
+            If VarType(d_dct(d_key)) = vbObject Then Set Dict = d_dct(d_key) Else Dict = d_dct(d_key)
+        Else
+            If VarType(d_default) = vbObject Then Set Dict = d_default Else Dict = d_default
+        End If
+    End If
+    
+End Property
+
+Public Property Let Dict(Optional ByRef d_dct As Dictionary = Nothing, _
+                         Optional ByVal d_key As Variant, _
+                         Optional ByVal d_default As Variant = vbNullString, _
+                                  ByVal d_item As Variant)
+    Dim vValue      As Variant
+    Dim vIncrDecr   As Variant
+    
+    If d_dct Is Nothing Then Set d_dct = New Dictionary
+    If Not d_dct.Exists(d_key) Then
+        If VarType(d_item) = vbString Then
+            If Left(d_item, 1) = "+" Or Left(d_item, 1) = "-" And IsNumeric(Right(d_item, Len(d_item) - 1)) Then
+                vValue = Left(d_item, 1) & Right(d_item, Len(d_item) - 1)
+                d_dct.Add d_key, vValue
+            Else
+                d_dct.Add d_key, d_item
+            End If
+        Else
+            d_dct.Add d_key, d_item
+        End If
+    Else
+        '~~ Existing item
+        If VarType(d_item) = vbString Then
+            If Left(d_item, 1) = "+" Or Left(d_item, 1) = "-" And IsNumeric(Right(d_item, Len(d_item) - 1)) Then
+                '~~ Case increment/decrement
+                vIncrDecr = Right(d_item, Len(d_item) - 1)
+                vValue = d_dct(d_key)
+                d_dct.Remove d_key
+                If Left(d_item, 1) = "+" Then vValue = vValue + vIncrDecr
+                If Left(d_item, 1) = "-" Then vValue = vValue - vIncrDecr
+                d_dct.Add d_key, vValue
+            Else
+                d_dct.Add d_key, d_item
+            End If
+        Else
+            '~~ Case replace
+            d_dct.Remove d_key
+            d_dct.Add d_key, d_item
+        End If
+    End If
+    
+End Property
+
+Public Property Get SysFrequency(Optional ByVal s_f As Currency = 0) As Currency
+    If s_f = 0 Then s_f = TimerSystemFrequency
+    If s_f = 0 Then getFrequency TimerSystemFrequency
+    SysFrequency = TimerSystemFrequency
+End Property
 
 Private Property Get TimerSecsElapsed() As Currency:        TimerSecsElapsed = TimerTicksElapsed / SysFrequency:        End Property
 
@@ -224,48 +366,297 @@ Private Property Get TimerSysCurrentTicks() As Currency:    getTickCount TimerSy
 
 Private Property Get TimerTicksElapsed() As Currency:       TimerTicksElapsed = cyTimerTicksEnd - cyTimerTicksBegin:    End Property
 
-Public Function Align(ByVal a_strng As String, _
-                      ByVal a_lngth As Long, _
-             Optional ByVal a_mode As StringAlign = AlignLeft, _
-             Optional ByVal a_margin As String = vbNullString, _
-             Optional ByVal a_fill As String = " ") As String
+Public Function Align(ByVal a_string As String, _
+             Optional ByVal a_align As enAlign = enAlignLeft, _
+             Optional ByVal a_length As Long = 0, _
+             Optional ByVal a_fill As String = " ", _
+             Optional ByVal a_margin As String = vbNullString) As String
 ' ----------------------------------------------------------------------------
-' Returns a string (a_strng) with a lenght (a_lngth) aligned (a_mode) filled
-' with characters (a_fill).
+' Returns a string (a_string) with the specified width by considering any
+' fill other than a single space - which extends the lenght of the returned
+' string by one fill (left or right aligned) and two fills aligned centered.
+' When a margin is provided (defaults to none), the final length includes one
+' at the left and one at the right - which matters, when the aligned string
+' is arranged in columns.
+' Note: When the specified length (a_lenght) is les than the available space
+'       - the above considered - the string is truncated to the right
+'       disregarding any alignment
+'
+' W. Rauschenberger, Berlin Aug 2024
 ' ----------------------------------------------------------------------------
-    Dim SpaceLeft As Long
+    Const PROC = "Align"
     
-    Select Case a_mode
-        Case AlignLeft
-            If Len(a_strng & a_margin) >= a_lngth _
-            Then Align = VBA.Left$(a_strng & a_margin, a_lngth) _
-            Else Align = a_strng & a_margin & VBA.String$(a_lngth - (Len(a_strng & a_margin)), a_fill)
-        Case AlignRight
-            If Len(a_margin & a_strng) >= a_lngth _
-            Then Align = VBA.Left$(a_margin & a_strng, a_lngth) _
-            Else Align = VBA.String$(a_lngth - (Len(a_margin & a_strng)), a_fill) & a_margin & a_strng
-        Case AlignCentered
-            If Len(a_margin & a_strng & a_margin) >= a_lngth Then
-                Align = a_margin & Left$(a_strng, a_lngth - (2 * Len(a_margin))) & a_margin
-            Else
-                SpaceLeft = Max(1, ((a_lngth - Len(a_strng) - (2 * Len(a_margin))) / 2))
-                Align = VBA.String$(SpaceLeft, a_fill) & a_margin & a_strng & a_margin & VBA.String$(SpaceLeft, a_fill)
-                Align = VBA.Right$(Align, a_lngth)
-            End If
+    On Error GoTo eh
+    Dim lLength As Long
+    
+    If a_string = vbNullString Then
+        '~~ A non provided string results in one filled with a_fill
+        '~~ enclosed in margins (a_margin)
+        Align = a_margin & String$(a_length, a_fill) & a_margin
+        GoTo xt
+    End If
+                    
+    If a_length = 0 _
+    Then lLength = Len(a_string) _
+    Else lLength = a_length
+
+    If a_fill = vbNullString Then a_fill = " "
+    Select Case a_align
+        Case enAlignLeft:       Align = AlignLeft(a_string, lLength, a_fill, a_margin)
+        Case enAlignRight:      Align = AlignRght(a_string, lLength, a_fill, a_margin)
+        Case enAlignCentered:   Align = AlignCntr(a_string, lLength, a_fill, a_margin)
     End Select
 
+xt: Exit Function
+
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
 End Function
 
-Public Function AppErr(ByVal a_err_no As Long) As Long
+Private Function AlignCntr(ByVal a_string As String, _
+                           ByRef a_length As Long, _
+                  Optional ByVal a_fill As String = " ", _
+                  Optional ByVal a_margin As String = vbNullString, _
+                  Optional ByVal a_col As Long = 0, _
+                  Optional ByVal a_col_arranged = False) As String
 ' ----------------------------------------------------------------------------
-' Ensures that a programmed 'Application' error number not conflicts with the
-' number of a 'VB Runtime Error' or any other system error. Returns a given
-' positive 'Application Error' number (a_err_no) as a negative by adding the
-' system constant vbObjectError. Returns the original 'Application Error'
-' number when called with a negative error number.
-' Obligatory Private in any autonomous Common Component.
+' Returns a string (a_string) centered within a guven width (a_length). When
+' truncate (a_truncate) is False (the default), the returned with (a_with)
+' may be extended to the width of the string (a_steing). The result may not be
+' centered exactly.
 ' ----------------------------------------------------------------------------
-    If a_err_no >= 0 Then AppErr = a_err_no + vbObjectError Else AppErr = Abs(a_err_no - vbObjectError)
+    Const PROC = "AlignCntr"
+    
+    On Error GoTo eh
+    Dim lLoop       As Long
+    Dim s           As String
+    Dim sFillLeft   As String
+    Dim sFillRight  As String
+    Dim sFill       As String
+    Dim lWidth      As Long
+    Dim lLoss       As Long
+
+    If a_length = 0 _
+    Then Err.Raise AppErr(1), ErrSrc(PROC), "A zero length is nor supported by alignment centered!"
+
+    s = a_string
+    Select Case a_fill
+        Case " ":           sFill = " ": sFillLeft = " ":          sFillRight = " ":            lLoss = 0
+        Case "-":           sFill = "-": sFillLeft = vbNullString: sFillRight = vbNullString:   lLoss = 2
+        Case " -", "- ":    sFill = "-": sFillLeft = " ":          sFillRight = " ":            lLoss = 4
+        Case "=":           sFill = "=": sFillLeft = vbNullString: sFillRight = vbNullString:   lLoss = 2
+        Case " =", "= ":    sFill = "=": sFillLeft = " ":          sFillRight = " ":            lLoss = 4
+        Case Else
+            Err.Raise AppErr(2), ErrSrc(PROC), _
+            "The specified fill is not applicable for a centered alignment! " & _
+            "Accepted is "" "", ""-"", ""="", "" -"", ""- "", "" ="", ""= """
+ End Select
+    
+    lWidth = AlignWidthExMargin(a_fill, a_length, enAlignCentered)
+    s = AlignTruncated(s, enAlignCentered, lWidth - lLoss)
+    
+    Do While Len(s) < lWidth
+        lLoop = lLoop + 1
+        Select Case True
+            Case Len(s) = lWidth
+                Exit Do
+            Case Len(s & sFillRight) <= lWidth
+                s = s & sFillRight
+                sFillRight = sFill
+                If Len(s) < lWidth Then
+                    s = sFillLeft & s ' add fill left
+                    sFillLeft = sFill
+                End If
+        End Select
+        If lLoop > lWidth Then
+            Stop
+        End If
+    Loop
+    AlignCntr = a_margin & s & a_margin
+
+xt: Exit Function
+
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
+End Function
+
+Private Function AlignLeft(ByRef a_string As String, _
+                           ByRef a_length As Long, _
+                  Optional ByVal a_fill As String = " ", _
+                  Optional ByVal a_margin As String = vbNullString, _
+                  Optional ByVal a_col As Long = 0, _
+                  Optional ByVal a_col_arranged As Boolean = False) As String
+' -----------------------------------------------------------------------------------
+' Left aligns a string (a_string) by:
+' - adding fill characters to the right up to the specified length (a_length),
+'   whereby the filling may start with a single space
+' - enclose the result in left and right margins - which default to a vbNullString
+' Specifics:
+' - Spaces provided with a string alrteady (a_string) are preserved
+' - The final length is the specified length plus a left and a right marging - which
+'   may be a vbNullString
+' - It is considered that the string may be an column item which may look ate the end
+'   "| xxxx" when a column delimiter  | is used, else just "xxxx" when the column
+'   delimiter is already a single space. In that case the margin (a_margin) would be
+'   a vbNullString.
+' Precondition: The string (a_string) not/no longer contains any implicit alignment
+'               specs.
+' -----------------------------------------------------------------------------------
+
+    Dim s           As String
+    Dim sFillStart  As String
+    Dim sFill       As String
+    Dim sFillEnd    As String
+    Dim lLoop       As Long
+    Dim lWidth      As Long
+    Dim lLoss       As Long
+    
+    s = a_string
+    Select Case a_fill
+        Case " ":   sFillStart = vbNullString: sFill = " ": sFillEnd = " ":             lLoss = 0
+        Case "-":   sFillStart = vbNullString: sFill = "-": sFillEnd = vbNullString:    lLoss = 1
+        Case " -":  sFillStart = " ":          sFill = "-": sFillEnd = vbNullString:    lLoss = 2
+        Case ".":   sFillStart = vbNullString: sFill = ".": sFillEnd = vbNullString:    lLoss = 1
+        Case " .":  sFillStart = " ":          sFill = ".": sFillEnd = vbNullString:    lLoss = 2
+        Case ".:":  sFillStart = vbNullString: sFill = ".": sFillEnd = ":":             lLoss = 2
+        Case " .:": sFillStart = " ":          sFill = ".": sFillEnd = ":":             lLoss = 3
+    End Select
+        
+    lWidth = AlignWidthExMargin(a_fill, a_length, enAlignLeft)
+    s = AlignTruncated(s, enAlignLeft, lWidth - lLoss)
+
+    Do
+        lLoop = lLoop + 1
+        Select Case True
+            Case Len(s) >= lWidth:                                Exit Do
+            Case Len(s & sFillEnd) = lWidth:                      s = s & sFillEnd
+            Case Len(s & sFillStart) = lWidth:                    s = s & sFillStart:         sFillStart = vbNullString
+            Case Len(s & sFillStart & sFill & sFillEnd) < lWidth: s = s & sFillStart & sFill: sFillStart = vbNullString
+            Case Else:                                            s = s & sFill
+        End Select
+        If lLoop > lWidth Then
+            Stop
+        End If
+    Loop
+    AlignLeft = a_margin & s & a_margin
+    
+End Function
+
+Private Function AlignRght(ByVal a_string As String, _
+                  Optional ByRef a_length As Long = 0, _
+                  Optional ByVal a_fill As String = " ", _
+                  Optional ByVal a_margin As String = vbNullString, _
+                  Optional ByVal a_col As Long = 0, _
+                  Optional ByVal a_col_arranged As Boolean = False) As String
+' -----------------------------------------------------------------------------------
+' Returns a string (a_string) aligned right with at the left filled (a_fill) in a
+' given length (a_lenght), enclosed in specified margins (a_margin).
+' -----------------------------------------------------------------------------------
+    Const PROC = "AlignRght"
+    
+    On Error GoTo eh
+    Dim lLoop       As Long
+    Dim lWidth      As Long
+    Dim s           As String
+    Dim sFill       As String
+    Dim sFillEnd    As String
+    Dim sFillStart  As String
+    Dim lLoss       As Long
+    
+    If a_length = 0 _
+    Then Err.Raise AppErr(1), ErrSrc(PROC), "A zero length is nor supported by alignment right!"
+    
+    s = a_string
+    If a_fill = vbNullString Then a_fill = " "
+    Select Case a_fill
+        Case " ":           sFillStart = vbNullString: sFill = " ": sFillEnd = " ":             lLoss = 0
+        Case ".":           sFillStart = vbNullString: sFill = ".": sFillEnd = vbNullString:    lLoss = 1
+        Case " .", ". ":    sFillStart = " ":          sFill = ".": sFillEnd = vbNullString:    lLoss = 2
+        Case "-":           sFillStart = vbNullString: sFill = "-": sFillEnd = vbNullString:    lLoss = 1
+        Case " -", "- ":    sFillStart = " ":          sFill = "-": sFillEnd = vbNullString:    lLoss = 2
+    End Select
+    
+    lWidth = AlignWidthExMargin(a_fill, a_length, enAlignRight)
+    s = AlignTruncated(s, enAlignRight, lWidth - lLoss)
+
+    Do
+        lLoop = lLoop + 1
+        Select Case True
+            Case Len(s) >= lWidth:                                Exit Do
+            Case Len(sFillStart & s) = lWidth:                    s = sFillStart & s:           sFillStart = vbNullString
+            Case Len(sFillEnd & s) = lWidth:                      s = sFillEnd & s              ' last fill add
+            Case Len(sFillEnd & sFill & sFillStart & s) < lWidth: s = sFill & sFillStart & s:   sFillStart = vbNullString
+            Case Else:                                            s = sFill & s
+        End Select
+        If lLoop > lWidth Then
+            Stop
+        End If
+    Loop
+    AlignRght = a_margin & s & a_margin
+                   
+xt: Exit Function
+
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
+End Function
+
+Private Function AlignTruncated(ByRef a_string As String, _
+                                ByVal a_align As enAlign, _
+                                ByVal a_space As Long) As String
+' -----------------------------------------------------------------------------------
+' Returns a string truncated when the space available (a_space) is less then the
+' width required by the string (a_string).
+' -----------------------------------------------------------------------------------
+    Dim s As String
+    
+    Select Case a_align
+        Case enAlignLeft:       s = RTrim$(a_string)
+        Case enAlignCentered:   s = Trim$(a_string)
+        Case enAlignRight:      s = LTrim$(a_string)
+    End Select
+        
+    If Len(s) > a_space Then s = Left(s, a_space)
+    AlignTruncated = s
+    
+End Function
+
+Private Function AlignWidthExMargin(ByVal a_fill As String, _
+                                    ByVal a_length As Long, _
+                                    ByVal a_align As enAlign) As Long
+' -----------------------------------------------------------------------------------
+' The provided lenght indicates the maximum string length. However, for another fill
+' but a single space the final returned width always includes the fill (one for
+' left or right and two for centered.
+' Note: col arranged assumes that the columns do have a delimiter |, which makes a
+'       margin appropriate provided one is specified - which is the default.
+' -----------------------------------------------------------------------------------
+    Dim l As Long
+    
+    l = a_length ' default
+
+    If a_fill <> " " Then
+        l = l + Len(a_fill)   ' one in any case
+        If a_align = enAlignCentered Then l = l + Len(a_fill) ' one fill at the left and another one at the right
+    End If
+    AlignWidthExMargin = l
+  
+End Function
+
+Public Function AppErr(ByVal app_err_no As Long) As Long
+' ------------------------------------------------------------------------------
+' Ensures that a programmed (i.e. an application) error number never conflicts
+' with VB runtime error. Thr function returns a given positive number
+' (app_err_no) with the vbObjectError added - which turns it to negative. When
+' the provided number is negative it returns the original positive "application"
+' error number e.g. for being used with an error message.
+' ------------------------------------------------------------------------------
+    If app_err_no >= 0 Then AppErr = app_err_no + vbObjectError Else AppErr = Abs(app_err_no - vbObjectError)
 End Function
 
 Public Function AppIsInstalled(ByVal exe As String) As Boolean
@@ -278,19 +669,55 @@ Public Function AppIsInstalled(ByVal exe As String) As Boolean
     AppIsInstalled = Environ$(i) Like "*" & exe & "*"
 End Function
 
-Public Function ArrayCompare(ByVal ac_v1 As Variant, _
-                             ByVal ac_v2 As Variant, _
-                    Optional ByVal ac_stop_after As Long = 0, _
-                    Optional ByVal ac_ignore_case As Boolean = True, _
-                    Optional ByVal ac_ignore_empty As Boolean = True) As Dictionary
+Public Sub ArryAsRange(ByVal a_arr As Variant, _
+                        ByVal a_rng As Range, _
+               Optional ByVal a_one_col As Boolean = False)
+' ----------------------------------------------------------------------------
+' Copy the content of the Arry (vArr) to the range (r).
+' ----------------------------------------------------------------------------
+    Const PROC = "ArryAsRange"
+    
+    On Error GoTo eh
+    Dim rTarget As Range
+
+    If a_one_col Then
+        '~~ One column, n rows
+        Set rTarget = a_rng.Cells(1, 1).Resize(UBound(a_arr), 1)
+        rTarget.Value = Application.Transpose(a_arr)
+    Else
+        '~~ One column, n rows
+        Set rTarget = a_rng.Cells(1, 1).Resize(1, UBound(a_arr))
+        rTarget.Value = a_arr
+    End If
+    
+xt: Exit Sub
+
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbYes: Stop: Resume
+        Case Else:  GoTo xt
+    End Select
+End Sub
+
+Public Function ArryBase() As Long
+' ----------------------------------------------------------------------------
+' Returns the component's actual Base Option.
+' ----------------------------------------------------------------------------
+    ArryBase = LBound(Array())
+End Function
+
+Public Function ArryCompare(ByVal a_v1 As Variant, _
+                             ByVal a_v2 As Variant, _
+                    Optional ByVal a_stop_after As Long = 0, _
+                    Optional ByVal a_ignore_case As Boolean = True, _
+                    Optional ByVal a_ignore_empty As Boolean = True) As Dictionary
 ' --------------------------------------------------------------------------
-' Returns a Dictionary with n (ac_stop_after) lines which are different
-' between array 1 (ac_v1) and array 2 (ac_v2) with the line number as the
+' Returns a Dictionary with n (a_stop_after) lines which are different
+' between array 1 (a_v1) and array 2 (a_v2) with the line number as the
 ' key and the two different lines as item in the form: '<line>'vbLf'<line>'
 ' When no differnece is encountered the returned Dictionary is empty.
-' When no ac_stop_after <> 0 is provided all lines different are returned
+' When no a_stop_after <> 0 is provided all lines different are returned
 ' --------------------------------------------------------------------------
-    Const PROC = "ArrayCompare"
+    Const PROC = "ArryCompare"
     
     On Error GoTo eh
     Dim l       As Long
@@ -298,56 +725,56 @@ Public Function ArrayCompare(ByVal ac_v1 As Variant, _
     Dim lMethod As VbCompareMethod
     Dim dct     As New Dictionary
     
-    If ac_ignore_case Then lMethod = vbTextCompare Else lMethod = vbBinaryCompare
+    If a_ignore_case Then lMethod = vbTextCompare Else lMethod = vbBinaryCompare
     
-    If Not mBasic.ArrayIsAllocated(ac_v1) And mBasic.ArrayIsAllocated(ac_v2) Then
-        If ac_ignore_empty Then mBasic.ArrayTrimm ac_v2
-        For i = LBound(ac_v2) To UBound(ac_v2)
-            dct.Add i + 1, "'" & ac_v2(i) & "'" & vbLf
+    If Not mBasic.ArryIsAllocated(a_v1) And mBasic.ArryIsAllocated(a_v2) Then
+        If a_ignore_empty Then mBasic.ArryTrimm a_v2
+        For i = LBound(a_v2) To UBound(a_v2)
+            dct.Add i + 1, "'" & a_v2(i) & "'" & vbLf
         Next i
-    ElseIf mBasic.ArrayIsAllocated(ac_v1) And Not mBasic.ArrayIsAllocated(ac_v2) Then
-        If ac_ignore_empty Then mBasic.ArrayTrimm ac_v1
-        For i = LBound(ac_v1) To UBound(ac_v1)
-            dct.Add i + 1, "'" & ac_v1(i) & "'" & vbLf
+    ElseIf mBasic.ArryIsAllocated(a_v1) And Not mBasic.ArryIsAllocated(a_v2) Then
+        If a_ignore_empty Then mBasic.ArryTrimm a_v1
+        For i = LBound(a_v1) To UBound(a_v1)
+            dct.Add i + 1, "'" & a_v1(i) & "'" & vbLf
         Next i
-    ElseIf Not mBasic.ArrayIsAllocated(ac_v1) And Not mBasic.ArrayIsAllocated(ac_v2) Then
+    ElseIf Not mBasic.ArryIsAllocated(a_v1) And Not mBasic.ArryIsAllocated(a_v2) Then
         GoTo xt
     End If
     
-    If ac_ignore_empty Then mBasic.ArrayTrimm ac_v1
-    If ac_ignore_empty Then mBasic.ArrayTrimm ac_v2
+    If a_ignore_empty Then mBasic.ArryTrimm a_v1
+    If a_ignore_empty Then mBasic.ArryTrimm a_v2
     
     l = 0
-    For i = LBound(ac_v1) To Min(UBound(ac_v1), UBound(ac_v2))
-        If StrComp(ac_v1(i), ac_v2(i), lMethod) <> 0 Then
-            dct.Add i + 1, "'" & ac_v1(i) & "'" & vbLf & "'" & ac_v2(i) & "'"
+    For i = LBound(a_v1) To Min(UBound(a_v1), UBound(a_v2))
+        If StrComp(a_v1(i), a_v2(i), lMethod) <> 0 Then
+            dct.Add i + 1, "'" & a_v1(i) & "'" & vbLf & "'" & a_v2(i) & "'"
             l = l + 1
-            If ac_stop_after <> 0 And l >= ac_stop_after Then
+            If a_stop_after <> 0 And l >= a_stop_after Then
                 GoTo xt
             End If
         End If
     Next i
     
-    If UBound(ac_v1) < UBound(ac_v2) Then
-        For i = UBound(ac_v1) + 1 To UBound(ac_v2)
-            dct.Add i + 1, "''" & vbLf & " '" & ac_v2(i) & "'"
+    If UBound(a_v1) < UBound(a_v2) Then
+        For i = UBound(a_v1) + 1 To UBound(a_v2)
+            dct.Add i + 1, "''" & vbLf & " '" & a_v2(i) & "'"
             l = l + 1
-            If ac_stop_after <> 0 And l >= ac_stop_after Then
+            If a_stop_after <> 0 And l >= a_stop_after Then
                 GoTo xt
             End If
         Next i
         
-    ElseIf UBound(ac_v2) < UBound(ac_v1) Then
-        For i = UBound(ac_v2) + 1 To UBound(ac_v1)
-            dct.Add i + 1, "'" & ac_v1(i) & "'" & vbLf & "''"
+    ElseIf UBound(a_v2) < UBound(a_v1) Then
+        For i = UBound(a_v2) + 1 To UBound(a_v1)
+            dct.Add i + 1, "'" & a_v1(i) & "'" & vbLf & "''"
             l = l + 1
-            If ac_stop_after <> 0 And l >= ac_stop_after Then
+            If a_stop_after <> 0 And l >= a_stop_after Then
                 GoTo xt
             End If
         Next i
     End If
 
-xt: Set ArrayCompare = dct
+xt: Set ArryCompare = dct
     Exit Function
     
 eh: Select Case ErrMsg(ErrSrc(PROC))
@@ -356,14 +783,14 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Function
 
-Public Function ArrayDiffers(ByVal ad_v1 As Variant, _
+Public Function ArryDiffers(ByVal ad_v1 As Variant, _
                              ByVal ad_v2 As Variant, _
                     Optional ByVal ad_ignore_empty_items As Boolean = False, _
                     Optional ByVal ad_comp_mode As VbCompareMethod = vbTextCompare) As Boolean
 ' ----------------------------------------------------------------------------
 ' Returns TRUE when array (ad_v1) differs from array (ad_v2).
 ' ----------------------------------------------------------------------------
-    Const PROC  As String = "ArrayDiffers"
+    Const PROC  As String = "ArryDiffers"
     
     Dim i       As Long
     Dim j       As Long
@@ -371,28 +798,28 @@ Public Function ArrayDiffers(ByVal ad_v1 As Variant, _
     
     On Error GoTo eh
     
-    If Not mBasic.ArrayIsAllocated(ad_v1) And mBasic.ArrayIsAllocated(ad_v2) Then
+    If Not mBasic.ArryIsAllocated(ad_v1) And mBasic.ArryIsAllocated(ad_v2) Then
         va = ad_v2
-    ElseIf mBasic.ArrayIsAllocated(ad_v1) And Not mBasic.ArrayIsAllocated(ad_v2) Then
+    ElseIf mBasic.ArryIsAllocated(ad_v1) And Not mBasic.ArryIsAllocated(ad_v2) Then
         va = ad_v1
-    ElseIf Not mBasic.ArrayIsAllocated(ad_v1) And Not mBasic.ArrayIsAllocated(ad_v2) Then
+    ElseIf Not mBasic.ArryIsAllocated(ad_v1) And Not mBasic.ArryIsAllocated(ad_v2) Then
         GoTo xt
     End If
 
     '~~ Leading and trailing empty items are ignored by default
-    mBasic.ArrayTrimm ad_v1
-    mBasic.ArrayTrimm ad_v2
+    mBasic.ArryTrimm ad_v1
+    mBasic.ArryTrimm ad_v2
     
     If Not ad_ignore_empty_items Then
         On Error Resume Next
         If Not ad_ignore_empty_items Then
             On Error Resume Next
-            ArrayDiffers = Join(ad_v1) <> Join(ad_v2)
+            ArryDiffers = Join(ad_v1) <> Join(ad_v2)
             If Err.Number = 0 Then GoTo xt
             '~~ At least one of the joins resulted in a string exeeding the maximum possible lenght
             For i = LBound(ad_v1) To Min(UBound(ad_v1), UBound(ad_v2))
                 If ad_v1(i) <> ad_v2(i) Then
-                    ArrayDiffers = True
+                    ArryDiffers = True
                     Exit Function
                 End If
             Next i
@@ -409,14 +836,14 @@ Public Function ArrayDiffers(ByVal ad_v1 As Variant, _
             Wend
             If i <= UBound(ad_v1) And j <= UBound(ad_v2) Then
                 If StrComp(ad_v1(i), ad_v2(j), ad_comp_mode) <> 0 Then
-                    ArrayDiffers = True
+                    ArryDiffers = True
                     GoTo xt
                 End If
             End If
             j = j + 1
         Next i
         If j < UBound(ad_v2) Then
-            ArrayDiffers = True
+            ArryDiffers = True
         End If
     End If
     
@@ -428,53 +855,107 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Function
 
-Public Function ArrayIsAllocated(ByVal arry As Variant) As Boolean
-' ----------------------------------------------------------------------------
-' Retunrs TRUE when the array (arry) is allocated, i.e. has at least one item.
-' ----------------------------------------------------------------------------
-    
-    On Error Resume Next
-    ArrayIsAllocated = UBound(arry) >= LBound(arry)
-    On Error GoTo -1
-    
-End Function
-
-Public Function ArrayNoOfDims(arr As Variant) As Integer
+Public Function ArryDims(ByVal a_arr As Variant) As Integer
 ' ----------------------------------------------------------------------------
 ' Returns the number of dimensions of an array. An unallocated dynamic array
-' has 0 dimensions. This may as well be tested by means of ArrayIsAllocated.
+' has 0 dimensions. This may as well be tested by means of ArryIsAllocated.
 ' ----------------------------------------------------------------------------
     On Error Resume Next
     Dim Ndx As Integer
     Dim Res As Integer
     
-    ' Loop, increasing the dimension index Ndx, until an error occurs.
-    ' An error will occur when Ndx exceeds the number of dimension
-    ' in the array. Return Ndx - 1.
+    '~~ Loop, increasing the dimension index Ndx, until an error occurs.
+    '~~ An error will occur when Ndx exceeds the number of dimension
+    '~~ in the array. Return Ndx - 1.
     Do
         Ndx = Ndx + 1
-        Res = UBound(arr, Ndx)
+        Res = UBound(a_arr, Ndx)
     Loop Until Err.Number <> 0
     Err.Clear
-    ArrayNoOfDims = Ndx - 1
+    ArryDims = Ndx - 1
 
 End Function
 
-Public Sub ArrayRemoveItems(ByRef ri_va As Variant, _
-                   Optional ByVal ri_element As Variant, _
-                   Optional ByVal ri_index As Variant, _
-                   Optional ByVal ri_no_of_elements = 1)
+Public Function ArryIsAllocated(ByVal a_arr As Variant) As Boolean
+' ----------------------------------------------------------------------------
+' Retunrs TRUE when the array (a_arr) is allocated, i.e. has at least one item.
+' ----------------------------------------------------------------------------
+    
+    On Error Resume Next
+    ArryIsAllocated = UBound(a_arr) >= LBound(a_arr)
+    On Error GoTo -1
+    
+End Function
+
+Public Function ArryItems(ByVal a_arr As Variant) As Long
+' ----------------------------------------------------------------------------
+' Returns the number of items in a multi-dimensional array or a nested array.
+' The latter is an array of which one or more items are again possibly multi-
+' dimensional arrays. An unallocated array returns 0.
+' ----------------------------------------------------------------------------
+    
+    Dim lDim    As Long
+    Dim lItems  As Long
+    Dim lDims   As Long
+    Dim v       As Variant
+    
+    lDims = ArryDims(a_arr)
+    
+    Select Case lDims
+        Case 0: lItems = 0
+        Case 1
+            lItems = (UBound(a_arr, 1) - LBound(a_arr, 1)) + 1
+            For Each v In a_arr
+                If IsArray(v) Or TypeName(v) Like "*()" Then
+                    lItems = lItems + ArryItems(v)
+                End If
+            Next v
+            
+        Case Else
+            lItems = 1
+            For lDim = 1 To lDims
+                lItems = lItems * ((UBound(a_arr, lDim) - LBound(a_arr, lDims)) + 1)
+            Next
+    End Select
+    ArryItems = lItems
+    
+End Function
+
+Private Sub ArryItemsTest()
+        
+    Dim arr1 As Variant
+    Dim arr2 As Variant
+    Dim arr3 As Variant
+    
+    Arry(arr1, 3) = "X"
+    Arry(arr1, 5) = "Y"
+    Arry(arr1, 9) = "Z"
+    Arry(arr2) = arr1
+    
+    Debug.Assert ArryDims(arr1) = 1
+    Debug.Assert ArryItems(arr1) = 10
+    
+    Debug.Assert ArryDims(arr2) = 1
+    Debug.Assert ArryItems(arr2) = 11
+    Debug.Assert ArryItems(arr3) = 0
+
+End Sub
+
+Public Sub ArryRemoveItems(ByRef a_va As Variant, _
+                  Optional ByVal a_element As Variant, _
+                  Optional ByVal a_index As Variant, _
+                  Optional ByVal a_no_of_elements = 1)
 ' ------------------------------------------------------------------------------
-' Returns the 'one dimensional'! array (ri_va) with the number of elements
-' (ri_no_of_elements) removed whereby the start element may be indicated by the
-' element number 1,2,... (ri_element) or the index (ri_index) which must be
+' Returns a 'one dimensional'! array (a_va) with the number of elements
+' (a_no_of_elements) removed whereby the start element may be indicated by the
+' element number 1,2,... (a_element) or the index (a_index) which must be
 ' within the array's LBound to Ubound. Any inappropriate provision of arguments
-' raises a clear error message. When the last item in an array is removed the
-' returned array is erased (no longer allocated).
+' raises an error message. When the last item in an array is removed the
+' returned array is erased (i.e is no longer allocated).
 '
 ' W. Rauschenberger, Berlin Feb 2022
 ' ------------------------------------------------------------------------------
-    Const PROC = "ArrayRemoveItems"
+    Const PROC = "ArryRemoveItems"
 
     On Error GoTo eh
     Dim a                   As Variant
@@ -484,20 +965,20 @@ Public Sub ArrayRemoveItems(ByRef ri_va As Variant, _
     Dim i                   As Long
     Dim iNewUBound          As Long
     
-    If Not mBasic.ArrayIsAllocated(ri_va) Then
+    If Not mBasic.ArryIsAllocated(a_va) Then
         Err.Raise AppErr(1), ErrSrc(PROC), "Array not provided!"
     Else
-        a = ri_va
+        a = a_va
         NoOfElementsInArray = UBound(a) - LBound(a) + 1
     End If
-    If Not ArrayNoOfDims(a) = 1 Then
+    If Not ArryDims(a) = 1 Then
         Err.Raise AppErr(2), ErrSrc(PROC), "Array must not be multidimensional!"
     End If
-    If Not IsNumeric(ri_element) And Not IsNumeric(ri_index) Then
+    If Not IsNumeric(a_element) And Not IsNumeric(a_index) Then
         Err.Raise AppErr(3), ErrSrc(PROC), "Neither FromElement nor FromIndex is a numeric value!"
     End If
-    If IsNumeric(ri_element) Then
-        iElement = ri_element
+    If IsNumeric(a_element) Then
+        iElement = a_element
         If iElement < 1 _
         Or iElement > NoOfElementsInArray Then
             Err.Raise AppErr(4), ErrSrc(PROC), "vFromElement is not between 1 and " & NoOfElementsInArray & " !"
@@ -505,8 +986,8 @@ Public Sub ArrayRemoveItems(ByRef ri_va As Variant, _
             iIndex = LBound(a) + iElement - 1
         End If
     End If
-    If IsNumeric(ri_index) Then
-        iIndex = ri_index
+    If IsNumeric(a_index) Then
+        iIndex = a_index
         If iIndex < LBound(a) _
         Or iIndex > UBound(a) Then
             Err.Raise AppErr(5), ErrSrc(PROC), "FromIndex is not between " & LBound(a) & " and " & UBound(a) & " !"
@@ -514,17 +995,17 @@ Public Sub ArrayRemoveItems(ByRef ri_va As Variant, _
             iElement = ElementOfIndex(a, iIndex)
         End If
     End If
-    If iElement + ri_no_of_elements - 1 > NoOfElementsInArray Then
-        Err.Raise AppErr(6), ErrSrc(PROC), "FromElement (" & iElement & ") plus the number of elements to remove (" & ri_no_of_elements & ") is beyond the number of elelemnts in the array (" & NoOfElementsInArray & ")!"
+    If iElement + a_no_of_elements - 1 > NoOfElementsInArray Then
+        Err.Raise AppErr(6), ErrSrc(PROC), "FromElement (" & iElement & ") plus the number of elements to remove (" & a_no_of_elements & ") is beyond the number of elelemnts in the array (" & NoOfElementsInArray & ")!"
     End If
     
-    For i = iIndex + ri_no_of_elements To UBound(a)
-        a(i - ri_no_of_elements) = a(i)
+    For i = iIndex + a_no_of_elements To UBound(a)
+        a(i - a_no_of_elements) = a(i)
     Next i
     
-    iNewUBound = UBound(a) - ri_no_of_elements
+    iNewUBound = UBound(a) - a_no_of_elements
     If iNewUBound < 0 Then Erase a Else ReDim Preserve a(LBound(a) To iNewUBound)
-    ri_va = a
+    a_va = a
     
 xt: Exit Sub
 
@@ -534,62 +1015,33 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub ArrayToRange(ByVal vArr As Variant, _
-                        ByVal r As Range, _
-               Optional ByVal bOneCol As Boolean = False)
-' ----------------------------------------------------------------------------
-' Copy the content of the Arry (vArr) to the range (r).
-' ----------------------------------------------------------------------------
-    Const PROC = "ArrayToRange"
-    
-    On Error GoTo eh
-    Dim rTarget As Range
-
-    If bOneCol Then
-        '~~ One column, n rows
-        Set rTarget = r.Cells(1, 1).Resize(UBound(vArr), 1)
-        rTarget.Value = Application.Transpose(vArr)
-    Else
-        '~~ One column, n rows
-        Set rTarget = r.Cells(1, 1).Resize(1, UBound(vArr))
-        rTarget.Value = vArr
-    End If
-    
-xt: Exit Sub
-
-eh: Select Case ErrMsg(ErrSrc(PROC))
-        Case vbYes: Stop: Resume
-        Case Else:  GoTo xt
-    End Select
-End Sub
-
-Public Sub ArrayTrimm(ByRef a As Variant)
+Public Sub ArryTrimm(ByRef a_arr As Variant)
 ' ------------------------------------------------------------------------------
-' Returns the array (a) with all leading and trailing blank items removed. Any
+' Returns the array (a_arr) with all leading and trailing blank items removed. Any
 ' vbCr, vbCrLf, vbLf are ignored. When the array contains only blank items the
 ' returned array is erased.
 ' ------------------------------------------------------------------------------
-    Const PROC  As String = "ArrayTrimm"
+    Const PROC  As String = "ArryTrimm"
 
     On Error GoTo eh
     Dim i As Long
     
     '~~ Eliminate leading blank lines
-    If Not mBasic.ArrayIsAllocated(a) Then Exit Sub
+    If Not mBasic.ArryIsAllocated(a_arr) Then Exit Sub
     
-    Do While (Len(Trim$(a(LBound(a)))) = 0 Or Trim$(a(LBound(a))) = " ") And UBound(a) >= 0
-        mBasic.ArrayRemoveItems ri_va:=a, ri_index:=i
-        If Not mBasic.ArrayIsAllocated(a) Then Exit Do
+    Do While (Len(Trim$(a_arr(LBound(a_arr)))) = 0 Or Trim$(a_arr(LBound(a_arr))) = " ") And UBound(a_arr) >= 0
+        mBasic.ArryRemoveItems a_va:=a_arr, a_index:=i
+        If Not mBasic.ArryIsAllocated(a_arr) Then Exit Do
     Loop
     
-    If mBasic.ArrayIsAllocated(a) Then
-        Do While (Len(Trim$(a(UBound(a)))) = 0 Or Trim$(a(LBound(a))) = " ") And UBound(a) >= 0
-            If UBound(a) = 0 Then
-                Erase a
+    If mBasic.ArryIsAllocated(a_arr) Then
+        Do While (Len(Trim$(a_arr(UBound(a_arr)))) = 0 Or Trim$(a_arr(LBound(a_arr))) = " ") And UBound(a_arr) >= 0
+            If UBound(a_arr) = 0 Then
+                Erase a_arr
             Else
-                ReDim Preserve a(UBound(a) - 1)
+                ReDim Preserve a_arr(UBound(a_arr) - 1)
             End If
-            If Not mBasic.ArrayIsAllocated(a) Then Exit Do
+            If Not mBasic.ArryIsAllocated(a_arr) Then Exit Do
         Loop
     End If
 
@@ -609,15 +1061,12 @@ Public Function BaseName(ByVal v As Variant) As String
     Const PROC  As String = "BaseName"
     
     On Error GoTo eh
-    Dim fle As File
     
     With New FileSystemObject
         Select Case TypeName(v)
             Case "String":      BaseName = .GetBaseName(v)
             Case "Workbook":    BaseName = .GetBaseName(v.FullName)
-            Case "File"
-                Set fle = v
-                BaseName = .GetBaseName(fle.Name)
+            Case "File":        BaseName = .GetBaseName(v.Name)
             Case Else:          Err.Raise AppErr(1), ErrSrc(PROC), "The parameter (v) is neither a string nor a File or Workbook object (TypeName = '" & TypeName(v) & "')!"
         End Select
     End With
@@ -662,37 +1111,40 @@ Public Sub BoP(ByVal b_proc As String, _
 #End If
 End Sub
 
-Public Function Center(ByVal s1 As String, _
-                       ByVal l As Long, _
-               Optional ByVal sFill As String = " ") As String
+Public Function Center(ByVal c_string As String, _
+                       ByVal c_length As Long, _
+              Optional ByVal c_fill As String = " ") As String
 ' ----------------------------------------------------------------------------
-' Returns a string (s) centered within a string with a certain length (l).
+' Returns a string (c_string) centered with a given length (c_length),
+' optionally filled with a provided string which defaults to a single space.
 ' ----------------------------------------------------------------------------
     Dim lSpace As Long
-    lSpace = Max(1, ((l - Len(s1)) / 2))
-    Center = VBA.String$(lSpace, sFill) & s1 & VBA.String$(lSpace, sFill)
-    Center = Right(Center, l)
+    
+    lSpace = Max(1, ((c_length - Len(c_string)) / 2))
+    Center = VBA.String$(lSpace, c_fill) & c_string & VBA.String$(lSpace, c_fill)
+    Center = Right(Center, c_length)
+    
 End Function
 
-Public Function CleanTrim(ByVal s As String, _
-                 Optional ByVal ConvertNonBreakingSpace As Boolean = True) As String
+Public Function CleanTrim(ByVal c_string As String, _
+                 Optional ByVal c_conv_non_breaking_spaces As Boolean = True) As String
 ' ----------------------------------------------------------------------------------
-' Returns the string 's' cleaned from any non-printable characters.
+' Returns the string 'c_string' cleaned from any non-printable characters.
 ' ----------------------------------------------------------------------------------
     Const PROC = "CleanTrim"
     
     On Error GoTo eh
-    Dim l           As Long
-    Dim asToClean   As Variant
+    Dim l       As Long
+    Dim aClean  As Variant
     
-    asToClean = Array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, _
+    aClean = Array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, _
                      21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 127, 129, 141, 143, 144, 157)
-    If ConvertNonBreakingSpace Then s = Replace(s, Chr$(160), " ")
-    For l = LBound(asToClean) To UBound(asToClean)
-        If InStr(s, Chr$(asToClean(l))) Then s = Replace(s, Chr$(asToClean(l)), vbNullString)
+    If c_conv_non_breaking_spaces Then c_string = Replace(c_string, Chr$(160), " ")
+    For l = LBound(aClean) To UBound(aClean)
+        If InStr(c_string, Chr$(aClean(l))) Then c_string = Replace(c_string, Chr$(aClean(l)), vbNullString)
     Next
     
-xt: CleanTrim = s
+xt: CleanTrim = c_string
     Exit Function
     
 eh: Select Case ErrMsg(ErrSrc(PROC))
@@ -700,6 +1152,85 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
         Case Else:  GoTo xt
     End Select
 End Function
+
+Public Sub DelayedAction(ByVal d_secs As Long, _
+                Optional ByVal d_action As String = vbNullString, _
+                Optional ByVal d_action_arg1 As Variant, _
+                Optional ByVal d_action_arg2 As Variant, _
+                Optional ByVal d_action_arg3 As Variant, _
+                Optional ByVal d_action_arg4 As Variant, _
+                Optional ByVal d_action_arg5 As Variant)
+' ----------------------------------------------------------------------------
+' Waits for n (d_sec) seconds and performs a provided action (d_action)
+' whereby the action needs to be a fully specified Application.Run action.
+' <workbook-name>!<comp>.<proc>
+'
+' Specific: The action may be passed with up to 5 arguments. Though optional
+'           none preceeding must be ommitted. I.e. when the second argument
+'           is provided the first one is obligatory.
+' ----------------------------------------------------------------------------
+                
+    Dim v As Variant
+    v = Now() + d_secs / 100000
+    Do While Now() < v
+        DoEvents
+    Loop
+    If d_action <> vbNullString Then
+        Select Case True
+            Case Not IsMissing(d_action_arg5): Application.Run d_action, d_action_arg1, d_action_arg2, d_action_arg3, d_action_arg4, d_action_arg5
+            Case Not IsMissing(d_action_arg4): Application.Run d_action, d_action_arg1, d_action_arg2, d_action_arg3, d_action_arg4
+            Case Not IsMissing(d_action_arg3): Application.Run d_action, d_action_arg1, d_action_arg2, d_action_arg3
+            Case Not IsMissing(d_action_arg2): Application.Run d_action, d_action_arg1, d_action_arg2
+            Case Not IsMissing(d_action_arg1): Application.Run d_action, d_action_arg1
+            Case Else:                         Application.Run d_action
+        End Select
+    End If
+    
+End Sub
+
+Public Sub DelayedActionTest()
+    
+    DelayedAction 1, ""
+    DelayedAction 1, ThisWorkbook.Name & "!mBasic.DelayedTest"
+    DelayedAction 1, ThisWorkbook.Name & "!mBasic.DelayedTest1", "Arg1"
+    DelayedAction 1, ThisWorkbook.Name & "!mBasic.DelayedTest2", "Arg1", "Arg2"
+    
+End Sub
+
+                                  
+Public Sub DelayedTest()
+    Debug.Print "DelayedTest performed"
+End Sub
+
+Public Sub DelayedTest1(ByVal arg As String)
+    Debug.Print "DelayedTest1 with args " & arg
+End Sub
+
+Public Sub DelayedTest2(ByVal arg1 As String, _
+                        ByVal arg2 As String)
+    Debug.Print "DelayedTest2 with args " & arg1 & " and " & arg2
+End Sub
+
+Private Sub DictTest()
+
+    Dim dct As Dictionary
+    
+    Dict(dct, "X") = 1              ' Add
+    Dict(dct, "X") = 2              ' Replace
+    Debug.Assert Dict(dct, "X") = 2 ' Assert
+    
+    Dict(dct, "X") = "+5"           ' Increment
+    Debug.Assert Dict(dct, "X") = 7 ' Assert
+    
+    Dict(dct, "X") = "-3"           ' Decrement
+    Debug.Assert Dict(dct, "X") = 4 ' Assert
+    
+    '~~ Assert defaults when not existing
+    Debug.Assert Dict(dct, "B", Nothing) Is Nothing
+    Debug.Assert Dict(dct, "B", 0) = 0
+    Debug.Assert Dict(dct, "B") = vbNullString      ' No default returns default
+    
+End Sub
 
 Public Function ElementOfIndex(ByVal a As Variant, _
                                ByVal i As Long) As Long
@@ -874,6 +1405,58 @@ Public Function IsString(ByVal v As Variant, _
     End If
 End Function
 
+Public Function KeySort(ByRef s_dct As Dictionary) As Dictionary
+' ------------------------------------------------------------------------------
+' Returns the items in a Dictionary (s_dct) sorted by key.
+' ------------------------------------------------------------------------------
+    Const PROC  As String = "KeySort"
+    
+    On Error GoTo eh
+    Dim dct     As New Dictionary
+    Dim vKey    As Variant
+    Dim arr()   As Variant
+    Dim Temp    As Variant
+    Dim i       As Long
+    Dim j       As Long
+    
+    If s_dct Is Nothing Then GoTo xt
+    If s_dct.Count = 0 Then GoTo xt
+    
+    With s_dct
+        ReDim arr(0 To .Count - 1)
+        For i = 0 To .Count - 1
+            arr(i) = .Keys(i)
+        Next i
+    End With
+    
+    '~~ Bubble sort
+    For i = LBound(arr) To UBound(arr) - 1
+        For j = i + 1 To UBound(arr)
+            If arr(i) > arr(j) Then
+                Temp = arr(j)
+                arr(j) = arr(i)
+                arr(i) = Temp
+            End If
+        Next j
+    Next i
+        
+    '~~ Transfer based on sorted keys
+    For i = LBound(arr) To UBound(arr)
+        vKey = arr(i)
+        dct.Add Key:=vKey, Item:=s_dct.Item(vKey)
+    Next i
+    
+xt: Set s_dct = dct
+    Set KeySort = dct
+    Set dct = Nothing
+    Exit Function
+
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
+End Function
+
 Public Sub MakeFormResizable()
 ' ---------------------------------------------------------------------------
 ' This part is from Leith Ross                                              |
@@ -886,13 +1469,13 @@ Public Sub MakeFormResizable()
     Const GWL_STYLE As Long = (-16)
     
     Dim lStyle As LongPtr
-    Dim hwnd As LongPtr
+    Dim hWnd As LongPtr
     Dim RetVal
 
-    hwnd = GetForegroundWindow
+    hWnd = GetForegroundWindow
     
-    lStyle = GetWindowLongPtr(hwnd, GWL_STYLE Or WS_THICKFRAME)
-    RetVal = SetWindowLongPtr(hwnd, GWL_STYLE, lStyle)
+    lStyle = GetWindowLongPtr(hWnd, GWL_STYLE Or WS_THICKFRAME)
+    RetVal = SetWindowLongPtr(hWnd, GWL_STYLE, lStyle)
 
 End Sub
 
@@ -940,6 +1523,24 @@ End Function
 
 Public Function ProgramIsInstalled(ByVal sProgram As String) As Boolean
         ProgramIsInstalled = InStr(Environ$(18), sProgram) <> 0
+End Function
+
+Public Function RangeAsArray(ByVal r_rng As Range) As Variant
+    Const PROC = "RangeAsArray"
+    
+    Dim arr As Variant
+    
+    Select Case True
+        Case r_rng.Cells.Count = 1:     arr = Array(r_rng.Value)                                            ' single cell
+        Case r_rng.Columns.Count = 1:   arr = Application.Transpose(r_rng.Value)                            ' single column
+        Case r_rng.Rows.Count = 1:      arr = Application.Transpose(Application.Transpose(r_rng.Value))    ' single row
+        Case r_rng.Rows.Count = 2
+        Case r_rng.Columns.Count = 2:   arr = r_rng.Value
+        Case Else
+            Err.Raise AppErr(1), ErrSrc(PROC), "Range cannot be transferred/transposed into an aray!"
+    End Select
+    RangeAsArray = arr
+    
 End Function
 
 Public Sub README(Optional ByVal r_base_url As String = vbNullString, _
@@ -1202,7 +1803,9 @@ Public Function TimedDoEvents(Optional t_source As String = vbNullString, _
 '             results. This little procedure at least documents in VBE's
 '             immediate window the resulting performace delay in milliseconds.
 ' ---------------------------------------------------------------------------
-    Const TIMER_FORMAT = "0.00000"
+    Const PROC          As String = "TimedDoEvents"
+    Const TIMER_FORMAT  As String = "0.00000"
+    
     Dim cBegin      As Currency
     Dim cEnd        As Currency
     Dim cElapsed    As Currency
@@ -1212,7 +1815,7 @@ Public Function TimedDoEvents(Optional t_source As String = vbNullString, _
     mBasic.TimerEnd cBegin, cEnd, cElapsed, TIMER_FORMAT
     If t_source <> vbNullString Then t_source = " (" & Trim(t_source) & ")"
     TimedDoEvents = Format((cElapsed / SysFrequency) * 1000, TIMER_FORMAT) & " seconds " & t_source
-    If t_debug_print Then Debug.Print TimedDoEvents
+    If t_debug_print Then Debug.Print ErrSrc(PROC) & ": " & TimedDoEvents
     
 End Function
 

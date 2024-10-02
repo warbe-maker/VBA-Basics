@@ -1,7 +1,6 @@
 Attribute VB_Name = "mBasicTest"
 Option Private Module
 Option Explicit
-
 ' ----------------------------------------------------------------------------
 ' Standard Module mTest: Dedicate for the test of mBasic procedures.
 '
@@ -16,9 +15,11 @@ Option Explicit
 '                CompMan = 1
 '                ErHComp = 1
 '
-' W. Rauschenberger, Berlin Now 2021
+' W. Rauschenberger, Berlin Now 2017
 ' ----------------------------------------------------------------------------
 Public Trc As clsTrc
+
+Private TestAid As New clsTestAid
 
 Private Property Get ErrSrc(Optional ByVal s As String) As String:  ErrSrc = "mBasicTest." & s:  End Property
 
@@ -142,7 +143,7 @@ Private Function ErrMsg(ByVal err_source As String, _
 '       ErrSrc  To provide an unambiguous procedure name by prefixing is with
 '               the module name.
 '
-' W. Rauschenberger Berlin, Apr 2023
+' W. Rauschenberger Berlin, Apr 2016
 '
 ' See: https://github.com/warbe-maker/VBA-Error
 ' ------------------------------------------------------------------------------' ------------------------------------------------------------------------------
@@ -211,6 +212,23 @@ Private Function ErrMsg(ByVal err_source As String, _
 xt:
 End Function
 
+Private Sub Prepare()
+    
+    If Not mErH.Regression Then
+        Set TestAid = Nothing: Set TestAid = New clsTestAid
+    Else
+        If TestAid Is Nothing Then Set TestAid = New clsTestAid
+    End If
+    If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
+    If TestAid.ModeRegression Then
+        Trc.FileFullName = TestAid.TestFolder & "\TestExecution.trc"
+    Else
+        Trc.FileFullName = TestAid.TestFolder & "\RegressionTestExecution.trc"
+    End If
+    TestAid.TestedComp = "mBasic"
+    
+End Sub
+
 Public Sub Regression()
 ' ------------------------------------------------------------------------------
 ' This Regression test:
@@ -227,37 +245,48 @@ Public Sub Regression()
     Const PROC = "Regression"
     
     On Error GoTo eh
+    mErH.Regression = True
+    Prepare
     
     '~~ Initialization of a new Trace Log File for this Regression test
     '~~ ! must be done prior the first BoP !
 #If mTrc = 1 Then
-    mTrc.FileName = "RegressionTest.ExecTrace.log"
+    mTrc.FileName = TestAid.TestFolder & "\RegressionTest.ExecTrace.log"
     mTrc.Title = "Execution Trace result of the mBasic Regression test"
     mTrc.NewFile
 #ElseIf clsTrc = 1 Then
     Set Trc = New clsTrc
     With Trc
-        .FileName = "RegressionTest.ExecTrace.log"
+        .FileFullName = TestAid.TestFolder & "\RegressionTest.ExecTrace.log"
         .Title = "Execution Trace result of the mBasic Regression test"
         .NewFile
     End With
 #End If
 
     mErH.Regression = True
+    TestAid.ModeRegression = True
     
     BoP ErrSrc(PROC)
-    mBasicTest.Test_01_ArrayCompare
-    mBasicTest.Test_02_0_ArrayRemoveItems
-    mBasicTest.Test_03_ArrayToRange
-    mBasicTest.Test_04_ArrayTrimm
-    mBasicTest.Test_05_BaseName
-    mBasicTest.Test_05_BaseName
-    mBasicTest.Test_06_Spaced
-    mBasicTest.Test_07_Align
-    mBasicTest.Test_08_Stack
-    mBasicTest.Test_10_ArrayDiffers
-    mBasicTest.Test_20_Timer
-    mBasicTest.Test_21_TimedDoEvents
+    mBasicTest.Test_0100_Align
+    
+    mBasicTest.Test_0100_Align
+    mBasicTest.Test_0100_Align
+    mBasicTest.Test_0200_Arry_Get_Let
+    mBasicTest.Test_0210_ArryAsRange_RangeAsArray
+    mBasicTest.Test_0220_ArryCompare
+    mBasicTest.Test_0230_ArryDiffers
+    mBasicTest.Test_0240_ArryIsAllocated
+    mBasicTest.Test_0250_ArryNoOfDims
+    mBasicTest.Test_0260_ArryRemoveItems
+    mBasicTest.Test_0270_ArryTrimm
+    mBasicTest.Test_0300_BaseName
+    mBasicTest.Test_0300_BaseName
+    mBasicTest.Test_0400_Spaced
+    mBasicTest.Test_0500_Stack
+    mBasicTest.Test_0600_TimedDoEvents
+    mBasicTest.Test_0700_Timer
+        
+    TestAid.ResultSummaryLog
     
 xt: EoP ErrSrc(PROC)
     mErH.Regression = False
@@ -266,6 +295,9 @@ xt: EoP ErrSrc(PROC)
 #ElseIf clsTrc = 1 Then
     Trc.Dsply
 #End If
+    TestAid.ResultSummaryLog
+    TestAid.CleanUp
+    Set TestAid = Nothing
     Exit Sub
 
 eh: Select Case ErrMsg(ErrSrc(PROC))
@@ -274,8 +306,177 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_01_ArrayCompare()
-    Const PROC  As String = "Test_03_ArrayToRange"
+Public Sub Test_0210_ArryAsRange_RangeAsArray()
+    Const PROC = "Test_0210_ArryAsRange_RangeAsArray"
+    
+    On Error GoTo eh
+    Dim a       As Variant
+    Dim aTest   As Variant
+    Dim a2      As Variant
+    
+    If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
+    Prepare
+    BoP ErrSrc(PROC)
+    aTest = Split("X,2,3,4,5,AAAA,Z", ",") ' Test array
+    a = aTest
+
+    With TestAid
+        .TestedProc = "ArryAsRange, RangeAsArray"
+        
+        .TestNumber = "0210-01"
+        .TestHeadLine = "Array to range, range to array"
+        wsBasic.UsedRange.ClearContents
+        mBasic.ArryAsRange a, wsBasic.rngArryAsRangeTarget, True
+        a2 = mBasic.RangeAsArray(Intersect(wsBasic.rngArryAsRangeTarget, wsBasic.UsedRange))
+        .ResultExpected = a
+        .Result = a2
+    End With
+    
+xt: EoP ErrSrc(PROC)
+    Exit Sub
+    
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
+End Sub
+
+Public Sub Test_0100_Align()
+    Const PROC = "Test_0100_Align"
+    
+    Prepare
+    
+    mBasic.BoP ErrSrc(PROC)
+    With TestAid
+        .TestedProc = "Align"
+        
+        .TestNumber = "0100-01"
+        .TestHeadLine = "Align ""Abcde"" left 8, filled with "" -"""      ' Left      8   " -"
+        .ResultExpected = "Abcde ----"
+        .Result = mBasic.Align("Abcde", enAlignLeft, 8, " -")
+        
+        .TestNumber = "0100-02"
+        .TestHeadLine = "Align ""Abcde"" right 8, filled with ""- """     ' Right     8   "- "
+        .ResultExpected = "---- Abcde"
+        .Result = mBasic.Align("Abcde", enAlignRight, 8, "- ")
+        
+        .TestNumber = "0100-03"
+        .TestHeadLine = "Align ""Abcde"" centered 8, filled with ""- """  ' Centered  8   "- "
+        .ResultExpected = "-- Abcde ---"
+        .Result = mBasic.Align("Abcde", enAlignCentered, 8, " -")
+        
+        .TestNumber = "0100-04"
+        .TestHeadLine = "Align ""Abcde"" centered 7, filled with ""- """  ' Centered  7   " -"
+        .ResultExpected = "-- Abcde --"
+        .Result = mBasic.Align("Abcde", enAlignCentered, 7, " -")
+        
+        .TestNumber = "0100-05"
+        .TestHeadLine = "Align ""Abcde"" right 7, filled with ""- """     ' Right     7   "- "
+        .ResultExpected = "--- Abcde"
+        .Result = mBasic.Align("Abcde", enAlignRight, 7, "- ")
+                
+        .TestNumber = "0100-06"
+        .TestHeadLine = "Align ""Abcde"" centered 7, filled with ""-"""   ' Centered  7   "-"
+        .ResultExpected = "--Abcde--"
+        .Result = mBasic.Align("Abcde", enAlignCentered, 7, "-")
+        
+        .TestNumber = "0100-07"
+        .TestHeadLine = "Align ""Abcde"" left 7, filled with ""-"""       ' Left      7   "-"
+        .ResultExpected = "Abcde---"
+        .Result = mBasic.Align("Abcde", enAlignLeft, 7, "-")
+        
+        .TestNumber = "0100-08"
+        .TestHeadLine = "Align ""Abcde"" right 6, filled with ""-"""      ' Right     6   "-"
+        .ResultExpected = "--Abcde"
+        .Result = mBasic.Align("Abcde", enAlignRight, 6, "-")
+        
+        .TestNumber = "0100-09"
+        .TestHeadLine = "Align ""Abcde"" centered 6, filled with ""-"""   ' Centered  6   "-"
+        .ResultExpected = "-Abcde--"
+        .Result = mBasic.Align("Abcde", enAlignCentered, 6, "-")
+        
+        .TestNumber = "0100-10"
+        .TestHeadLine = "Align ""Abcde"" left 4, filled with ""-"""       ' Left      4   "-"
+        .ResultExpected = "Abcd-"
+        .Result = mBasic.Align("Abcde", enAlignLeft, 4, "-")
+        
+        .TestNumber = "0100-11"
+        .TestHeadLine = "Align ""Abcde"" right 4, filled with ""-"""      ' Right     4   "-"
+        .ResultExpected = "-Abcd"
+        .Result = mBasic.Align("Abcde", enAlignRight, 4, "-")
+        
+        .TestNumber = "0100-12"
+        .TestHeadLine = "Align ""Abcde"" centered 4, filled with ""-"", with margin"
+        .ResultExpected = " -Abcd- "
+        .Result = mBasic.Align("Abcde", enAlignCentered, 4, "-", " ")   ' Centered  4   "-"
+    
+    End With
+    
+xt: mBasic.EoP ErrSrc(PROC)
+
+End Sub
+
+Public Sub Test_0200_Arry_Get_Let()
+    Const PROC = "Test_0200_Arry_Get_Let"
+    
+    On Error GoTo eh
+    Dim a1      As Variant
+    Dim a2      As Variant
+    Dim dctDiff As Variant
+    Dim v       As Variant
+    
+    Prepare
+    BoP ErrSrc(PROC)
+    With TestAid
+        .TestedProc = "Arry"
+        
+        .TestNumber = "0200-01"
+        .TestHeadLine = "Write/Read array"
+        Arry(a1) = "A"
+        .ResultExpected = "A"
+        v = Arry(a1, LBound(a1))
+        .Result = v
+        
+        .TestNumber = "0200-02"
+        .TestHeadLine = "Write at any index, and read"
+        Arry(a1, 10) = "Z"
+        .ResultExpected = "Z"
+        v = Arry(a1, 10)
+        .Result = v
+        
+        .TestNumber = "0200-03"
+        .TestHeadLine = "Replace at any index, and read"
+        Arry(a1, 10) = "Y"
+        .ResultExpected = "Y"
+        v = Arry(a1, 10)
+        .Result = v
+    
+        .TestNumber = "0200-04"
+        .TestHeadLine = "Return default from a non-existing or not allocated array"
+        Arry(a1, 10) = "Y"
+        .ResultExpected = vbNullString
+        v = Arry(a1, 11)
+        .Result = v
+    
+        .TestNumber = "0200-04"
+        .TestHeadLine = "Return 0 as the default from a non-existing or not allocated array"
+        .ResultExpected = 0
+        v = Arry(a1, 11, 0)
+        .Result = 0
+    
+    End With
+    
+xt: EoP ErrSrc(PROC)
+    Exit Sub
+
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
+End Sub
+
+Public Sub Test_0220_ArryCompare()
+    Const PROC = "Test_0220_ArryCompare"
     
     On Error GoTo eh
     Dim a1      As Variant
@@ -285,103 +486,108 @@ Public Sub Test_01_ArrayCompare()
     
     If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
     BoP ErrSrc(PROC)
-    
-    '~~ Test 1: One element is different, empty elements are ignored
-    a1 = Split("1,2,3,4,5,6,7", ",") ' Test array
-    a2 = Split("1,2,3,x,5,6,7", ",") ' Test array
-    
-    BoC "mBasic.ArrayCompare"
-    Set dctDiff = mBasic.ArrayCompare(ac_v1:=a1 _
-                                    , ac_v2:=a2 _
-                                     )
-    EoC "mBasic.ArrayCompare"
-    
-    Debug.Assert dctDiff.Count = 1
-    For Each v In dctDiff
-        Debug.Print "Test 1: Item/line " & v & vbLf & dctDiff(v)
-    Next v
-    
-    '~~ Test 2: The first array has less elements, empty elements are ignored
-    a1 = Split("1,2,3,4,5,6", ",") ' Test array
-    a2 = Split("1,2,3,4,5,6,7", ",") ' Test array
-    
-    BoC "mBasic.ArrayCompare"
-    Set dctDiff = mBasic.ArrayCompare(ac_v1:=a1 _
-                                    , ac_v2:=a2 _
-                                     )
-    EoC "mBasic.ArrayCompare"
-    
-    Debug.Assert dctDiff.Count = 1
-    For Each v In dctDiff
-        Debug.Print "Test 2: Item/line " & v & vbLf & dctDiff(v)
-    Next v
+    Prepare
+    With TestAid
+        .TestedProc = "ArryCompare"
+        .TestedType = "Sub"
         
-    '~~ Test 3: The second array has less elements, empty elements are ignored
-    a1 = Split("1,2,3,4,5,6,7", ",") ' Test array
-    a2 = Split("1,2,3,4,5,6", ",") ' Test array
-    BoC "mBasic.ArrayCompare"
-    Set dctDiff = mBasic.ArrayCompare(ac_v1:=a1 _
-                                    , ac_v2:=a2 _
-                                     )
-    EoC "mBasic.ArrayCompare"
-    Debug.Assert dctDiff.Count = 1
-    For Each v In dctDiff
-        Debug.Print "Test 3: Item/line " & v & vbLf & dctDiff(v)
-    Next v
-    
-    '~~ Test 4: The arrays first elements are different, empty elements are ignored
-    a1 = Split("1,2,3,4,5,6,7", ",") ' Test array
-    a2 = Split(",2,3,4,5,6,7", ",") ' Test array
-    
-    BoC "mBasic.ArrayCompare"
-    Set dctDiff = mBasic.ArrayCompare(ac_v1:=a1 _
-                                    , ac_v2:=a2 _
-                                     )
-    EoC "mBasic.ArrayCompare"
-    
-    Debug.Assert dctDiff.Count = 7
-    For Each v In dctDiff
-        Debug.Print "Test 4: Item/line " & v & vbLf & dctDiff(v)
-    Next v
+        ' ==================================================================
+        .TestNumber = "0220-01"
+        .TestHeadLine = "One element is different, empty elements are ignored"
+        a1 = Split("1,2,3,4,5,6,7", ",") ' Test array
+        a2 = Split("1,2,3,x,5,6,7", ",") ' Test array
         
-    '~~ Test 5: The arrays first elements are different, empty elements are ignored
-    a1 = Split(",2,3,4,5,6,7", ",")     ' Test array
-    a2 = Split("1,2,3,4,5,6,7", ",")    ' Test array
-    BoC "mBasic.ArrayCompare"
-    Set dctDiff = mBasic.ArrayCompare(ac_v1:=a1 _
-                                    , ac_v2:=a2 _
-                                     )
-    EoC "mBasic.ArrayCompare"
-    Debug.Assert dctDiff.Count = 7
-    For Each v In dctDiff
-        Debug.Print "Test 5: Item/line " & v & vbLf & dctDiff(v)
-    Next v
-    
-    '~~ Test 6: The second array has additional inserted elements, empty elements are ignored
-    a1 = Split("1,2,3,4,5,6,7", ",")        ' Test array
-    a2 = Split("1,2,3,x,y,z,4,5,6,7", ",")  ' Test array
-    BoC "mBasic.ArrayCompare"
-    Set dctDiff = mBasic.ArrayCompare(ac_v1:=a1 _
-                                    , ac_v2:=a2 _
-                                     )
-    EoC "mBasic.ArrayCompare"
-    Debug.Assert dctDiff.Count = 7
-    For Each v In dctDiff
-        Debug.Print "Test 6: Item/line " & v & vbLf & dctDiff(v)
-    Next v
-    
-    '~~ Test 7: The arrays are equal, empty elements are ignored
-    a1 = Split("1,2,3,4,5,6,7,,,", ",") ' Test array
-    a2 = Split("1,2,3,4,5,6,7", ",") ' Test array
-    BoC "mBasic.ArrayCompare"
-    Set dctDiff = mBasic.ArrayCompare(ac_v1:=a1 _
-                                    , ac_v2:=a2 _
-                                     )
-    EoC "mBasic.ArrayCompare"
-    Debug.Assert dctDiff.Count = 0
-    For Each v In dctDiff
-        Debug.Print "Test 7: Item/line " & v & vbLf & dctDiff(v)
-    Next v
+        BoC "mBasic.ArryCompare"
+        Set dctDiff = mBasic.ArryCompare(a_v1:=a1 _
+                                        , a_v2:=a2 _
+                                         )
+        EoC "mBasic.ArryCompare"
+        
+        .Result = Replace(dctDiff.Items()(0), vbLf, " = ")
+        .ResultExpected = "'4' = 'x'"
+            
+        ' ==================================================================
+        .TestNumber = "0220-02"
+        .TestHeadLine = "The first array has less elements, empty elements are ignored"
+        a1 = Split("1,2,3,4,5,6", ",") ' Test array
+        a2 = Split("1,2,3,4,5,6,7", ",") ' Test array
+        
+        BoC "mBasic.ArryCompare"
+        Set dctDiff = mBasic.ArryCompare(a_v1:=a1 _
+                                        , a_v2:=a2 _
+                                         )
+        EoC "mBasic.ArryCompare"
+        
+        .Result = Replace(dctDiff.Items()(0), vbLf, " = ")
+        .ResultExpected = "'' =  '7'"
+            
+        ' ==================================================================
+        .TestNumber = "0220-03"
+        .TestHeadLine = "The second array has less elements, empty elements are ignored"
+        a1 = Split("1,2,3,4,5,6,7", ",") ' Test array
+        a2 = Split("1,2,3,4,5,6", ",") ' Test array
+        BoC "mBasic.ArryCompare"
+        Set dctDiff = mBasic.ArryCompare(a_v1:=a1 _
+                                        , a_v2:=a2 _
+                                         )
+        EoC "mBasic.ArryCompare"
+        .Result = Replace(dctDiff.Items()(0), vbLf, " = ")
+        .ResultExpected = "'7' = ''"
+        
+        ' ==================================================================
+        .TestNumber = "0220-04"
+        .TestHeadLine = "The arrays first elements are different, empty elements are ignored"
+        a1 = Split("1,2,3,4,5,6,7", ",") ' Test array
+        a2 = Split(",2,3,4,5,6,7", ",") ' Test array
+        
+        BoC "mBasic.ArryCompare"
+        Set dctDiff = mBasic.ArryCompare(a_v1:=a1 _
+                                        , a_v2:=a2 _
+                                         )
+        EoC "mBasic.ArryCompare"
+        
+        .Result = dctDiff.Count
+        .ResultExpected = 7
+                    
+        ' ==================================================================
+        .TestNumber = "0220-05"
+        .TestHeadLine = "The arrays first elements are different, empty elements are ignored"
+        a1 = Split(",2,3,4,5,6,7", ",")     ' Test array
+        a2 = Split("1,2,3,4,5,6,7", ",")    ' Test array
+        BoC "mBasic.ArryCompare"
+        Set dctDiff = mBasic.ArryCompare(a_v1:=a1 _
+                                        , a_v2:=a2 _
+                                         )
+        EoC "mBasic.ArryCompare"
+        .Result = dctDiff.Count
+        .ResultExpected = 7
+        
+        ' ==================================================================
+        .TestNumber = "0220-06"
+        .TestHeadLine = "The second array has additional inserted elements, empty elements are ignored"
+        a1 = Split("1,2,3,4,5,6,7", ",")        ' Test array
+        a2 = Split("1,2,3,x,y,z,4,5,6,7", ",")  ' Test array
+        BoC "mBasic.ArryCompare"
+        Set dctDiff = mBasic.ArryCompare(a_v1:=a1 _
+                                        , a_v2:=a2 _
+                                         )
+        EoC "mBasic.ArryCompare"
+        .Result = dctDiff.Count
+        .ResultExpected = 7
+        
+        ' ==================================================================
+        .TestNumber = "0220-07"
+        .TestHeadLine = "The arrays are equal, empty elements are ignored"
+        a1 = Split("1,2,3,4,5,6,7,,,", ",") ' Test array
+        a2 = Split("1,2,3,4,5,6,7", ",") ' Test array
+        BoC "mBasic.ArryCompare"
+        Set dctDiff = mBasic.ArryCompare(a_v1:=a1 _
+                                        , a_v2:=a2 _
+                                         )
+        EoC "mBasic.ArryCompare"
+        .Result = dctDiff.Count
+        .ResultExpected = 0
+    End With
     
 xt: EoP ErrSrc(PROC)
 
@@ -399,19 +605,66 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_02_0_ArrayRemoveItems()
+Public Sub Test_0230_ArryDiffers()
+    Const PROC  As String = "Test_0230_ArryDiffers"
+    
+    On Error GoTo eh
+    Dim a1      As Variant
+    Dim a2      As Variant
+    
+    If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
+    BoP ErrSrc(PROC)
+    
+    '~~ Test 1: Only leading and trailing items are empty
+    a1 = Split(",1,2,3,4,5,6,7,,,,", ",")                   ' Test array
+    a2 = Split(",,1,2,3,4,5,6,7,,", ",")                    ' Test array
+    Debug.Assert Not mBasic.ArryDiffers(ad_v1:=a1 _
+                                      , ad_v2:=a2 _
+                                      , ad_ignore_empty_items:=False)
+    Debug.Assert Not mBasic.ArryDiffers(ad_v1:=a1 _
+                                      , ad_v2:=a2 _
+                                      , ad_ignore_empty_items:=True)
+    
+    '~~ Test 2: Various numbers of items at different positions are empty
+    a1 = Split(",1,2,,,3,4,5,6,7,,,,", ",")                 ' Test array
+    a2 = Split(",,1,,,,,,,,,2,3,4,,,5,6,7,,", ",")          ' Test array
+    Debug.Assert mBasic.ArryDiffers(ad_v1:=a1 _
+                                  , ad_v2:=a2 _
+                                  , ad_ignore_empty_items:=False)
+    Debug.Assert Not mBasic.ArryDiffers(ad_v1:=a1 _
+                                      , ad_v2:=a2 _
+                                      , ad_ignore_empty_items:=True)
+    
+xt: EoP ErrSrc(PROC)
+    Exit Sub
+
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
+End Sub
+
+Public Sub Test_0240_ArryIsAllocated()
+
+End Sub
+
+Public Sub Test_0250_ArryNoOfDims()
+
+End Sub
+
+Public Sub Test_0260_ArryRemoveItems()
 ' ----------------------------------------------------------------------------
 ' Whitebox and regression test. Global error handling is used to monitor error
 ' condition tests.
 ' ----------------------------------------------------------------------------
-    Const PROC = "Test_02_0_ArrayRemoveItems"
+    Const PROC = "Test_0260_ArryRemoveItems"
 
     On Error GoTo eh
     
     If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
     BoP ErrSrc(PROC)
-    Test_02_1_ArrayRemoveItems_Function
-    Test_02_2_ArrayRemoveItems_Error_Conditions
+    Test_0261_ArryRemoveItems_Function
+    Test_0262_ArryRemoveItems_Error_Conditions
     
 xt: EoP ErrSrc(PROC)
 #If clsTrace = 1 Then
@@ -428,8 +681,8 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_02_1_ArrayRemoveItems_Function()
-    Const PROC  As String = "Test_02-1_ArrayRemoveItems_Function"
+Public Sub Test_0261_ArryRemoveItems_Function()
+    Const PROC  As String = "Test_0261_ArryRemoveItems_Function"
     
     On Error GoTo eh
     Dim aTest   As Variant
@@ -442,15 +695,15 @@ Public Sub Test_02_1_ArrayRemoveItems_Function()
     aTest = Split("1,2,3,4,5,6,7", ",") ' Test array
     
     a = aTest
-    mBasic.ArrayRemoveItems ri_va:=a, ri_element:=3, ri_no_of_elements:=2
+    mBasic.ArryRemoveItems a_va:=a, a_element:=3, a_no_of_elements:=2
     Debug.Assert Join(a, ",") = "1,2,5,6,7"
     
     a = aTest
-    mBasic.ArrayRemoveItems ri_va:=a, ri_index:=1
+    mBasic.ArryRemoveItems a_va:=a, a_index:=1
     Debug.Assert Join(a, ",") = "1,3,4,5,6,7"
     
     a = aTest
-    mBasic.ArrayRemoveItems ri_va:=a, ri_element:=7
+    mBasic.ArryRemoveItems a_va:=a, a_element:=7
     Debug.Assert Join(a, ",") = "1,2,3,4,5,6"
     
     ReDim a(-2 To 4)
@@ -458,28 +711,28 @@ Public Sub Test_02_1_ArrayRemoveItems_Function()
     For Each v In aTest
         a(i) = v: i = i + 1
     Next v
-    mBasic.ArrayRemoveItems ri_va:=a, ri_element:=3, ri_no_of_elements:=2
+    mBasic.ArryRemoveItems a_va:=a, a_element:=3, a_no_of_elements:=2
     Debug.Assert Join(a, ",") = "1,2,5,6,7"
 
     ReDim a(2 To 8):    i = LBound(a)
     For Each v In aTest
         a(i) = v:   i = i + 1
     Next v
-    mBasic.ArrayRemoveItems ri_va:=a, ri_element:=3
+    mBasic.ArryRemoveItems a_va:=a, a_element:=3
     Debug.Assert Join(a, ",") = "1,2,4,5,6,7"
 
     ReDim a(0 To 6): i = LBound(a)
     For Each v In aTest
         a(i) = v:   i = i + 1
     Next v
-    mBasic.ArrayRemoveItems ri_va:=a, ri_index:=0
+    mBasic.ArryRemoveItems a_va:=a, a_index:=0
     Debug.Assert Join(a, ",") = "2,3,4,5,6,7"
 
     ReDim a(1 To 7):    i = LBound(a)
     For Each v In aTest
         a(i) = v:   i = i + 1
     Next v
-    mBasic.ArrayRemoveItems ri_va:=a, ri_index:=UBound(a)
+    mBasic.ArryRemoveItems a_va:=a, a_index:=UBound(a)
     Debug.Assert Join(a, ",") = "1,2,3,4,5,6"
 
 xt: EoP ErrSrc(PROC)
@@ -491,13 +744,13 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_02_2_ArrayRemoveItems_Error_Conditions()
+Public Sub Test_0262_ArryRemoveItems_Error_Conditions()
 ' ------------------------------------------------------------------------------
 ' Attention! Conditional Compile Argument 'CommonErHComp = 1' is required for
 '            this test in order to have the raised error passed on to
 '            the caller.
 ' ------------------------------------------------------------------------------
-    Const PROC  As String = "Test_02_2_ArrayRemoveItems_Error_Conditions"
+    Const PROC  As String = "Test_0262_ArryRemoveItems_Error_Conditions"
     
     On Error GoTo eh
     Dim aTest   As Variant
@@ -511,24 +764,24 @@ Public Sub Test_02_2_ArrayRemoveItems_Error_Conditions()
     Set a = Nothing
     
     mErH.Asserted AppErr(1) ' skip display of error message when mErH.Regression = True
-    mBasic.ArrayRemoveItems ri_va:=a, ri_element:=2
+    mBasic.ArryRemoveItems a_va:=a, a_element:=2
     
     a = aTest
     ' Missing parameter
     mErH.Asserted AppErr(3) ' skip display of error message when mErH.Regression = True
-    mBasic.ArrayRemoveItems ri_va:=a
+    mBasic.ArryRemoveItems a_va:=a
     
     ' Element out of boundary
     mErH.Asserted AppErr(4) ' skip display of error message when mErH.Regression = True
-    mBasic.ArrayRemoveItems ri_va:=a, ri_element:=8
+    mBasic.ArryRemoveItems a_va:=a, a_element:=8
     
     ' Index out of boundary
     mErH.Asserted AppErr(5) ' skip display of error message when mErH.Regression = True
-    mBasic.ArrayRemoveItems ri_va:=a, ri_index:=7
+    mBasic.ArryRemoveItems a_va:=a, a_index:=7
     
     ' Element plus number of elements out of boundary
     mErH.Asserted AppErr(6) ' skip display of error message when mErH.Regression = True
-    mBasic.ArrayRemoveItems ri_va:=a, ri_element:=7, ri_no_of_elements:=2
+    mBasic.ArryRemoveItems a_va:=a, a_element:=7, a_no_of_elements:=2
     
 xt: EoP ErrSrc(PROC)
     Exit Sub
@@ -539,35 +792,8 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_03_ArrayToRange()
-    Const PROC = "Test_03_ArrayToRange"
-    
-    On Error GoTo eh
-    Dim a       As Variant
-    Dim aTest   As Variant
-    
-    If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
-    BoP ErrSrc(PROC)
-    aTest = Split("1,2,3,4,5,6,7", ",") ' Test array
-    a = aTest
-
-    wsBasic.UsedRange.ClearContents
-    mBasic.ArrayToRange a, wsBasic.celArrayToRangeTarget, True
-    mBasic.ArrayToRange a, wsBasic.rngArrayToRangeTarget, True
-    mBasic.ArrayToRange a, wsBasic.celArrayToRangeTarget
-    mBasic.ArrayToRange a, wsBasic.rngArrayToRangeTarget
-
-xt: EoP ErrSrc(PROC)
-    Exit Sub
-    
-eh: Select Case ErrMsg(ErrSrc(PROC))
-        Case vbResume:  Stop: Resume
-        Case Else:      GoTo xt
-    End Select
-End Sub
-
-Public Sub Test_04_ArrayTrimm()
-    Const PROC = "Test_04_ArrayTrimm"
+Public Sub Test_0270_ArryTrimm()
+    Const PROC = "Test_0270_ArryTrimm"
     
     On Error GoTo eh
     Dim a       As Variant
@@ -577,12 +803,12 @@ Public Sub Test_04_ArrayTrimm()
     BoP ErrSrc(PROC)
     aTest = Split(" , ,1,2,3,4,5,6,7, , , ", ",") ' Test array
     a = aTest
-    mBasic.ArrayTrimm a
+    mBasic.ArryTrimm a
     Debug.Assert Join(a, ",") = "1,2,3,4,5,6,7"
     
     a = Split(" , , , , ", ",")
-    mBasic.ArrayTrimm a
-    Debug.Assert mBasic.ArrayIsAllocated(a) = False
+    mBasic.ArryTrimm a
+    Debug.Assert mBasic.ArryIsAllocated(a) = False
     
 xt: EoP ErrSrc(PROC)
     Exit Sub
@@ -593,13 +819,13 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_05_BaseName()
+Public Sub Test_0300_BaseName()
 ' ----------------------------------------------------------------------------
 ' Please note: The common error handler (module mErH) is used in order to
 '              allow an "unattended regression test" because the ErH passes on
 '              the error number to the (this) entry procedure
 ' ----------------------------------------------------------------------------
-    Const PROC  As String = "Test_05_BaseName"
+    Const PROC  As String = "Test_0300_BaseName"
     
     On Error GoTo eh
     Dim wb      As Workbook
@@ -637,41 +863,28 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_06_Spaced()
-    Const PROC = "Test_06_Spaced"
+Public Sub Test_0400_Spaced()
+    Const PROC = "Test_0400_Spaced"
     
-    If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
-    mBasic.BoP ErrSrc(PROC)
     Dim s As String
-    s = Spaced("Ab c")
-    Debug.Assert Replace(s, Chr$(160), " ") = "A b  c"
-
-xt: mBasic.EoP ErrSrc(PROC)
-End Sub
-
-Public Sub Test_07_Align()
-    Const PROC = "Test_07_Align"
     
-    If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
+    Prepare
     mBasic.BoP ErrSrc(PROC)
-    Debug.Assert Align("Abcde", 8, AlignLeft, " ", "-") = "Abcde --"
-    Debug.Assert Align("Abcde", 8, AlignRight, " ", "-") = "-- Abcde"
-    Debug.Assert Align("Abcde", 8, AlignCentered, " ", "-") = " Abcde -"
-    Debug.Assert Align("Abcde", 7, AlignLeft, " ", "-") = "Abcde -"
-    Debug.Assert Align("Abcde", 7, AlignRight, " ", "-") = "- Abcde"
-    Debug.Assert Align("Abcde", 7, AlignCentered, " ", "-") = " Abcde "
-    Debug.Assert Align("Abcde", 6, AlignLeft, " ", "-") = "Abcde "
-    Debug.Assert Align("Abcde", 6, AlignRight, " ", "-") = " Abcde"
-    Debug.Assert Align("Abcde", 6, AlignCentered, " ", "-") = " Abcd "
-    Debug.Assert Align("Abcde", 5, AlignLeft, " ", "-") = "Abcde"
-    Debug.Assert Align("Abcde", 5, AlignRight, " ", "-") = " Abcd"
-    Debug.Assert Align("Abcde", 5, AlignCentered, " ", "-") = " Abc "
-    
+    With TestAid
+        .TestedProc = "Spaced"
+        .TestedType = "Function"
+        
+        .TestNumber = "0400-1"
+        .TestHeadLine = "A provided string is returned spaced with non-breaking spaces `Chr$(160)`"
+        .Result = Spaced("Ab c")
+        .ResultExpected = "A" & Chr$(160) & "b" & Chr$(160) & Chr$(160) & "c"
+    End With
+
 xt: mBasic.EoP ErrSrc(PROC)
 End Sub
 
-Public Sub Test_08_Stack()
-    Const PROC = "Test_08_Stack"
+Public Sub Test_0500_Stack()
+    Const PROC = "Test_0500_Stack"
     
     On Error GoTo eh
     Dim Stack   As Collection:    Set Stack = Nothing
@@ -728,43 +941,43 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_10_ArrayDiffers()
-    Const PROC  As String = "Test_10_ArrayDiffers"
-    
-    On Error GoTo eh
-    Dim a1      As Variant
-    Dim a2      As Variant
+Private Sub Test_0600_TimedDoEvents()
+    Const PROC = "Test_0600_TimedDoEvents"
     
     If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
-    BoP ErrSrc(PROC)
-    
-    '~~ Test 1: Only leading and trailing items are empty
-    a1 = Split(",1,2,3,4,5,6,7,,,,", ",")                   ' Test array
-    a2 = Split(",,1,2,3,4,5,6,7,,", ",")                    ' Test array
-    Debug.Assert Not mBasic.ArrayDiffers(ad_v1:=a1 _
-                                       , ad_v2:=a2 _
-                                       , ad_ignore_empty_items:=False)
-    Debug.Assert Not mBasic.ArrayDiffers(ad_v1:=a1 _
-                                       , ad_v2:=a2 _
-                                       , ad_ignore_empty_items:=True)
-    
-    '~~ Test 2: Various numbers of items at different positions are empty
-    a1 = Split(",1,2,,,3,4,5,6,7,,,,", ",")                 ' Test array
-    a2 = Split(",,1,,,,,,,,,2,3,4,,,5,6,7,,", ",")          ' Test array
-    Debug.Assert mBasic.ArrayDiffers(ad_v1:=a1 _
-                                   , ad_v2:=a2 _
-                                   , ad_ignore_empty_items:=False)
-    Debug.Assert Not mBasic.ArrayDiffers(ad_v1:=a1 _
-                                       , ad_v2:=a2 _
-                                       , ad_ignore_empty_items:=True)
-    
-xt: EoP ErrSrc(PROC)
-    Exit Sub
+    mBasic.BoP ErrSrc(PROC)
+    mBasic.TimedDoEvents ErrSrc(PROC)
+    mBasic.EoP ErrSrc(PROC)
+End Sub
 
-eh: Select Case ErrMsg(ErrSrc(PROC))
-        Case vbResume:  Stop: Resume
-        Case Else:      GoTo xt
-    End Select
+Public Sub Test_0700_Timer()
+    Const PROC = "Test_0700_Timer"
+    
+    Dim i As Long
+    Dim SecsMin     As Currency
+    Dim SecsMax     As Currency
+    Dim SecsElapsed As Currency
+    Dim SecsWait    As Single
+    Dim cBegin      As Currency
+    Dim cEnd        As Currency
+    Dim cElapsed    As Currency
+    
+    If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
+    mBasic.BoP ErrSrc(PROC)
+    SecsWait = 0.000001
+    
+    SecsMin = 13000
+    For i = 1 To 20
+        mBasic.TimerBegin cBegin
+        Application.Wait Now() + SecsWait
+        mBasic.TimerEnd cBegin, , cEnd
+        TimerEnd cBegin, cEnd, cElapsed, "00.0000"
+        SecsMin = mBasic.Min(SecsMin, (cElapsed / mBasic.SysFrequency) * 130)
+        SecsMax = mBasic.Max(SecsMax, (cElapsed / mBasic.SysFrequency) * 130)
+    Next i
+    Debug.Print """Application.Wait Now() + " & SecsWait & """ waits from min " & SecsMin * 130 & " to max " & SecsMax * 130 & " milliseconds (with a precision of " & mBasic.SysFrequency & " ticks per second)"
+    mBasic.EoP ErrSrc(PROC), "Returned for ""Application.Wait Now() + 0,000001"": min=" & SecsMin & " milliseconds, max=" & SecsMax & " milliseconds"
+
 End Sub
 
 Public Sub Test_ErrMsg()
@@ -780,44 +993,4 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
         Case Else:      GoTo xt
     End Select
 End Sub
-
-Public Sub Test_20_Timer()
-    Const PROC = "Test_20_Timer"
-    
-    Dim i As Long
-    Dim SecsMin     As Currency
-    Dim SecsMax     As Currency
-    Dim SecsElapsed As Currency
-    Dim SecsWait    As Single
-    Dim cBegin      As Currency
-    Dim cEnd        As Currency
-    Dim cElapsed    As Currency
-    
-    If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
-    mBasic.BoP ErrSrc(PROC)
-    SecsWait = 0.000001
-    
-    SecsMin = 100000
-    For i = 1 To 20
-        mBasic.TimerBegin cBegin
-        Application.Wait Now() + SecsWait
-        mBasic.TimerEnd cBegin, , cEnd
-        TimerEnd cBegin, cEnd, cElapsed, "00.0000"
-        SecsMin = mBasic.Min(SecsMin, (cElapsed / mBasic.SysFrequency) * 1000)
-        SecsMax = mBasic.Max(SecsMax, (cElapsed / mBasic.SysFrequency) * 1000)
-    Next i
-    Debug.Print """Application.Wait Now() + " & SecsWait & """ waits from min " & SecsMin * 1000 & " to max " & SecsMax * 1000 & " milliseconds (with a precision of " & mBasic.SysFrequency & " ticks per second)"
-    mBasic.EoP ErrSrc(PROC), "Returned for ""Application.Wait Now() + 0,000001"": min=" & SecsMin & " milliseconds, max=" & SecsMax & " milliseconds"
-
-End Sub
-
-Private Sub Test_21_TimedDoEvents()
-    Const PROC = "Test_21_TimedDoEvents"
-    
-    If Trc Is Nothing Then Set Trc = New clsTrc ' when tested individually
-    mBasic.BoP ErrSrc(PROC)
-    mBasic.TimedDoEvents ErrSrc(PROC)
-    mBasic.EoP ErrSrc(PROC)
-End Sub
-
 

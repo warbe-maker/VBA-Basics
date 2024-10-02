@@ -1,0 +1,5 @@
+Test Result Failed details: 0101.1  mBasic.Align: Align "Abcde" left, length 8, filled with " -"
+----------+--------------+-----------------
+   P/F    |    Result    | Result Expected 
+----------+--------------+-----------------
+  Failed  | "Abcde ----" | "Abcde --"      

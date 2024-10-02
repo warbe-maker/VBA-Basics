@@ -403,10 +403,10 @@ Public Function ErrMsg(ByVal err_source As String, _
     '~~ 1. The 'Entry-Procedure' is know (EntryProcIsKnown) but yet not reached
     '~~ 2. the user has no choice to press another but the Ok button.
     '~~ ---------------------------------------------------------------------------
-'    Debug.Print "Current Proc              : '" & CurrentProc & "'"
-'    Debug.Print "EntryProc                 : '" & EntryProc & "'"
-'    Debug.Print "EntryProcReached          : " & EntryProcReached
-'    Debug.Print "ErrBttns(err_buttons) = 1 : " & ErrBttns(err_buttons)
+'    Debug.Print ErrSrc(PROC) & ": " &  "Current Proc              : '" & CurrentProc & "'"
+'    Debug.Print ErrSrc(PROC) & ": " &  "EntryProc                 : '" & EntryProc & "'"
+'    Debug.Print ErrSrc(PROC) & ": " &  "EntryProcReached          : " & EntryProcReached
+'    Debug.Print ErrSrc(PROC) & ": " &  "ErrBttns(err_buttons) = 1 : " & ErrBttns(err_buttons)
     
     If EntryProcIsKnown And CurrentProc <> EntryProc And ErrBttns(err_buttons) = 1 Then
         '~~ When the Entry Procedure is known but yet not reached and there is just one reply
@@ -500,6 +500,7 @@ Private Function ErrMsgDsply(ByVal err_source As String, _
     '~~ one of its components! If not the below code line will cause an error.
     mTrc.Pause
 #ElseIf clsTrc = 1 Then
+    If Trc Is Nothing Then Set Trc = New clsTrc
     Trc.Pause ' prevent useless timing values by exempting the display and wait time for the reply
 #End If
     ErrMsgMatter err_source:=err_source _
@@ -652,7 +653,7 @@ Private Sub ErrPathAdd(ByVal s As String)
     
     If cllErrPath Is Nothing Then Set cllErrPath = New Collection
     If Not ErrPathItemExists(s) Then
-'        Debug.Print "Add to ErrPath: " & s
+'        Debug.Print ErrSrc(PROC) & ": " &  "Add to ErrPath: " & s
         cllErrPath.Add s ' avoid duplicate recording of the same procedure/item
     End If
 End Sub
