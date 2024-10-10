@@ -1,24 +1,3 @@
-24-09-10-10:16:53 ------------------------------  (by CompMan.xlsb) for Basic.xlsm -------------------------------
-24-09-10-10:16:53 ------------------------------------------------------------------------------------------------
-24-09-10-10:16:53  UserForm         fMsg...........:  Used Common Component is up-to-date                         
-24-09-10-10:16:54  Standard-Module  mErH...........:  Used Common Component is up-to-date                         
-24-09-10-10:16:54  Standard-Module  mMsg...........:  Used Common Component is up-to-date                         
-24-09-10-10:16:54  Standard-Module  mTrc...........:  Used Common Component is up-to-date                         
-24-09-10-10:16:54  Class-Module     clsTrc.........:  Used Common Component is up-to-date                         
-24-09-10-10:16:54  Standard-Module  mCompManClient.:  Used Common Component is up-to-date                         
-24-09-10-10:16:54  Class-Module     clsTestAid.....:  Used Common Component is up-to-date                         
-24-09-10-10:17:05  Standard-Module  mBasic.........:  Outdated used Commpon Component: Update skipped for now!    
-24-09-10-10:24:18 ================================================================================================
-24-09-10-10:24:18 ------------------------------  (by CompMan.xlsb) for Basic.xlsm -------------------------------
-24-09-10-10:24:18 ------------------------------------------------------------------------------------------------
-24-09-10-10:24:18  Standard-Module  mBasicTest.....:  Modified VBComponent e x p o r t e d !                      
-24-09-10-10:24:19  Class-Module     clsTestAid.....:  Modified Common Component: Release registered pending       
-24-09-10-10:24:19                                     Modified Common Component: e x p o r t e d !                
-24-09-10-10:24:19                                     Modified Common Component: Last modification info changed from "" to "2024-09-10 08:24:18 (UTC)"
-24-09-10-10:24:19                                     Modification registered pending release                                                         
-24-09-10-10:26:51  Standard-Module  mBasic.........:  Common Component modifications discarded by re-intantiating the current public version (update by re-import)
-24-09-10-10:26:51  Standard-Module  mBasic_RnmdByC.:  Component "mBasic_RnmdByCompMan" (resulting from rename to enable import of up-to-date Common Component) removed.
-24-09-10-10:27:44 ================================================================================================
 24-09-10-10:27:44 ------------------------------  (by CompMan.xlsb) for Basic.xlsm -------------------------------
 24-09-10-10:27:44 ------------------------------------------------------------------------------------------------
 24-09-10-10:27:44  Standard-Module  mBasic.........:  Modified Common Component: Release registered pending       
@@ -47,3 +26,26 @@
 24-09-17-21:09:08  Standard-Module  mCompManClient.:  Serviced Common Component used is up-to-date                
 24-09-17-21:09:08  Standard-Module  mBasic.........:  Serviced Common Component used is up-to-date                
 24-09-17-21:09:47  Class-Module     clsTestAid.....:  Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
+24-10-09-18:15:45 ================================================================================================
+24-10-09-18:15:45 ----------------- Update Outdated Common Components (by Add-in) for Basic.xlsm -----------------
+24-10-09-18:15:45 ------------------------------------------------------------------------------------------------
+24-10-09-18:15:45  UserForm         fMsg...........:  Serviced Common Component used is up-to-date                
+24-10-09-18:15:45  Standard-Module  mErH...........:  Serviced Common Component used is up-to-date                
+24-10-09-18:15:46  Standard-Module  mMsg...........:  Serviced Common Component used is up-to-date                
+24-10-09-18:15:46  Standard-Module  mTrc...........:  Serviced Common Component used is up-to-date                
+24-10-09-18:15:46  Class-Module     clsTrc.........:  Serviced Common Component used is up-to-date                
+24-10-09-18:15:50  Standard-Module  mCompManClient.:  Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
+24-10-09-18:15:54  Standard-Module  mBasic.........:  Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
+24-10-09-18:15:57  Class-Module     clsTestAid.....:  Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
+24-10-09-19:18:39 ================================================================================================
+24-10-09-19:18:39 --------------------- Export Changed Components (by Add-in) for Basic.xlsm ---------------------
+24-10-09-19:18:39 ------------------------------------------------------------------------------------------------
+24-10-09-19:18:39  Standard-Module  mBasicTest.....:  Modified VBComponent e x p o r t e d !                      
+24-10-09-19:18:40  Standard-Module  mBasic.........:  Modified Common Component: Release registered pending       
+24-10-09-19:18:40                                     Serviced Common Component modified: E x p o r t e d !       
+24-10-09-19:18:40                                     Serviced Common Component modified: Properties in CommComps.dat updated
+24-10-09-19:18:40                                     Serviced Common Component modified: Registered pending release         
+24-10-09-19:18:40  Class-Module     clsTestAid.....:  Modified Common Component: Release registered pending                  
+24-10-09-19:18:40                                     Serviced Common Component modified: E x p o r t e d !                  
+24-10-09-19:18:40                                     Serviced Common Component modified: Properties in CommComps.dat updated
+24-10-09-19:18:40                                     Serviced Common Component modified: Registered pending release         

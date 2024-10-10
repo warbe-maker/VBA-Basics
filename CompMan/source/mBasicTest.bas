@@ -980,6 +980,82 @@ Public Sub Test_0700_Timer()
 
 End Sub
 
+Public Sub Test_0800_Dict()
+
+    Dim dct As Dictionary
+    Dim i   As Long
+    Dim k   As Long
+    Dim l   As Long
+    
+    Dict(dct, "X") = 1                  ' add
+    Dict(dct, "X") = 2                  ' ignore
+    Debug.Assert Dict(dct, "X") = 1     ' Assert
+    Dict(dct, "X", enReplace) = 2       ' replace
+    Debug.Assert Dict(dct, "X") = 2     ' Assert
+    
+    Dict(dct, "X", enIncrement) = 5     ' Increment
+    Debug.Assert Dict(dct, "X") = 7     ' Assert
+    Dict(dct, "X", enIncrement) = -3    ' (de)increment
+    Debug.Assert Dict(dct, "X") = 4     ' Assert
+        
+    '~~ Assert defaults when not existing
+    Debug.Assert Dict(dct, "B") = vbNullString          ' default default = vbNullString
+    Debug.Assert Dict(dct, "B", , Nothing) Is Nothing
+    Debug.Assert Dict(dct, "B", , 0) = 0
+    
+    Set dct = Nothing
+    '~~ Collect
+    Dict(dct, "A", enCollectSorted) = "Axel"
+    Dict(dct, "A", enCollectSorted) = "Anton"
+    Dict(dct, "A", enCollectSorted) = "Abraham"
+    Dict(dct, "B", enCollectSorted) = "Bobo"
+    Dict(dct, "B", enCollectSorted) = "Bilbo"
+    Dict(dct, "B", enCollectSorted) = "Batman"
+    Debug.Assert Dict(dct, "A").Count = 3
+    Debug.Assert Dict(dct, "A")(1) = "Abraham"
+    Debug.Assert Dict(dct, "A")(2) = "Anton"
+    Debug.Assert Dict(dct, "A")(3) = "Axel"
+    Debug.Assert Dict(dct, "B")(1) = "Batman"
+    Debug.Assert Dict(dct, "B")(2) = "Bilbo"
+    Debug.Assert Dict(dct, "B")(3) = "Bobo"
+    
+    '~~ Performance
+    l = 100000
+    Set dct = Nothing
+    With New clsTestAid
+        .TimerStart
+        For i = 1 To l
+            k = Int((l * Rnd) + 1)
+            Dict(dct, k) = vbNullString ' add, ignore duplicates
+        Next i
+        .TimerEnd
+        Debug.Print vbLf & "Add ignore duplicates:"
+        Debug.Print "======================"
+        Debug.Print "Items added          = " & dct.Count
+        Debug.Print "Duplicates ignored   = " & l - dct.Count
+        Debug.Print "Elapsed milliseconds = " & .TimerExecTimeMsecs
+    End With
+    
+    l = 50000
+    Set dct = Nothing
+    With New clsTestAid
+        .TimerStart
+        For i = 1 To l
+            k = Int((l * Rnd) + 1)
+            Dict(dct, k, enCollect) = k ' add, ignore duplicates
+        Next i
+        .TimerEnd
+        Debug.Print vbLf & "Collect duplicates (unsorted):"
+        Debug.Print "=============================="
+        Debug.Print "Items added          = " & dct.Count
+        Debug.Print "Items collected      = " & l - dct.Count
+        Debug.Print "Elapsed milliseconds = " & .TimerExecTimeMsecs
+    End With
+       
+    Set dct = Nothing
+    
+End Sub
+
 Public Sub Test_ErrMsg()
     Const PROC = "Test_ErrMsg"
     

@@ -449,7 +449,7 @@ Public Sub Progress(ByVal p_service_name As String, _
     If p_service_op <> vbNullString Then
         sMsg = Replace(sMsg, "<op>", p_service_op)
     Else
-        sMsg = Replace(sMsg, "<op>", "please wait!")
+        sMsg = Replace(sMsg, "<op>", "Service initiating")
     End If
     
     If p_progress_figures Then

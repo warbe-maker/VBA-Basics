@@ -112,6 +112,14 @@ Public Enum enAlign
     enAlignCentered = 3
 End Enum
 
+Public Enum enDuplicates
+    enIgnore
+    enReplace
+    enCollect
+    enCollectSorted
+    enIncrement
+End Enum
+
 ' Basic declarations potentially uesefull in any VB-Project
 Public Declare PtrSafe Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
 Public Declare PtrSafe Function GetSystemMetrics32 Lib "user32" Alias "GetSystemMetrics" (ByVal nIndex As Long) As Long
@@ -294,10 +302,11 @@ End Property
 ' - Read:   Returns a default when an item is not existing
 ' - Write: Adds an non-existing item or replaces an existing one.
 '
-' W. Rauschenberger Berlin, Aug 2024
+' W. Rauschenberger Berlin, Sep 2024
 ' ----------------------------------------------------------------------------
 Public Property Get Dict(Optional ByRef d_dct As Dictionary = Nothing, _
                          Optional ByVal d_key As Variant, _
+                         Optional ByVal d_opt As enDuplicates = 0, _
                          Optional ByVal d_default As Variant = vbNullString) As Variant
                          
     If d_dct Is Nothing Then
@@ -314,42 +323,45 @@ End Property
 
 Public Property Let Dict(Optional ByRef d_dct As Dictionary = Nothing, _
                          Optional ByVal d_key As Variant, _
+                         Optional ByVal d_opt As enDuplicates = 0, _
                          Optional ByVal d_default As Variant = vbNullString, _
                                   ByVal d_item As Variant)
-    Dim vValue      As Variant
-    Dim vIncrDecr   As Variant
+    
+    Dim cll As Collection
+    Dim v   As Variant
     
     If d_dct Is Nothing Then Set d_dct = New Dictionary
     If Not d_dct.Exists(d_key) Then
-        If VarType(d_item) = vbString Then
-            If Left(d_item, 1) = "+" Or Left(d_item, 1) = "-" And IsNumeric(Right(d_item, Len(d_item) - 1)) Then
-                vValue = Left(d_item, 1) & Right(d_item, Len(d_item) - 1)
-                d_dct.Add d_key, vValue
-            Else
-                d_dct.Add d_key, d_item
-            End If
+        If d_opt = enCollect Or d_opt = enCollectSorted Then
+            '~~ With the option "collect" the first item becomes a collection with the first item added
+            Set cll = New Collection
+            cll.Add d_item
+            d_dct.Add d_key, cll
+            Set cll = Nothing
         Else
             d_dct.Add d_key, d_item
         End If
     Else
-        '~~ Existing item
-        If VarType(d_item) = vbString Then
-            If Left(d_item, 1) = "+" Or Left(d_item, 1) = "-" And IsNumeric(Right(d_item, Len(d_item) - 1)) Then
-                '~~ Case increment/decrement
-                vIncrDecr = Right(d_item, Len(d_item) - 1)
-                vValue = d_dct(d_key)
+        Select Case d_opt
+            Case enIgnore
+            Case enReplace
                 d_dct.Remove d_key
-                If Left(d_item, 1) = "+" Then vValue = vValue + vIncrDecr
-                If Left(d_item, 1) = "-" Then vValue = vValue - vIncrDecr
-                d_dct.Add d_key, vValue
-            Else
                 d_dct.Add d_key, d_item
-            End If
-        Else
-            '~~ Case replace
-            d_dct.Remove d_key
-            d_dct.Add d_key, d_item
-        End If
+            Case enCollect, enCollectSorted
+                '~~ Add the item to the collection and replace it in the Dictionary
+                Set cll = d_dct(d_key)
+                cll.Add d_item
+                If d_opt = enCollectSorted Then ItemSort cll
+                d_dct.Remove d_key
+                d_dct.Add d_key, cll
+                Set cll = Nothing
+            Case enIncrement
+                v = d_dct(d_key)
+                If IsNumeric(v) And IsNumeric(d_item) _
+                Then v = v + d_item
+                d_dct.Remove d_key
+                d_dct.Add d_key, v
+        End Select
     End If
     
 End Property
@@ -1211,27 +1223,6 @@ Public Sub DelayedTest2(ByVal arg1 As String, _
     Debug.Print "DelayedTest2 with args " & arg1 & " and " & arg2
 End Sub
 
-Private Sub DictTest()
-
-    Dim dct As Dictionary
-    
-    Dict(dct, "X") = 1              ' Add
-    Dict(dct, "X") = 2              ' Replace
-    Debug.Assert Dict(dct, "X") = 2 ' Assert
-    
-    Dict(dct, "X") = "+5"           ' Increment
-    Debug.Assert Dict(dct, "X") = 7 ' Assert
-    
-    Dict(dct, "X") = "-3"           ' Decrement
-    Debug.Assert Dict(dct, "X") = 4 ' Assert
-    
-    '~~ Assert defaults when not existing
-    Debug.Assert Dict(dct, "B", Nothing) Is Nothing
-    Debug.Assert Dict(dct, "B", 0) = 0
-    Debug.Assert Dict(dct, "B") = vbNullString      ' No default returns default
-    
-End Sub
-
 Public Function ElementOfIndex(ByVal a As Variant, _
                                ByVal i As Long) As Long
 ' ----------------------------------------------------------------------------
@@ -1405,6 +1396,44 @@ Public Function IsString(ByVal v As Variant, _
     End If
 End Function
 
+Public Function ItemSort(ByRef i_col As Collection) As Collection
+' ------------------------------------------------------------------------------
+' Return items of a Collection (i_col) sorted in ascending order.
+' ------------------------------------------------------------------------------
+
+    Dim arr()   As Variant
+    Dim cll     As New Collection
+    Dim i       As Long
+    Dim j       As Long
+    Dim temp    As Variant
+    
+    '~~ Tranfer items into an array for sorting
+    ReDim arr(1 To i_col.Count)
+    For i = 1 To i_col.Count
+        arr(i) = i_col(i)
+    Next i
+    
+    '~~ Bubble sort
+    For i = 1 To UBound(arr) - 1
+        For j = i + 1 To UBound(arr)
+            If arr(i) > arr(j) Then
+                temp = arr(i)
+                arr(i) = arr(j)
+                arr(j) = temp
+            End If
+        Next j
+    Next i
+    
+    '~~ Transfer sorted items back to a new collection
+    For i = LBound(arr) To UBound(arr)
+        cll.Add arr(i)
+    Next i
+    Set i_col = cll
+    Set ItemSort = cll
+    Set cll = Nothing
+    
+End Function
+
 Public Function KeySort(ByRef s_dct As Dictionary) As Dictionary
 ' ------------------------------------------------------------------------------
 ' Returns the items in a Dictionary (s_dct) sorted by key.
@@ -1415,7 +1444,7 @@ Public Function KeySort(ByRef s_dct As Dictionary) As Dictionary
     Dim dct     As New Dictionary
     Dim vKey    As Variant
     Dim arr()   As Variant
-    Dim Temp    As Variant
+    Dim temp    As Variant
     Dim i       As Long
     Dim j       As Long
     
@@ -1433,9 +1462,9 @@ Public Function KeySort(ByRef s_dct As Dictionary) As Dictionary
     For i = LBound(arr) To UBound(arr) - 1
         For j = i + 1 To UBound(arr)
             If arr(i) > arr(j) Then
-                Temp = arr(j)
+                temp = arr(j)
                 arr(j) = arr(i)
-                arr(i) = Temp
+                arr(i) = temp
             End If
         Next j
     Next i
