@@ -1724,8 +1724,8 @@ End Function
 Public Function Spaced(ByVal s As String) As String
 ' ----------------------------------------------------------------------------
 ' Returns a non-breaking-spaced string with any spaces already in the string
-' doubled and leading or trailing spaces unstripped.
-' Example: Spaced("Ab c") returns = "A b  c"
+' tripled and leading or trailing spaces unstripped.
+' Example: Spaced("this is spaced") returns = "t h i s   i s   s p a c e d"
 ' ----------------------------------------------------------------------------
     Dim a() As Byte
     Dim i   As Long
@@ -1734,7 +1734,9 @@ Public Function Spaced(ByVal s As String) As String
     a = StrConv(Trim$(s), vbFromUnicode)
     Spaced = Chr$(a(LBound(a)))
     For i = LBound(a) + 1 To UBound(a)
-        If Chr$(a(i)) = " " Then Spaced = Spaced & Chr$(160) Else Spaced = Spaced & Chr$(160) & Chr$(a(i))
+        If Chr$(a(i)) = " " _
+        Then Spaced = Spaced & Chr$(160) & Chr$(160) & Chr$(160) _
+        Else Spaced = Spaced & Chr$(160) & Chr$(a(i))
     Next i
 
 End Function

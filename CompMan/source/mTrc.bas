@@ -34,7 +34,7 @@ Option Explicit
 ' ------------------
 ' FileFullName r/w Specifies the full name of the trace-log-file, defaults to
 '                  Path & "\" & FileBaseName when not specified.
-' FileBaseName         Specifies the trace-log-file's name, defaults to
+' FileBaseName     Specifies the trace-log-file's name, defaults to
 '                  "ExecTrace.log" when not specified.
 ' KeepLogs     w   Specifies the number of days a trace-log-file is kept until
 '                  it is deleted and re-created.
@@ -56,7 +56,7 @@ Option Explicit
 ' ---------
 ' Reference to 'Microsoft Scripting Runtime'
 '
-' W. Rauschenberger, Berlin, Aug 2024
+' W. Rauschenberger, Berlin, Oct 2024
 ' See: https://github.com/warbe-maker/VBA-Trace
 ' ----------------------------------------------------------------------------
 Private Const GITHUB_REPO_URL As String = "https://github.com/warbe-maker/VBA-Trace"
@@ -78,7 +78,7 @@ End Enum
 
 Private Declare PtrSafe Function apiShellExecute Lib "shell32.dll" _
     Alias "ShellExecuteA" _
-    (ByVal hWnd As Long, _
+    (ByVal hwnd As Long, _
     ByVal lpOperation As String, _
     ByVal lpFile As String, _
     ByVal lpParameters As String, _
