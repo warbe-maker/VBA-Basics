@@ -318,7 +318,7 @@ Public Sub Test_0210_ArryAsRange_RangeAsArray()
     aTest = Split("X,2,3,4,5,AAAA,Z", ",") ' Test array
 
     With TestAid
-        .TestNumber = "0210-01"
+        .TestId = "0210-01"
         .TestedProc = "ArryAsRange, RangeAsArray"
         .TestHeadLine = "Array to range, range to array"
         .Verification = "Result array is identical with the array saved as range"
@@ -338,6 +338,21 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
+Public Sub Test_0900_Max()
+
+    Dim a As Variant
+    
+    Arry(a) = "5"
+    Arry(a) = "xxxxxxxxxx"
+    Arry(a) = 3
+    
+    Debug.Assert Max(2, 5) = 5
+    Debug.Assert Max(3, "xxxxxx", 4) = 6
+    Debug.Assert Max(2, a, 7) = 10
+    
+End Sub
+
+
 Public Sub Test_0110_Align_simple()
     Const PROC = "Test_0110_Align_simple"
     
@@ -347,73 +362,73 @@ Public Sub Test_0110_Align_simple()
     With TestAid
         .TestedProc = "Align"
         
-        .TestNumber = "0100-01"
+        .TestId = "0100-01"
         .Verification = "Align simple left filled with "" -"""
         .TestHeadLine = "Align ""Abcde"" left, len=8, filled="" -"""
         .ResultExpected = "Abcde --"
         .Result = mBasic.Align("Abcde", enAlignLeft, 8, " -")
         
-        .TestNumber = "0100-02"
+        .TestId = "0100-02"
         .Verification = "Align simple right filled with ""- """
         .TestHeadLine = "Align ""Abcde"" right, len=8, filled=""- """
         .ResultExpected = "-- Abcde"
         .Result = mBasic.Align("Abcde", enAlignRight, 8, "- ")
         
-        .TestNumber = "0100-03"
+        .TestId = "0100-03"
         .Verification = "Align simple left centered with ""- "" (not exactly centered)"
         .TestHeadLine = "Align ""Abcde"" centered, len=8, filled=""- """
         .ResultExpected = " Abcde -"
         .Result = mBasic.Align("Abcde", enAlignCentered, 8, " -")
         
-        .TestNumber = "0100-04"
+        .TestId = "0100-04"
         .Verification = "Align simple left centered with ""- "" (exactly centered)"
         .TestHeadLine = "Align ""Abcde"" centered, len=9, filled=""- """
         .ResultExpected = "- Abcde -"
         .Result = mBasic.Align("Abcde", enAlignCentered, 9, " -")
         
-        .TestNumber = "0100-05"
+        .TestId = "0100-05"
         .Verification = "Align simple simple right filled with ""- """
         .TestHeadLine = "Align ""Abcde"" right, Len=7, filled=""- """
         .ResultExpected = "- Abcde"
         .Result = mBasic.Align("Abcde", enAlignRight, 7, "- ")
                 
-        .TestNumber = "0100-06"
+        .TestId = "0100-06"
         .Verification = "Align simple simple centered filled with ""-"""
         .TestHeadLine = "Align ""Abcde"" centered, len=7, filled=""-"""
         .ResultExpected = "-Abcde-"
         .Result = mBasic.Align("Abcde", enAlignCentered, 7, "-")
         
-        .TestNumber = "0100-07"
+        .TestId = "0100-07"
         .Verification = "Align simple simple left filled with ""-"""
         .TestHeadLine = "Align ""Abcde"" left, len=7, filled=""-"""
         .ResultExpected = "Abcde--"
         .Result = mBasic.Align("Abcde", enAlignLeft, 7, "-")
         
-        .TestNumber = "0100-08"
+        .TestId = "0100-08"
         .Verification = "Align simple simple right filled with ""-"""
         .TestHeadLine = "Align ""Abcde"" right, len=6, filled=""-"""
         .ResultExpected = "-Abcde"
         .Result = mBasic.Align("Abcde", enAlignRight, 6, "-")
         
-        .TestNumber = "0100-09"
+        .TestId = "0100-09"
         .Verification = "Align simple centered filled with ""-"" (not exactly centered)"
         .TestHeadLine = "Align ""Abcde"" centered, len=6, filled=""-"""
         .ResultExpected = "Abcde-"
         .Result = mBasic.Align("Abcde", enAlignCentered, 6, "-")
         
-        .TestNumber = "0100-10"
+        .TestId = "0100-10"
         .Verification = "Align simple centered filled with ""-"" (truncated to 4)"
         .TestHeadLine = "Align ""Abcde"" left, len=4, filled=""-"""
         .ResultExpected = "Abcd"
         .Result = mBasic.Align("Abcde", enAlignLeft, 4, "-")
         
-        .TestNumber = "0100-11"
+        .TestId = "0100-11"
         .Verification = "Align simple right filled with ""-"""
         .TestHeadLine = "Align ""Abcde"" right, len=4, filled=""-"""
         .ResultExpected = "Abcd"
         .Result = mBasic.Align("Abcde", enAlignRight, 4, "-")
         
-        .TestNumber = "0100-12"
+        .TestId = "0100-12"
         .Verification = "Align simple left filled with ""-"" (truncated to 4)"
         .TestHeadLine = "Align ""Abcde"" left, len=4, filled=""-"", margin="" """
         .ResultExpected = "Abcd"
@@ -439,73 +454,73 @@ Public Sub Test_0120_Align_column_arranged()
   With TestAid
     .TestedProc = "Align"
     
-    .TestNumber = "0120-01"
+    .TestId = "0120-01"
     .Verification = "Align col arranged left filled with "" -"""
     .TestHeadLine = "Align col arranged ""Abcde"" left 8, filled with "" -"""   ' Left   8  " -"
     .ResultExpected = " Abcde ---- "
     .Result = mBasic.Align("Abcde", enAlignLeft, 8, " -", " ", True)
     
-    .TestNumber = "0120-02"
+    .TestId = "0120-02"
     .Verification = "Align col arranged right filled with ""- """
     .TestHeadLine = "Align col arranged ""Abcde"" right 8, filled with ""- """   ' Right   8  "- "
     .ResultExpected = " ---- Abcde "
     .Result = mBasic.Align("Abcde", enAlignRight, 8, "- ", " ", True)
     
-    .TestNumber = "0120-03"
+    .TestId = "0120-03"
     .Verification = "Align col arranged left centered with ""- "" (not exactly centered)"
     .TestHeadLine = "Align col arranged ""Abcde"" centered 8, filled with ""- """ ' Centered 8  "- "
     .ResultExpected = " -- Abcde --- "
     .Result = mBasic.Align("Abcde", enAlignCentered, 8, " -", " ", True)
     
-    .TestNumber = "0120-04"
+    .TestId = "0120-04"
     .Verification = "Align col arranged left centered with ""- "" (exactly centered)"
     .TestHeadLine = "Align col arranged ""Abcde"" centered 7, filled with ""- """ ' Centered 7  " -"
     .ResultExpected = " -- Abcde -- "
     .Result = mBasic.Align("Abcde", enAlignCentered, 7, " -", " ", True)
     
-    .TestNumber = "0120-05"
+    .TestId = "0120-05"
     .Verification = "Align col arranged right filled with ""- """
     .TestHeadLine = "Align col arranged ""Abcde"" right 7, filled with ""- """   ' Right   7  "- "
     .ResultExpected = " --- Abcde "
     .Result = mBasic.Align("Abcde", enAlignRight, 7, "- ", " ", True)
         
-    .TestNumber = "0120-06"
+    .TestId = "0120-06"
     .Verification = "Align col arranged centered filled with ""-"""
     .TestHeadLine = "Align col arranged ""Abcde"" centered 7, filled with ""-"""  ' Centered 7  "-"
     .ResultExpected = " --Abcde-- "
     .Result = mBasic.Align("Abcde", enAlignCentered, 7, "-", " ", True)
     
-    .TestNumber = "0120-07"
+    .TestId = "0120-07"
     .Verification = "Align col arranged left filled with ""-"""
     .TestHeadLine = "Align col arranged ""Abcde"" left 7, filled with ""-"""    ' Left   7  "-"
     .ResultExpected = " Abcde--- "
     .Result = mBasic.Align("Abcde", enAlignLeft, 7, "-", " ", True)
     
-    .TestNumber = "0120-08"
+    .TestId = "0120-08"
     .Verification = "Align col arranged right filled with ""-"""
     .TestHeadLine = "Align col arranged ""Abcde"" right 6, filled with ""-"""   ' Right   6  "-"
     .ResultExpected = " --Abcde "
     .Result = mBasic.Align("Abcde", enAlignRight, 6, "-", " ", True)
     
-    .TestNumber = "0120-09"
+    .TestId = "0120-09"
     .Verification = "Align col arranged centered filled with ""-"" (not exactly centered)"
     .TestHeadLine = "Align col arranged ""Abcde"" centered 6, filled with ""-"""  ' Centered 6  "-"
     .ResultExpected = " -Abcde-- "
     .Result = mBasic.Align("Abcde", enAlignCentered, 6, "-", " ", True)
     
-    .TestNumber = "0120-10"
+    .TestId = "0120-10"
     .Verification = "Align col arranged centered filled with ""-"" (not exactly centered)"
     .TestHeadLine = "Align col arranged ""Abcde"" left 4, filled with ""-"""    ' Left   4  "-"
     .ResultExpected = " Abcd- "
     .Result = mBasic.Align("Abcde", enAlignLeft, 4, "-", " ", True)
     
-    .TestNumber = "0120-11"
+    .TestId = "0120-11"
     .Verification = "Align col arranged right filled with ""-"""
     .TestHeadLine = "Align col arranged ""Abcde"" right 4, filled with ""-"""   ' Right   4  "-"
     .ResultExpected = " -Abcd "
     .Result = mBasic.Align("Abcde", enAlignRight, 4, "-", " ", True)
     
-    .TestNumber = "0120-12"
+    .TestId = "0120-12"
     .Verification = "Align col arranged centered filled with ""-"" (exactly centered)"
     .TestHeadLine = "Align col arranged ""Abcde"" centered 4, filled with ""-"", with margin"
     .ResultExpected = " -Abcd- "
@@ -528,6 +543,7 @@ Public Sub Test_0200_Arry_Get_Let()
     On Error GoTo eh
     Dim a1      As Variant
     Dim a2      As Variant
+    Dim a3      As Variant
     Dim dctDiff As Variant
     Dim v       As Variant
     
@@ -536,7 +552,7 @@ Public Sub Test_0200_Arry_Get_Let()
     With TestAid
         .TestedProc = "Arry"
         
-        .TestNumber = "0200-01"
+        .TestId = "0200-01"
         .Verification = ""
         .TestHeadLine = "Write/Read array"
         Arry(a1) = "A"
@@ -544,30 +560,39 @@ Public Sub Test_0200_Arry_Get_Let()
         .ResultExpected = "A"
         .Result = v
         
-        .TestNumber = "0200-02"
+        .TestId = "0200-02"
         .TestHeadLine = "Write at any index, and read"
         Arry(a1, 10) = "Z"
         v = Arry(a1, 10)
         .ResultExpected = "Z"
         .Result = v
         
-        .TestNumber = "0200-03"
+        .TestId = "0200-03"
         .TestHeadLine = "Replace at any index, and read"
         Arry(a1, 10) = "Y"
         v = Arry(a1, 10)
         .ResultExpected = "Y"
         .Result = v
     
-        .TestNumber = "0200-04"
+        .TestId = "0200-04"
         .TestHeadLine = "Return default from a non-existing or not allocated array"
         Arry(a1, 10) = "Y"
         v = Arry(a1, 11)
         .ResultExpected = vbNullString
         .Result = v
     
-        .TestNumber = "0200-05"
+        .TestId = "0200-05"
         .TestHeadLine = "Return 0 as the default from a non-existing or not allocated array"
         v = Arry(a1, 11, 0)
+        .ResultExpected = 0
+        .Result = 0
+    
+        .TestId = "0200-06"
+        .TestHeadLine = "2 dimensional"
+        mBasic.ArryClear a1, a2, a3
+        
+        Arry(a2) = "x"
+        
         .ResultExpected = 0
         .Result = 0
     
@@ -599,7 +624,7 @@ Public Sub Test_0220_ArryCompare()
         .TestedType = "Sub"
         
         ' ==================================================================
-        .TestNumber = "0220-01"
+        .TestId = "0220-01"
         .Verification = "Compare array with 4th item different (stop at first difference)"
         .TestHeadLine = "One element is different, empty elements are ignored"
         a1 = Split("1,2,3,4,5,6,7", ",")
@@ -612,7 +637,7 @@ Public Sub Test_0220_ArryCompare()
         .Result = Replace(dctDiff.Items()(0), vbLf, " = ")
             
         ' ==================================================================
-        .TestNumber = "0220-02"
+        .TestId = "0220-02"
         .Verification = "Compare array with 7th item not exists in the first one (stop at first difference)"
         .TestHeadLine = "The first array has less elements, empty elements are ignored"
         a1 = Split("1,2,3,4,5,6", ",")
@@ -624,7 +649,7 @@ Public Sub Test_0220_ArryCompare()
         .Result = Replace(dctDiff.Items()(0), vbLf, " = ")
             
         ' ==================================================================
-        .TestNumber = "0220-03"
+        .TestId = "0220-03"
         .Verification = "Compare array with 7th item not exists in the second one (stop at first difference)"
         .TestHeadLine = "The second array has less elements, empty elements are ignored"
         a1 = Split("1,2,3,4,5,6,7", ",")
@@ -637,7 +662,7 @@ Public Sub Test_0220_ArryCompare()
         .Result = Replace(dctDiff.Items()(0), vbLf, " = ")
         
         ' ==================================================================
-        .TestNumber = "0220-04"
+        .TestId = "0220-04"
         .Verification = "Compare array with 1st item not exists in the second one (stop at first difference)"
         .TestHeadLine = "The arrays first elements are different, empty elements are ignored"
         a1 = Split("1,2,3,4,5,6,7", ",")
@@ -650,7 +675,7 @@ Public Sub Test_0220_ArryCompare()
         .Result = dctDiff.Count
                     
         ' ==================================================================
-        .TestNumber = "0220-05"
+        .TestId = "0220-05"
         .Verification = "Compare array with 1st item not exists in the first one (stop at first difference)"
         .TestHeadLine = "The arrays first elements are different, empty elements are ignored"
         a1 = Split(",2,3,4,5,6,7", ",")
@@ -662,7 +687,7 @@ Public Sub Test_0220_ArryCompare()
         .Result = dctDiff.Count
         
         ' ==================================================================
-        .TestNumber = "0220-06"
+        .TestId = "0220-06"
         .Verification = "Compare array with several different items (stop at first difference)"
         .TestHeadLine = "The second array has additional inserted elements, empty elements are ignored"
         a1 = Split("1,2,3,4,5,6,7", ",")
@@ -675,7 +700,7 @@ Public Sub Test_0220_ArryCompare()
         .Result = dctDiff.Count
         
         ' ==================================================================
-        .TestNumber = "0220-07"
+        .TestId = "0220-07"
         .TestHeadLine = "The arrays are equal, empty elements are ignored"
         a1 = Split("1,2,3,4,5,6,7,,,", ",")
         a2 = Split("1,2,3,4,5,6,7", ",")
@@ -972,7 +997,7 @@ Public Sub Test_0400_Spaced()
         .TestedProc = "Spaced"
         .TestedType = "Function"
         
-        .TestNumber = "0400-1"
+        .TestId = "0400-1"
         .TestHeadLine = "A provided string is returned spaced with non-breaking spaces `Chr$(160)`"
         .ResultExpected = "A" & Chr$(160) & "b" & Chr$(160) & Chr$(160) & "c"
         .Result = Spaced("Ab c")
@@ -994,14 +1019,14 @@ Public Sub Test_0500_Stack()
     mBasic.BoP ErrSrc(PROC)
     With TestAid
         ' ==================================================================
-        .TestNumber = "0500-10"
+        .TestId = "0500-10"
         .TestedProc = "StackIsEmpty"
         .Verification = "Returns TRUE when empty or stack not exists"
         .ResultExpected = True
         .Result = mBasic.StackIsEmpty(cllStack)
         
         ' ==================================================================
-        .TestNumber = "0500-20"
+        .TestId = "0500-20"
         .TestedProc = "StackIsEmpty"
         .Verification = "Returns FALSE when exists and not empty"
         mBasic.StackPush cllStack, wsBasic
@@ -1009,7 +1034,7 @@ Public Sub Test_0500_Stack()
         .Result = mBasic.StackIsEmpty(cllStack)
         
         ' ==================================================================
-        .TestNumber = "0500-30"
+        .TestId = "0500-30"
         .TestedProc = "StackTop"
         .Verification = "Returns the object first stacked object"
         Set cllStack = Nothing
@@ -1019,7 +1044,7 @@ Public Sub Test_0500_Stack()
         .Result = v Is wsBasic
         
         ' ==================================================================
-        .TestNumber = "0500-30"
+        .TestId = "0500-30"
         .TestedProc = "StackEd"
         .Verification = "Returns TRUE for a stacked object"
         Set cllStack = Nothing
@@ -1031,7 +1056,7 @@ Public Sub Test_0500_Stack()
         .Result = iLevel
         
         ' ==================================================================
-        .TestNumber = "0500-30"
+        .TestId = "0500-30"
         .TestedProc = "StackEd"
         .Verification = "Returns TRUE when a given object is stacked at a given level"
         Set cllStack = Nothing
@@ -1040,7 +1065,7 @@ Public Sub Test_0500_Stack()
         .Result = mBasic.StackEd(cllStack, wsBasic, 1)
         
         ' ==================================================================
-        .TestNumber = "0500-40"
+        .TestId = "0500-40"
         .TestedProc = "StackTop"
         .Verification = "Returns the stacked object"
         Set cllStack = Nothing
@@ -1050,7 +1075,7 @@ Public Sub Test_0500_Stack()
         .Result = v Is wsBasic
         
         ' ==================================================================
-        .TestNumber = "0500-50"
+        .TestId = "0500-50"
         .TestedProc = "StackPop"
         .Verification = "Returns the stacked object"
         Set cllStack = Nothing
@@ -1073,7 +1098,7 @@ Public Sub Test_0500_Stack()
         .Result = mBasic.StackTop(cllStack)
     
         ' ==================================================================
-        .TestNumber = "0500-60"
+        .TestId = "0500-60"
         .TestedProc = "StackPop"
         .Verification = "StackEd returns the item for a given level"
         Set cllStack = Nothing
@@ -1084,7 +1109,7 @@ Public Sub Test_0500_Stack()
         .Result = mBasic.StackEd(cllStack, , 8)
                 
         ' ==================================================================
-        .TestNumber = "0500-70"
+        .TestId = "0500-70"
         .TestedProc = "StackPop"
         .Verification = "StackPop end with an empty stack when all items are poped"
         Set cllStack = Nothing

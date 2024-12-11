@@ -336,6 +336,19 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Property
 
+Public Sub ArryClear(ParamArray a_a() As Variant)
+' ----------------------------------------------------------------------------
+' Erases any argument whhich is an array.
+' ----------------------------------------------------------------------------
+    Dim v As Variant
+    
+    If Not mBasic.ArryIsAllocated(a_a) Then Exit Sub
+    For Each v In a_a
+        If IsArray(v) Then Erase v
+    Next v
+    
+End Sub
+
 ' ----------------------------------------------------------------------------
 ' Universal Dictionary add, replace, increase item value service.
 ' Specific: when the item is a string in the form "-n" or "+n" whereby n is a
@@ -1583,11 +1596,26 @@ Public Function Max(ParamArray va() As Variant) As Variant
 ' Returns the maximum value of all values provided (va).
 ' --------------------------------------------------------
     
+    Dim i As Long
     Dim v As Variant
     
-    Max = va(LBound(va)): If LBound(va) = UBound(va) Then Exit Function
+    If Not mBasic.ArryIsAllocated(va) Then Exit Function
     For Each v In va
-        If v > Max Then Max = v
+        Select Case True
+            Case IsNumeric(v)
+                If v > Max Then Max = v
+            Case IsArray(v)
+                For i = LBound(v) To UBound(v)
+                    Select Case True
+                        Case IsNumeric(v(i))
+                            If CLng(v(i)) > Max Then Max = 0 + v(i)
+                        Case VarType(v(i)) = vbString
+                            If Len(v(i)) > Max Then Max = Len(v(i))
+                    End Select
+                Next i
+            Case VarType(v) = vbString
+                If Len(v) > Max Then Max = Len(v)
+        End Select
     Next v
     
 End Function

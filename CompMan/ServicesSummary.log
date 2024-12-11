@@ -1,84 +1,76 @@
-24-10-09-18:15:45 ---------------- Update Outdated Common Components (by Add-in) for Basic.xlsm ----------------
-24-10-09-18:15:45 ----------------------------------------------------------------------------------------------
-24-10-09-18:15:45  UserForm         fMsg            Serviced Common Component used is up-to-date                
-24-10-09-18:15:45  Standard-Module  mErH            Serviced Common Component used is up-to-date                
-24-10-09-18:15:46  Standard-Module  mMsg            Serviced Common Component used is up-to-date                
-24-10-09-18:15:46  Standard-Module  mTrc            Serviced Common Component used is up-to-date                
-24-10-09-18:15:46  Class-Module     clsTrc          Serviced Common Component used is up-to-date                
-24-10-09-18:15:50  Standard-Module  mCompManClient  Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
-24-10-09-18:15:54  Standard-Module  mBasic          Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
-24-10-09-18:15:57  Class-Module     clsTestAid      Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
-24-10-09-19:18:39 ==============================================================================================
-24-10-09-19:18:39 -------------------- Export Changed Components (by Add-in) for Basic.xlsm --------------------
-24-10-09-19:18:39 ----------------------------------------------------------------------------------------------
-24-10-09-19:18:39  Standard-Module  mBasicTest      Modified VBComponent e x p o r t e d !                      
-24-10-09-19:18:40  Standard-Module  mBasic          Modified Common Component: Release registered pending       
-24-10-09-19:18:40                                   Serviced Common Component modified: E x p o r t e d !       
-24-10-09-19:18:40                                   Serviced Common Component modified: Properties in CommComps.dat updated
-24-10-09-19:18:40                                   Serviced Common Component modified: Registered pending release
-24-10-09-19:18:40  Class-Module     clsTestAid      Modified Common Component: Release registered pending       
-24-10-09-19:18:40                                   Serviced Common Component modified: E x p o r t e d !       
-24-10-09-19:18:40                                   Serviced Common Component modified: Properties in CommComps.dat updated
-24-10-09-19:18:40                                   Serviced Common Component modified: Registered pending release
-24-10-09-19:18:40 ExportChangedComponents (by CompMan.xlam) for Basic.xlsm: 3 of 11 exported (mBasicTest, mBasic, clsTestAid)     See the VBE CompMan menu for 2 Common Components pending release!  (see Services.log for log details)
-24-11-08-17:36:45 ==============================================================================================
-24-11-08-17:36:45 ---------------- Update Outdated Common Components (by Add-in) for Basic.xlsm ----------------
-24-11-08-17:36:45 ----------------------------------------------------------------------------------------------
-24-11-08-17:36:45  UserForm         fMsg            Serviced Common Component used is up-to-date                
-24-11-08-17:36:45  Standard-Module  mErH            Serviced Common Component used is up-to-date                
-24-11-08-17:36:45  Standard-Module  mMsg            Serviced Common Component used is up-to-date                
-24-11-08-17:36:45  Standard-Module  mTrc            Serviced Common Component used is up-to-date                
-24-11-08-17:36:45  Class-Module     clsTrc          Serviced Common Component used is up-to-date                
-24-11-08-17:36:45  Standard-Module  mCompManClient  Serviced Common Component used is up-to-date                
-24-11-08-17:36:57  Standard-Module  mBasic          Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
-24-11-08-17:37:01  Class-Module     clsTestAid      Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.
-24-11-08-17:38:45 ==============================================================================================
-24-11-08-17:38:45 ---------------- Update Outdated Common Components (by Add-in) for Basic.xlsm ----------------
-24-11-08-17:38:45 ----------------------------------------------------------------------------------------------
-24-11-08-17:38:45  UserForm         fMsg            Serviced Common Component used is up-to-date                
-24-11-08-17:38:45  Standard-Module  mErH            Serviced Common Component used is up-to-date                
-24-11-08-17:38:45  Standard-Module  mMsg            Serviced Common Component used is up-to-date                
-24-11-08-17:38:45  Standard-Module  mTrc            Serviced Common Component used is up-to-date                
-24-11-08-17:38:45  Class-Module     clsTrc          Serviced Common Component used is up-to-date                
-24-11-08-17:38:45  Standard-Module  mCompManClient  Serviced Common Component used is up-to-date                
-24-11-08-17:38:46  Standard-Module  mBasic          Serviced Common Component used is up-to-date                
-24-11-08-17:38:46  Class-Module     clsTestAid      Serviced Common Component used is up-to-date                
-24-11-09-17:26:10 ==============================================================================================
-24-11-09-17:26:10 ----------------- Export Changed Components (by CompMan.xlsb) for Basic.xlsm -----------------
-24-11-09-17:26:10 ----------------------------------------------------------------------------------------------
-24-11-09-17:26:10  Workbook         wbBasic         Modified VBComponent e x p o r t e d !                      
-24-11-09-17:26:10  Standard-Module  mBasicTest      Modified VBComponent e x p o r t e d !                      
-24-11-09-20:16:28 ==============================================================================================
-24-11-09-20:16:28 ----------------- Export Changed Components (by CompMan.xlsb) for Basic.xlsm -----------------
-24-11-09-20:16:28 ----------------------------------------------------------------------------------------------
-24-11-09-20:16:28  Standard-Module  mBasicTest      Modified VBComponent e x p o r t e d !                      
-24-11-09-21:02:08 ===============================================================================================
-24-11-09-21:02:08 ------------- Update Outdated Common Components (by CompMan.xlsb) for Basic.xlsm --------------
-24-11-09-21:02:08 -----------------------------------------------------------------------------------------------
-24-11-09-21:02:08  UserForm         fMsg            Serviced Common Component used is up-to-date                 
-24-11-09-21:02:08  Standard-Module  mErH            Serviced Common Component used is up-to-date                 
-24-11-09-21:02:08  Standard-Module  mMsg            Serviced Common Component used is up-to-date                 
-24-11-09-21:02:08  Standard-Module  mCompManClient  Serviced Common Component used is up-to-date                 
-24-11-09-21:02:14  Standard-Module  mTrc            Serviced Common Component updated by re-import of the public 
-24-11-09-21:02:19  Class-Module     clsTrc          Serviced Common Component updated by re-import of the public 
-24-11-09-21:02:23  Standard-Module  mBasic          Serviced Common Component updated by re-import of the public 
-24-11-09-21:02:26  Class-Module     clsTestAid      Serviced Common Component updated by re-import of the public 
-24-11-09-21:03:09 =========================================================================================================================================================
-24-11-09-21:03:09 ---------------------------------------------- Export Changed Components (by CompMan.xlsb) for Basic.xlsm -----------------------------------------------
-24-11-09-21:03:09 ---------------------------------------------------------------------------------------------------------------------------------------------------------
-24-11-09-21:03:09 ExportChangedComponents (by CompMan.xlsb) for Basic.xlsm: 0 of 11 exported  (see E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\Services.log for log details)
-24-11-19-13:27:13 ===============================================================================================
-24-11-19-13:27:13 ------------- Update Outdated Common Components (by CompMan.xlsb) for Basic.xlsm --------------
-24-11-19-13:27:13 -----------------------------------------------------------------------------------------------
-24-11-19-13:27:13  UserForm         fMsg            Serviced Common Component used is up-to-date                 
-24-11-19-13:27:13  Standard-Module  mErH            Serviced Common Component used is up-to-date                 
-24-11-19-13:27:14  Standard-Module  mMsg            Serviced Common Component used is up-to-date                 
-24-11-19-13:27:14  Standard-Module  mCompManClient  Serviced Common Component used is up-to-date                 
-24-11-19-13:27:15  Class-Module     clsTrc          Serviced Common Component used is up-to-date                 
-24-11-19-13:27:25  Standard-Module  mTrc            Serviced Common Component updated by re-import of the public 
-24-11-19-13:27:32  Standard-Module  mBasic          Serviced Common Component updated by re-import of the public 
-24-11-19-13:27:39  Class-Module     clsTestAid      Serviced Common Component updated by re-import of the public 
-24-11-19-13:28:04 =================================================================================================================================================================================================================================
-24-11-19-13:28:04 ---------------------------------------------------------------------------------- Export Changed Components (by CompMan.xlsb) for Basic.xlsm -----------------------------------------------------------------------------------
-24-11-19-13:28:04 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-24-11-19-13:28:04 ExportChangedComponents (by CompMan.xlsb) for Basic.xlsm: 0 of 11 exported     See the VBE CompMan menu for 1 Common Component is pending release!  (see E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\Services.log for log details)
+24-11-24-11:03:59 ---------------------------- Export Changed Components (by CompMan.xlsb) for Basic.xlsm ----------------------------
+24-11-24-11:03:59 --------------------------------------------------------------------------------------------------------------------
+24-11-24-11:03:59                                   Modified Common Component: Release registered pending                             
+24-11-24-11:03:59                                   Serviced Common Component modified: E x p o r t e d !                             
+24-11-24-11:03:59                                   Serviced Common Component modified: Properties in CommComps.dat updated           
+24-11-24-11:03:59                                   Serviced Common Component modified: Registered pending release                    
+24-11-24-11:03:59 ExportChangedComponents (by CompMan.xlsb) for Basic.xlsm: 1 of 11 exported (mBasic)     See the VBE CompMan menu for 2 Common Components pending release!  (see E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\Services.log for log details)
+24-11-24-13:41:46 ===============================================================================================
+24-11-24-13:41:46 ------------- Update Outdated Common Components (by CompMan.xlsb) for Basic.xlsm --------------
+24-11-24-13:41:46 -----------------------------------------------------------------------------------------------
+24-11-24-13:41:46  UserForm         fMsg            Serviced Common Component used is up-to-date                 
+24-11-24-13:41:46  Standard-Module  mErH            Serviced Common Component used is up-to-date                 
+24-11-24-13:41:46  Standard-Module  mMsg            Serviced Common Component used is up-to-date                 
+24-11-24-13:41:46  Standard-Module  mCompManClient  Serviced Common Component used is up-to-date                 
+24-11-24-13:41:47  Class-Module     clsTrc          Serviced Common Component used is up-to-date                 
+24-11-24-13:41:47  Standard-Module  mTrc            Serviced Common Component used is up-to-date                 
+24-11-24-13:41:47  Standard-Module  mBasic          Serviced Common Component used is up-to-date                 
+24-11-24-13:41:47  Class-Module     clsTestAid      Serviced Common Component used is up-to-date                 
+24-11-24-13:42:37 ===============================================================================================
+24-11-24-13:42:37 ----------------- Export Changed Components (by CompMan.xlsb) for Basic.xlsm ------------------
+24-11-24-13:42:37 -----------------------------------------------------------------------------------------------
+24-11-24-13:42:37  Standard-Module  mBasic          Modified Common Component: Release registered pending        
+24-11-24-13:42:37                                   Serviced Common Component modified: E x p o r t e d !        
+24-11-24-13:42:37                                   Serviced Common Component modified: Properties in CommComps. 
+24-11-24-13:42:37                                   Serviced Common Component modified: Registered pending relea 
+24-11-24-13:42:37 ExportChangedComponents (by CompMan.xlsb) for Basic.xlsm: 1 of 11 exported (mBasic)     See the VBE CompMan menu for 2 Common Components pending release!  (see E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\Services.log for log details)
+24-12-01-13:13:14 ===============================================================================================
+24-12-01-13:13:14 ------------- Update Outdated Common Components (by CompMan.xlsb) for Basic.xlsm --------------
+24-12-01-13:13:14 -----------------------------------------------------------------------------------------------
+24-12-01-13:13:14  Standard-Module  mErH            Serviced Common Component used is up-to-date                 
+24-12-01-13:13:15  Standard-Module  mCompManClient  Serviced Common Component used is up-to-date                 
+24-12-01-13:13:15  Class-Module     clsTrc          Serviced Common Component used is up-to-date                 
+24-12-01-13:13:15  Standard-Module  mBasic          Serviced Common Component used is up-to-date                 
+24-12-01-13:13:20  UserForm         fMsg            Serviced Common Component updated by re-import of the public 
+24-12-01-13:13:24  Standard-Module  mMsg            Serviced Common Component updated by re-import of the public 
+24-12-01-13:13:28  Standard-Module  mTrc            Serviced Common Component updated by re-import of the public 
+24-12-01-13:13:33  Class-Module     clsTestAid      Serviced Common Component updated by re-import of the public 
+24-12-01-13:31:58 ===============================================================================================
+24-12-01-13:31:58 ----------------- Export Changed Components (by CompMan.xlsb) for Basic.xlsm ------------------
+24-12-01-13:31:58 -----------------------------------------------------------------------------------------------
+24-12-01-13:31:58  Standard-Module  mBasicTest      Modified VBComponent e x p o r t e d !                       
+24-12-01-13:31:58  Standard-Module  mBasic          Common Component code change:                                
+24-12-01-13:31:58                                   Line 0321 mBasic............................................ 
+24-12-01-13:31:58                                   Line 0321 E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\source\ 
+24-12-01-13:31:58                                   Modified Common Component: Release registered pending        
+24-12-01-13:31:58                                   Serviced Common Component modified: E x p o r t e d !        
+24-12-01-13:31:58                                   Serviced Common Component modified: Properties in CommComps. 
+24-12-01-13:31:58                                   Serviced Common Component modified: Registered pending relea 
+24-12-01-13:31:59 ExportChangedComponents (by CompMan.xlsb) for Basic.xlsm: 2 of 11 exported (mBasicTest, mBasic)     See the VBE CompMan menu for 2 Common Components pending release!  (see E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\Services.log for log details)
+24-12-10-13:13:51 ===============================================================================================
+24-12-10-13:13:51 ------------- Update Outdated Common Components (by CompMan.xlsb) for Basic.xlsm --------------
+24-12-10-13:13:51 -----------------------------------------------------------------------------------------------
+24-12-10-13:13:51  Standard-Module  mCompManClient  Code change: Line 0130 Serviced (C        If c_service_proc  
+24-12-10-13:13:51                                   Code change: Line 0130 Public (Exp        Application.Run sS 
+24-12-10-13:13:51                                   Code change: Line 0130 Serviced (C        If c_service_proc  
+24-12-10-13:13:51                                   Code change: Line 0130 Public (Exp        Application.Run sS 
+24-12-10-13:13:51  Class-Module     clsTrc          Code change: Line 0336 Serviced (C' Retunrs TRUE when the ar 
+24-12-10-13:13:51                                   Code change: Line 0336 Public (Exp' Returns TRUE when the ar 
+24-12-10-13:13:51                                   Code change: Line 0336 Serviced (C' Retunrs TRUE when the ar 
+24-12-10-13:13:51                                   Code change: Line 0336 Public (Exp' Returns TRUE when the ar 
+24-12-10-13:13:51  Standard-Module  mBasic          Code change: Line 0321 Serviced (CPublic Sub ArryClear(Param 
+24-12-10-13:13:51                                   Code change: Line 0321 Public (Exp' ------------------------ 
+24-12-10-13:13:51                                   Code change: Line 0321 Serviced (CPublic Sub ArryClear(Param 
+24-12-10-13:13:51                                   Code change: Line 0321 Public (Exp' ------------------------ 
+24-12-10-13:13:51  Standard-Module  mMsg            Code change: Line 1268 Serviced (CPrivate Function TempFile( 
+24-12-10-13:13:51                                   Code change: Line 1268 Public (ExpPrivate Function TempFileF 
+24-12-10-13:13:51                                   Code change: Line 1268 Serviced (CPrivate Function TempFile( 
+24-12-10-13:13:51                                   Code change: Line 1268 Public (ExpPrivate Function TempFileF 
+24-12-10-13:13:51  Standard-Module  mTrc            Code change: Line 0355 Serviced (C' Retunrs TRUE when an arr 
+24-12-10-13:13:51                                   Code change: Line 0355 Public (Exp' Returns TRUE when an arr 
+24-12-10-13:13:51                                   Code change: Line 0355 Serviced (C' Retunrs TRUE when an arr 
+24-12-10-13:13:51                                   Code change: Line 0355 Public (Exp' Returns TRUE when an arr 
+24-12-10-13:13:51  Class-Module     clsTestAid      Code change: Line 0004 Serviced (C' ======================== 
+24-12-10-13:13:51                                   Code change: Line 0004 Public (Exp' ======================== 
+24-12-10-13:13:51                                   Code change: Line 0004 Serviced (C' ======================== 
+24-12-10-13:13:51                                   Code change: Line 0004 Public (Exp' ======================== 

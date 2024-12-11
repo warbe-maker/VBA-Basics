@@ -67,6 +67,8 @@ Option Base 1
 ' TestedType            P   w Tested procedure type (Sub, Function, ...)
 ' TestFolder            P r/w String expression, specifies the test folder
 ' TestHeadLine          P   w Test title
+' TestId                P r/w Unique identifier of a test procedure (tests
+'                             within are numbered ...-1, ...-2
 ' TempTestItem          P r/w Returns a standard test file name based on a
 '                             provided test number or registers a test file
 '                             provided eitheras full name or file object for
@@ -117,18 +119,18 @@ Private Declare PtrSafe Function FindWindow Lib "user32" Alias "FindWindowA" (By
 Private Declare PtrSafe Function FindWindowEx Lib "user32" Alias "FindWindowExA" (ByVal hWnd1 As Long, ByVal hWnd2 As Long, ByVal lpsz1 As String, ByVal lpsz2 As String) As Long
 Private Declare PtrSafe Function QueryPerformanceCounter Lib "kernel32" (lpPerformanceCount As Currency) As Long
 Private Declare PtrSafe Function QueryPerformanceFrequency Lib "kernel32" (lpFrequency As Currency) As Long
-Private Declare PtrSafe Function SendMessage Lib "user32" Alias "SendMessageA" (ByVal hwnd As Long, ByVal wMsg As Long, ByVal wParam As Long, lParam As Any) As Long
-Private Declare PtrSafe Function SetForegroundWindow Lib "user32" (ByVal hwnd As LongPtr) As Long
+Private Declare PtrSafe Function SendMessage Lib "user32" Alias "SendMessageA" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, lParam As Any) As Long
+Private Declare PtrSafe Function SetForegroundWindow Lib "user32" (ByVal hWnd As LongPtr) As Long
 
 Private Const WM_SETTEXT = &HC
 Private Const BM_CLICK = &HF5
 
 ' --- Begin of declarations to get all Workbooks of all running Excel instances
-Private Declare PtrSafe Function GetClassName Lib "user32" Alias "GetClassNameA" (ByVal hwnd As LongPtr, ByVal lpClassName As String, ByVal nMaxCount As LongPtr) As LongPtr
+Private Declare PtrSafe Function GetClassName Lib "user32" Alias "GetClassNameA" (ByVal hWnd As LongPtr, ByVal lpClassName As String, ByVal nMaxCount As LongPtr) As LongPtr
 
 Private Declare PtrSafe Function apiShellExecute Lib "shell32.dll" _
     Alias "ShellExecuteA" _
-    (ByVal hwnd As Long, _
+    (ByVal hWnd As Long, _
     ByVal lpOperation As String, _
     ByVal lpFile As String, _
     ByVal lpParameters As String, _
@@ -193,7 +195,7 @@ Private vTempTestItem               As Variant
 Private tbxGuide                    As MSForms.TextBox
 Private siGuidePosTop               As Single
 Private siGuidePosLeft              As Single
-Private sGuidePopUpTitle            As String
+Private sGuideTitle            As String
 
 #If mMsg = 0 Then
     ' -------------------------------------------------------------------------------
@@ -709,7 +711,7 @@ Private Property Let TestResultSummaryLogFile(ByVal s As String)
     
 End Property
 
-Public Property Get TimerExecTimeMsecs() As Currency: TimerExecTimeMsecs = cExecTimeMsecs:    End Property
+Public Property Get TimerExecTimeMsecs() As Currency:           TimerExecTimeMsecs = cExecTimeMsecs:            End Property
 
 Public Property Get TimerOverhead() As Currency:                TimerOverhead = cTimerOverhead:                 End Property
 
@@ -1165,7 +1167,7 @@ Public Sub BoTP()
 #End If
 End Sub
 
-Private Function checkHwnds(ByRef xlApps() As Application, hwnd As LongPtr) As Boolean
+Private Function checkHwnds(ByRef xlApps() As Application, hWnd As LongPtr) As Boolean
 ' ------------------------------------------------------------------------------
 '
 ' ------------------------------------------------------------------------------
@@ -1177,7 +1179,7 @@ Private Function checkHwnds(ByRef xlApps() As Application, hwnd As LongPtr) As B
     If UBound(xlApps) = 0 Then GoTo xt
 
     For i = LBound(xlApps) To UBound(xlApps)
-        If xlApps(i).hwnd = hwnd Then
+        If xlApps(i).hWnd = hWnd Then
             checkHwnds = False
             GoTo xt
         End If
@@ -1993,19 +1995,19 @@ Public Sub Guide(ByVal d_msg As String)
 ' - No message limit due tothe use if a dynamic vertical scroll-bar
 ' - Preserves the top-left position while the class instance is alive
 ' ----------------------------------------------------------------------------
-#If Msg = 1 Then
     Const PROC = "Guide"
-    
+
+#If mMsg = 1 Then
     On Error GoTo eh
-    Dim hwnd As LongPtr
+    Dim hWnd As LongPtr
     Dim frm  As MSForms.UserForm
     Dim Msg  As udtMsg
     
-    sGuidePopUpTitle = "Manual user test interaction for test " & sTestId
-    Set frmGuidePopUp = mMsg.MsgInstance(sGuidePopUpTitle)
+    sGuideTitle = "Manual user test interaction for test " & sTestId
+    Set frm = mMsg.Instance(sGuideTitle)
     Msg.Section(1).Text.Text = d_msg
     
-    mMsg.Dsply dsply_title:=sGuidePopUpTitle _
+    mMsg.Dsply dsply_title:=sGuideTitle _
              , dsply_msg:=Msg _
              , dsply_buttons:=vbNullString _
              , dsply_modeless:=True
@@ -2017,22 +2019,30 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
         Case Else:      GoTo xt
     End Select
 #Else
-    MsgBox Prompt:="The ""Guide"" service is not available because an available " & _
+    MsgBox Prompt:="The """ & ErrSrc(PROC) & """ service is not available because an available " & _
                    "installation of the Common Component ""mMsg"" is not indicated " & _
-                   "by means of the Conditional Compile Argument ""Msg = 1""!" _
-         , Title:="Guide service not available"
+                   "by means of the Conditional Compile Argument ""mMsg = 1""!" _
+         , Title:="Service not available!"
 #End If
 End Sub
 
 Public Sub GuideDone()
+    Const PROC = "GuideDone"
 
-    With mMsg.MsgInstance(sGuidePopUpTitle)
+#If mMsg = 1 Then
+    With mMsg.Instance(sGuideTitle)
         If .Visible Then
             siGuidePosTop = .Top
             siGuidePosLeft = .Left
             .Hide
         End If
     End With
+#Else
+    MsgBox Prompt:="The """ & ErrSrc(PROC) & """ service is not available because an available " & _
+                   "installation of the Common Component ""mMsg"" is not indicated " & _
+                   "by means of the Conditional Compile Argument ""mMsg = 1""!" _
+         , Title:="Service not available!"
+#End If
     
 End Sub
 
@@ -2041,13 +2051,13 @@ Public Sub GuideUnload()
     On Error Resume Next
     Dim frm As fMsg
     
-    With mMsg.MsgInstance(sGuidePopUpTitle)
+    With mMsg.Instance(sGuideTitle)
         If .Visible Then
             siGuidePosTop = .Top
             siGuidePosLeft = .Left
         End If
     End With
-    mMsg.MsgInstance sGuidePopUpTitle, True
+    mMsg.Instance sGuideTitle, True
     
 
 End Sub
