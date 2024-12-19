@@ -163,60 +163,59 @@ Public Enum enDctOpt
     enCollectSorted
 End Enum
 
-' Basic declarations potentially uesefull in any VB-Project
-Public Declare PtrSafe Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
-Public Declare PtrSafe Function GetSystemMetrics32 Lib "user32" Alias "GetSystemMetrics" (ByVal nIndex As Long) As Long
+#If Win64 Then
+    Public Declare PtrSafe Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
+    Public Declare PtrSafe Function GetSystemMetrics32 Lib "user32" Alias "GetSystemMetrics" (ByVal nIndex As Long) As Long
+    Private Declare PtrSafe Function getFrequency Lib "kernel32" Alias "QueryPerformanceFrequency" (TimerSystemFrequency As Currency) As Long
+    Private Declare PtrSafe Function getTickCount Lib "kernel32" Alias "QueryPerformanceCounter" (cyTickCount As Currency) As Long
+    Private Declare PtrSafe Function GetDC Lib "user32" (ByVal hWnd As Long) As Long
+    Private Declare PtrSafe Function GetDeviceCaps Lib "gdi32" (ByVal hDC As Long, ByVal nIndex As Long) As Long
+    Private Declare PtrSafe Function ReleaseDC Lib "user32" (ByVal hWnd As Long, ByVal hDC As Long) As Long
+    Private Declare PtrSafe Function GetForegroundWindow Lib "User32.dll" () As Long
+    Private Declare PtrSafe Function GetWindowLongPtr Lib "User32.dll" Alias "GetWindowLongA" (ByVal hWnd As LongPtr, ByVal nIndex As Long) As LongPtr
+    Private Declare PtrSafe Function SetWindowLongPtr Lib "User32.dll" Alias "SetWindowLongA" (ByVal hWnd As LongPtr, ByVal nIndex As LongPtr, ByVal dwNewLong As LongPtr) As LongPtr
+    Private Declare PtrSafe Function apiShellExecute Lib "shell32.dll" _
+        Alias "ShellExecuteA" _
+        (ByVal hWnd As Long, _
+        ByVal lpOperation As String, _
+        ByVal lpFile As String, _
+        ByVal lpParameters As String, _
+        ByVal lpDirectory As String, _
+        ByVal nShowCmd As Long) _
+        As Long
+#Else
+    Public Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
+    Public Declare Function GetSystemMetrics32 Lib "user32" Alias "GetSystemMetrics" (ByVal nIndex As Long) As Long
+    Private Declare Function getFrequency Lib "kernel32" Alias "QueryPerformanceFrequency" (TimerSystemFrequency As Currency) As Long
+    Private Declare Function getTickCount Lib "kernel32" Alias "QueryPerformanceCounter" (cyTickCount As Currency) As Long
+    Private Declare Function GetDC Lib "user32" (ByVal hWnd As Long) As Long
+    Private Declare Function GetDeviceCaps Lib "gdi32" (ByVal hDC As Long, ByVal nIndex As Long) As Long
+    Private Declare Function ReleaseDC Lib "user32" (ByVal hWnd As Long, ByVal hDC As Long) As Long
+    Private Declare Function GetForegroundWindow Lib "User32.dll" () As Long
+    Private Declare Function GetWindowLong Lib "User32.dll" Alias "GetWindowLongA" (ByVal hWnd As Long, ByVal nIndex As Long) As Long
+    Private Declare Function SetWindowLong Lib "User32.dll" Alias "SetWindowLongA" (ByVal hWnd As Long, ByVal nIndex As Long, ByVal dwNewLong As Long) As Long
+    Private Declare Function apiShellExecute Lib "shell32.dll" _
+        Alias "ShellExecuteA" _
+        (ByVal hWnd As Long, _
+        ByVal lpOperation As String, _
+        ByVal lpFile As String, _
+        ByVal lpParameters As String, _
+        ByVal lpDirectory As String, _
+        ByVal nShowCmd As Long) _
+        As Long
+#End If
 
-' Timer means
-Private Declare PtrSafe Function getFrequency Lib "kernel32" _
-Alias "QueryPerformanceFrequency" (TimerSystemFrequency As Currency) As Long
-Private Declare PtrSafe Function getTickCount Lib "kernel32" _
-Alias "QueryPerformanceCounter" (cyTickCount As Currency) As Long
-
-'Functions to get DPI
-Private Declare PtrSafe Function GetDC Lib "user32" (ByVal hWnd As Long) As Long
-Private Declare PtrSafe Function GetDeviceCaps Lib "gdi32" (ByVal hDC As Long, ByVal nIndex As Long) As Long
-Private Declare PtrSafe Function ReleaseDC Lib "user32" (ByVal hWnd As Long, ByVal hDC As Long) As Long
-Private Const LOGPIXELSX = 88               ' Pixels/inch in X
-Private Const POINTS_PER_INCH As Long = 72  ' A point is defined as 1/72 inches
-Private Declare PtrSafe Function GetForegroundWindow _
-  Lib "User32.dll" () As Long
-
-Private Declare PtrSafe Function GetWindowLongPtr _
-  Lib "User32.dll" Alias "GetWindowLongA" _
-    (ByVal hWnd As LongPtr, _
-     ByVal nIndex As Long) _
-  As LongPtr
-
-Private Declare PtrSafe Function SetWindowLongPtr _
-  Lib "User32.dll" Alias "SetWindowLongA" _
-    (ByVal hWnd As LongPtr, _
-     ByVal nIndex As LongPtr, _
-     ByVal dwNewLong As LongPtr) _
-  As LongPtr
-
-Private Declare PtrSafe Function apiShellExecute Lib "shell32.dll" _
-    Alias "ShellExecuteA" _
-    (ByVal hWnd As Long, _
-    ByVal lpOperation As String, _
-    ByVal lpFile As String, _
-    ByVal lpParameters As String, _
-    ByVal lpDirectory As String, _
-    ByVal nShowCmd As Long) _
-    As Long
-
-'***App Window Constants***
-Private Const WIN_NORMAL = 1         'Open Normal
-
-'***Error Codes***
-Private Const ERROR_SUCCESS = 32&
+Private Const ERROR_BAD_FORMAT = 11&
+Private Const ERROR_FILE_NOT_FOUND = 2&
 Private Const ERROR_NO_ASSOC = 31&
 Private Const ERROR_OUT_OF_MEM = 0&
-Private Const ERROR_FILE_NOT_FOUND = 2&
 Private Const ERROR_PATH_NOT_FOUND = 3&
-Private Const ERROR_BAD_FORMAT = 11&
-Private Const WS_THICKFRAME As Long = &H40000
+Private Const ERROR_SUCCESS = 32&
 Private Const GWL_STYLE As Long = -16
+Private Const LOGPIXELSX = 88               ' Pixels/inch in X
+Private Const POINTS_PER_INCH As Long = 72  ' A point is defined as 1/72 inches
+Private Const WIN_NORMAL = 1         'Open Normal
+Private Const WS_THICKFRAME As Long = &H40000
 
 Private cyTimerTicksBegin       As Currency
 Private cyTimerTicksEnd         As Currency
@@ -233,7 +232,6 @@ Private TimerSystemFrequency    As Currency
     ' be indicated by the Conditional Compile Argument mMsg = 1.
     ' See https://github.com/warbe-maker/Common-VBA-Message-Service
     ' -------------------------------------------------------------------------------
-    Private Const vbResumeOk As Long = 7 ' Buttons value in mMsg.ErrMsg (pass on not supported)
     Private Const vbResume   As Long = 6 ' return value (equates to vbYes)
 #End If
 
@@ -283,8 +281,8 @@ Public Property Let Arry(Optional ByRef a_arr As Variant, _
     Const PROC = "Arry-Let"
     
     Dim bIsAllocated As Boolean
-    Dim s            As String
     
+    a_default = a_default ' used with Get only
     If IsArray(a_arr) Then
         On Error GoTo -1
         On Error Resume Next
@@ -335,19 +333,6 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
         Case Else:      GoTo xt
     End Select
 End Property
-
-Public Sub ArryClear(ParamArray a_a() As Variant)
-' ----------------------------------------------------------------------------
-' Erases any argument whhich is an array.
-' ----------------------------------------------------------------------------
-    Dim v As Variant
-    
-    If Not mBasic.ArryIsAllocated(a_a) Then Exit Sub
-    For Each v In a_a
-        If IsArray(v) Then Erase v
-    Next v
-    
-End Sub
 
 ' ----------------------------------------------------------------------------
 ' Universal Dictionary add, replace, increase item value service.
@@ -1045,7 +1030,7 @@ End Function
 
 Public Function ArryIsAllocated(ByVal a_arr As Variant) As Boolean
 ' ----------------------------------------------------------------------------
-' Retunrs TRUE when the array (a_arr) is allocated, i.e. has at least one item.
+' Returns TRUE when the array (a_arr) is allocated, i.e. has at least one item.
 ' ----------------------------------------------------------------------------
     
     On Error Resume Next
@@ -1087,26 +1072,6 @@ Public Function ArryItems(ByVal a_arr As Variant) As Long
     ArryItems = lItems
     
 End Function
-
-Private Sub ArryItemsTest()
-        
-    Dim arr1 As Variant
-    Dim arr2 As Variant
-    Dim arr3 As Variant
-    
-    Arry(arr1, 3) = "X"
-    Arry(arr1, 5) = "Y"
-    Arry(arr1, 9) = "Z"
-    Arry(arr2) = arr1
-    
-    Debug.Assert ArryDims(arr1) = 1
-    Debug.Assert ArryItems(arr1) = 10
-    
-    Debug.Assert ArryDims(arr2) = 1
-    Debug.Assert ArryItems(arr2) = 11
-    Debug.Assert ArryItems(arr3) = 0
-
-End Sub
 
 Public Sub ArryRemoveItems(ByRef a_va As Variant, _
                   Optional ByVal a_element As Variant, _
@@ -1362,7 +1327,7 @@ Public Sub DelayedTest2(ByVal arg1 As String, _
     Debug.Print "DelayedTest2 with args " & arg1 & " and " & arg2
 End Sub
 
-Private Sub DictTest()
+Public Sub DictTest()
 
     Dim dct As Dictionary
     
@@ -1773,18 +1738,19 @@ Public Function StackEd(ByVal s_stck As Collection, _
                Optional ByRef s_item As Variant = -999999999, _
                Optional ByRef s_lvl As Long = 0) As Variant
 ' ----------------------------------------------------------------------------
-' Returns TRUE when an item (s_item) is stacked at a given level (s_lvl) or
-' when no level is provided, when it is stacked at any level. In the latter
-' case the level (s_lvl) is returned.
-' Returns the stacked item when none is provided and but a level is.
+' Returns:
+' - TRUE when an item (s_item) is stacked at a given level (s_lvl) or
+'   when no level is provided, when it is stacked at any level. In the latter
+'   case the level (s_lvl) is returned.
+' - The stacked item when none is provided and but a level is.
+'
 ' Restriction: The function works with any kind of object an an item which is
 '              not -999999999, which is regarded no item is provided.
 ' ----------------------------------------------------------------------------
     Const PROC = "StckEd"
     
     On Error GoTo eh
-    Dim v       As Variant
-    Dim i       As Long
+    Dim i As Long
     
     If s_stck Is Nothing Then Set s_stck = New Collection
     

@@ -6,7 +6,7 @@ Option Explicit
 ' or the Synchronize VB-Projects). To be imported into any VBProject for
 ' making use of one or more services.
 '
-' W. Rauschenberger, Berlin Jul 2024
+' W. Rauschenberger, Berlin Dec 2024
 ' See https://github.com/warbe-maker/VB-Components-Management
 ' ----------------------------------------------------------------------------
 Public Const COMPMAN_DEVLP              As String = "CompMan.xlsb"
@@ -41,26 +41,6 @@ End Type
 
 Const IID_IDispatch As String = "{00020400-0000-0000-C000-000000000046}"
 Const OBJID_NATIVEOM As LongPtr = &HFFFFFFF0
-' --- End of declarations to get all Workbooks of all running Excel instances
-' --- Error declarations
-Const ERR_EXISTS_CMP01 = "The Component (parameter vComp) for the Component's existence check is neihter a Component object nor a string (a Component's name)!"
-Const ERR_EXISTS_CVW01 = "The CustomView (parameter vCv) for the CustomView's existence check is neither a string (CustomView's name) nor a CustomView object!"
-Const ERR_EXISTS_FLE01 = "The File (parameter vFile) for the File's existence check is neither a full path/file name nor a file object!"
-Const ERR_EXISTS_OWB01 = "The Workbook (parameter vWb) is not open (it may have been open and already closed)!"
-Const ERR_EXISTS_OWB02 = "A Workbook named '<>' is not open in any application instance!"
-Const ERR_EXISTS_OWB03 = "The Workbook (parameter vWb) of which the open object is requested is ""Nothing"" (neither a Workbook object nor a Workbook's name or fullname)!"
-Const ERR_EXISTS_PRC01 = "The item (parameter v) for the Procedure's existence check is neither a Component object nor a CodeModule object!"
-Const ERR_EXISTS_RNG01 = "The Worksheet (parameter vWs) for the Range's existence check does not exist in Workbook (vWb)!"
-Const ERR_EXISTS_RNG02 = "The Range (parameter vRange) for the Range's existence check is ""Nothing""!"
-Const ERR_EXISTS_REF01 = "The Reference (parameter vRef) for the Reference's existence check is neither a valid GUID (a string enclosed in { } ) nor a Reference object!"
-Const ERR_EXISTS_WBK01 = "The Workbook (parameter vWb) is neither a Workbook object nor a Workbook's name or fullname)!"
-Const ERR_EXISTS_WSH01 = "The Worksheet (parameter vWs) for the Worksheet's existence check is neither a Worksheet object nor a Worksheet's name or modulename!"
-Const ERR_EXISTS_GOW01 = "A Workbook (parameter vWb) named '<>' is not open!"
-Const ERR_EXISTS_GOW02 = "A Workbook with the provided name (parameter vWb) is open. However it's location is '<>1' and not '<>2'!"
-Const ERR_EXISTS_GOW03 = "A Workbook named '<>' (parameter vWb) is not open. A full name must be provided to get it opened!"
-Const ERR_EXISTS_GOW04 = "The Workbook (parameter vWb) is a Workbook object not/no longer open!"
-Const ERR_EXISTS_GOW05 = "The Workbook (parameter vWb) is neither a Workbook object nor a string (name or fullname)!"
-Const ERR_EXISTS_GOW06 = "A Workbook file named '<>' (parameter vWb) does not exist!"
 
 Private Property Let DisplayedServiceStatus(ByVal s As String)
     With Application
@@ -69,21 +49,20 @@ Private Property Let DisplayedServiceStatus(ByVal s As String)
     End With
 End Property
 
-Public Property Get IsAddinInstance() As Boolean
+Public Function IsAddinInstance() As Boolean
     IsAddinInstance = ThisWorkbook.Name = COMPMAN_ADDIN
-End Property
+End Function
 
-Public Property Get IsDevInstance() As Boolean
+Public Function IsDevInstance() As Boolean
     IsDevInstance = ThisWorkbook.Name = mCompManClient.COMPMAN_DEVLP
-End Property
+End Function
 
-Public Property Get ServiceName(Optional ByVal s As String) As String
+Public Function ServiceName(Optional ByVal s As String) As String
     Select Case s
         Case SRVC_EXPORT_CHANGED:   ServiceName = SRVC_EXPORT_CHANGED_DSPLY
-        Case SRVC_SYNCHRONIZE:      ServiceName = SRVC_SYNCHRONIZE_DSPLY
         Case SRVC_UPDATE_OUTDATED:  ServiceName = SRVC_UPDATE_OUTDATED_DSPLY
     End Select
-End Property
+End Function
 
 Private Function AppErr(ByVal app_err_no As Long) As Long
 ' ------------------------------------------------------------------------------
@@ -140,9 +119,7 @@ Public Sub CompManService(ByVal c_service_proc As String, _
         Progress p_service_name:=ServiceName(c_service_proc) _
                , p_serviced_wbk_name:=ThisWorkbook.Name _
                , p_by_servicing_wbk_name:=sServicingWbkName
-        If c_service_proc = mCompManClient.SRVC_SYNCHRONIZE _
-        Then Application.Run sServicingWbkName & "!mCompMan." & mCompManClient.SRVC_SYNCHRONIZE, ThisWorkbook _
-        Else Application.Run sServicingWbkName & "!mCompMan." & c_service_proc, ThisWorkbook, c_hosted_common_components, c_public_procedure_copies
+        Application.Run sServicingWbkName & "!mCompMan." & c_service_proc, ThisWorkbook, c_hosted_common_components, c_public_procedure_copies
     Else
         Progress p_service_name:=ServiceName(c_service_proc) _
                , p_serviced_wbk_name:=ThisWorkbook.Name _
@@ -340,19 +317,19 @@ xt: Exit Sub
 eh: If ErrMsg(ErrSrc(PROC)) = vbYes Then: Stop: Resume
 End Sub
 
-'#If Win64 Then
+#If Win64 Then
     Private Function GetExcelObjectFromHwnd(ByVal hWndMain As LongPtr) As Application
-'#Else
-'    Private Function GetExcelObjectFromHwnd(ByVal hWndMain As Long) As Application
-'#End If
-'
-'#If Win64 Then
+#Else
+    Private Function GetExcelObjectFromHwnd(ByVal hWndMain As Long) As Application
+#End If
+
+#If Win64 Then
     Dim hWndDesk As LongPtr
     Dim hWnd As LongPtr
-'#Else
-'    Dim hWndDesk As Long
-'    Dim hWnd As Long
-'#End If
+#Else
+    Dim hWndDesk As Long
+    Dim hWnd As Long
+#End If
 ' -----------------------------------------------------------------------------------
 '
 ' -----------------------------------------------------------------------------------
@@ -410,7 +387,8 @@ Public Sub Progress(ByVal p_service_name As String, _
            Optional ByVal p_no_comps_outdated As Long = 0, _
            Optional ByVal p_no_comps_total As Long = 0, _
            Optional ByVal p_no_comps_skipped As Long = 0, _
-           Optional ByVal p_service_info As String = vbNullString)
+           Optional ByVal p_service_info As String = vbNullString, _
+           Optional ByVal p_sequ_no As Long = 0)
 ' --------------------------------------------------------------------------
 ' Progress display in the Application.StatusBar for CompMan services.
 ' Form: <service> (by <by>) for <serviced>: <n> of <m> <o> [<c> [, <c>] ..]
@@ -447,7 +425,9 @@ Public Sub Progress(ByVal p_service_name As String, _
     End If
     
     If p_service_op <> vbNullString Then
-        sMsg = Replace(sMsg, "<op>", p_service_op)
+        If p_sequ_no = 0 _
+        Then sMsg = Replace(sMsg, "<op>", p_service_op) _
+        Else sMsg = Replace(sMsg, "<op>", p_service_op & " " & p_sequ_no & " ")
     Else
         sMsg = Replace(sMsg, "<op>", "Service initiating")
     End If
@@ -526,7 +506,6 @@ Private Function ServicingWbkName(ByVal s_service_proc As String) As String
             DisplayedServiceStatus = "The service has been denied because the AddIn is paused!"
         Case ServicedByWrkbkResult = ResultConfigInvalid
             Select Case s_service_proc
-                Case SRVC_SYNCHRONIZE:      DisplayedServiceStatus = vbNullString ' "'" & SRVC_SYNCHRONIZE_DSPLY & "' service denied (no Sync-Target- and or Sync-Archive-Folder configured)!"
                 Case SRVC_UPDATE_OUTDATED:  DisplayedServiceStatus = "The enabled/requested '" & SRVC_UPDATE_OUTDATED_DSPLY & "' service had been denied due to an invalid or missing configuration (see Config Worksheet)!"
                 Case SRVC_EXPORT_CHANGED:   DisplayedServiceStatus = "The enabled/requested'" & SRVC_EXPORT_CHANGED_DSPLY & "' service had been denied due to an invalid or missing configuration (see Config Worksheet)!"
             End Select
@@ -535,7 +514,6 @@ Private Function ServicingWbkName(ByVal s_service_proc As String) As String
                    , p_serviced_wbk_name:=ThisWorkbook.Name _
                    , p_service_info:="Service not applicable"
             Select Case s_service_proc
-                Case SRVC_SYNCHRONIZE:      Debug.Print ErrSrc(PROC) & ": " & "The enabled/requested '" & SRVC_SYNCHRONIZE_DSPLY & "' service had silently been denied! (Workbook has not been opened from within the configured 'Sync-Target-Folder')"
                 Case SRVC_UPDATE_OUTDATED:  Debug.Print ErrSrc(PROC) & ": " & "The enabled/requested '" & SRVC_EXPORT_CHANGED_DSPLY & "' service had silently been denied! (Workbook has not been opened from within the configured 'Dev-and-Test-Folder')"
                 Case SRVC_EXPORT_CHANGED
                     Debug.Print ErrSrc(PROC) & ": " & "The enabled/requested '" & SRVC_UPDATE_OUTDATED_DSPLY & "' service had silently been denied! (Workbook has not been opened from within the configured 'Dev-and-Test-Folder')"
