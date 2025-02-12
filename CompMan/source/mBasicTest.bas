@@ -343,7 +343,7 @@ Public Sub Regression()
     mBasicTest.Test_0010_Fundamentals
     mBasicTest.Test_0110_Align_Simple
     mBasicTest.Test_0120_Align_column_arranged
-    mBasicTest.Test_0200_Arry_Next_Index
+    mBasicTest.Test_0200_ArryNextIndex
     mBasicTest.Test_0210_Arry_Get
     mBasicTest.Test_0215_Arry_Let
     mBasicTest.Test_0220_ArryAsRnge_RngeAsArry
@@ -555,41 +555,41 @@ Public Sub Test_0010_Fundamentals()
         .Title = "Fundamental services"
         .TestedProc = "TimerStart, TimerEnd"
         
-'        .Verification = "Timer precision proof: The execution time of ""sleep 500"" should be as close as possible to 500 msec"
-'            .TestedProc = "TimerStart, TimerEnd"
-'            .TestedProcType = "Sub, Function"
-'            .TimerStart
-'            .SleepMsecs 500 '~~ Nothing executed
-'            Debug.Print "Sleep 500 = " & .TimerEnd & " exec time in msecs"
-'            .Result = True
-'            .ResultExpected = True
-'
-'        .Verification = "A TestArray is provided conforming with expectations"
-'            Set arr = Nothing
-'            arr = TestArray(2, 2, 2)
-'            .Result = arr(2, 2, 2)
-'            .ResultExpected = "Item(2,2,2)"
-'
-'        .Verification = "An aleady redimed TestArray is provided conforming with expectations"
-'            ReDim arr(3, 3, 3)
-'            arr = TestArray(arr)
-'            .Result = arr(1, 2, 3)
-'            .ResultExpected = "Item(1,2,3)"
-'
-'        .Verification = "Max value without arguments is 0"
-'            .TestedProc = "Max"
-'            .TestedProcType = "Function"
-'            .Result = Max()
-'            .ResultExpected = 0
-'
-'        .Verification = "Max returns the max value of provided arguments"
-'            .Result = Max(10, 50, 2)
-'            .ResultExpected = 50
-'
-'        .Verification = "Max returns the max length when arguments are strings"
-'            .Result = Max("1234", "12345678", "123")
-'            .ResultExpected = CLng(8)
-'
+        .Verification = "Timer precision proof: The execution time of ""sleep 500"" should be as close as possible to 500 msec"
+            .TestedProc = "TimerStart, TimerEnd"
+            .TestedProcType = "Sub, Function"
+            .TimerStart
+            .SleepMsecs 500 '~~ Nothing executed
+            Debug.Print "Sleep 500 = " & .TimerEnd & " exec time in msecs"
+            .Result = True
+            .ResultExpected = True
+
+        .Verification = "A TestArray is provided conforming with expectations"
+            Set arr = Nothing
+            arr = TestArray(2, 2, 2)
+            .Result = arr(2, 2, 2)
+            .ResultExpected = "Item(2,2,2)"
+
+        .Verification = "An aleady redimed TestArray is provided conforming with expectations"
+            ReDim arr(3, 3, 3)
+            arr = TestArray(arr)
+            .Result = arr(1, 2, 3)
+            .ResultExpected = "Item(1,2,3)"
+
+        .Verification = "Max value without arguments is 0"
+            .TestedProc = "Max"
+            .TestedProcType = "Function"
+            .Result = Max()
+            .ResultExpected = 0
+
+        .Verification = "Max returns the max value of provided arguments"
+            .Result = Max(10, 50, 2)
+            .ResultExpected = 50
+
+        .Verification = "Max returns the max length when arguments are strings"
+            .Result = Max("1234", "12345678", "123")
+            .ResultExpected = CLng(8)
+
         .Verification = "Max returns the max value of provided arguments of which some are provided as array"
             .Result = Max(10, Array(3, 5, 60), 50, 2)
             .ResultExpected = 60
@@ -747,8 +747,8 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
   End Select
 End Sub
 
-Public Sub Test_0200_Arry_Next_Index()
-    Const PROC = "Test_0200_Arry_Next_Index"
+Public Sub Test_0200_ArryNextIndex()
+    Const PROC = "Test_0200_ArryNextIndex"
 
     On Error GoTo eh
     Dim arr             As Variant
@@ -1144,6 +1144,39 @@ Public Sub Test_0240_ArryDiffers()
             .Result = mBasic.ArryDiffers(a1, a2, True)
             .ResultExpected = False
         
+    End With
+    
+xt: EoP ErrSrc(PROC)
+    Exit Sub
+
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
+End Sub
+
+Public Sub Test_0245_ArryDims()
+
+    Const PROC  As String = "Test_0240_ArryDiffers"
+    
+    On Error GoTo eh
+    Dim arr         As Variant
+    Dim lDims       As Long
+    Dim cllSpecs    As Collection
+    
+    Prepare
+    BoP ErrSrc(PROC)
+    
+    With TestAid
+        .TestId = "0245"
+        .Title = "Array dimensions"
+        .TestedProc = "ArryDims"
+        .TestedProcType = "Function"
+        
+        .Verification = "Specified but un-allocated"
+            ReDim arr(3 To 5)
+            ArryDims arr, cllSpecs, lDims
+            
     End With
     
 xt: EoP ErrSrc(PROC)

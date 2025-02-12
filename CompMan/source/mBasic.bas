@@ -1604,14 +1604,10 @@ Public Function ArryItems(ByVal a_arr As Variant, _
     Dim i       As Long
     
     lDims = ArryDims(a_arr)
-    
     If Not a_empty_excluded Then
-        For i = lDims To 1 Step -1
-            If i = lDims Then
-                lItems = UBound(a_arr, i) - LBound(a_arr, i) + 1
-            Else
-                lItems = lItems * (UBound(a_arr, i) - LBound(a_arr, i) + 1)
-            End If
+        lItems = 1
+        For i = 1 To lDims
+            lItems = lItems * (UBound(a_arr, i) - LBound(a_arr, i) + 1)
         Next i
     Else
         For Each v In a_arr
