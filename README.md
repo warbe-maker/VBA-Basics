@@ -1,7 +1,6 @@
 # Basic VBA Services
 A (personal) collection of basic services, collected over a long time,  used in many VB-projects. Some of them [^1] serve my personal common Excel VB-Project development needs.  
->Many of the services may raise an [application error](#application-error-apperr) when inadequately used. See also [Common error handling](#common-error-handling) together with a comprehensive error message `ErrMsg` service is used.   
-
+>Many of the services may raise an [application error][8] when inadequately used. See also [Common error handling][7] together with a comprehensive error message `ErrMsg` service is used. The used procedures are part of these basic services.
 
 # Services
 |Service             |Kind&nbsp;[^2]|Description |
@@ -47,144 +46,6 @@ A (personal) collection of basic services, collected over a long time,  used in 
 |***TimerBegin***       |F|Returns the current system ticks as the start of a timer. |
 |***TimerEnd***         |F|Returns, based on a provided ***TimerBegin***:<br>'- the end-ticks<br>- the elapsed ticks<br>- the elapsed time in the provided format which defaults to `"hh:mm:ss.0000"`.)|
 
-# Examples
-## Examples ArryDims
-```vb
-    Dim cllSpecs As Collection
-    Dim lDims    As Long
-    Dim i        As Long
-    
-    ' Example 1
-    For i = 1 To ArryDims(arr)
-        ' any processing
-    Next i
-    ' Example 2
-    ArryDims arr, cllSpecs, lDims
-    For i = 1 To lDims
-        ' cllSpecs(i)(1) = LBound of the dimension
-        ' cllSpecs(i)(2) = Ubound of the dimension
-    Next i
-```
-
-## Example ...
-
-## The error handling of services
-### Scheme
-```vb
-Private Sub MyService()
-    Const PROC = "MyService"
-    On Error Goto eh
-    
-xt: Exit Sub    
-eh: Select Case ErrMsg(ErrSrc(PROC))
-        Case vbResume:  Stop: Resume
-        Case Else:      GoTo xt
-    End Select
-End Sub
-```
-
-### Used procedures 
-#### Application error (AppErr)
-```vb
-Private Function AppErr(ByVal a_no As Long) As Long
-    If a_no >= 0 _
-    Then AppErr = a_no + vbObjectError _
-    Else AppErr = Abs(a_no - vbObjectError)
-End Function
-```
-
-#### The source of an error (ErrSrc)
-```vb
-Private Function ErrSrc(ByVal e_proc As String) As String
-    ErrSrc = "<component-name>." & e_proc
-End Function
-```
-
-#### The common error message (ErrMsg)
-```vb
-Private Function ErrMsg(ByVal e_source As String, _
-               Optional ByVal e_no As Long = 0, _
-               Optional ByVal e_dscrptn As String = vbNullString, _
-               Optional ByVal e_line As Long = 0) As Variant
-' ------------------------------------------------------------------------------
-' Universal error message display service displaying:
-' - the source (procedure) of the error
-' - the kind of error (RunTime or Application)
-' - the path to the error (when available)
-' - a debugging option button
-' - an "About:" section when the e_dscrptn has an additional string
-'   concatenated by two vertical bars (||)
-' The display may optionally use the "Common VBA Message Service (fMsg/mMsg)
-' when installed (indicated by Cond. Comp. Arg. `mMsg = 1` or by means of
-' the VBA.MsgBox in case "mMsg" is not availablenot.
-'
-' W. Rauschenberger Berlin, Jan 2024
-' See: https://github.com/warbe-maker/VBA-Error
-' ------------------------------------------------------------------------------
-#If mErH = 1 Then
-    '~~ When Common VBA Error Services (mErH) is availabel in the VB-Project
-    '~~ (which includes the mMsg component) the mErh.ErrMsg service is invoked.
-    ErrMsg = mErH.ErrMsg(e_source, e_no, e_dscrptn, e_line): GoTo xt
-    GoTo xt
-#ElseIf mMsg = 1 Then
-    '~~ When (only) the Common Message Service (mMsg, fMsg) is available in the
-    '~~ VB-Project, mMsg.ErrMsg is invoked for the display of the error message.
-    ErrMsg = mMsg.ErrMsg(e_source, e_no, e_dscrptn, e_line): GoTo xt
-    GoTo xt
-#End If
-    '~~ When neither of the Common Component is available in the VB-Project
-    '~~ the error message is displayed by means of the VBA.MsgBox
-    Dim ErrBttns    As Variant
-    Dim ErrAtLine   As String
-    Dim ErrDesc     As String
-    Dim ErrLine     As Long
-    Dim ErrNo       As Long
-    Dim ErrSrc      As String
-    Dim ErrText     As String
-    Dim ErrTitle    As String
-    Dim ErrType     As String
-    Dim ErrAbout    As String
-        
-    '~~ Obtain error information from the Err object for any argument not provided
-    If e_no = 0 Then e_no = Err.Number
-    If e_line = 0 Then ErrLine = Erl
-    If e_source = vbNullString Then e_source = Err.Source
-    If e_dscrptn = vbNullString Then e_dscrptn = Err.Description
-    If e_dscrptn = vbNullString Then e_dscrptn = "--- No error description available ---"
-    '~~ About
-    ErrDesc = e_dscrptn
-    If InStr(e_dscrptn, "||") <> 0 Then
-        ErrDesc = Split(e_dscrptn, "||")(0)
-        ErrAbout = Split(e_dscrptn, "||")(1)
-    End If
-    '~~ Type of error
-    If e_no < 0 Then
-        ErrType = "Application Error ": ErrNo = AppErr(e_no)
-    Else
-        ErrType = "VB Runtime Error ":  ErrNo = e_no
-        If e_dscrptn Like "*DAO*" _
-        Or e_dscrptn Like "*ODBC*" _
-        Or e_dscrptn Like "*Oracle*" _
-        Then ErrType = "Database Error "
-    End If
-    
-    '~~ Title
-    If e_source <> vbNullString Then ErrSrc = " in: """ & e_source & """"
-    If e_line <> 0 Then ErrAtLine = " at line " & e_line
-    ErrTitle = Replace(ErrType & ErrNo & ErrSrc & ErrAtLine, "  ", " ")
-    '~~ Description
-    ErrText = "Error: " & vbLf & ErrDesc
-    '~~ About
-    If ErrAbout <> vbNullString Then ErrText = ErrText & vbLf & vbLf & "About: " & vbLf & ErrAbout
-    
-    ErrBttns = vbYesNo
-    ErrText = ErrText & vbLf & vbLf & "Debugging:" & vbLf & "Yes    = Resume Error Line" & vbLf & "No     = Terminate"
-    ErrMsg = MsgBox(Title:=ErrTitle, Prompt:=ErrText, Buttons:=ErrBttns)
-xt:
-End Function
-
-```
-
 
 [^1]: It goes without saying that my VB-Projects use this _mBasic_ component. However, all my _Common Components_ use some services as `Private Sub` copy. This keeps them 100% autonomous, i.e. independent from this and other components but still serve my personal use of them. The service i am talking about are:  
 -&nbsp;***BoP/EoP***, and ***ErrMsg*** to keep them independent from the ***[Common VBA Error Services][2]***  
@@ -198,5 +59,7 @@ End Function
 [2]: https://github.com/warbe-maker/VBA-Error
 [3]: https://github.com/warbe-maker/VBA-Trace
 [4]: https://github.com/warbe-maker/VBA-Basics
-[5]: https://github.com/warbe-maker/VBA-Basics/blob/master/SpecsAndUse.md#arrydims
-[6]: https://github.com/warbe-maker/VBA-Basics/blob/master/SpecsAndUse.md#arry
+[5]: https://github.com/warbe-maker/VBA-Basics/blob/master/SpecsAndUse.md#the-arrydims-service
+[6]: https://github.com/warbe-maker/VBA-Basics/blob/master/SpecsAndUse.md#the-arry-service
+[7]: https://github.com/warbe-maker/VBA-Basics/blob/master/SpecsAndUse.md#error-handling-application-errors
+[8]: https://github.com/warbe-maker/VBA-Basics/blob/master/SpecsAndUse.md#application-error-apperr
