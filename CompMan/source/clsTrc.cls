@@ -99,7 +99,7 @@ End Enum
 #If Win64 Or VBA7 Then
     Private Declare PtrSafe Function apiShellExecute Lib "shell32.dll" _
         Alias "ShellExecuteA" _
-        (ByVal hWnd As Long, _
+        (ByVal hwnd As Long, _
         ByVal lpOperation As String, _
         ByVal lpFile As String, _
         ByVal lpParameters As String, _
@@ -137,8 +137,8 @@ Private cyTcksAtStart       As Currency         ' Trace log to file
 Private LastNtry            As Collection       '
 Private cySysFrequency      As Currency         ' Execution Trace SysFrequency (initialized with init)
 Private cyTcksOvrhdItm      As Currency         ' Execution Trace time accumulated by caused by the time tracking itself
-Private cyTcksOvrhdTrc      As Currency         ' Overhead ticks caused by the collection of a traced item's entry
-Private cyTcksOvrhdTrcStrt  As Currency         ' Overhead ticks caused by the collection of a traced item's entry
+Private cyTcksOvrhdTrc      As Currency         ' Overhead ticks caused by the collection of a traced Item's entry
+Private cyTcksOvrhdTrcStrt  As Currency         ' Overhead ticks caused by the collection of a traced Item's entry
 Private cyTcksPaused        As Currency         ' Accumulated with procedure Continue
 Private cyTcksPauseStart    As Currency         ' Set with procedure Pause
 Private dtTraceBegin        As Date             ' Initialized at start of execution trace
@@ -172,9 +172,9 @@ End Sub
 ' Universal read/write array procedure.
 ' Read:  Returns Null when a given array (c_arr) is not allocated or a
 '        provided index is beyond/outside current number of items.
-' Write: - Adds an item (c_var) to an array (c_arr) when no index is provided
+' Write: - Adds an Item (c_var) to an array (c_arr) when no index is provided
 '          or adds it with the provided index
-'        - When an index is provided, the item is inserted/updated at the
+'        - When an index is provided, the Item is inserted/updated at the
 '          given index, even when the array yet doesn't exist or yet is not
 '          allocated.
 ' ----------------------------------------------------------------------------
@@ -196,7 +196,7 @@ End Property
 Private Property Let Arry(Optional ByRef c_arr As Variant, _
                           Optional ByVal c_index As Long = -99, _
                                    ByVal c_var As Variant)
-    Const PROC = "Arry-Let"
+    Const PROC = "Arry(Let)"
     
     Dim bIsAllocated As Boolean
     
@@ -210,16 +210,16 @@ Private Property Let Arry(Optional ByRef c_arr As Variant, _
     End If
     
     If bIsAllocated = True Then
-        '~~ The array has at least one item
+        '~~ The array has at least one Item
         If c_index = -99 Then
-            '~~ When for an allocated array no index is provided, the item is added
+            '~~ When for an allocated array no index is provided, the Item is added
             ReDim Preserve c_arr(UBound(c_arr) + 1)
             c_arr(UBound(c_arr)) = c_var
         ElseIf c_index >= 0 And c_index <= UBound(c_arr) Then
-            '~~ Replace an existing item
+            '~~ Replace an existing Item
             c_arr(c_index) = c_var
         ElseIf c_index > UBound(c_arr) Then
-            '~~ New item beyond current UBound
+            '~~ New Item beyond current UBound
             ReDim Preserve c_arr(c_index)
             c_arr(c_index) = c_var
         ElseIf c_index < LBound(c_arr) Then
@@ -229,7 +229,7 @@ Private Property Let Arry(Optional ByRef c_arr As Variant, _
     ElseIf bIsAllocated = False Then
         '~~ The array does yet not exist
         If c_index = -99 Then
-            '~~ When no index is provided the item is the first of a new array
+            '~~ When no index is provided the Item is the first of a new array
             c_arr = Array(c_var)
         ElseIf c_index >= 0 Then
             ReDim c_arr(c_index)
@@ -335,7 +335,7 @@ End Property
 
 Friend Property Get LogSuspended() As Boolean:              LogSuspended = bLogToFileSuspended:             End Property
 
-Friend Property Let LogSuspended(ByVal b As Boolean):       bLogToFileSuspended = b:                        End Property
+Friend Property Let LogSuspended(ByVal B As Boolean):       bLogToFileSuspended = B:                        End Property
 
 Private Property Let NtryItm(Optional ByVal t_entry As Collection, ByVal v As Variant)
     t_entry.Add v, "I"
@@ -390,7 +390,7 @@ End Function
 
 Private Function ArryIsAllocated(ByVal a_arr As Variant) As Boolean
 ' ----------------------------------------------------------------------------
-' Returns TRUE when the array (a_arr) is allocated, i.e. has at least one item.
+' Returns TRUE when the array (a_arr) is allocated, i.e. has at least one Item.
 ' ----------------------------------------------------------------------------
     On Error Resume Next
     ArryIsAllocated = UBound(a_arr) >= LBound(a_arr)
@@ -509,7 +509,7 @@ End Function
 Private Function DsplyArgs(ByVal t_entry As Collection) As String
 ' ------------------------------------------------------------------------------
 ' Returns a string with the collection of the traced arguments. Any entry ending
-' with a ":" or "=" is an arguments name with its value in the subsequent item.
+' with a ":" or "=" is an arguments name with its value in the subsequent Item.
 ' ------------------------------------------------------------------------------
     Dim va()    As Variant
     Dim i       As Long
@@ -1027,7 +1027,7 @@ Private Function Ntry(ByVal n_id As String, _
                       ByVal n_tcks As Currency, _
                       ByVal n_args As String) As Collection
 ' ----------------------------------------------------------------------------
-' Return the arguments as elements in an array as an item in a collection.
+' Return the arguments as elements in an array as an Item in a collection.
 ' ----------------------------------------------------------------------------
     Const PROC = "Ntry"
     
@@ -1246,7 +1246,7 @@ End Sub
 
 Private Function StckEd(ByVal stck_id As String) As Boolean
 ' ----------------------------------------------------------------------------
-' Returns TRUE when last item pushed to the stack is identical with the item
+' Returns TRUE when last Item pushed to the stack is identical with the Item
 ' (stck_id) and level (stck_lvl).
 ' ----------------------------------------------------------------------------
     Const PROC = "StckEd"
@@ -1277,18 +1277,18 @@ Private Function StckIsEmpty(ByVal stck As Collection) As Boolean
 End Function
 
 Private Sub StckPop(ByRef stck As Collection, _
-                    ByVal stck_item As Variant, _
+                    ByVal stck_Item As Variant, _
            Optional ByRef stck_ppd As Collection)
 ' ----------------------------------------------------------------------------
-' Pops the item (stck_item) from the stack (stck) when it is the top item.
-' When the top item is not identical with the provided item (stck_item) the
+' Pops the Item (stck_Item) from the stack (stck) when it is the top Item.
+' When the top Item is not identical with the provided Item (stck_Item) the
 ' pop is skipped.
 ' ----------------------------------------------------------------------------
     Const PROC = "StckPop"
     
     On Error GoTo eh
     Dim cllTop  As Collection: Set cllTop = StckTop(stck)
-    Dim cll     As Collection: Set cll = stck_item
+    Dim cll     As Collection: Set cll = stck_Item
     
     While ItmId(cll) <> ItmId(cllTop) And Not StckIsEmpty(TraceStack)
         '~~ Finish any unfinished code trace still on the stack which needs to be finished first
@@ -1307,7 +1307,7 @@ Private Sub StckPop(ByRef stck As Collection, _
         TraceStack.Remove TraceStack.Count
         Set cllTop = StckTop(TraceStack)
     Else
-        '~~ There is nothing to pop because the top item is not the one requested to pop
+        '~~ There is nothing to pop because the top Item is not the one requested to pop
         Debug.Print ErrSrc(PROC) & ": " & "Stack Pop ='" & ItmId(cll) _
                   & "', Stack Top = '" & ItmId(cllTop) _
                   & "', Stack Dir = '" & ItmDir(cllTop) _
@@ -1325,9 +1325,9 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
 End Sub
 
 Private Sub StckPush(ByRef stck As Collection, _
-                     ByVal stck_item As Variant)
+                     ByVal stck_Item As Variant)
     If stck Is Nothing Then Set stck = New Collection
-    stck.Add stck_item
+    stck.Add stck_Item
 End Sub
 
 Private Function StckTop(ByVal stck As Collection) As Collection
@@ -1411,7 +1411,7 @@ Private Sub TrcBgn(ByVal t_id As String, _
           Optional ByRef t_cll As Collection)
 ' ----------------------------------------------------------------------------
 ' Collect a trace begin entry with the current ticks count for the procedure
-' or code (item).
+' or code (Item).
 ' ----------------------------------------------------------------------------
     Dim cy  As Currency
     
@@ -1434,7 +1434,7 @@ Private Sub TrcEnd(ByVal t_id As String, _
           Optional ByRef t_cll As Collection)
 ' ----------------------------------------------------------------------------
 ' Collect an end trace entry with the current ticks count for the procedure or
-' code (item).
+' code (Item).
 ' ----------------------------------------------------------------------------
     Const PROC = "TrcEnd"
     
@@ -1443,8 +1443,8 @@ Private Sub TrcEnd(ByVal t_id As String, _
     Dim Top As Collection:  Set Top = StckTop(TraceStack)
     Dim Itm As Collection
         
-    '~~ Any end trace for an item not on the stack is ignored. On the other hand,
-    '~~ if on the stack but not the last item the stack is adjusted because this
+    '~~ Any end trace for an Item not on the stack is ignored. On the other hand,
+    '~~ if on the stack but not the last Item the stack is adjusted because this
     '~~ indicates a begin without a corresponding end trace statement.
     If Not StckEd(stck_id:=t_id) Then
         Exit Sub
@@ -1463,7 +1463,7 @@ Private Sub TrcEnd(ByVal t_id As String, _
            , t_args:=t_args _
            , t_ntry:=t_cll
          
-    StckPop stck:=TraceStack, stck_item:=t_cll, stck_ppd:=Itm
+    StckPop stck:=TraceStack, stck_Item:=t_cll, stck_ppd:=Itm
     iTrcLvl = iTrcLvl - 1
 
 xt: Exit Sub

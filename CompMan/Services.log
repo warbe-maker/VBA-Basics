@@ -1,47 +1,80 @@
-24-12-10-13:13:51                   ...............:  Code change: Line 0004 Public (Exp' ======================== regression testing, first and foremost providing                                                                    
-24-12-18-14:45:49 ==========================================================================================================================================================================================================================
-24-12-18-14:45:49 --------------------------------------------------------------------------- Update Outdated Common Components (by CompMan.xlsb) for Basic.xlsm ---------------------------------------------------------------------------
-24-12-18-14:45:49 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-24-12-18-14:45:49  Standard-Module  mErH...........:  Code change: Line 0277 Serviced (CodeModule)...:                 MsgBox "When the err_buttons argument is a numeric value  o n l y  the valid VBA.MsgBox vaulues are supported. " & _ 
-24-12-18-14:45:49                   ...............:  Code change: Line 0277 Public (Export-File)....:                 MsgBox "When the argument for the ""err_buttons"" parameter is a numeric value  o n l y  the valid VBA.MsgBox vaulues are supported. " & _ 
-24-12-18-14:45:50  Standard-Module  mCompManClient.:  Code change: Line 0007 Serviced (CodeModule)...: ' W. Rauschenberger, Berlin Jul 2024                                                                                                                       
-24-12-18-14:45:50                   ...............:  Code change: Line 0007 Public (Export-File)....: ' W. Rauschenberger, Berlin Dec 2024                                                                                                                       
-24-12-18-14:45:50  Class-Module     clsTrc.........:  Code change: Line 0077 Serviced (CodeModule)...:     Private Const vbResumeOk As Long = 7 ' Buttons value in mMsg.ErrMsg (pass on not supported)                                                            
-24-12-18-14:45:50                   ...............:  Code change: Line 0077 Public (Export-File)....:     Private Const vbResume   As Long = 6 ' return value (equates to vbYes)                                                                                 
-24-12-18-14:45:50  Standard-Module  mBasic.........:  Code change: Line 0161 Serviced (CodeModule)...: ' Basic declarations potentially uesefull in any VB-Project                                                                                                
-24-12-18-14:45:50                   ...............:  Code change: Line 0161 Public (Export-File)....: #If Win64 Then                                                                                                                                             
-24-12-18-14:45:50  UserForm         fMsg...........:  Code change: Line 0695 Serviced (CodeModule)...:     mMsg.Dsply dsply_title:="No 'Application.Run' information provided for this button!" _                                                                 
-24-12-18-14:45:50                   ...............:  Code change: Line 0695 Public (Export-File)....:     mMsg.Dsply d_title:="No 'Application.Run' information provided for this button!" _                                                                     
-24-12-18-14:45:50  Standard-Module  mMsg...........:  Code change: Line 0138 Serviced (CodeModule)...: Private Declare PtrSafe Function CreateDC Lib "gdi32" Alias "CreateDCA" (ByVal lpDriverName As String, ByVal lpDeviceName As String, ByVal lpOutput As String, lpInitData As LongPtr) As LongPtr 
-24-12-18-14:45:50                   ...............:  Code change: Line 0138 Public (Export-File)....: #If Win64 Or VBA7 Then                                                                                                                                                                           
-24-12-18-14:45:50  Standard-Module  mTrc...........:  Code change: Line 0121 Serviced (CodeModule)...: Private sPath               As String                                                                                                                                                            
-24-12-18-14:45:50                   ...............:  Code change: Line 0121 Public (Export-File)....: Private TraceStack          As Collection       ' Trace stack for the trace log written to a file                                                                                                
-24-12-18-14:45:50  Class-Module     clsTestAid.....:  Code change: Line 0004 Serviced (CodeModule)...: ' ======================== regression testing.                                                                                                                                                   
-24-12-18-14:45:50                   ...............:  Code change: Line 0004 Public (Export-File)....: ' ======================== regression testing, first and foremost providing                                                                                                                      
-24-12-18-14:45:54  Standard-Module  mErH...........:  Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.                                                                                                                                       
-24-12-18-14:45:56  Standard-Module  mCompManClient.:  Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.                                                                                                                                       
-24-12-18-14:45:58  Class-Module     clsTrc.........:  Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.                                                                                                                                       
-24-12-18-14:46:01  Standard-Module  mBasic.........:  Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.                                                                                                                                       
-24-12-18-14:46:05  UserForm         fMsg...........:  Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.                                                                                                                                       
-24-12-18-14:46:07  Standard-Module  mMsg...........:  Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.                                                                                                                                       
-24-12-18-14:46:10  Standard-Module  mTrc...........:  Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.                                                                                                                                       
-24-12-18-14:46:13  Class-Module     clsTestAid.....:  Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.                                                                                                                                       
-24-12-18-15:45:08 =================================================================================================
-24-12-18-15:45:08 --------------------- Export Changed Components (by Add-in) for Basic.xlsm ----------------------
-24-12-18-15:45:08 -------------------------------------------------------------------------------------------------
-24-12-18-15:45:08  Class-Module     clsTestAid.....:  Serviced Common Component properties housekeeping:           
-24-12-18-15:45:08                   ...............:  Serviced Common Component's Export-File meets public: Properties set equal public 
-24-12-18-15:45:08  Class-Module     clsTrc.........:  Serviced Common Component properties housekeeping:                                
-24-12-18-15:45:08                   ...............:  Serviced Common Component's Export-File meets public: Properties set equal public 
-24-12-18-15:45:09  UserForm         fMsg...........:  Serviced Common Component properties housekeeping:                                
-24-12-18-15:45:09                   ...............:  Serviced Common Component's Export-File meets public: Properties set equal public 
-24-12-18-15:45:09  Standard-Module  mBasic.........:  Serviced Common Component properties housekeeping:                                
-24-12-18-15:45:09                   ...............:  Serviced Common Component's Export-File meets public: Properties set equal public 
-24-12-18-15:45:09  Standard-Module  mCompManClient.:  Serviced Common Component properties housekeeping:                                
-24-12-18-15:45:09                   ...............:  Serviced Common Component's Export-File meets public: Properties set equal public 
-24-12-18-15:45:09  Standard-Module  mErH...........:  Serviced Common Component properties housekeeping:                                
-24-12-18-15:45:09                   ...............:  Serviced Common Component's Export-File meets public: Properties set equal public 
-24-12-18-15:45:09  Standard-Module  mMsg...........:  Serviced Common Component properties housekeeping:                                
-24-12-18-15:45:09                   ...............:  Serviced Common Component's Export-File meets public: Properties set equal public 
-24-12-18-15:45:09  Standard-Module  mTrc...........:  Serviced Common Component properties housekeeping:                                
-24-12-18-15:45:09                   ...............:  Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-11-15:50:14 --------------------- Export Changed Components (by Add-in) for Basic.xlsm ----------------------
+25-02-11-15:50:14 -------------------------------------------------------------------------------------------------
+25-02-11-15:50:14  Class-Module     clsTrc.........:  Serviced Common Component properties housekeeping:           
+25-02-11-15:50:14                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-11-15:50:14  UserForm         fMsg...........:  Serviced Common Component properties housekeeping:                                
+25-02-11-15:50:14                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-11-15:50:14  Standard-Module  mCompManClient.:  Serviced Common Component properties housekeeping:                                
+25-02-11-15:50:14                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-11-15:50:14  Standard-Module  mErH...........:  Serviced Common Component properties housekeeping:                                
+25-02-11-15:50:14                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-11-15:50:14  Standard-Module  mMsg...........:  Serviced Common Component properties housekeeping:                                
+25-02-11-15:50:14                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-11-15:50:15  Standard-Module  mTrc...........:  Serviced Common Component properties housekeeping:                                
+25-02-11-15:50:15                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-11-15:50:15  Standard-Module  mBasicTest.....:  Modified VBComponent e x p o r t e d !                                            
+25-02-11-15:50:15  Standard-Module  mBasic.........:  Common Component code change:                                                     
+25-02-11-15:50:15                                     Line 1764 Serviced (CodeModule)....: Public Sub ArryRemoveItems(ByRef a_arry As Variant, _ 
+25-02-11-15:50:15                                     Line 1764 Serviced (Export-File)...: Public Sub ArryRemoveItems(ByRef a_array As Variant, _ 
+25-02-11-15:50:15                                     Modified Common Component: Release registered pending                                       
+25-02-11-15:50:15                                     Serviced Common Component modified: E x p o r t e d !                                       
+25-02-11-15:50:15                                     Serviced Common Component modified: Re-registered pending release                           
+25-02-11-15:50:16  Class-Module     clsTestAid.....:  Common Component code change:                                                               
+25-02-11-15:50:16                                     Line 0275 Serviced (CodeModule)....:     '~~ Initialize Log headers                                      Initialize column formats (indentation, alignment, merge equal content) 
+25-02-11-15:50:16                                     Line 0275 Serviced (Export-File)...:     LogInitialize                                                                                                                           
+25-02-11-15:50:16                                     Modified Common Component: Release registered pending                                                                                                                            
+25-02-11-15:50:16                                     Serviced Common Component modified: E x p o r t e d !                                                                                                                            
+25-02-11-15:50:16                                     Serviced Common Component modified: Re-registered pending release                                                                                                                
+25-02-11-19:23:21 =================================================================================================
+25-02-11-19:23:21 --------------------- Export Changed Components (by Add-in) for Basic.xlsm ----------------------
+25-02-11-19:23:21 -------------------------------------------------------------------------------------------------
+25-02-11-19:23:21  Standard-Module  mBasicTest.....:  Modified VBComponent e x p o r t e d !                       
+25-02-11-19:23:21  Standard-Module  mBasic.........:  Common Component code change:                                
+25-02-11-19:23:21                                     Line 0278 Serviced (CodeModule)....:     Dim cllSpecNdcs     As New Collection   ' the specified indices as Collection 
+25-02-11-19:23:21                                     Line 0278 Serviced (Export-File)...:     Dim cllSpecNdcs     As Collection   ' the specified indices as Collection     
+25-02-11-19:23:21                                     Modified Common Component: Release registered pending                                                                  
+25-02-11-19:23:21                                     Serviced Common Component modified: E x p o r t e d !                                                                  
+25-02-11-19:23:21                                     Serviced Common Component modified: Properties in CommComps.dat updated                                                
+25-02-11-19:23:21                                     Serviced Common Component modified: Registered pending release                                                         
+25-02-11-19:23:22  Class-Module     clsTestAid.....:  Common Component code change:                                                                                          
+25-02-11-19:23:22                                     Line 0740 Serviced (CodeModule)....:                           ByRef a_dct As Dictionary, _                            
+25-02-11-19:23:22                                     Line 0740 Serviced (Export-File)...:                           ByRef a_dct As Object, _                                
+25-02-11-19:23:22                                     Modified Common Component: Release registered pending                                                                  
+25-02-11-19:23:22                                     Serviced Common Component modified: E x p o r t e d !                                                                  
+25-02-11-19:23:22                                     Serviced Common Component modified: Properties in CommComps.dat updated                                                
+25-02-11-19:23:22                                     Serviced Common Component modified: Registered pending release                                                         
+25-02-11-19:23:36 =================================================================================================
+25-02-11-19:23:36 ----------------- Update Outdated Common Components (by Add-in) for Basic.xlsm ------------------
+25-02-11-19:23:36 -------------------------------------------------------------------------------------------------
+25-02-11-19:23:36  Standard-Module  mCompManClient.:  Serviced Common Component used is up-to-date                 
+25-02-11-19:23:36  Class-Module     clsTrc.........:  Serviced Common Component used is up-to-date                 
+25-02-11-19:23:36  UserForm         fMsg...........:  Serviced Common Component used is up-to-date                 
+25-02-11-19:23:36  Standard-Module  mErH...........:  Serviced Common Component used is up-to-date                 
+25-02-11-19:23:36  Standard-Module  mMsg...........:  Serviced Common Component used is up-to-date                 
+25-02-11-19:23:37  Standard-Module  mTrc...........:  Serviced Common Component used is up-to-date                 
+25-02-11-19:23:51 =================================================================================================
+25-02-11-19:23:51 --------------------- Export Changed Components (by Add-in) for Basic.xlsm ----------------------
+25-02-11-19:23:51 -------------------------------------------------------------------------------------------------
+25-02-11-19:23:51  Class-Module     clsTrc.........:  Serviced Common Component properties housekeeping:           
+25-02-11-19:23:51                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-11-19:23:52  UserForm         fMsg...........:  Serviced Common Component properties housekeeping:                                
+25-02-11-19:23:52                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-11-19:23:52  Standard-Module  mCompManClient.:  Serviced Common Component properties housekeeping:                                
+25-02-11-19:23:52                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-11-19:23:52  Standard-Module  mErH...........:  Serviced Common Component properties housekeeping:                                
+25-02-11-19:23:52                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-11-19:23:52  Standard-Module  mMsg...........:  Serviced Common Component properties housekeeping:                                
+25-02-11-19:23:52                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-11-19:23:52  Standard-Module  mTrc...........:  Serviced Common Component properties housekeeping:                                
+25-02-11-19:23:52                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-12-12:22:41 =================================================================================================
+25-02-12-12:22:41 ----------------- Update Outdated Common Components (by Add-in) for Basic.xlsm ------------------
+25-02-12-12:22:41 -------------------------------------------------------------------------------------------------
+25-02-12-12:22:41  Standard-Module  mCompManClient.:  Serviced Common Component used is up-to-date                 
+25-02-12-12:22:41  Class-Module     clsTrc.........:  Serviced Common Component used is up-to-date                 
+25-02-12-12:22:42  Standard-Module  mBasic.........:  Serviced Common Component used is up-to-date                 
+25-02-12-12:22:42  UserForm         fMsg...........:  Serviced Common Component used is up-to-date                 
+25-02-12-12:22:42  Standard-Module  mErH...........:  Serviced Common Component used is up-to-date                 
+25-02-12-12:22:42  Standard-Module  mMsg...........:  Serviced Common Component used is up-to-date                 
+25-02-12-12:22:42  Standard-Module  mTrc...........:  Serviced Common Component used is up-to-date                 
+25-02-12-12:22:42  Class-Module     clsTestAid.....:  Serviced Common Component used is up-to-date                 

@@ -152,7 +152,7 @@ Private Const TWIPSPERINCH          As Long = 1440      ' -------------
 #If Win64 Or VBA7 Then
     Private Declare PtrSafe Function apiShellExecute Lib "shell32.dll" _
         Alias "ShellExecuteA" _
-        (ByVal hWnd As Long, _
+        (ByVal hwnd As Long, _
         ByVal lpOperation As String, _
         ByVal lpFile As String, _
         ByVal lpParameters As String, _
@@ -162,14 +162,14 @@ Private Const TWIPSPERINCH          As Long = 1440      ' -------------
     Private Declare PtrSafe Function CreateDC Lib "gdi32" Alias "CreateDCA" (ByVal lpDriverName As String, ByVal lpDeviceName As String, ByVal lpOutput As String, lpInitData As LongPtr) As LongPtr
     Private Declare PtrSafe Function DeleteDC Lib "gdi32" (ByVal hDC As LongPtr) As Long
     Private Declare PtrSafe Function GetActiveWindow Lib "user32" () As LongPtr
-    Private Declare PtrSafe Function GetDC Lib "user32" (ByVal hWnd As LongPtr) As LongPtr
+    Private Declare PtrSafe Function GetDC Lib "user32" (ByVal hwnd As LongPtr) As LongPtr
     Private Declare PtrSafe Function GetDeviceCaps Lib "gdi32" (ByVal hDC As LongPtr, ByVal nIndex As Long) As Long
     Private Declare PtrSafe Function getFrequency Lib "kernel32" Alias "QueryPerformanceFrequency" (TimerSystemFrequency As Currency) As Long
     Private Declare PtrSafe Function GetMonitorInfo Lib "user32" Alias "GetMonitorInfoA" (ByVal hMonitor As LongPtr, ByRef lpMI As MONITORINFOEX) As Boolean
     Private Declare PtrSafe Function GetSystemMetrics Lib "user32" (ByVal nIndex As Long) As Long
     Private Declare PtrSafe Function getTickCount Lib "kernel32" Alias "QueryPerformanceCounter" (cyTickCount As Currency) As Long
-    Private Declare PtrSafe Function MonitorFromWindow Lib "user32" (ByVal hWnd As LongPtr, ByVal dwFlags As Long) As LongPtr
-    Private Declare PtrSafe Function ReleaseDC Lib "user32" (ByVal hWnd As LongPtr, ByVal hDC As LongPtr) As Long
+    Private Declare PtrSafe Function MonitorFromWindow Lib "user32" (ByVal hwnd As LongPtr, ByVal dwFlags As Long) As LongPtr
+    Private Declare PtrSafe Function ReleaseDC Lib "user32" (ByVal hwnd As LongPtr, ByVal hDC As LongPtr) As Long
     Private Declare PtrSafe Sub Sleep Lib "kernel32" (ByVal ms As LongPtr)
 #Else
     Private Declare Function apiShellExecute Lib "shell32.dll" _
@@ -216,7 +216,7 @@ Public Property Get DsplyWidthPT() As Single:           DsplyDPItoPT DsplyHeight
 
 Private Property Get ModeLess() As Boolean:             ModeLess = bModeLess:                                               End Property
 
-Private Property Let ModeLess(ByVal b As Boolean):      bModeLess = b:                                                      End Property
+Private Property Let ModeLess(ByVal B As Boolean):      bModeLess = B:                                                      End Property
 
 Public Property Get NoOfMsgSects() As Long:             NoOfMsgSects = 8:                                                   End Property
 
@@ -654,7 +654,7 @@ Private Sub DsplyDPItoPT(Optional ByVal x_dpi As Single, _
 ' ------------------------------------------------------------------------------
     
     Dim hDC            As Variant
-    Dim RetVal         As Long
+    Dim retVal         As Long
     Dim PixelsPerInchX As Long
     Dim PixelsPerInchY As Long
  
@@ -662,7 +662,7 @@ Private Sub DsplyDPItoPT(Optional ByVal x_dpi As Single, _
     hDC = GetDC(0)
     PixelsPerInchX = GetDeviceCaps(hDC, LOGPIXELSX)
     PixelsPerInchY = GetDeviceCaps(hDC, LOGPIXELSY)
-    RetVal = ReleaseDC(0, hDC)
+    retVal = ReleaseDC(0, hDC)
     If Not IsMissing(x_dpi) And Not IsMissing(x_pts) Then x_pts = x_dpi * TWIPSPERINCH / 20 / PixelsPerInchX
     If Not IsMissing(y_dpi) And Not IsMissing(y_pts) Then y_pts = y_dpi * TWIPSPERINCH / 20 / PixelsPerInchY
 
@@ -1183,7 +1183,7 @@ Public Function Screen(ByVal Item As enScreen) As Variant
     Dim xVSizeSq        As Double
     Dim xPix            As Double
     Dim xDot            As Double
-    Dim hWnd            As LongPtr
+    Dim hwnd            As LongPtr
     Dim hDC             As LongPtr
     Dim hMonitor        As LongPtr
     Dim tMonitorInfo    As MONITORINFOEX
@@ -1194,29 +1194,29 @@ Public Function Screen(ByVal Item As enScreen) As Variant
     nMonitors = GetSystemMetrics(SM_CMONITORS)
     If nMonitors < 2 Then
         nMonitors = 1                                       ' in case GetSystemMetrics failed
-        hWnd = 0
+        hwnd = 0
     Else
-        hWnd = GetActiveWindow()
-        hMonitor = MonitorFromWindow(hWnd, MONITOR_DEFAULTTONULL)
+        hwnd = GetActiveWindow()
+        hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONULL)
         If hMonitor = 0 Then
             Debug.Print ErrSrc(PROC) & ": " & "ActiveWindow does not intersect a monitor"
-            hWnd = 0
+            hwnd = 0
         Else
             tMonitorInfo.cbSize = Len(tMonitorInfo)
             If GetMonitorInfo(hMonitor, tMonitorInfo) = False Then
                 Debug.Print ErrSrc(PROC) & ": " & "GetMonitorInfo failed"
-                hWnd = 0
+                hwnd = 0
             Else
                 hDC = CreateDC(tMonitorInfo.szDevice, 0, 0, 0)
                 If hDC = 0 Then
                     Debug.Print ErrSrc(PROC) & ": " & "CreateDC failed"
-                    hWnd = 0
+                    hwnd = 0
                 End If
             End If
         End If
     End If
-    If hWnd = 0 Then
-        hDC = GetDC(hWnd)
+    If hwnd = 0 Then
+        hDC = GetDC(hwnd)
         tMonitorInfo.dwFlags = MONITOR_PRIMARY
         tMonitorInfo.szDevice = "PRIMARY" & vbNullChar
     End If
@@ -1255,8 +1255,8 @@ Public Function Screen(ByVal Item As enScreen) As Variant
         Case Else:                  vResult = CVErr(xlErrValue)                         ' return #VALUE! error (2015)
     End Select
     
-    If hWnd = 0 _
-    Then ReleaseDC hWnd, hDC _
+    If hwnd = 0 _
+    Then ReleaseDC hwnd, hDC _
     Else DeleteDC hDC
     Screen = vResult
     
@@ -1381,7 +1381,7 @@ Private Function TempFileFullName(Optional ByVal f_path As String = vbNullString
     
 End Function
 
-Private Function CollectionAsFile(ByVal v_items As Collection, _
+Private Function CollAsFile(ByVal v_items As Collection, _
                         Optional ByRef v_file_name As String = vbNullString, _
                         Optional ByVal v_file_append As Boolean = False) As File
 ' ----------------------------------------------------------------------------
@@ -1389,8 +1389,8 @@ Private Function CollectionAsFile(ByVal v_items As Collection, _
 ' ----------------------------------------------------------------------------
 
     If v_file_name = vbNullString Then v_file_name = TempFileFullName
-    StringAsFile CollectionAsString(v_items), v_file_name, v_file_append
-    Set CollectionAsFile = FSo.GetFile(v_file_name)
+    StringAsFile CollAsStrg(v_items), v_file_name, v_file_append
+    Set CollAsFile = FSo.GetFile(v_file_name)
 
 End Function
 
@@ -1485,7 +1485,7 @@ Private Function IsObject(ByVal i_var As Variant, _
     
 End Function
 
-Private Function CollectionAsString(ByVal c_coll As Collection, _
+Private Function CollAsStrg(ByVal c_coll As Collection, _
                            Optional ByRef c_split As String = vbNullString) As String
 ' ----------------------------------------------------------------------------
 ' Returns a collection's (c_coll) items as string with the items delimited
@@ -1517,7 +1517,7 @@ Private Function CollectionAsString(ByVal c_coll As Collection, _
                 sSplit = c_split
         End Select
     Next v
-    CollectionAsString = s
+    CollAsStrg = s
 
 End Function
 
@@ -1537,7 +1537,7 @@ Private Sub StckPush(ByRef stck As Collection, _
                            "Yes: Display stack" & vbLf & _
                            "No: Continue" & vbLf & _
                            "Cancel: Terminate process", vbYesNoCancel, "Loop warning!")
-            Case vbYes:     ShellRun CollectionAsFile(stck, TempFileFullName).Path, WIN_NORMAL
+            Case vbYes:     ShellRun CollAsFile(stck, TempFileFullName).Path, WIN_NORMAL
             Case vbNo:
             Case vbCancel: Stop
         End Select

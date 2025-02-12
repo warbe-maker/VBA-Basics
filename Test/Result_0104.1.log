@@ -1,5 +1,0 @@
-Test Result Failed details: 0104.1  mBasic.Align: Align "Abcde" centered 7, filled with "- ", col-arranged
-----------+-------------+-----------------
-   P/F    |   Result    | Result Expected 
-----------+-------------+-----------------
-  Failed  | "Abcde ---" | "-- Abcde --"   

@@ -1,5 +1,0 @@
-Test Result Failed details: 0200-04.1  mBasic.Arry: Return 0 as the default from a non-existing or not allocated array
-----------+--------+-----------------
-   P/F    | Result | Result Expected 
-----------+--------+-----------------
-  Failed  | "0"    | ""              
