@@ -8,11 +8,38 @@
 }
 </style>
 # Specifications and usage examples of basic services
+All provided in the mBasic Standard module in the Basic.xlsb Workbook which provided an elaborated regression test environment.
+
+## Arry
+Universal array read/write service.  
+- **WRITE** Returns the provided *array* with the provided item either simply added, when no *indices* are provided or having an item added (or replaced) at a given *index/indices*. The returned array may have expanded any dimension's **upper bound** (not only the last one!). The **lower bound** of the dimensions remain the same however.
+- **READ** Returns from a provided *array* the item addressed by *indices*, with a default (defaults to `Empty`) for any not existing (i.e. out of bounds) item.
+
+### Syntax of Arry
+**Syntax**: `Arry(array[, indices][, default])`<br>
+<pre class="syntax">
+<b>Arr</b>(<i>array</i>[, <i>indices</i>][, <i>default</i>])
+</pre>
+
+| Argument   | Description |
+|------------|-------------|
+|*array*     | An existing, Redim-ed or not, allocated or not, array.|
+|*indices*   | A single integer, a string of indices delimited by a comma, or an Array or Collection of *indices*.|
+|*default*   | Optional, defaults to Empty, returned for an not existing index/indices.|
+
+## Specifics of the Arry service for 1-dimensional arrays
+Write with the *indices* argument may be omitted. A yet un-dimension-ed and/or un-allocated *array* is returned with the first item added, an allocated *array* is returned with the new item added or added at given index (expanded on the fly).  
+
+### Arry service for multi-dimensional arrays
+- To write the first or any subsequent item to an allocated or un-allocated multi-dimensional *array* the provision of *indices* (one for each dimension) is obligatory.
+- In contrast to VBA's `ReDim` statement this service is able to extend any dimension's **upper bound** while adding, writing, or updating an item. For re-specifying the **lower bound** and or the **upper bound** of <u>any</u> dimension see the *ArryReDim* service which also may  add dimensions (up to max 8).
+
+### Example Arry
 
 ## ArryDims
 Returns the number of dimensions and each dimension's bounds for a provided array - not necessarily allocated.
 
-### Syntax
+### Syntax of ArryDims
 <pre class="syntax">
 <b>ArryDims</b>(<i>array</i>[, <i>dimspecs</i>][, <i>dimensions</i>])
 </pre>
@@ -189,3 +216,5 @@ xt:
 End Function
 
 ```
+
+[1]: https://github.com/warbe-maker/VBA-Basics
