@@ -1,20 +1,3 @@
-25-02-11-19:23:51  Class-Module     clsTrc.........:  Serviced Common Component properties housekeeping:           
-25-02-11-19:23:51                                     Serviced Common Component's Export-File meets public: Properties set equal public 
-25-02-11-19:23:52  UserForm         fMsg...........:  Serviced Common Component properties housekeeping:                                
-25-02-11-19:23:52                                     Serviced Common Component's Export-File meets public: Properties set equal public 
-25-02-11-19:23:52  Standard-Module  mCompManClient.:  Serviced Common Component properties housekeeping:                                
-25-02-11-19:23:52                                     Serviced Common Component's Export-File meets public: Properties set equal public 
-25-02-11-19:23:52  Standard-Module  mErH...........:  Serviced Common Component properties housekeeping:                                
-25-02-11-19:23:52                                     Serviced Common Component's Export-File meets public: Properties set equal public 
-25-02-11-19:23:52  Standard-Module  mMsg...........:  Serviced Common Component properties housekeeping:                                
-25-02-11-19:23:52                                     Serviced Common Component's Export-File meets public: Properties set equal public 
-25-02-11-19:23:52  Standard-Module  mTrc...........:  Serviced Common Component properties housekeeping:                                
-25-02-11-19:23:52                                     Serviced Common Component's Export-File meets public: Properties set equal public 
-25-02-11-19:23:53 ===============================================================================================================================================================================================================================
-25-02-11-19:23:53 ------------------------------------------------------------------------------------ Export Changed Components (by Add-in) for Basic.xlsm -------------------------------------------------------------------------------------
-25-02-11-19:23:53 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-25-02-11-19:23:53 ExportChangedComponents (by CompMan.xlam) for Basic.xlsm: 0 of 11 exported     See the VBE CompMan menu for 2 Common Components pending release!  (see E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\Services.log for log details)
-25-02-12-12:22:41 ===============================================================================================
 25-02-12-12:22:41 ---------------- Update Outdated Common Components (by Add-in) for Basic.xlsm -----------------
 25-02-12-12:22:41 -----------------------------------------------------------------------------------------------
 25-02-12-12:22:41  Standard-Module  mCompManClient  Serviced Common Component used is up-to-date                 
@@ -102,3 +85,29 @@
 25-02-13-13:49:06  Standard-Module  mMsg            Serviced Common Component used is up-to-date                                      
 25-02-13-13:49:06  Standard-Module  mTrc            Serviced Common Component used is up-to-date                                      
 25-02-13-13:49:06  Class-Module     clsTestAid      Serviced Common Component used is up-to-date                                      
+25-02-13-16:23:16 =================================================================================================
+25-02-13-16:23:16  Class-Module     clsTestAid.....:  Serviced Common Component properties housekeeping:           
+25-02-13-16:23:16                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-13-16:23:16  Class-Module     clsTrc.........:  Serviced Common Component properties housekeeping:                                
+25-02-13-16:23:16                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-13-16:23:16  UserForm         fMsg...........:  Serviced Common Component properties housekeeping:                                
+25-02-13-16:23:16                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-13-16:23:16  Standard-Module  mCompManClient.:  Serviced Common Component properties housekeeping:                                
+25-02-13-16:23:16                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-13-16:23:17  Standard-Module  mErH...........:  Serviced Common Component properties housekeeping:                                
+25-02-13-16:23:17                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-13-16:23:17  Standard-Module  mMsg...........:  Serviced Common Component properties housekeeping:                                
+25-02-13-16:23:17                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-13-16:23:17  Standard-Module  mTrc...........:  Serviced Common Component properties housekeeping:                                
+25-02-13-16:23:17                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-13-16:23:17 ====================================================================================================================
+25-02-13-16:23:17 ------------------------------- Export Changed Components (by Add-in) for Basic.xlsm -------------------------------
+25-02-13-16:23:17 --------------------------------------------------------------------------------------------------------------------
+25-02-13-16:23:17  Standard-Module  mBasic          Common Component code change:                                                     
+25-02-13-16:23:17                                   Line 1529 Serviced (CodeModule)....:                  Optional ByVal a_default_ex 
+25-02-13-16:23:17                                   Line 1529 Serviced (Export-File)...:                  Optional ByVal a_empty_excl 
+25-02-13-16:23:18                                   Modified Common Component: Release registered pending                             
+25-02-13-16:23:18                                   Serviced Common Component modified: E x p o r t e d !                             
+25-02-13-16:23:18                                   Serviced Common Component modified: Properties in CommComps.dat updated           
+25-02-13-16:23:18                                   Serviced Common Component modified: Registered pending release                    
+25-02-13-16:23:18 ExportChangedComponents (by CompMan.xlam) for Basic.xlsm: 1 of 12 exported (mBasic)     See the VBE CompMan menu for 1 Common Component is pending release!  (see E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\Services.log for log details)

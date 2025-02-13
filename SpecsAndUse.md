@@ -11,6 +11,17 @@
 All services are provided in the [mBasic][1] Standard module. The component is hosted in the [Basic.xlsb][2] Workbook which provided an elaborated regression test environment (bot available for download on GitHub.
 
 ## Specifics of the *Align* services
+#### Syntax: `Align(string[, align][, length][, fill][, margin][, col_arranged])`
+
+| Argument    | Description                   | Default  |
+|-------------|-------------------------------|----------|
+|*string*     | Obligatory, string expression |
+|*align*      | Enumerated alignment          |`enAlignLeft`|
+|*length*     | Optional, integer valuse, final length of the result |`0`          |
+|*fill*       | Optional, string expression   | `" "`         |
+|*margin*     | Optional, string expression   |`vbNullString`|
+|*colarranged*| Optional, boolean expression  |`False`       |
+
 ### Alignment with margins
 When a margin is provided, the final length will be the specified length plus the length of a left and a right margin. A margin is typically used when the string is aligned as an Item of several items arranged in columns when the column delimiter is a vbNullString. When the column delimiter is a vertical bar a margin of a single space is the default *).
 ### Leading/trailing spaces and fills
@@ -62,15 +73,12 @@ Universal array read/write service.
 - **READ** Returns from a provided *array* the item addressed by *indices*, with a default (defaults to `Empty`) for any not existing (i.e. out of bounds) item.
 
 ### Syntax of the *Arry* service
-**Syntax**: `Arry(array[, indices][, default])`<br>
-<pre class="syntax">
-<b>Arr</b>(<i>array</i>[, <i>indices</i>][, <i>default</i>])
-</pre>
+#### Syntax: `Arry(array[, indices][, default])`
 
 | Argument   | Description |
 |------------|-------------|
-|*array*     | An existing, Redim-ed or not, allocated or not, array.|
-|*indices*   | A single integer, a string of indices delimited by a comma, or an Array or Collection of *indices*.|
+|*array*     | Obligatory, an existing, redim-ed or not, allocated or not, array.|
+|*indices*   | Optional, a single integer, a string of indices delimited by a comma, or an Array or Collection of *indices*.|
 |*default*   | Optional, defaults to Empty, returned for an not existing index/indices.|
 
 ## Specifics of the *Arry* service

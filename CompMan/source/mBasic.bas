@@ -1590,11 +1590,13 @@ Public Function ArryIsAllocated(ByVal a_arr As Variant) As Boolean
 End Function
 
 Public Function ArryItems(ByVal a_arr As Variant, _
-                 Optional ByVal a_empty_excluded As Boolean = False) As Long
+                 Optional ByVal a_default_excluded As Boolean = False) As Long
 ' ----------------------------------------------------------------------------
 ' Returns the number of items in a multi-dimensional array or a nested array.
 ' The latter is an array of which one or more items are again possibly multi-
-' dimensional arrays. An unallocated array returns 0.
+' dimensional arrays. An unallocated array returns 0. When items which return
+' a type specific default are excluded (a_default_excluded = True) only
+' "active= items/elements are counted.
 ' ----------------------------------------------------------------------------
     
     Dim lDim    As Long
@@ -1602,29 +1604,54 @@ Public Function ArryItems(ByVal a_arr As Variant, _
     Dim lDims   As Long
     Dim v       As Variant
     Dim i       As Long
+    Dim vDflt   As Variant
+    If Not IsArray(a_arr) Then Exit Function
     
     lDims = ArryDims(a_arr)
-    If Not a_empty_excluded Then
+    If Not a_default_excluded Then
         lItems = 1
         For i = 1 To lDims
             lItems = lItems * (UBound(a_arr, i) - LBound(a_arr, i) + 1)
         Next i
     Else
+        vDflt = ArryDefault(a_arr)
         For Each v In a_arr
             If IsArray(v) Or TypeName(v) Like "*()" Then
-                lItems = lItems + ArryItems(v, a_empty_excluded)
-            Else
-                If Not a_empty_excluded Then
-                    lItems = lItems + 1
-                Else
-                    If Not TypeName(v) = "Error" And Not v = Empty Then
-                        lItems = lItems + 1
-                    End If
-                End If
+                lItems = lItems + ArryItems(v, a_default_excluded)
+            ElseIf Not TypeName(v) = "Error" And Not v = vDflt _
+                Then lItems = lItems + 1
             End If
         Next v
     End If
     ArryItems = lItems
+    
+End Function
+
+Private Function ArryDefault(ByVal a_arry As Variant) As Variant
+' ----------------------------------------------------------------------------
+' Returns the default value of an array (a_arry) based on the element type.
+' When the provided argument is not an array, Empty is returned.
+' ----------------------------------------------------------------------------
+    
+    ' Check if the input is an array
+    If Not IsArray(a_arry) Then
+        ArryDefault = Empty
+    Else
+        Select Case VarType(a_arry(LBound(a_arry)))
+            Case vbByte: ArryDefault = 0
+            Case vbInteger:  ArryDefault = 0
+            Case vbLong:     ArryDefault = 0
+            Case vbSingle:   ArryDefault = 0
+            Case vbDouble:   ArryDefault = 0
+            Case vbCurrency: ArryDefault = 0
+            Case vbDate:     ArryDefault = #12:00:00 AM#
+            Case vbString:   ArryDefault = vbNullString
+            Case vbBoolean:  ArryDefault = False
+            Case vbVariant:  ArryDefault = Empty
+            Case vbObject:   ArryDefault = Nothing
+            Case Else:       ArryDefault = Null
+        End Select
+    End If
     
 End Function
 
@@ -2339,8 +2366,8 @@ Public Function ErrMsg(ByVal err_source As String, _
 xt:
 End Function
 
-Private Function ErrSrc(ByVal sProc As String) As String
-    ErrSrc = "mBasic." & sProc
+Private Function ErrSrc(ByVal e_proc As String) As String
+    ErrSrc = "mBasic." & e_proc
 End Function
 
 Public Function IsInteger(ByVal i_value As Variant) As Boolean
