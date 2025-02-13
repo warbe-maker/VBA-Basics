@@ -15,7 +15,7 @@ All services are provided in the [mBasic][9] Standard module. The component is h
 |***ArryDims***        |F|Returns the number of *dimensions* and optionally each dimension's bounds for a provided allocated or un-allocated array. For a yet not Redim-ed array 0 dimensions is returned. See [usage examples][5].|
 |***ArryErase***       |S|**Syntax**: `ArryErase *array*, *array* , ...`<br>Sets any provided *array* to Empty. The *array's* specifics regarding dimensions and bounds remain intact.|
 |***ArryIndices***     |F|Returns provided *indices* as Collection whereby the *indices* may be provided as integers (one for each dimension), as an array of integers, or as a string of integers delimited by a , (comma). This is a "helper-function" applicable wherever array indices cannot be provided as ParamArray, when indices are a Property argument for instance.|
-|***ArryItems***       |F|**Syntax**: `ArryItems(*array*, *include_empty*)`<br>Returns the number of items in a multi-dimensional array or a nested array. The latter is an array of which one or more items are again possibly multi-dimensional arrays. An un-allocated array returns 0. When items which return a type specific default are excluded (a_default_excluded = True) only "active= items/elements are counted.|
+|***ArryItems***       |F|**Syntax**: `ArryItems(array, defaultsexcluded)`<br>Returns the number of items in a multi-dimensional array or a nested array. The latter is an array of which one or more items are again possibly multi-dimensional arrays. An un-allocated array returns 0. When *defaultsexcluded* = True, only "active= items/elements are counted.|
 |***ArryIsAllocated*** |F|Returns TRUE when the provided array has at least one item.|
 |***ArryNextIndex***   |F|**Syntax**: `ArryNextIndex(*array*, *indices*)`<br>Returns for a provided *array* and given *indices* the logically next and TRUE when there is a next one, i.e. the provided *indices* are not indicating each dimensions upper bound.|
 |***ArryReDim***       |S|Returns a provided multi-dimensional *array* with new *dimension_specs* whereby any - not only the last dimension) may be redim-ed. The new *dimension_specs* are provided as strings following the format: "<dimension>:<from>,<to>" whereby <dimension> is either addressing a dimension in the current *array*, i.e. before the redim has taken place, or a + for a new dimension. Since only new or dimensions with changed from/to specs are provided the information will be used to compile the final redim-ed *array*'s dimensions which must not exceed 8.<br>Requires References to: "Microsoft Scripting Runtime" and "Microsoft VBScript Regular Expressions 5.5".|
@@ -23,7 +23,6 @@ All services are provided in the [mBasic][9] Standard module. The component is h
 |***ArryTrim***        |S|Returns a provided array with items leading and trailing spaces removed, Empty items removed and items with a vbNullString removed. Any items with `vbCr`, `vbCrLf`, `vbLf` are ignored/kept.|
 |***ArryUnload***      |S|Returns a 2-dim array with all items of a multi-dimensional (max 8 dimensions) array unloaded, whereby the first item is the indices delimited by a comma and the second item is the array's item. I.e. a multi-dimensional array is unloaded in a "flat" 2-dim array.|
 |***ArryUnloadToDict***|S|**Syntax**: `ArryUnloadToDict array, dictionary[, indices]`<br>Returns all items in a multi-dimensional *array* as *dictionary* with the items as the array's item and the array item's indices delimited by a comma as key. The procedure is called recursively for nested arrays collecting the *indices*.|
-
 
 ## Error handling/display services
 The services are used in all my VB-projects. In Common Components they are used as Private .... copies in order to support their autonomy, i.e. the quality of providing their common services without the involvement of other components.
@@ -38,7 +37,7 @@ The services are used in all my VB-projects. In Common Components they are used 
 
  See also [Common error handling and display service][7].
  
-## String alignment services
+## Alignment of string services
 See ... for details.
 |Service             |Kind&nbsp;[^2]|Description |
 |---------------------|:------------:|-------------|

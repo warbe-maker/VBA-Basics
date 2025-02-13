@@ -10,12 +10,27 @@
 # Specifications and usage examples of basic services
 All services are provided in the [mBasic][1] Standard module. The component is hosted in the [Basic.xlsb][2] Workbook which provided an elaborated regression test environment (bot available for download on GitHub.
 
-## The *Align* services
 ## Specifics of the *Align* services
-### Alignment with marigns
+### Alignment with margins
 When a margin is provided, the final length will be the specified length plus the length of a left and a right margin. A margin is typically used when the string is aligned as an Item of several items arranged in columns when the column delimiter is a vbNullString. When the column delimiter is a vertical bar a margin of a single space is the default *).
 ### Leading/trailing spaces and fills
 The provided string may contain leading or trailing spaces. Leading spaces are preserved when the string is left aligned, trailing spaces are preserved when the string is aligned right. In any other case leading and trailing spaces are un-stripped.
+### Examples of "simple" alignments
+|Call                     |Returns     |
+|:------------------------|------------|
+|`Align("Abcde", enAlignLeft, 8, " -")`    |`"Abcde --"` |
+|`Align("Abcde", enAlignRight, 8, "- ")`   |`"-- Abcde"` |
+|`Align("Abcde", enAlignCentered, 8, " -")`|`" Abcde -"` |
+|`Align("Abcde", enAlignCentered, 9, " -")`|`"- Abcde -"`|
+|`Align("Abcde", enAlignRight, 7, "- ")`   |`"- Abcde"`  |        
+|`Align("Abcde", enAlignCentered, 7, "-")` |`"-Abcde-"`  |
+|`Align("Abcde", enAlignLeft, 7, "-")`     |`"Abcde--"`  |
+|`Align("Abcde", enAlignRight, 6, "-")`    |`"-Abcde"`   |
+|`Align("Abcde", enAlignCentered, 6, "-")` |`"Abcde-"`   |
+|`Align("Abcde", enAlignLeft, 4, "-")`     |`"Abcd"`     |
+|`Align("Abcde", enAlignRight, 4, "-")`    |`"Abcd"`     |
+|`Align("Abcde", enAlignLeft, 4, "-", " ")`|`"Abcd"`     |
+
 ### Column arranged alignment
 The function is also used to align items arranged in columns with the following specifics:  
 - The provided length is regarded the maximum (when the provided string is longer it is truncated to the right).
@@ -24,6 +39,22 @@ The function is also used to align items arranged in columns with the following 
 - The provided length is the final length returned.
 - Any specified margin is ignored.
 - A specified fill is added only to end up with the specified length.
+
+### Examples of column arranged alignments
+|Call                     |Returns     |
+|:------------------------|------------|
+|`Align("Abcde", enAlignLeft, 8, " -", " ", True)`    |`" Abcde ---- "`  |
+|`Align("Abcde", enAlignRight, 8, "- ", " ", True)`   |`" ---- Abcde "`  |
+|`Align("Abcde", enAlignCentered, 8, " -", " ", True)`|`" -- Abcde --- "`|
+|`Align("Abcde", enAlignCentered, 7, " -", " ", True)`|`" -- Abcde -- "` |
+|`Align("Abcde", enAlignRight, 7, "- ", " ", True)`   |`" --- Abcde "`   |
+|`Align("Abcde", enAlignCentered, 7, "-", " ", True)` |`" --Abcde-- "`   |
+|`Align("Abcde", enAlignLeft, 7, "-", " ", True)`     |`" Abcde--- "`    |
+|`Align("Abcde", enAlignRight, 6, "-", " ", True)`    |`" --Abcde "`     |
+|`Align("Abcde", enAlignCentered, 6, "-", " ", True)` |`" -Abcde-- "`    |
+|`Align("Abcde", enAlignLeft, 4, "-", " ", True)`     |`" Abcd- "`       |
+|`Align("Abcde", enAlignRight, 4, "-", " ", True)`    |`" -Abcd "`       |
+|`Align("Abcde", enAlignCentered, 4, "-", " ", True)` |`" -Abcd- "`      |
 
 ## The *Arry* service
 Universal array read/write service.  
