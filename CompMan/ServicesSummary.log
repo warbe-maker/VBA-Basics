@@ -1,31 +1,3 @@
-25-02-11-19:23:21 -------------------- Export Changed Components (by Add-in) for Basic.xlsm ---------------------
-25-02-11-19:23:21 -----------------------------------------------------------------------------------------------
-25-02-11-19:23:21  Standard-Module  mBasicTest      Modified VBComponent e x p o r t e d !                       
-25-02-11-19:23:21  Standard-Module  mBasic          Common Component code change:                                
-25-02-11-19:23:21                                   Line 0278 Serviced (CodeModule)....:     Dim cllSpecNdcs     
-25-02-11-19:23:21                                   Line 0278 Serviced (Export-File)...:     Dim cllSpecNdcs     
-25-02-11-19:23:21                                   Modified Common Component: Release registered pending        
-25-02-11-19:23:21                                   Serviced Common Component modified: E x p o r t e d !        
-25-02-11-19:23:21                                   Serviced Common Component modified: Properties in CommComps. 
-25-02-11-19:23:21                                   Serviced Common Component modified: Registered pending relea 
-25-02-11-19:23:22  Class-Module     clsTestAid      Common Component code change:                                
-25-02-11-19:23:22                                   Line 0740 Serviced (CodeModule)....:                         
-25-02-11-19:23:22                                   Line 0740 Serviced (Export-File)...:                         
-25-02-11-19:23:22                                   Modified Common Component: Release registered pending        
-25-02-11-19:23:22                                   Serviced Common Component modified: E x p o r t e d !        
-25-02-11-19:23:22                                   Serviced Common Component modified: Properties in CommComps. 
-25-02-11-19:23:22                                   Serviced Common Component modified: Registered pending relea 
-25-02-11-19:23:22 ExportChangedComponents (by CompMan.xlam) for Basic.xlsm: 3 of 11 exported (mBasicTest, mBasic, clsTestAid)     See the VBE CompMan menu for 2 Common Components pending release!  (see E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\Services.log for log details)
-25-02-11-19:23:36 ===============================================================================================
-25-02-11-19:23:36 ---------------- Update Outdated Common Components (by Add-in) for Basic.xlsm -----------------
-25-02-11-19:23:36 -----------------------------------------------------------------------------------------------
-25-02-11-19:23:36  Standard-Module  mCompManClient  Serviced Common Component used is up-to-date                 
-25-02-11-19:23:36  Class-Module     clsTrc          Serviced Common Component used is up-to-date                 
-25-02-11-19:23:36  UserForm         fMsg            Serviced Common Component used is up-to-date                 
-25-02-11-19:23:36  Standard-Module  mErH            Serviced Common Component used is up-to-date                 
-25-02-11-19:23:36  Standard-Module  mMsg            Serviced Common Component used is up-to-date                 
-25-02-11-19:23:37  Standard-Module  mTrc            Serviced Common Component used is up-to-date                 
-25-02-11-19:23:51 =================================================================================================
 25-02-11-19:23:51  Class-Module     clsTrc.........:  Serviced Common Component properties housekeeping:           
 25-02-11-19:23:51                                     Serviced Common Component's Export-File meets public: Properties set equal public 
 25-02-11-19:23:52  UserForm         fMsg...........:  Serviced Common Component properties housekeeping:                                
@@ -116,3 +88,17 @@
 25-02-12-23:43:54                                   Serviced Common Component modified: E x p o r t e d !                             
 25-02-12-23:43:54                                   Serviced Common Component modified: Re-registered pending release                 
 25-02-12-23:43:55 ExportChangedComponents (by CompMan.xlam) for Basic.xlsm: 1 of 12 exported (mBasic)     See the VBE CompMan menu for 1 Common Component is pending release!  (see E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\Services.log for log details)
+25-02-13-13:49:03 =================================================================================================
+25-02-13-13:49:03  Standard-Module  mBasic.........:  Serviced Common Component properties housekeeping:           
+25-02-13-13:49:03                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-13-13:49:04 ====================================================================================================================
+25-02-13-13:49:04 --------------------------- Update Outdated Common Components (by Add-in) for Basic.xlsm ---------------------------
+25-02-13-13:49:04 --------------------------------------------------------------------------------------------------------------------
+25-02-13-13:49:04  Standard-Module  mCompManClient  Serviced Common Component used is up-to-date                                      
+25-02-13-13:49:05  Class-Module     clsTrc          Serviced Common Component used is up-to-date                                      
+25-02-13-13:49:05  Standard-Module  mBasic          Serviced Common Component used is up-to-date                                      
+25-02-13-13:49:05  UserForm         fMsg            Serviced Common Component used is up-to-date                                      
+25-02-13-13:49:05  Standard-Module  mErH            Serviced Common Component used is up-to-date                                      
+25-02-13-13:49:06  Standard-Module  mMsg            Serviced Common Component used is up-to-date                                      
+25-02-13-13:49:06  Standard-Module  mTrc            Serviced Common Component used is up-to-date                                      
+25-02-13-13:49:06  Class-Module     clsTestAid      Serviced Common Component used is up-to-date                                      

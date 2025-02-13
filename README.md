@@ -1,16 +1,12 @@
 # Basic VBA Services
 A (personal) collection of basic services, collected over a long time,  used in many VB-projects. Some of them [^1] serve my personal common Excel VB-Project development needs.  
->Many of the services may raise an [application error][8] when inadequately used. See also [Common error handling][7] together with a comprehensive error message `ErrMsg` service is used. The used procedures are part of these basic services.
+>Many of the services may raise an [application error][8] when inadequately used. See also [Common error handling][7] together with a comprehensive error message `ErrMsg` service is used. The used procedures are part of these basic services.  
+All services are provided in the [mBasic][9] Standard module. The component is hosted in the [Basic.xlsb][4] Workbook which provided an elaborated regression test environment (bot available for download on GitHub.
 
 # Services
+## Array services
 |Service             |Kind&nbsp;[^2]|Description |
 |---------------------|:------------:|-------------|
-|***Align***          |F|Returns a provided string in a specified length, with optional margins (left and right) which defaults to none, aligned left, right or centered, with an optional fill string which defaults to spaces.<br>Specifics:<br>- When a margin is provided, the final length will be the specified length plus the length of a left and a right margin. A margin is typically used when the string is aligned as an Item of several items arranged in columns when the column delimiter is a vbNullString. When the column delimiter is a vertical bar a margin of a single space is the default *).<br>- The provided string may contain leading or trailing spaces. Leading spaces are preserved when the string is left aligned, trailing spaces are preserved when the string is aligned right. In any other case leading and trailing spaces are un-stripped.<br>- The function is also used to align items arranged in columns.<br> *) Column arranged option = TRUE (defaults to False):<br>- The provided length is regarded the maximum. I.e. when the provided string is longer it is truncated to the right.<br>- The final Result string has any specified margin (left and right) added.<br>- When a fill is specified the final string has at this one added. For example when the fill string is " -", the margin is a single space and the alignment is left, a string "xxx" is returned as " xxx -------- " a string "xxxxxxxxxx" is returned as: " xxxxxxxxxx - " Column arranged option = FALSE (the default):<br>- The provided length is the final length returned.<br>- Any specified margin is ignored.<br>- A specified fill is added only to end up with the specified length.|
-|***AlignCntr***       |S|Called by ***Align*** or directly.|
-|***AlignLeft***       |S|Called by ***Align*** or directly.|
-|***AlignRght***       |S|Called by ***Align*** or directly.|
-|***AppErr***          |S|Ensures that the number of a programmed ***Application-Error*** never conflicts with a _VB-Runtime-Error_ by adding the constant _vbObjectError_ which turns it into a negative value. In return, in an error message, it turns the negative _Application-Error_ number back into its original positive number and identifies the error as an [application error][8].[^3]|
-|***AppIsInstalled***  |F|Returns TRUE when an application identified by its .exe is installed, i.e. available in the systems path.|
 |***Arry***            |P|Common, universal array READ and WRITE service supporting automated upper bound expansion for multi-dimensional array. See    |
 |***ArryAsDict***      |F|Returns a Dictionary with all items of a provided array, each with a key compiled from the indices delimited by a comma.|
 |***ArryAsRng***       |S|**Syntax:** `ArryAsRng *array*, *range*, *transposed*`<br>Copies the content of a one or two dimensional ***array*** to a provided ***range***, optionally ***transposed*** (defaults to False).|
@@ -19,7 +15,7 @@ A (personal) collection of basic services, collected over a long time,  used in 
 |***ArryDims***        |F|Returns the number of *dimensions* and optionally each dimension's bounds for a provided allocated or un-allocated array. For a yet not Redim-ed array 0 dimensions is returned. See [usage examples][5].|
 |***ArryErase***       |S|**Syntax**: `ArryErase *array*, *array* , ...`<br>Sets any provided *array* to Empty. The *array's* specifics regarding dimensions and bounds remain intact.|
 |***ArryIndices***     |F|Returns provided *indices* as Collection whereby the *indices* may be provided as integers (one for each dimension), as an array of integers, or as a string of integers delimited by a , (comma). This is a "helper-function" applicable wherever array indices cannot be provided as ParamArray, when indices are a Property argument for instance.|
-|***ArryItems***       |F|**Syntax**: `ArryItems(*array*, *include_empty*)`<br>Returns the number of items/elements in a multi-dimensional array or a nested array, by default (*include_empty* = False) excluding Empty items. Note: Nested arrays are items in an array which are an array (also called a jagged array). An un-allocated array returns 0.|
+|***ArryItems***       |F|**Syntax**: `ArryItems(*array*, *include_empty*)`<br>Returns the number of items in a multi-dimensional array or a nested array. The latter is an array of which one or more items are again possibly multi-dimensional arrays. An un-allocated array returns 0. When items which return a type specific default are excluded (a_default_excluded = True) only "active= items/elements are counted.|
 |***ArryIsAllocated*** |F|Returns TRUE when the provided array has at least one item.|
 |***ArryNextIndex***   |F|**Syntax**: `ArryNextIndex(*array*, *indices*)`<br>Returns for a provided *array* and given *indices* the logically next and TRUE when there is a next one, i.e. the provided *indices* are not indicating each dimensions upper bound.|
 |***ArryReDim***       |S|Returns a provided multi-dimensional *array* with new *dimension_specs* whereby any - not only the last dimension) may be redim-ed. The new *dimension_specs* are provided as strings following the format: "<dimension>:<from>,<to>" whereby <dimension> is either addressing a dimension in the current *array*, i.e. before the redim has taken place, or a + for a new dimension. Since only new or dimensions with changed from/to specs are provided the information will be used to compile the final redim-ed *array*'s dimensions which must not exceed 8.<br>Requires References to: "Microsoft Scripting Runtime" and "Microsoft VBScript Regular Expressions 5.5".|
@@ -27,12 +23,37 @@ A (personal) collection of basic services, collected over a long time,  used in 
 |***ArryTrim***        |S|Returns a provided array with items leading and trailing spaces removed, Empty items removed and items with a vbNullString removed. Any items with `vbCr`, `vbCrLf`, `vbLf` are ignored/kept.|
 |***ArryUnload***      |S|Returns a 2-dim array with all items of a multi-dimensional (max 8 dimensions) array unloaded, whereby the first item is the indices delimited by a comma and the second item is the array's item. I.e. a multi-dimensional array is unloaded in a "flat" 2-dim array.|
 |***ArryUnloadToDict***|S|**Syntax**: `ArryUnloadToDict array, dictionary[, indices]`<br>Returns all items in a multi-dimensional *array* as *dictionary* with the items as the array's item and the array item's indices delimited by a comma as key. The procedure is called recursively for nested arrays collecting the *indices*.|
-|***BoP/EoP***         |S|Common **B**egin-**o**f-**P**rocedure/**E**nd-**o**f-**P**rocedure  interface for the optional [Common VBA Execution Trace Service][3]. Obligatory copy Private for any VB-Component using the ***[Common VBA Execution Trace Service][3] but not having the mBasic common component installed. 1), 2).|
-|***BoC/EoC***         |S|Analog to the above for to-be-traced code sequences  1), 2) |
+
+
+## Error handling/display services
+The services are used in all my VB-projects. In Common Components they are used as Private .... copies in order to support their autonomy, i.e. the quality of providing their common services without the involvement of other components.
+
+|Service               |Kind&nbsp;[^2]| Description  |
+|----------------------|:------------:|-------------|
+|***AppErr***          |F|Returns a positive [application error][8] integer value as a negative value which not conflicts with any _VB-Runtime-Error_ by having the constant _vbObjectError_ added. The ***ErrMsg*** service identifies it as an [application error][8] and uses the service to turn it back into its origin  positive [application error][8] number. In conjunction with the unique identification of the error causing procedure these application error number can range in any procedure from 1 to n. I.e. there is no need for a VB-Project global list of the used _Application Error numbers_.|
+|***BoP/EoP***         |S|Indicates the <u>B</u>egin-<u>o</u>f-a-<u>P</u>rocedure and the <u>E</u>nd-<u>o</u>f-a-<u>P</u>rocedure. Used by the [Common VBA Message Service (fMsg/mMsg)][1] to display the path to the error. The indication is also used by the ***[Common VBA Execution Trace Service][3] - when installed.|
+|***BoC/EoC***         |S|Analog to the above for to-be-execution-traced code sequences (only relevant when the ***[Common VBA Execution Trace Service][3]*** is installed and used.|
+|***ErrMsg***          |F|Universal error message display service. Specifically as a Private copy in any VB-Component using the common error service but not having this component (mErH) installed. The function displays:<br>- a debugging option allowing to resume the error raising code line<br>- an optional additional "About:" section when the provided error description has an additional string concatenated by two vertical bars (\|\|)<br>- the error message by means of the [Common VBA Message Service (fMsg/mMsg)][1] when installed, and active (Cond. Comp. Arg. `mMsg = 1`) else by means of `VBA.MsgBox`. The function uses ***AppErr*** to identify/distinguish programmed [application errors][8] (`Err.Raise AppErr(n), ....`) and turn them back into their positive number. The function is obligatory as `Private` copy for any VB-Component using the ***[Common VBA Execution Trace Service][3]*** and/or the ***[Common VBA Error Services][2]*** but not having the mBasic common component installed. 1), 2).|
+|***ErrSrc***         |F|Returns the full name of a provided procedure's name in the form<br>`<comp-name>.<proc-name>`<br>`Private Function ErrSrc(ByVal e_proc As String) As String`<br>&nbsp;&nbsp;&nbsp;&nbsp;`ErrSrc = "<compinent-name-goes-here>." & e_proc`<br>`End Function`<br>Note: This is available in the mBasic component as `Private Function` and for being used as such in any components using the common error handling service.|
+
+ See also [Common error handling and display service][7].
+ 
+## String alignment services
+See ... for details.
+|Service             |Kind&nbsp;[^2]|Description |
+|---------------------|:------------:|-------------|
+|***Align***          |F|Returns a provided string in a specified length, with optional margins, aligned left, right or centered, optionally filled which defaults to spaces.|
+|***AlignCntr***       |S|Called by ***Align*** or directly.|
+|***AlignLeft***       |S|Called by ***Align*** or directly.|
+|***AlignRght***       |S|Called by ***Align*** or directly.|
+
+## Other services
+|Service             |Kind&nbsp;[^2]|Description |
+|---------------------|:------------:|-------------|
+|***AppIsInstalled***  |F|Returns TRUE when an application identified by its .exe is installed, i.e. available in the systems path.|
 |***Center***          |F|Returns a string centered within a string with of a given length.|
 |***CleanTrim***       |F|Returns a provide string cleaned from any non-printable characters.|
 |***Coll***            |P|**Syntax**: `Coll(collection[, argument][, default]`<br>Universal **READ** from and **WRITE** to a *collection*.<br>- **READ**: When the provided *argument* is an integer which addresses a not existing index or an index of which the element = Empty, Empty is returned, else the element's content. When the provided *argument* is not an integer the index of the first element which is identical with the provided argument is returned. When no item is identical, a *default* - which defaults to Empty - is returned.<br>- **WRITE**/Let: Writes items with any index by filling/adding the gap with Empty items.|
-|***ErrMsg***          |F|Universal error message display service. Obligatory Private copy for any VB-Component using the common error service but not having this component installed. The function displays:<br>- a debugging option allowing to resume the error raising code line<br>- an optional additional "About:" section when the provided error description has an additional string concatenated by two vertical bars (\|\|)<br>- the error message by means of the [Common VBA Message Service (fMsg/mMsg)][1] when installed, and active (Cond. Comp. Arg. `mMsg = 1`) else by means of `VBA.MsgBox`. The function uses ***AppErr*** to identify/distinguish programmed [application errors][8] (`Err.Raise AppErr(n), ....`) and turn them back into their positive number. The function is obligatory as `Private` copy for any VB-Component using the ***[Common VBA Execution Trace Service][3]*** and/or the ***[Common VBA Error Services][2]*** but not having the mBasic common component installed. 1), 2).|
 |***Max***              |F|Returns the maximum of provided arguments which may be a numeric value, a string, an Arrays, or a Collections. Of strings items the length is considered the numeric value. When an argument is an Array or a Collection the items again may be a numeric value, a string, an Arrays, or a Collection.<br>**Constraint:**  When an argument is an Array or a Collection and it contains a single item which again is an Array or a Collection, an [application error][8] is raised. Nested Arrays and/or Collections may again have items which are an Array or a Collection but only among other numeric or string items. This constraint is caused by the fact that function calls with a single argument which is an Array or a Collection are considered recursive calls and thus will result in a loop.|
 |***Min***              |F|Returns the minimum value of any number of values provided.|
 |***KeySort***          |F|Returns a provided Dictionary sorted by key. |
@@ -47,13 +68,9 @@ A (personal) collection of basic services, collected over a long time,  used in 
 |***TimerEnd***         |F|Returns, based on a provided ***TimerBegin***:<br>'- the end-ticks<br>- the elapsed ticks<br>- the elapsed time in the provided format which defaults to `"hh:mm:ss.0000"`.)|
 
 
-[^1]: It goes without saying that my VB-Projects use this _mBasic_ component. However, all my _Common Components_ use some services as `Private Sub` copy. This keeps them 100% autonomous, i.e. independent from this and other components but still serve my personal use of them. The service i am talking about are:  
--&nbsp;***BoP/EoP***, and ***ErrMsg*** to keep them independent from the ***[Common VBA Error Services][2]***  
--&nbsp;***BoP/EoP***, ***BoC/EoC*** to keep the use of the ***[Common VBA Execution Trace Service][3]*** optional
+[^1]: It goes without saying that my VB-Projects use this _mBasic_ component. However, all my _Common Components_ use any of the provided services as `Private ...` copy in order to keep them 100% autonomous, i.e. independent from this and other components. The service copied most are: ***AppErr***, ***BoP/EoP***, ***ErrMsg***, and ***ErrSrc***.
 
 [^2]: S=Sub, F=Function, P=Property (r=read/Get, w=write/Let)
-
-[^3]: ***AppErr*** is used with the ***ErrMsg*** service (and the ***[Common VBA Error Services][2]***). The unique identification of the error causing procedure allows _Application Error Numbers_ starting from 1 to n in each procedure! No need for a VB-Project global list of the used _Application Error Numbers_. The number only has a meaning within the procedure it is used.
 
 [1]: https://github.com/warbe-maker/VBA-Message
 [2]: https://github.com/warbe-maker/VBA-Error
@@ -63,3 +80,4 @@ A (personal) collection of basic services, collected over a long time,  used in 
 [6]: https://github.com/warbe-maker/VBA-Basics/blob/master/SpecsAndUse.md#the-arry-service
 [7]: https://github.com/warbe-maker/VBA-Basics/blob/master/SpecsAndUse.md#error-handling-application-errors
 [8]: https://github.com/warbe-maker/VBA-Basics/blob/master/SpecsAndUse.md#application-error-apperr
+[9]: https://github.com/warbe-maker/VBA-Basics/blob/master/CompMan/source/mBasic.bas

@@ -10,6 +10,21 @@
 # Specifications and usage examples of basic services
 All services are provided in the [mBasic][1] Standard module. The component is hosted in the [Basic.xlsb][2] Workbook which provided an elaborated regression test environment (bot available for download on GitHub.
 
+## The *Align* services
+## Specifics of the *Align* services
+### Alignment with marigns
+When a margin is provided, the final length will be the specified length plus the length of a left and a right margin. A margin is typically used when the string is aligned as an Item of several items arranged in columns when the column delimiter is a vbNullString. When the column delimiter is a vertical bar a margin of a single space is the default *).
+### Leading/trailing spaces and fills
+The provided string may contain leading or trailing spaces. Leading spaces are preserved when the string is left aligned, trailing spaces are preserved when the string is aligned right. In any other case leading and trailing spaces are un-stripped.
+### Column arranged alignment
+The function is also used to align items arranged in columns with the following specifics:  
+- The provided length is regarded the maximum (when the provided string is longer it is truncated to the right).
+- The final result string has any specified margin (left and right) added.
+- When a fill is specified the final string has at least one added. As an example,  when the fill string is " -", the margin is a single space and the alignment is left, a string "xxx" is returned as " xxx -------- " a string "xxxxxxxxxx" is returned as " xxxxxxxxxx - "
+- The provided length is the final length returned.
+- Any specified margin is ignored.
+- A specified fill is added only to end up with the specified length.
+
 ## The *Arry* service
 Universal array read/write service.  
 - **WRITE** Returns the provided *array* with the provided item either simply added, when no *indices* are provided or having an item added (or replaced) at a given *index/indices*. The returned array may have expanded any dimension's **upper bound** (not only the last one!). The **lower bound** of the dimensions remain the same however.
