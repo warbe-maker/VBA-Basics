@@ -1,29 +1,3 @@
-25-02-12-19:01:11 --------------------- Export Changed Components (by Add-in) for Basic.xlsm ----------------------
-25-02-12-19:01:11 -------------------------------------------------------------------------------------------------
-25-02-12-19:01:11  Class-Module     clsTestAid.....:  Serviced Common Component properties housekeeping:           
-25-02-12-19:01:11                                     Serviced Common Component's Export-File meets public: Properties set equal public 
-25-02-12-19:01:11  Class-Module     clsTrc.........:  Serviced Common Component properties housekeeping:                                
-25-02-12-19:01:11                                     Serviced Common Component's Export-File meets public: Properties set equal public 
-25-02-12-19:01:11  UserForm         fMsg...........:  Serviced Common Component properties housekeeping:                                
-25-02-12-19:01:11                                     Serviced Common Component's Export-File meets public: Properties set equal public 
-25-02-12-19:01:11  Standard-Module  mCompManClient.:  Serviced Common Component properties housekeeping:                                
-25-02-12-19:01:11                                     Serviced Common Component's Export-File meets public: Properties set equal public 
-25-02-12-19:01:12  Standard-Module  mErH...........:  Serviced Common Component properties housekeeping:                                
-25-02-12-19:01:12                                     Serviced Common Component's Export-File meets public: Properties set equal public 
-25-02-12-19:01:12  Standard-Module  mMsg...........:  Serviced Common Component properties housekeeping:                                
-25-02-12-19:01:12                                     Serviced Common Component's Export-File meets public: Properties set equal public 
-25-02-12-19:01:12  Standard-Module  mTrc...........:  Serviced Common Component properties housekeeping:                                
-25-02-12-19:01:12                                     Serviced Common Component's Export-File meets public: Properties set equal public 
-25-02-12-19:01:12  Standard-Module  mBasicTest.....:  Modified VBComponent e x p o r t e d !                                            
-25-02-12-19:01:13  Standard-Module  mBasic.........:  Common Component code change:                                                     
-25-02-12-19:01:13                                     Line 1545 Serviced (CodeModule)....:         For i = 1 To lDims                   
-25-02-12-19:01:13                                     Line 1545 Serviced (Export-File)...:         For i = lDims To 1 Step -1           
-25-02-12-19:01:13                                     Modified Common Component: Release registered pending                             
-25-02-12-19:01:13                                     Serviced Common Component modified: E x p o r t e d !                             
-25-02-12-19:01:13                                     Serviced Common Component modified: Properties in CommComps.dat updated           
-25-02-12-19:01:13                                     Serviced Common Component modified: Registered pending release                    
-25-02-12-19:01:14  Standard-Module  mBasicExamples.:  Modified VBComponent e x p o r t e d !                                            
-25-02-12-23:40:31 =================================================================================================
 25-02-12-23:40:31 ----------------- Update Outdated Common Components (by Add-in) for Basic.xlsm ------------------
 25-02-12-23:40:31 -------------------------------------------------------------------------------------------------
 25-02-12-23:40:31  Standard-Module  mCompManClient.:  Serviced Common Component used is up-to-date                 
@@ -93,3 +67,16 @@
 25-02-13-16:23:18                                     Serviced Common Component modified: E x p o r t e d !                                                               
 25-02-13-16:23:18                                     Serviced Common Component modified: Properties in CommComps.dat updated                                             
 25-02-13-16:23:18                                     Serviced Common Component modified: Registered pending release                                                      
+25-02-14-14:01:22 =================================================================================================
+25-02-14-14:01:22 ----------------- Update Outdated Common Components (by Add-in) for Basic.xlsm ------------------
+25-02-14-14:01:22 -------------------------------------------------------------------------------------------------
+25-02-14-14:01:22  Standard-Module  mBasic.........:  Serviced Common Component properties housekeeping:           
+25-02-14-14:01:22                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+25-02-14-14:01:22  Standard-Module  mCompManClient.:  Serviced Common Component used is up-to-date                                      
+25-02-14-14:01:23  Class-Module     clsTrc.........:  Serviced Common Component used is up-to-date                                      
+25-02-14-14:01:23  Standard-Module  mBasic.........:  Serviced Common Component used is up-to-date                                      
+25-02-14-14:01:23  UserForm         fMsg...........:  Serviced Common Component used is up-to-date                                      
+25-02-14-14:01:23  Standard-Module  mErH...........:  Serviced Common Component used is up-to-date                                      
+25-02-14-14:01:23  Standard-Module  mMsg...........:  Serviced Common Component used is up-to-date                                      
+25-02-14-14:01:24  Standard-Module  mTrc...........:  Serviced Common Component used is up-to-date                                      
+25-02-14-14:01:24  Class-Module     clsTestAid.....:  Serviced Common Component used is up-to-date                                      

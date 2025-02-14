@@ -3,7 +3,7 @@ A (personal) collection of basic services, collected over a long time,  used in 
 >Many of the services may raise an [application error][8] when inadequately used. See also [Common error handling][7] together with a comprehensive error message `ErrMsg` service is used. The used procedures are part of these basic services.  
 All services are provided in the [mBasic][9] Standard module. The component is hosted in the [Basic.xlsb][4] Workbook which provided an elaborated regression test environment (bot available for download on GitHub.
 
-# Services
+# Summary of services
 ## Array services
 |Service             |Kind&nbsp;[^2]|Description |
 |---------------------|:------------:|-------------|

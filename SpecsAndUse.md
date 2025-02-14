@@ -1,14 +1,6 @@
-<style>
-.syntax {
-    font-size: 18px;
-    font-family: monospace;
-}
-.syntax i {
-    font-style: italic;
-}
-</style>
+
 # Specifications and usage examples of basic services
-All services are provided in the [mBasic][1] Standard module. The component is hosted in the [Basic.xlsb][2] Workbook which provided an elaborated regression test environment (bot available for download on GitHub.
+All services are provided in the [mBasic][1] Standard module. The component is hosted in the [Basic.xlsb][2] Workbook which provided an elaborated regression test environment (both available for download on GitHub. See the [README][] for a [summary of all services][]
 
 ## Specifics of the *Align* services
 #### Syntax: `Align(string[, align][, length][, fill][, margin][, col_arranged])`
