@@ -1,6 +1,6 @@
 # Basic VBA Services
-A (personal) collection of basic VBA services, collected over time and used in many VB-projects. Some of them [^1] serve my personal common Excel VB-Project development needs.  
->Many of the services may raise an [application error][8] when inadequately used which displays a comprehensive error message (see [Common error handling][7]). The used procedures are part of these basic VBA services.  
+A collection of personnel/basic VBA services, collected over time and used in many VB-projects. Some of them [^1] serve my personal common Excel VB-Project development needs.  
+>Many of the services may raise an [application error][8] when inadequately used which displays a comprehensive error message (see [Common error handling][7]). The used procedures are part of these basic VBA services. This document is supplemented by [Specifics and usage examples for *mBasic* VBA services][]  
 
 # Installation and use
 All services are provided in the Standard module [mBasic][9] which may be copied into an VB-Project. The component is hosted [^1] in the [Basic.xlsb][4] Workbook which provided an elaborated regression test environment (bot available for download on GitHub.
@@ -83,3 +83,4 @@ See ... for details.
 [7]: https://github.com/warbe-maker/VBA-Basics/blob/master/SpecsAndUse.md#error-handling-application-errors
 [8]: https://github.com/warbe-maker/VBA-Basics/blob/master/SpecsAndUse.md#application-error-apperr
 [9]: https://github.com/warbe-maker/VBA-Basics/blob/master/CompMan/source/mBasic.bas
+[10]: https://github.com/warbe-maker/VBA-Basics/blob/master/SpecsAndUse.md#specifics-and-usage-examples-for-mbasic-vba-services

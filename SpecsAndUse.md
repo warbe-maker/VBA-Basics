@@ -1,8 +1,9 @@
 
 # Specifics and usage examples for *mBasic* VBA services
-provided in the [mBasic][1] Standard module, a component hosted [^1] in the [Basic.xlsb][2] Workbook which provided an elaborated regression test environment (both available for download on GitHub. See the [README][2] for a [summary of all services][3]
+provided in the [mBasic][1] Standard module, a component hosted [^1] in the [Basic.xlsb][2] Workbook which provided an elaborated regression test environment (both available for download on GitHub. See the [README][2] for a [summary of all services][3].  
+This document supplements the [README Summary of services][4] 
 
-## Specifics of the *Align* services
+## Specifics and usage of the *Align* services
 #### Syntax: `Align(string[, align][, length][, fill][, margin][, col_arranged])`
 
 | Argument    | Description                   | Default  |
@@ -59,12 +60,11 @@ The function is also used to align items arranged in columns with the following 
 |`Align("Abcde", enAlignRight, 4, "-", " ", True)`    |`" -Abcd "`       |
 |`Align("Abcde", enAlignCentered, 4, "-", " ", True)` |`" -Abcd- "`      |
 
-## The *Arry* service
-Universal array read/write service.  
+## Specifics and usage of the *Arry* service
+*Arry*, implemented as Property Get/Let provides a universal array read/write service.  
 - **WRITE** Returns the provided *array* with the provided item either simply added, when no *indices* are provided or having an item added (or replaced) at a given *index/indices*. The returned array may have expanded any dimension's **upper bound** (not only the last one!). The **lower bound** of the dimensions remain the same however.
 - **READ** Returns from a provided *array* the item addressed by *indices*, with a default (defaults to `Empty`) for any not existing (i.e. out of bounds) item.
 
-### Syntax of the *Arry* service
 #### Syntax: `Arry(array[, indices][, default])`
 
 | Argument   | Description |
@@ -73,14 +73,13 @@ Universal array read/write service.
 |*indices*   | Optional, a single integer, a string of indices delimited by a comma, or an Array or Collection of *indices*.|
 |*default*   | Optional, defaults to Empty, returned for an not existing index/indices.|
 
-## Specifics of the *Arry* service
-### 1-dimensional arrays
+### 1-dimensional array service
 Write with the *indices* argument may be omitted. A yet un-dimension-ed and/or un-allocated *array* is returned with the first item added, an allocated *array* is returned with the new item added or added at given index (expanded on the fly).  
 ### Multi-dimensional arrays
 - To write the first or any subsequent item to an allocated or un-allocated multi-dimensional *array* the provision of *indices* (one for each dimension) is obligatory.
 - In contrast to VBA's `ReDim` statement this service is able to extend any dimension's **upper bound** while adding, writing, or updating an item. For re-specifying the **lower bound** and or the **upper bound** of <u>any</u> dimension see the *ArryReDim* service which also may  add dimensions (up to max 8).
 
-### Example Arry
+### Usage example of the *Arry* service
 Note: The examples use: ***ArryItems*** for the verification of the number of empty and non-empty items, and ***ArryDims*** to verify the array's number of dimensions.
 
 ```vb
@@ -176,21 +175,18 @@ Private Sub Example3DimArray2()
       
 End Sub
 ```
-## The *ArryDims* service
-Returns the number of dimensions and each dimension's bounds for a provided array - not necessarily allocated.
+## Specifics and usage of the *ArryDims* service
+The service returns for a provided array the number of dimensions and optionally each dimension's bounds. For a yet not specified or Redim-ed array the number of dimensions returned = 0.
 
-### Syntax of ArryDims
-<pre class="syntax">
-<b>ArryDims</b>(<i>array</i>[, <i>dimspecs</i>][, <i>dimensions</i>])
-</pre>
+#### Syntax of *ArryDims*: `ArryDims(array[, dimspecs][, dimensions])`
 
 | Argument   | Description |
 |------------|-------------|
-|*array*     | a Variant representing an allocated or not allocated array. When yet not Redim-ed the returned number of dimensions is 0  |
+|*array*     | Variant expression, representing an allocated or not allocated array. When yet not Redim-ed the returned number of dimensions is 0  |
 |*dimspecs*  | optional, a Collection holding the dimensions specifics|
 |*dimensions*| optional, the number of dimensions returned |
 
-### Example ArryDims
+### Usage example of the *ArryDims* service
 ```vb
     Dim arrMy    As Variant
     Dim cllSpecs As Collection
@@ -215,10 +211,10 @@ Returns the number of dimensions and each dimension's bounds for a provided arra
         ' any code
     Next i
 ```
-## Coll (Property Get/Let)
-Universal read/write service for Collections. Supports read/write with any index and automatically updates existing items. The recommended use is a Collection-specific Get/Let Property.
+## Specifics and use of the *Coll* service
+*Coll*, implemented as a Property Get/Let provides a universal read/write service for Collections. It supports read/write with any index and automatically updates existing items. The recommended use is a Collection-specific Get/Let Property.
 
-### Coll usage (example)
+### Example for the use of the *Coll* service
 ```vb
 Option Explicit
 Private cllMyColl As Collection
@@ -361,3 +357,4 @@ End Function
 [1]: https://github.com/warbe-maker/VBA-Basics/blob/master/CompMan/source/mBasic.bas
 [2]: https://github.com/warbe-maker/VBA-Basics#basic-vba-services
 [3]: https://github.com/warbe-maker/VBA-Basics#summary-of-services
+[4]: https://github.com/warbe-maker/VBA-Basics/blob/master/README.md#summary-of-services
