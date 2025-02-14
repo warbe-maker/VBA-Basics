@@ -1,6 +1,6 @@
 
-# Specifications and usage examples of basic services
-All services are provided in the [mBasic][1] Standard module. The component is hosted in the [Basic.xlsb][2] Workbook which provided an elaborated regression test environment (both available for download on GitHub. See the [README][] for a [summary of all services][]
+# Specifics and usage examples for *mBasic* VBA services
+provided in the [mBasic][1] Standard module, a component hosted [^1] in the [Basic.xlsb][2] Workbook which provided an elaborated regression test environment (both available for download on GitHub. See the [README][2] for a [summary of all services][3]
 
 ## Specifics of the *Align* services
 #### Syntax: `Align(string[, align][, length][, fill][, margin][, col_arranged])`
@@ -356,6 +356,8 @@ xt:
 End Function
 
 ```
+[^1]: The term *hosted* I use for all my Common Components to indicate the Workbook which is "the home" of the component, which means where the development and maintenance mainly happens and where the means for testing including regression testing are located. 
 
 [1]: https://github.com/warbe-maker/VBA-Basics/blob/master/CompMan/source/mBasic.bas
-[2]: https://github.com/warbe-maker/VBA-Basics
+[2]: https://github.com/warbe-maker/VBA-Basics#basic-vba-services
+[3]: https://github.com/warbe-maker/VBA-Basics#summary-of-services

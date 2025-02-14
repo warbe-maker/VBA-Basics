@@ -1,7 +1,9 @@
 # Basic VBA Services
-A (personal) collection of basic services, collected over a long time,  used in many VB-projects. Some of them [^1] serve my personal common Excel VB-Project development needs.  
->Many of the services may raise an [application error][8] when inadequately used. See also [Common error handling][7] together with a comprehensive error message `ErrMsg` service is used. The used procedures are part of these basic services.  
-All services are provided in the [mBasic][9] Standard module. The component is hosted in the [Basic.xlsb][4] Workbook which provided an elaborated regression test environment (bot available for download on GitHub.
+A (personal) collection of basic VBA services, collected over time and used in many VB-projects. Some of them [^1] serve my personal common Excel VB-Project development needs.  
+>Many of the services may raise an [application error][8] when inadequately used which displays a comprehensive error message (see [Common error handling][7]). The used procedures are part of these basic VBA services.  
+
+# Installation and use
+All services are provided in the Standard module [mBasic][9] which may be copied into an VB-Project. The component is hosted [^1] in the [Basic.xlsb][4] Workbook which provided an elaborated regression test environment (bot available for download on GitHub.
 
 # Summary of services
 ## Array services
@@ -69,6 +71,7 @@ See ... for details.
 
 [^1]: It goes without saying that my VB-Projects use this _mBasic_ component. However, all my _Common Components_ use any of the provided services as `Private ...` copy in order to keep them 100% autonomous, i.e. independent from this and other components. The service copied most are: ***AppErr***, ***BoP/EoP***, ***ErrMsg***, and ***ErrSrc***.
 
+[^1]: The term *hosted* I use for all my Common Components to indicate the Workbook which is "the home" of the component, which means where the development and maintenance mainly happens and where the means for testing including regression testing are located. 
 [^2]: S=Sub, F=Function, P=Property (r=read/Get, w=write/Let)
 
 [1]: https://github.com/warbe-maker/VBA-Message
