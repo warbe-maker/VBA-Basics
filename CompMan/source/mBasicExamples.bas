@@ -15,11 +15,11 @@ Private arrMy3DimArray As Variant
 ' default for non-active items.
 ' ---------------------------------------------------------------------------
 Private Property Get My1DimArray(ByVal m_indices As Variant) As Variant
-    My1DimArray = Arry(arrMy1DimArray, m_indices, Empty)
+    My1DimArray = Arry(arrMy1DimArray, m_indices)
 End Property
 
 Private Property Let My1DimArray(Optional ByVal m_indices As Variant, ByVal m_item As Variant)
-    Arry(arrMy1DimArray, m_indices, Empty) = m_item
+    Arry(arrMy1DimArray, m_indices) = m_item
 End Property
 
 Private Sub AnyProc1()

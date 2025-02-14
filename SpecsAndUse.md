@@ -36,42 +36,42 @@ The provided string may contain leading or trailing spaces. Leading spaces are p
 |`Align("Abcde", enAlignLeft, 4, "-", " ")`|`"Abcd"`     |
 
 ### Column arranged alignment
-The function is also used to align items arranged in columns with the following specifics:  
-- The provided length is regarded the maximum (when the provided string is longer it is truncated to the right).
-- The final result string has any specified margin (left and right) added.
-- When a fill is specified the final string has at least one added. As an example,  when the fill string is " -", the margin is a single space and the alignment is left, a string "xxx" is returned as " xxx -------- " a string "xxxxxxxxxx" is returned as " xxxxxxxxxx - "
-- The provided length is the final length returned.
-- Any specified margin is ignored.
-- A specified fill is added only to end up with the specified length.
+The function is also used to align items arranged in columns with the following rules:  
+1. The provided *length* is regarded the maximum. I.e. in the returned string may appear with the provided *string* truncated to the right, while - according to the rule 2 the returned string as a whole may be longer however.
+2. The returned string has any specified margin (at the left and the right) added.
+3. When another *fill* but a single space (the default) is specified the returned string will have <u>at least one</u> added (see examples below).
+4. A specified *fill* is repeated up with the specified length.
+5. The final length returned will be the specified *length* <br>plus twice the length of the optional *margin* <br>plus at least one *fill* (centered at least one at the left and one at the right) - when another but a single space  
 
 ### Examples of column arranged alignments
-|Call                     |Returns     |
-|:------------------------|------------|
-|`Align("Abcde", enAlignLeft, 8, " -", " ", True)`    |`" Abcde ---- "`  |
-|`Align("Abcde", enAlignRight, 8, "- ", " ", True)`   |`" ---- Abcde "`  |
-|`Align("Abcde", enAlignCentered, 8, " -", " ", True)`|`" -- Abcde --- "`|
-|`Align("Abcde", enAlignCentered, 7, " -", " ", True)`|`" -- Abcde -- "` |
-|`Align("Abcde", enAlignRight, 7, "- ", " ", True)`   |`" --- Abcde "`   |
-|`Align("Abcde", enAlignCentered, 7, "-", " ", True)` |`" --Abcde-- "`   |
-|`Align("Abcde", enAlignLeft, 7, "-", " ", True)`     |`" Abcde--- "`    |
-|`Align("Abcde", enAlignRight, 6, "-", " ", True)`    |`" --Abcde "`     |
-|`Align("Abcde", enAlignCentered, 6, "-", " ", True)` |`" -Abcde-- "`    |
-|`Align("Abcde", enAlignLeft, 4, "-", " ", True)`     |`" Abcd- "`       |
-|`Align("Abcde", enAlignRight, 4, "-", " ", True)`    |`" -Abcd "`       |
-|`Align("Abcde", enAlignCentered, 4, "-", " ", True)` |`" -Abcd- "`      |
+|<small>No</small>|Call                                               |Returns           | <small>Length<br>returned</small>|
+|---:|:--------------------------------------------------|------------------|:-:|
+|1 |`Align("Abcde", enAlignLeft, 8, " -", " ", True)`    |`" Abcde ---- "`  |12|
+|2 |`Align("Abcde", enAlignRight, 8, "- ", " ", True)`   |`" ---- Abcde "`  |12|
+|3 |`Align("Abcde", enAlignCentered, 8, " -", " ", True)`|`" -- Abcde --- "`|14|
+|4 |`Align("Abcde", enAlignCentered, 7, " -", " ", True)`|`" -- Abcde -- "` |13|
+|5 |`Align("Abcde", enAlignRight, 7, "- ", " ", True)`   |`" --- Abcde "`   |11|
+|6 |`Align("Abcde", enAlignCentered, 7, "-", " ", True)` |`" --Abcde-- "`   |11|
+|7 |`Align("Abcde", enAlignLeft, 7, "-", " ", True)`     |`" Abcde--- "`    |10|
+|8 |`Align("Abcde", enAlignRight, 6, "-", " ", True)`    |`" --Abcde "`     |9|
+|9 |`Align("Abcde", enAlignCentered, 6, "-", " ", True)` |`" -Abcde-- "`    |10|
+|10|`Align("Abcde", enAlignLeft, 4, "-", " ", True)`     |`" Abcd- "`       |7|
+|11|`Align("Abcde", enAlignRight, 4, "-", " ", True)`    |`" -Abcd "`       |7|
+|12|`Align("Abcde", enAlignCentered, 4, "-", " ", True)` |`" -Abcd- "`      |8|
 
 ## Specifics and usage of the *Arry* service
-*Arry*, implemented as Property Get/Let provides a universal array read/write service.  
+The *Arry* service is implemented as Property Get/Let which provides a universal array read/write service.  
 - **WRITE** Returns the provided *array* with the provided item either simply added, when no *indices* are provided or having an item added (or replaced) at a given *index/indices*. The returned array may have expanded any dimension's **upper bound** (not only the last one!). The **lower bound** of the dimensions remain the same however.
-- **READ** Returns from a provided *array* the item addressed by *indices*, with a default (defaults to `Empty`) for any not existing (i.e. out of bounds) item.
+- **READ** Returns from a provided *array* the item addressed by *indices*.
 
-#### Syntax: `Arry(array[, indices][, default])`
+> In contrast to reading with `array(index)` which raises an error for an *index* out of bounds, the service returns the array's type specific default for an out of bounds *index*.
+
+#### Syntax: `Arry(array[, indices])`
 
 | Argument   | Description |
 |------------|-------------|
 |*array*     | Obligatory, an existing, redim-ed or not, allocated or not, array.|
 |*indices*   | Optional, a single integer, a string of indices delimited by a comma, or an Array or Collection of *indices*.|
-|*default*   | Optional, defaults to Empty, returned for an not existing index/indices.|
 
 ### 1-dimensional array service
 Write with the *indices* argument may be omitted. A yet un-dimension-ed and/or un-allocated *array* is returned with the first item added, an allocated *array* is returned with the new item added or added at given index (expanded on the fly).  
@@ -89,8 +89,7 @@ Private arrMy1DimArray As Variant
 Private arrMy3DimArray As Variant
 
 ' ---------------------------------------------------------------------------
-' Encapsulation of read from, write to arrMy1DimArray, Empty as explicit
-' default for non-active items.
+' Encapsulation of read from, write to arrMy1DimArray.
 ' ---------------------------------------------------------------------------
 Private Property Get My1DimArray(ByVal m_indices As Variant) As Variant
     My1DimArray = Arry(arrMy1DimArray, m_indices, Empty)

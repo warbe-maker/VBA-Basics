@@ -1,135 +1,28 @@
 Attribute VB_Name = "mBasic"
 Option Explicit
 ' ----------------------------------------------------------------------------
-' Standard Module mBasic: Declarations, procedures, methods and function
-' ======================= likely to be required in any VB-Project, optionally
-' just being copied.
+' Standard Module mBasic: Common VBA services (declarations, procedures,
+' ======================= functions potentially usefull  in any VB-Project.
+' When not used as a whole parts may optionally just be copied.
 '
-' Note: All provided public services run completely autonomous. I.e. they do
-'       not require any other installed module. However, when the Common VBA
-'       Message Services (fMsg/mMsg) and or the Common VBA Error Services
-'       (mErH) are installed an error message is passed on to their corres-
-'       ponding service which provides a much better designed error message.
+' Note: This component is supposed to be autonomous. I.e. is does not require
+'       any other installed component. The Common VBA Message Services
+'       (fMsg and mMsg) and the Common VBA Error Services (mErH) are optional
+'       and only used when installed which is indicated by corresponding
+'       Conditional Compile Arguments `mMsg = 1` and `mErH = 1`.
 '
-' Public Procedures and Properties (r/w):
-' ---------------------------------------
-' Align               Returns a provided string in a specified length, with
-'                     optional margins (left and right) which defaults to
-'                     none, aligned left, right or centered, with an optional
-'                     fill string which defaults to spaces.
-'                     Specifics:
-'                     - When a margin is provided, the final length will be
-'                       the specified length plus the length of a left and a
-'                       right margin. A margin is typically used when the
-'                       string is aligned as an Item of serveral items
-'                       arranged in columns when the column delimiter is a
-'                       vbNullString. When the column delimiter is a | a
-'                       marign of a single space is the default *).
-'                     - The provided string may contain leading or trailing
-'                       spaces. Leading spaces are preserved when the string
-'                       is left aligned, trailing spaces are preserved when
-'                       the string is aligned right. In any other case
-'                       leading and trailing spaces are unstripped.
-'                     - The function is also used to align items arragend in
-'                       columns.
+' See the Summary of services in the README
+' https://github.com/warbe-maker/VBA-Basics/blob/master/README.md#summary-of-services
 '
-'                     *) Column arranged option = TRUE (defaults to False):
-'                        - The provided length is regarded the maximum. I.e.
-'                          when the provided string is longer it is truncated
-'                          to the right
-'                        - The final Result string has any specified margin
-'                          (left and right) added
-'                        - When a fill is specified the final string has at
-'                          this one added. For example when the fill string
-'                          is " -", the margin is a single space and the
-'                          alignment is left, a string "xxx" is returned as
-'                          " xxx -------- "
-'                          a string "xxxxxxxxxx" is returned as :
-'                          " xxxxxxxxxx - "
-'                        Column arranged option = FALSE (the default):
-'                        - The provided length is the final length returned.
-'                        - Any specified margin is ignored
-'                        - A pecified fill is added only to end up with the
-'                          specidied length
-' AlignCntr           Called by Align or directly
-' AlignLeft           Called by Align or directly
-' AlignRght           Called by Align or directly
-' AppErr              Converts a positive error number into a negative to
-'                     ensures an error number not conflicting with a VB
-'                     run time error or any other system error number.
-'                     Returns the origin positive error number when called
-'                     with the negative Application Error number. 3)
-' AppIsInstalled      Returns TRUE when a named exec is found in the system
-'                     path.
-' Arry            r/w Universal read/write array service.
-'                     r:  Returns a provided default when a given array is
-'                         not allocated or a provided index is beyond/
-'                         outside the array's number of items (the default
-'                         defaults to vbNullString).
-'                     w: - Adds an Item (c_var) to an array (c_arr) when
-'                          no index is provided or adds it with the
-'                          provided index
-'                        - When an index is provided, the Item is
-'                          inserted/updated at the given index, even when
-'                          the array yet doesn't exist or yet is not
-'                          allocated.
-' ArryAsRnge         Transferres the content of a one- or two-dimensional
-'                     array to a range
-' ArryBase            Returns the component's actual Base Option.
-' ArryCompare         Returns a Dictionary with the provided number of items
-'                     (defaults to all) which differ between two one.
-'                     dimensional arrays. When no difference is encountered
-'                     the returned Dictionary is empty (Count = 0).
-' ArryDiffers         Returns TRUE when a provided array differs from
-'                     annother.
-' ArryDims            Returns the number of dimensions of an array. An
-'                     unallocated dynamic array returns 0 dimensions.
-' ArryIsAllocated     Returns TRUE when the provided array has at least one
-'                     Item
-' ArryItems           Returns the number of items in a multi-dimensional
-'                     array or a nested array. The latter is an array of
-'                     which one or more items again are arrays, possibly
-'                     multi-dimensional. An unallocated array returns 0.
-' ArryReDim           Returns a provided multidimensional arry with new
-'                     dimension specifics which may concern an existing
-'                     dimension or a new added dimension.
-' ArryRemoveItem      Removes an array's Item by its index or element number.
-' ArryTrim            Removes any leading or trailing empty items.
-' BaseName            Returns the file name of a provided argument without
-'                     the extension whereby the  argument may be a file or a
-'                     file's name or full name.
-' CleanTrim           Clears a string from any unprinable characters.
-' DelayedAction       Waits for a specified time and performs a provided
-'                     action whereby the action needs to be a fully specified
-'                     Application.Run action <workbook-name>!<comp>.<proc>
-'                     Specific: The action may be passed with up to 5
-'                     arguments. Though optional none preceeding must be
-'                     ommitted. I.e. when the second argument is provided the
-'                     first one is obligatory.
-' Dict            r/w Universal Dictionary service
-'                     w: with option add (default), replace, increment,
-'                        collect, and collect sorted.
-'                     r: Supports a default returned when the provided key
-'                        (or the Dictionary does not exist).
-
-' KeySort             Returns a given Dictionary sorted ascending by key.
-' README              Displays the Common Component's README in the public
-'                     GitHub repo.
-' ShellRun            Opens a folder, an email-app, a url, an Access instance,
-'                     etc.
-' TimedDoEvents       Performs a DoEvent by taking the elapsed time printed
-'                     in VBE's immediate window
-' TimerBegin          Starts a timer (counting system ticks)
-' TimerEnd            Returns the elapsed system ticks converted to
-'                     milliseconds
+' supplemented by Specifics and use
+' https://github.com/warbe-maker/VBA-Basics/blob/master/SpecsAndUse.md#specifics-and-usage-examples-for-mbasic-vba-services
 '
 ' Requires:
 ' ---------
 ' Reference to "Microsoft Scripting Runtime"
 ' Reference to "Microsoft Visual Basic Application Extensibility .."
 '
-' W. Rauschenberger, Berlin Oct 2024
-' See https://github.com/warbe-maker/VBA-Basics (with README servie)
+' W. Rauschenberger, Berlin Feb 2025
 ' ----------------------------------------------------------------------------
 Public Const DCONCAT    As String = "||"    ' For concatenating and error with a general message (info) to the error description
 Public Const DGT        As String = ">"
@@ -242,7 +135,6 @@ Private TimerSystemFrequency    As Currency
 
 Public Property Let Arry(Optional ByRef a_arr As Variant, _
                          Optional ByVal a_indices As Variant = Empty, _
-                         Optional ByVal a_default As Variant = vbNullString, _
                                   ByVal a_var As Variant)
 ' ----------------------------------------------------------------------------
 ' Common WRITE to an array service. The service returns an array (a_arr) with
@@ -294,7 +186,6 @@ Public Property Let Arry(Optional ByRef a_arr As Variant, _
     Dim lDimsSpec       As Long         ' the specifies dimensions derived from the provided indices
     Dim lDimsOut        As Long
     
-    a_default = a_default           ' used with Get only (statement avoids a "dead code recognition")
     lBase = LBound(Array(1))
     
     '~~ Get the provided array's number of dimesion (lDimsArry) and their from/to specifics (cllDimSpecs)
@@ -450,45 +341,8 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Property
 
-Public Function ExecDynFunc(ByVal d_vbp As VBProject, _
-                            ByVal d_function As String, _
-                            ByVal d_args As String) As Variant
-    Const PROC = "ExecDynFunc"
-    
-    ' A temporary module to hold the dynamic d_sCode
-    Dim tempModule As Object
-    Dim Result As Double
-    Dim sCode    As String
-    
-' Dynamically construct and execute the function call
-    sCode = "Function TempFunction() As Variant" & vbCrLf
-    sCode = sCode & "TempFunction = " & d_function & "(" & d_args & ")" & vbCrLf
-    sCode = sCode & "End Function"
-    
-    On Error GoTo eh
-    ' Create a temporary module
-    Set tempModule = d_vbp.VBComponents.Add(vbext_ct_StdModule)
-    
-    ' Add the dynamic d_sCode to the temporary module
-    tempModule.CodeModule.AddFromString sCode
-    
-    ' Run the temporary function and get the Result
-    ExecDynFunc = Application.Run("TempFunction")
-    
-    ' Remove the temporary module
-    Application.VBE.ActiveVBProject.VBComponents.Remove tempModule
-    
-xt: Exit Function
-
-eh: Select Case ErrMsg(ErrSrc(PROC))
-        Case vbResume:  Stop: Resume
-        Case Else:      GoTo xt
-    End Select
-End Function
-
 Public Property Get Arry(Optional ByRef a_arr As Variant, _
-                         Optional ByVal a_indices As Variant = Nothing, _
-                         Optional ByVal a_default As Variant = Empty) As Variant
+                         Optional ByVal a_indices As Variant = Nothing) As Variant
 ' ----------------------------------------------------------------------------
 ' Common, universal READ from array service supporting up to 8 dimensions.
 ' The service returns:
@@ -505,24 +359,40 @@ Public Property Get Arry(Optional ByRef a_arr As Variant, _
     Const PROC = "Arry(Get)"
     
     Dim lDims  As Long
+    Dim bObject As Boolean
     
-    Arry = a_default
+    Select Case TypeName(a_arr)
+        Case "Byte()":     Arry = 0
+        Case "Integer()":  Arry = 0
+        Case "Long()":     Arry = 0
+        Case "Single()":   Arry = 0
+        Case "Double()":   Arry = 0
+        Case "Currency()": Arry = 0
+        Case "Date()":     Arry = #12:00:00 AM#
+        Case "String()":   Arry = vbNullString
+        Case "Boolean()":  Arry = False
+        Case "Variant()":  Arry = Empty
+        Case "Object()":   Set Arry = Nothing: bObject = True
+        Case Else:         Arry = Empty
+    End Select
     
-    lDims = ArryDims(a_arr) ' This will return 0 for anything not an an array or not a specified array
-    If lDims > 0 _
-    Then Set a_indices = ArryIndices(a_indices) ' trnasforms any kind of provided inedx/indices into a Collection (1 to n)
-        
+    lDims = ArryDims(a_arr) ' This will return 0 for anything not an array or not a specified array
+    
+    If lDims > 0 Then
+        Set a_indices = ArryIndices(a_indices) ' transforms any kind of provided inedx/indices into a Collection (1 to n)
+    End If
+    
     On Error Resume Next
     Select Case lDims
-        Case 0: Arry = a_default
-        Case 1: Arry = a_arr(a_indices(1))
-        Case 2: Arry = a_arr(a_indices(1), a_indices(2))
-        Case 3: Arry = a_arr(a_indices(1), a_indices(2), a_indices(3))
-        Case 4: Arry = a_arr(a_indices(1), a_indices(2), a_indices(3), a_indices(4))
-        Case 5: Arry = a_arr(a_indices(1), a_indices(2), a_indices(3), a_indices(4), a_indices(5))
-        Case 6: Arry = a_arr(a_indices(1), a_indices(2), a_indices(3), a_indices(4), a_indices(5), a_indices(6))
-        Case 7: Arry = a_arr(a_indices(1), a_indices(2), a_indices(3), a_indices(4), a_indices(5), a_indices(6), a_indices(7))
-        Case 8: Arry = a_arr(a_indices(1), a_indices(2), a_indices(3), a_indices(4), a_indices(5), a_indices(6), a_indices(7), a_indices(8))
+        Case 0:
+        Case 1: If bObject Then Set Arry = a_arr(a_indices(1)) Else Arry = a_arr(a_indices(1))
+        Case 2: If bObject Then Set Arry = a_arr(a_indices(1), a_indices(2)) Else Arry = a_arr(a_indices(1), a_indices(2))
+        Case 3: If bObject Then Set Arry = a_arr(a_indices(1), a_indices(2), a_indices(3)) Else Arry = a_arr(a_indices(1), a_indices(2), a_indices(3))
+        Case 4: If bObject Then Set Arry = a_arr(a_indices(1), a_indices(2), a_indices(3), a_indices(4)) Else Arry = a_arr(a_indices(1), a_indices(2), a_indices(3), a_indices(4))
+        Case 5: If bObject Then Set Arry = a_arr(a_indices(1), a_indices(2), a_indices(3), a_indices(4), a_indices(5)) Else Arry = a_arr(a_indices(1), a_indices(2), a_indices(3), a_indices(4), a_indices(5))
+        Case 6: If bObject Then Set Arry = a_arr(a_indices(1), a_indices(2), a_indices(3), a_indices(4), a_indices(5), a_indices(6)) Else Arry = a_arr(a_indices(1), a_indices(2), a_indices(3), a_indices(4), a_indices(5), a_indices(6))
+        Case 7: If bObject Then Set Arry = a_arr(a_indices(1), a_indices(2), a_indices(3), a_indices(4), a_indices(5), a_indices(6), a_indices(7)) Else Arry = a_arr(a_indices(1), a_indices(2), a_indices(3), a_indices(4), a_indices(5), a_indices(6), a_indices(7))
+        Case 8: If bObject Then Set Arry = a_arr(a_indices(1), a_indices(2), a_indices(3), a_indices(4), a_indices(5), a_indices(6), a_indices(7), a_indices(8)) Else Arry = a_arr(a_indices(1), a_indices(2), a_indices(3), a_indices(4), a_indices(5), a_indices(6), a_indices(7), a_indices(8))
     End Select
     
 xt:
@@ -532,8 +402,8 @@ Property Get ArryItem(Optional ByRef a_arr As Variant, _
                       Optional ByVal a_indices As Variant = Nothing, _
                       Optional ByVal a_default As Variant = vbNullString) As Variant
 ' ---------------------------------------------------------------------------
-' Returns from an array (a_arr) the Item addressed by indices (a_indices) which
-' might be up to 8 dimensions provided as an array or a string with the
+' Returns from an array (a_arr) the item addressed by indices (a_indices)
+' which might be up to 8 dimensions provided as an array or a string with the
 ' indices delimited by a comma.
 ' ---------------------------------------------------------------------------
     Dim cllIndices As Collection
@@ -1259,6 +1129,68 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
+Private Function ArryBounds(ByVal a_arr As Variant, _
+                            ByVal a_indices As Variant, _
+                   Optional ByRef a_out_bounds As Collection, _
+                   Optional ByRef a_in_bounds As Collection, _
+                   Optional ByRef a_out As Long) As Boolean
+' ---------------------------------------------------------------------------
+' Returns:
+' - TRUE when all dimensions addressed by indices (a_indices) are
+'   within the bounds of the respective dimension in array (a_arr)
+' - FALSE when any of the provided indices (a_indices) is out of the bounds
+'   of the provided array (a_arr)
+' - Returns the dimesions which are out of bounds as Collection with items
+'   in-bound empty and out-bound with the new bound
+' - Returns the complete dimension specifics which combine the "from" spec
+'   of the provided array with the new "to" specs in case they are greater
+'   than the present ones
+'
+' Precondition: The indices are provided (a_indices) is either as a single
+'               integer - when the array (a_arr) is a 1-dim array - or an
+'               array of integers, each specifying the index for one
+'               dimension.
+'
+' Uses: Coll
+'
+' W. Rauschenberger, Berlin Jan 2025
+' ---------------------------------------------------------------------------
+    Dim aBounds(1 To 2)     As Variant
+    Dim aBoundsOut(1 To 2)  As Variant
+    Dim cllBoundsIn         As New Collection
+    Dim cllBoundsOut        As New Collection
+    Dim cllSpecNdcs         As Collection
+    Dim i                   As Long
+    Dim lDimsArry           As Long
+    Dim lDimsSpec           As Long
+    
+    lDimsArry = ArryDims(a_arr)
+    Set cllSpecNdcs = ArryIndices(a_indices)
+    lDimsSpec = cllSpecNdcs.Count
+    
+    If lDimsSpec > lDimsArry Then GoTo xt
+    For i = 1 To cllSpecNdcs.Count
+        aBounds(1) = Min(cllSpecNdcs(i), LBound(a_arr, i))
+        aBounds(2) = Max(cllSpecNdcs(i), UBound(a_arr, i))
+        Coll(cllBoundsIn, i) = aBounds
+        If cllSpecNdcs(i) < LBound(a_arr, i) Or cllSpecNdcs(i) > UBound(a_arr, i) Then
+            aBoundsOut(1) = LBound(a_arr, i)
+            aBoundsOut(2) = UBound(a_arr, i)
+            Coll(cllBoundsOut, i) = aBoundsOut
+            a_out = a_out + 1
+        Else
+            Coll(cllBoundsOut, i) = Empty
+        End If
+    Next i
+    
+    Set a_in_bounds = cllBoundsIn
+    Set a_out_bounds = cllBoundsOut
+    ArryBounds = cllBoundsOut.Count > 0
+    Set cllBoundsIn = Nothing
+    Set cllBoundsOut = Nothing
+xt:
+End Function
+
 Public Function ArryCompare(ByVal a_v1 As Variant, _
                             ByVal a_v2 As Variant, _
                    Optional ByVal a_stop_after As Long = 0, _
@@ -1335,6 +1267,33 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
         Case vbYes: Stop: Resume
         Case Else:  GoTo xt
     End Select
+End Function
+
+Private Function ArryDefault(ByVal a_arry As Variant) As Variant
+' ----------------------------------------------------------------------------
+' Returns the default value of an array (a_arry) based on the TypeName.
+' When the provided argument is not an array, Empty is returned.
+' ----------------------------------------------------------------------------
+    
+    If Not IsArray(a_arry) Then
+        ArryDefault = Empty
+    Else
+        Select Case TypeName(a_arry)
+            Case "Byte()":     ArryDefault = 0
+            Case "Integer()":  ArryDefault = 0
+            Case "Long()":     ArryDefault = 0
+            Case "Single()":   ArryDefault = 0
+            Case "Double()":   ArryDefault = 0
+            Case "Currency()": ArryDefault = 0
+            Case "Date()":     ArryDefault = #12:00:00 AM#
+            Case "String()":   ArryDefault = vbNullString
+            Case "Boolean()":  ArryDefault = False
+            Case "Variant()":  ArryDefault = Empty
+            Case "Object()":   Set ArryDefault = Nothing
+            Case Else:         ArryDefault = Empty
+        End Select
+    End If
+    
 End Function
 
 Public Function ArryDiffers(ByVal ad_v1 As Variant, _
@@ -1515,68 +1474,6 @@ xt: On Error GoTo 0
     
 End Function
 
-Private Function ArryBounds(ByVal a_arr As Variant, _
-                            ByVal a_indices As Variant, _
-                   Optional ByRef a_out_bounds As Collection, _
-                   Optional ByRef a_in_bounds As Collection, _
-                   Optional ByRef a_out As Long) As Boolean
-' ---------------------------------------------------------------------------
-' Returns:
-' - TRUE when all dimensions addressed by indices (a_indices) are
-'   within the bounds of the respective dimension in array (a_arr)
-' - FALSE when any of the provided indices (a_indices) is out of the bounds
-'   of the provided array (a_arr)
-' - Returns the dimesions which are out of bounds as Collection with items
-'   in-bound empty and out-bound with the new bound
-' - Returns the complete dimension specifics which combine the "from" spec
-'   of the provided array with the new "to" specs in case they are greater
-'   than the present ones
-'
-' Precondition: The indices are provided (a_indices) is either as a single
-'               integer - when the array (a_arr) is a 1-dim array - or an
-'               array of integers, each specifying the index for one
-'               dimension.
-'
-' Uses: Coll
-'
-' W. Rauschenberger, Berlin Jan 2025
-' ---------------------------------------------------------------------------
-    Dim aBounds(1 To 2)     As Variant
-    Dim aBoundsOut(1 To 2)  As Variant
-    Dim cllBoundsIn         As New Collection
-    Dim cllBoundsOut        As New Collection
-    Dim cllSpecNdcs         As Collection
-    Dim i                   As Long
-    Dim lDimsArry           As Long
-    Dim lDimsSpec           As Long
-    
-    lDimsArry = ArryDims(a_arr)
-    Set cllSpecNdcs = ArryIndices(a_indices)
-    lDimsSpec = cllSpecNdcs.Count
-    
-    If lDimsSpec > lDimsArry Then GoTo xt
-    For i = 1 To cllSpecNdcs.Count
-        aBounds(1) = Min(cllSpecNdcs(i), LBound(a_arr, i))
-        aBounds(2) = Max(cllSpecNdcs(i), UBound(a_arr, i))
-        Coll(cllBoundsIn, i) = aBounds
-        If cllSpecNdcs(i) < LBound(a_arr, i) Or cllSpecNdcs(i) > UBound(a_arr, i) Then
-            aBoundsOut(1) = LBound(a_arr, i)
-            aBoundsOut(2) = UBound(a_arr, i)
-            Coll(cllBoundsOut, i) = aBoundsOut
-            a_out = a_out + 1
-        Else
-            Coll(cllBoundsOut, i) = Empty
-        End If
-    Next i
-    
-    Set a_in_bounds = cllBoundsIn
-    Set a_out_bounds = cllBoundsOut
-    ArryBounds = cllBoundsOut.Count > 0
-    Set cllBoundsIn = Nothing
-    Set cllBoundsOut = Nothing
-xt:
-End Function
-
 Public Function ArryIsAllocated(ByVal a_arr As Variant) As Boolean
 ' ----------------------------------------------------------------------------
 ' Returns TRUE when the array (a_arr) is allocated, i.e. has at least one Item.
@@ -1624,34 +1521,6 @@ Public Function ArryItems(ByVal a_arr As Variant, _
         Next v
     End If
     ArryItems = lItems
-    
-End Function
-
-Private Function ArryDefault(ByVal a_arry As Variant) As Variant
-' ----------------------------------------------------------------------------
-' Returns the default value of an array (a_arry) based on the element type.
-' When the provided argument is not an array, Empty is returned.
-' ----------------------------------------------------------------------------
-    
-    ' Check if the input is an array
-    If Not IsArray(a_arry) Then
-        ArryDefault = Empty
-    Else
-        Select Case VarType(a_arry(LBound(a_arry)))
-            Case vbByte: ArryDefault = 0
-            Case vbInteger:  ArryDefault = 0
-            Case vbLong:     ArryDefault = 0
-            Case vbSingle:   ArryDefault = 0
-            Case vbDouble:   ArryDefault = 0
-            Case vbCurrency: ArryDefault = 0
-            Case vbDate:     ArryDefault = #12:00:00 AM#
-            Case vbString:   ArryDefault = vbNullString
-            Case vbBoolean:  ArryDefault = False
-            Case vbVariant:  ArryDefault = Empty
-            Case vbObject:   ArryDefault = Nothing
-            Case Else:       ArryDefault = Null
-        End Select
-    End If
     
 End Function
 
@@ -2252,6 +2121,55 @@ Public Sub DictTest()
     Debug.Assert dict(dct, "B") = vbNullString      ' No default returns default
     
 End Sub
+
+Public Function DynExec(ByVal d_vbp As VBProject, _
+                        ByVal d_code As String, _
+                        ByVal d_args As String) As Variant
+' ----------------------------------------------------------------------------
+' Provides a means to dynamically execute code (d_code) by means of a
+' temporary component created in a VB-Project (d_vbp) to hold the provided
+' code (d_code).
+'
+' Note: This is one of the very rare solutions to dynamically execute code.
+'       However, is comes with the disadvantage that debugging is hindered
+'       substantially since code holds cannot be used when this function
+'       is executed.
+'
+' Requires a reference to: "Microsoft Visual Basic Application Extensibility .."
+'
+' W. Rauschenberger, Berlin Feb 2025
+' ----------------------------------------------------------------------------
+    Const PROC = "DynExec"
+    
+    Dim objTempMod As Object
+    Dim vResult    As Variant
+    Dim sCode      As String
+    
+' Dynamically construct and execute the function call
+    sCode = "Function TempFunction() As Variant" & vbCrLf
+    sCode = sCode & "TempFunction = " & d_code & "(" & d_args & ")" & vbCrLf
+    sCode = sCode & "End Function"
+    
+    On Error GoTo eh
+    ' Create a temporary module
+    Set objTempMod = d_vbp.VBComponents.Add(vbext_ct_StdModule)
+    
+    ' Add the dynamic d_sCode to the temporary module
+    objTempMod.CodeModule.AddFromString sCode
+    
+    ' Run the temporary function and get the Result
+    DynExec = Application.Run("TempFunction")
+    
+    ' Remove the temporary module
+    Application.VBE.ActiveVBProject.VBComponents.Remove objTempMod
+    
+xt: Exit Function
+
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
+End Function
 
 Public Sub EoC(ByVal e_id As String, _
       Optional ByVal e_args As String = vbNullString)

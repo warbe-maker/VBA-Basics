@@ -215,7 +215,7 @@ Private Function TestArray(ParamArray t_specs() As Variant) As Variant
             arr = t_specs(0)
             lDims = ArryDims(arr, cllSpecs)
         Else
-            lDims = UBound(t_specs)
+            lDims = UBound(t_specs) - LBound(t_specs) + 1
             For Each v In t_specs
                 If Not mBasic.IsInteger(v) Then Err.Raise AppErr(1), ErrSrc(PROC), "Dimesion spec not an integer!"
                 arrSpecs(1) = lBase
@@ -231,6 +231,7 @@ Private Function TestArray(ParamArray t_specs() As Variant) As Variant
         If Not IsArray(t_specs(0)) Then
             '~~ When no array has been provided, one is created
             Select Case lDims
+                Case 0: ReDim arr(lBase To t_specs(0))
                 Case 1: ReDim arr(lBase To cllSpecs(1)(2))
                 Case 2: ReDim arr(lBase To cllSpecs(1)(2) _
                                 , lBase To cllSpecs(2)(2))
@@ -270,6 +271,7 @@ Private Function TestArray(ParamArray t_specs() As Variant) As Variant
             End Select
         End If
         
+        lDims = ArryDims(arr)
         On Error Resume Next
         For i = LBound(arr, 1) To UBound(arr, 1)
             For j = LBound(arr, 2) To UBound(arr, 2)
@@ -821,6 +823,8 @@ Public Sub Test_0210_Arry_Get()
     Dim a3      As Variant
     Dim dctDiff As Variant
     Dim v       As Variant
+    Dim arr3()  As Object
+    Dim arr4()  As Boolean
     
     Prepare
     BoP ErrSrc(PROC)
@@ -832,7 +836,7 @@ Public Sub Test_0210_Arry_Get()
         .TestedProc = "Arry(Get)"
         .TestedProcType = "Property"
         
-            .Verification = "Read from not-an-array returns Nothing"
+            .Verification = "Read from not-an-array returns Null"
                 .Result = Arry(arr1, 1)
                 .ResultExpected = Empty
                 
@@ -847,7 +851,6 @@ Public Sub Test_0210_Arry_Get()
                 .Result = Arry(arr1, 5)
                 .TimerEnd
                 .ResultExpected = "Item(5)"
-                .Result = v
             
             .Verification = "Empty is returned for an index outside the array's dimension specs"
                 arr1 = TestArray(8) ' 9 elements
@@ -857,7 +860,7 @@ Public Sub Test_0210_Arry_Get()
                 .ResultExpected = Empty
             
             .Verification = "Read from a 3-dim array"
-                arr1 = TestArray(3, 3, 3) ' 27 elements
+                arr1 = TestArray(3, 3, 3) ' 4 x 4 x 4 = 64 items
                 .TimerStart
                 .Result = Arry(arr1, ArryIndices(1, 2, 2))
                 .TimerEnd
@@ -878,20 +881,29 @@ Public Sub Test_0210_Arry_Get()
                 .Result = Arry(arr1, ArryIndices(2, 2, 1))
                 .ResultExpected = "Item(2,2,1) updated"
         
-            .Verification = "Return 0 as the default for an index ouside the bounds of the provided array"
+            .Verification = "Return the array's type specific default for an index ouside the bounds of the provided array"
                 arr1 = TestArray(10)
                 .TimerStart
-                .Result = Arry(arr1, 11, 0)
+                .Result = Arry(arr1, 11)
                 .TimerEnd
-                .ResultExpected = 0
+                .ResultExpected = Empty
         
-            .Verification = "Returns 0 as the default for an index outside the bounds of a 2-dim array"
+            .Verification = "Returns the array's type specific default for an index outside the bounds of a 2-dim array"
                 arr2 = TestArray(4, 4)
                 .TimerStart
-                .Result = Arry(arr2, ArryIndices(5, 4), 0)
+                .Result = Arry(arr2, ArryIndices(5, 4))
                 .TimerEnd
-                .ResultExpected = 0
+                .ResultExpected = Empty
                 
+            .Verification = "An array of objects returns the object or Nothing"
+                ReDim arr3(1 To 5)
+                .Result = Arry(arr3, 2)
+                .ResultExpected = Nothing
+                
+            .Verification = "An array of Booleans returns False for any item out of bounds"
+                ReDim arr4(1 To 5)
+                .Result = Arry(arr4, 6)
+                .ResultExpected = False
     End With
     
 xt: EoP ErrSrc(PROC)
