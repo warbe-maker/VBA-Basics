@@ -90,13 +90,13 @@ Public Sub CompManService(ByVal c_service_proc As String, _
     On Error GoTo eh
     Dim sServicingWbkName   As String
            
-'    If ActiveWindow.Caption <> ThisWorkbook.Name Then Exit Sub ' Any restored, e.g. (Version ..) is ignored
-    Workbooks(ThisWorkbook.Name).Windows(1).Visible = True
-    On Error Resume Next
-    If ActiveWindow.Caption <> ThisWorkbook.Name Then Exit Sub ' Any restored, e.g. (Version ..) is ignored
-
     Progress p_service_name:=ServiceName(c_service_proc) _
            , p_serviced_wbk_name:=ThisWorkbook.Name
+    On Error Resume Next
+    If ActiveWindow.Caption <> ActiveWorkbook.Name Then
+        Debug.Print "service denied because the caption is not identical with the active Workbook's name"
+        Exit Sub ' Any restored, e.g. (Version ..) is ignored
+    End If
     
     sEventsLvl = vbNullString
     mCompManClient.Events ErrSrc(PROC) & "." & c_service_proc, False

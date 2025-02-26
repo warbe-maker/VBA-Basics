@@ -1,8 +1,306 @@
-25-02-08 14:43:06 14,2679 14,2679 |  << mBasicTest.Regression (Application Error 340 )
-25-02-08 14:43:06 14,2679 14,2679 << Execution Trace Result of the mBasic Regression test
-25-02-08 14:43:06                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
-25-02-08 14:43:06                 Impact on the overall performance (caused by the trace itself): 1,0 milliseconds!
-25-02-08 14:45:58 02,1647 02,1647 |  << mBasicTest.Regression (VB-Runtime Error 429 )
-25-02-08 14:45:58 02,1647 02,1647 << Execution Trace Result of the mBasic Regression test
-25-02-08 14:45:58                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
-25-02-08 14:45:58                 Impact on the overall performance (caused by the trace itself): 16,2 milliseconds!
+25-02-25 18:20:26 00,5433         |  |  >> mBasicTest.Test_0110_Align_Simple
+25-02-25 18:20:26 00,5462 00,0029 |  |  << mBasicTest.Test_0110_Align_Simple
+25-02-25 18:20:26 00,5466         |  |  >> mBasicTest.Test_0120_Align_column_arranged
+25-02-25 18:20:26 00,5491 00,0025 |  |  << mBasicTest.Test_0120_Align_column_arranged
+25-02-25 18:20:26 00,5494         |  |  >> mBasicTest.Test_0200_ArryNextIndex
+25-02-25 18:20:26 00,6486 00,0992 |  |  << mBasicTest.Test_0200_ArryNextIndex
+25-02-25 18:20:26 00,6494         |  |  >> mBasicTest.Test_0210_Arry_Get
+25-02-25 18:20:27 00,8646 00,2152 |  |  << mBasicTest.Test_0210_Arry_Get
+25-02-25 18:20:27 00,8659         |  |  >> mBasicTest.Test_0215_Arry_Let
+25-02-25 18:20:32 00,8946 00,0287 |  |  << mBasicTest.Test_0215_Arry_Let (Application Error 1 )
+25-02-25 18:53:04 00,5549         |  |  >> mBasicTest.Test_0110_Align_Simple
+25-02-25 18:53:04 00,5656 00,0108 |  |  << mBasicTest.Test_0110_Align_Simple
+25-02-25 18:53:04 00,5668         |  |  >> mBasicTest.Test_0120_Align_column_arranged
+25-02-25 18:53:04 00,5734 00,0066 |  |  << mBasicTest.Test_0120_Align_column_arranged
+25-02-25 18:53:04 00,5741         |  |  >> mBasicTest.Test_0200_ArryNextIndex
+25-02-25 18:53:04 00,6767 00,1026 |  |  << mBasicTest.Test_0200_ArryNextIndex
+25-02-25 18:53:04 00,6780         |  |  >> mBasicTest.Test_0210_Arry_Get
+25-02-25 18:53:04 00,9068 00,2287 |  |  << mBasicTest.Test_0210_Arry_Get
+25-02-25 18:53:04 00,9076         |  |  >> mBasicTest.Test_0215_Arry_Let
+25-02-25 18:53:05 01,1260 00,2184 |  |  << mBasicTest.Test_0215_Arry_Let
+25-02-25 18:53:05 01,1267         |  |  >> mBasicTest.Test_0220_ArryAsRnge_RangeAsArray
+25-02-25 18:53:05 01,2694 00,1427 |  |  << mBasicTest.Test_0220_ArryAsRnge_RangeAsArray
+25-02-25 18:53:05 01,2700         |  |  >> mBasicTest.Test_0230_ArryCompare
+25-02-25 18:53:08 01,2958 00,0258 |  |  << mBasicTest.Test_0230_ArryCompare (VB-Runtime Error 9 )
+25-02-25 19:02:59 00,5600         |  |  >> mBasicTest.Test_0110_Align_Simple
+25-02-25 19:02:59 00,5755 00,0155 |  |  << mBasicTest.Test_0110_Align_Simple
+25-02-25 19:02:59 00,5770         |  |  >> mBasicTest.Test_0120_Align_column_arranged
+25-02-25 19:02:59 00,5866 00,0097 |  |  << mBasicTest.Test_0120_Align_column_arranged
+25-02-25 19:02:59 00,5875         |  |  >> mBasicTest.Test_0200_ArryNextIndex
+25-02-25 19:02:59 00,6753 00,0878 |  |  << mBasicTest.Test_0200_ArryNextIndex
+25-02-25 19:02:59 00,6766         |  |  >> mBasicTest.Test_0210_Arry_Get
+25-02-25 19:02:59 00,8885 00,2119 |  |  << mBasicTest.Test_0210_Arry_Get
+25-02-25 19:02:59 00,8897         |  |  >> mBasicTest.Test_0215_Arry_Let
+25-02-25 19:02:59 01,1109 00,2213 |  |  << mBasicTest.Test_0215_Arry_Let
+25-02-25 19:02:59 01,1123         |  |  >> mBasicTest.Test_0220_ArryAsRnge_RangeAsArray
+25-02-25 19:02:59 01,2527 00,1404 |  |  << mBasicTest.Test_0220_ArryAsRnge_RangeAsArray
+25-02-25 19:02:59 01,2533         |  |  >> mBasicTest.Test_0230_ArryCompare
+25-02-25 19:02:59 01,4023 00,1490 |  |  << mBasicTest.Test_0230_ArryCompare
+25-02-25 19:02:59 01,4028         |  |  >> mBasicTest.Test_0240_ArryDiffers
+25-02-25 19:03:00 02,3694 00,9666 |  |  << mBasicTest.Test_0240_ArryDiffers
+25-02-25 19:03:00 02,3701         |  |  >> mBasicTest.Test_0250_Arry_Various
+25-02-25 19:03:00 02,3721 00,0020 |  |  << mBasicTest.Test_0250_Arry_Various
+25-02-25 19:03:00 02,3730         |  |  >> mBasicTest.Test_0260_ArrayAsDict
+25-02-25 19:03:00 02,4373 00,0643 |  |  << mBasicTest.Test_0260_ArrayAsDict
+25-02-25 19:03:00 02,4378         |  |  >> mBasicTest.Test_0270_ArryRemoveItems
+25-02-25 19:03:00 02,4385         |  |  |  >> mBasicTest.Test_0271_ArryRemoveItems
+25-02-25 19:03:00 02,4671 00,0287 |  |  |  << mBasicTest.Test_0271_ArryRemoveItems
+25-02-25 19:03:00 02,4676         |  |  |  >> mBasicTest.Test_0272_ArryRemoveItems_Error_Conditions
+25-02-25 19:03:00 02,4692 00,0015 |  |  |  << mBasicTest.Test_0272_ArryRemoveItems_Error_Conditions
+25-02-25 19:03:00 02,4697 00,0318 |  |  << mBasicTest.Test_0270_ArryRemoveItems
+25-02-25 19:03:00 02,4704         |  |  >> mBasicTest.Test_0275_ArryReDim
+25-02-25 19:03:01 02,5943 00,1239 |  |  << mBasicTest.Test_0275_ArryReDim
+25-02-25 19:03:01 02,5950         |  |  >> mBasicTest.Test_0280_ArryTrimm
+25-02-25 19:03:01 02,6013 00,0062 |  |  << mBasicTest.Test_0280_ArryTrimm
+25-02-25 19:03:01 02,6020         |  |  >> mBasicTest.Test_0400_Spaced
+25-02-25 19:03:01 02,8299 00,2279 |  |  << mBasicTest.Test_0400_Spaced
+25-02-25 19:03:01 02,8306         |  |  >> mBasicTest.Test_0800_Coll
+25-02-25 19:03:02 03,5598 00,7292 |  |  << mBasicTest.Test_0800_Coll
+25-02-25 19:03:02 03,5607 03,5607 |  << mBasicTest.Regression
+25-02-25 19:03:02 03,5607 03,5607 << Execution Trace Result of the mBasic Regression test
+25-02-25 19:03:02                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-02-25 19:03:02                 Impact on the overall performance (caused by the trace itself): 0,3 milliseconds!
+25-02-25 19:06:12 00,7590         |  |  >> mBasicTest.Test_0110_Align_Simple
+25-02-25 19:06:12 00,7686 00,0096 |  |  << mBasicTest.Test_0110_Align_Simple
+25-02-25 19:06:12 00,7694         |  |  >> mBasicTest.Test_0120_Align_column_arranged
+25-02-25 19:06:12 00,7777 00,0084 |  |  << mBasicTest.Test_0120_Align_column_arranged
+25-02-25 19:06:12 00,7784         |  |  >> mBasicTest.Test_0200_ArryNextIndex
+25-02-25 19:06:12 00,8755 00,0971 |  |  << mBasicTest.Test_0200_ArryNextIndex
+25-02-25 19:06:12 00,8761         |  |  >> mBasicTest.Test_0210_Arry_Get
+25-02-25 19:06:12 01,0824 00,2063 |  |  << mBasicTest.Test_0210_Arry_Get
+25-02-25 19:06:12 01,0831         |  |  >> mBasicTest.Test_0215_Arry_Let
+25-02-25 19:06:12 01,2988 00,2157 |  |  << mBasicTest.Test_0215_Arry_Let
+25-02-25 19:06:12 01,2994         |  |  >> mBasicTest.Test_0220_ArryAsRnge_RangeAsArray
+25-02-25 19:06:13 01,4441 00,1446 |  |  << mBasicTest.Test_0220_ArryAsRnge_RangeAsArray
+25-02-25 19:06:13 01,4448         |  |  >> mBasicTest.Test_0230_ArryCompare
+25-02-25 19:06:13 01,6004 00,1555 |  |  << mBasicTest.Test_0230_ArryCompare
+25-02-25 19:06:13 01,6011         |  |  >> mBasicTest.Test_0240_ArryDiffers
+25-02-25 19:06:14 02,6584 01,0573 |  |  << mBasicTest.Test_0240_ArryDiffers
+25-02-25 19:06:14 02,6592         |  |  >> mBasicTest.Test_0250_Arry_Various
+25-02-25 19:06:14 02,6611 00,0019 |  |  << mBasicTest.Test_0250_Arry_Various
+25-02-25 19:06:14 02,6618         |  |  >> mBasicTest.Test_0260_ArrayAsDict
+25-02-25 19:06:14 02,7208 00,0591 |  |  << mBasicTest.Test_0260_ArrayAsDict
+25-02-25 19:06:14 02,7214         |  |  >> mBasicTest.Test_0270_ArryRemoveItems
+25-02-25 19:06:14 02,7218         |  |  |  >> mBasicTest.Test_0271_ArryRemoveItems
+25-02-25 19:06:14 02,7408 00,0190 |  |  |  << mBasicTest.Test_0271_ArryRemoveItems
+25-02-25 19:06:14 02,7412         |  |  |  >> mBasicTest.Test_0272_ArryRemoveItems_Error_Conditions
+25-02-25 19:06:14 02,7422 00,0010 |  |  |  << mBasicTest.Test_0272_ArryRemoveItems_Error_Conditions
+25-02-25 19:06:14 02,7425 00,0211 |  |  << mBasicTest.Test_0270_ArryRemoveItems
+25-02-25 19:06:14 02,7428         |  |  >> mBasicTest.Test_0275_ArryReDim
+25-02-25 19:06:14 02,8630 00,1201 |  |  << mBasicTest.Test_0275_ArryReDim
+25-02-25 19:06:14 02,8635         |  |  >> mBasicTest.Test_0280_ArryTrimm
+25-02-25 19:06:14 02,8681 00,0046 |  |  << mBasicTest.Test_0280_ArryTrimm
+25-02-25 19:06:14 02,8685         |  |  >> mBasicTest.Test_0400_Spaced
+25-02-25 19:06:14 03,0444 00,1759 |  |  << mBasicTest.Test_0400_Spaced
+25-02-25 19:06:14 03,0452         |  |  >> mBasicTest.Test_0800_Coll
+25-02-25 19:06:15 03,6989 00,6537 |  |  << mBasicTest.Test_0800_Coll
+25-02-25 19:06:15 03,6995 03,6995 |  << mBasicTest.Regression
+25-02-25 19:06:15 03,6995 03,6995 << Execution Trace Result of the mBasic Regression test
+25-02-25 19:06:15                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-02-25 19:06:15                 Impact on the overall performance (caused by the trace itself): 0,3 milliseconds!
+25-02-26 15:12:53 00,5458         |  |  >> mBasicTest.Test_0110_Align_Simple
+25-02-26 15:12:53 00,5522 00,0065 |  |  << mBasicTest.Test_0110_Align_Simple
+25-02-26 15:12:53 00,5530         |  |  >> mBasicTest.Test_0120_Align_column_arranged
+25-02-26 15:12:53 00,5578 00,0048 |  |  << mBasicTest.Test_0120_Align_column_arranged
+25-02-26 15:12:53 00,5582         |  |  >> mBasicTest.Test_0200_ArryNextIndex
+25-02-26 15:12:53 00,6547 00,0965 |  |  << mBasicTest.Test_0200_ArryNextIndex
+25-02-26 15:12:53 00,6553         |  |  >> mBasicTest.Test_0210_Arry_Get
+25-02-26 15:12:53 00,8687 00,2134 |  |  << mBasicTest.Test_0210_Arry_Get
+25-02-26 15:12:53 00,8694         |  |  >> mBasicTest.Test_0215_Arry_Let
+25-02-26 15:12:53 01,0865 00,2171 |  |  << mBasicTest.Test_0215_Arry_Let
+25-02-26 15:12:53 01,0871         |  |  >> mBasicTest.Test_0220_ArryAsRnge_RangeAsArray
+25-02-26 15:12:53 01,2117 00,1246 |  |  << mBasicTest.Test_0220_ArryAsRnge_RangeAsArray
+25-02-26 15:12:53 01,2121         |  |  >> mBasicTest.Test_0230_ArryCompare
+25-02-26 15:12:54 01,3645 00,1524 |  |  << mBasicTest.Test_0230_ArryCompare
+25-02-26 15:12:54 01,3649         |  |  >> mBasicTest.Test_0240_ArryDiffers
+25-02-26 15:12:55 02,5451 01,1802 |  |  << mBasicTest.Test_0240_ArryDiffers
+25-02-26 15:12:55 02,5459         |  |  >> mBasicTest.Test_0250_Arry_Various
+25-02-26 15:12:55 02,5474 00,0016 |  |  << mBasicTest.Test_0250_Arry_Various
+25-02-26 15:12:55 02,5481         |  |  >> mBasicTest.Test_0260_ArrayAsDict
+25-02-26 15:12:55 02,6144 00,0662 |  |  << mBasicTest.Test_0260_ArrayAsDict
+25-02-26 15:12:55 02,6149         |  |  >> mBasicTest.Test_0270_ArryRemoveItems
+25-02-26 15:12:55 02,6155         |  |  |  >> mBasicTest.Test_0271_ArryRemoveItems
+25-02-26 15:12:55 02,6453 00,0298 |  |  |  << mBasicTest.Test_0271_ArryRemoveItems
+25-02-26 15:12:55 02,6458         |  |  |  >> mBasicTest.Test_0272_ArryRemoveItems_Error_Conditions
+25-02-26 15:12:55 02,6472 00,0014 |  |  |  << mBasicTest.Test_0272_ArryRemoveItems_Error_Conditions
+25-02-26 15:12:55 02,6477 00,0328 |  |  << mBasicTest.Test_0270_ArryRemoveItems
+25-02-26 15:12:55 02,6482         |  |  >> mBasicTest.Test_0275_ArryReDim
+25-02-26 15:12:55 02,7754 00,1272 |  |  << mBasicTest.Test_0275_ArryReDim
+25-02-26 15:12:55 02,7760         |  |  >> mBasicTest.Test_0280_ArryTrimm
+25-02-26 15:12:55 02,7821 00,0061 |  |  << mBasicTest.Test_0280_ArryTrimm
+25-02-26 15:12:55 02,7827         |  |  >> mBasicTest.Test_0400_Spaced
+25-02-26 15:12:55 03,0555 00,2727 |  |  << mBasicTest.Test_0400_Spaced
+25-02-26 15:12:55 03,0564         |  |  >> mBasicTest.Test_0800_Coll
+25-02-26 15:12:56 03,7706 00,7142 |  |  << mBasicTest.Test_0800_Coll
+25-02-26 15:12:56 03,7713 03,7713 |  << mBasicTest.Regression
+25-02-26 15:12:56 03,7713 03,7713 << Execution Trace Result of the mBasic Regression test
+25-02-26 15:12:56                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-02-26 15:12:56                 Impact on the overall performance (caused by the trace itself): 0,3 milliseconds!
+===========================================================================================================================================
+25-02-26 15:14:20 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-02-26 15:14:20 seconds seconds >> Execution Trace Result of the mBasic Regression test
+25-02-26 15:14:20 00,0000         |  >> mBasicTest.Test_0240_ArryDiffers
+25-02-26 15:44:31 00,5693         |  |  >> mBasicTest.Test_0110_Align_Simple
+25-02-26 15:44:31 00,5847 00,0154 |  |  << mBasicTest.Test_0110_Align_Simple
+25-02-26 15:44:31 00,5858         |  |  >> mBasicTest.Test_0120_Align_column_arranged
+25-02-26 15:44:31 00,5929 00,0071 |  |  << mBasicTest.Test_0120_Align_column_arranged
+25-02-26 15:44:31 00,5936         |  |  >> mBasicTest.Test_0200_ArryNextIndex
+25-02-26 15:44:31 00,6919 00,0983 |  |  << mBasicTest.Test_0200_ArryNextIndex
+25-02-26 15:44:31 00,6924         |  |  >> mBasicTest.Test_0210_Arry_Get
+25-02-26 15:44:31 00,9081 00,2156 |  |  << mBasicTest.Test_0210_Arry_Get
+25-02-26 15:44:31 00,9086         |  |  >> mBasicTest.Test_0215_Arry_Let
+25-02-26 15:44:31 01,1274 00,2188 |  |  << mBasicTest.Test_0215_Arry_Let
+25-02-26 15:44:31 01,1283         |  |  >> mBasicTest.Test_0220_ArryAsRnge_RangeAsArray
+25-02-26 15:44:32 01,2744 00,1461 |  |  << mBasicTest.Test_0220_ArryAsRnge_RangeAsArray
+25-02-26 15:44:32 01,2756         |  |  >> mBasicTest.Test_0230_ArryCompare
+25-02-26 15:44:32 01,4328 00,1572 |  |  << mBasicTest.Test_0230_ArryCompare
+25-02-26 15:44:32 01,4334         |  |  >> mBasicTest.Test_0240_ArryDiffers
+25-02-26 15:44:32 01,4407 00,0074 |  |  << mBasicTest.Test_0240_ArryDiffers
+25-02-26 15:44:32 01,4412         |  |  >> mBasicTest.Test_0250_Arry_Various
+25-02-26 15:44:32 01,4420 00,0008 |  |  << mBasicTest.Test_0250_Arry_Various
+25-02-26 15:44:32 01,4423         |  |  >> mBasicTest.Test_0260_ArrayAsDict
+25-02-26 15:44:32 01,4967 00,0544 |  |  << mBasicTest.Test_0260_ArrayAsDict
+25-02-26 15:44:32 01,4971         |  |  >> mBasicTest.Test_0270_ArryRemoveItems
+25-02-26 15:44:32 01,4976         |  |  |  >> mBasicTest.Test_0271_ArryRemoveItems
+25-02-26 15:44:32 01,5186 00,0211 |  |  |  << mBasicTest.Test_0271_ArryRemoveItems
+25-02-26 15:44:32 01,5191         |  |  |  >> mBasicTest.Test_0272_ArryRemoveItems_Error_Conditions
+25-02-26 15:44:32 01,5207 00,0015 |  |  |  << mBasicTest.Test_0272_ArryRemoveItems_Error_Conditions
+25-02-26 15:44:32 01,5211 00,0240 |  |  << mBasicTest.Test_0270_ArryRemoveItems
+25-02-26 15:44:32 01,5219         |  |  >> mBasicTest.Test_0275_ArryReDim
+25-02-26 15:44:32 01,6574 00,1355 |  |  << mBasicTest.Test_0275_ArryReDim
+25-02-26 15:44:32 01,6582         |  |  >> mBasicTest.Test_0280_ArryTrimm
+25-02-26 15:44:32 01,6645 00,0063 |  |  << mBasicTest.Test_0280_ArryTrimm
+25-02-26 15:44:32 01,6654         |  |  >> mBasicTest.Test_0400_Spaced
+25-02-26 15:44:37 06,5914 04,9260 |  |  << mBasicTest.Test_0400_Spaced
+25-02-26 15:44:37 06,5922         |  |  >> mBasicTest.Test_0800_Coll
+25-02-26 15:44:38 07,3175 00,7253 |  |  << mBasicTest.Test_0800_Coll
+25-02-26 15:44:38 07,3190 07,3190 |  << mBasicTest.Regression
+25-02-26 15:44:38 07,3190 07,3190 << Execution Trace Result of the mBasic Regression test
+25-02-26 15:44:38                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-02-26 15:44:38                 Impact on the overall performance (caused by the trace itself): 0,5 milliseconds!
+===========================================================================================================================================
+25-02-26 15:48:01 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-02-26 15:48:01 seconds seconds >> Execution Trace Result of the mBasic Regression test
+25-02-26 15:48:01 00,0000         |  >> mBasicTest.Test_0400_Spaced
+25-02-26 15:51:47 00,5471         |  |  >> mBasicTest.Test_0110_Align_Simple
+25-02-26 15:51:47 00,5542 00,0071 |  |  << mBasicTest.Test_0110_Align_Simple
+25-02-26 15:51:47 00,5549         |  |  >> mBasicTest.Test_0120_Align_column_arranged
+25-02-26 15:51:47 00,5633 00,0084 |  |  << mBasicTest.Test_0120_Align_column_arranged
+25-02-26 15:51:47 00,5639         |  |  >> mBasicTest.Test_0200_ArryNextIndex
+25-02-26 15:51:47 00,6613 00,0974 |  |  << mBasicTest.Test_0200_ArryNextIndex
+25-02-26 15:51:47 00,6618         |  |  >> mBasicTest.Test_0210_Arry_Get
+25-02-26 15:51:47 00,8776 00,2159 |  |  << mBasicTest.Test_0210_Arry_Get
+25-02-26 15:51:47 00,8782         |  |  >> mBasicTest.Test_0215_Arry_Let
+25-02-26 15:51:47 01,0960 00,2179 |  |  << mBasicTest.Test_0215_Arry_Let
+25-02-26 15:51:47 01,0965         |  |  >> mBasicTest.Test_0220_ArryAsRnge_RangeAsArray
+25-02-26 15:51:47 01,2261 00,1296 |  |  << mBasicTest.Test_0220_ArryAsRnge_RangeAsArray
+25-02-26 15:51:47 01,2266         |  |  >> mBasicTest.Test_0230_ArryCompare
+25-02-26 15:51:48 01,3782 00,1516 |  |  << mBasicTest.Test_0230_ArryCompare
+25-02-26 15:51:48 01,3786         |  |  >> mBasicTest.Test_0240_ArryDiffers
+25-02-26 15:51:48 01,3831 00,0045 |  |  << mBasicTest.Test_0240_ArryDiffers
+25-02-26 15:51:48 01,3836         |  |  >> mBasicTest.Test_0250_Arry_Various
+25-02-26 15:51:48 01,3843 00,0007 |  |  << mBasicTest.Test_0250_Arry_Various
+25-02-26 15:51:48 01,3846         |  |  >> mBasicTest.Test_0260_ArrayAsDict
+25-02-26 15:51:48 01,4412 00,0566 |  |  << mBasicTest.Test_0260_ArrayAsDict
+25-02-26 15:51:48 01,4417         |  |  >> mBasicTest.Test_0270_ArryRemoveItems
+25-02-26 15:51:48 01,4421         |  |  |  >> mBasicTest.Test_0271_ArryRemoveItems
+25-02-26 15:51:48 01,4537 00,0116 |  |  |  << mBasicTest.Test_0271_ArryRemoveItems
+25-02-26 15:51:48 01,4541         |  |  |  >> mBasicTest.Test_0272_ArryRemoveItems_Error_Conditions
+25-02-26 15:51:48 01,4549 00,0008 |  |  |  << mBasicTest.Test_0272_ArryRemoveItems_Error_Conditions
+25-02-26 15:51:48 01,4553 00,0136 |  |  << mBasicTest.Test_0270_ArryRemoveItems
+25-02-26 15:51:48 01,4557         |  |  >> mBasicTest.Test_0275_ArryReDim
+25-02-26 15:51:48 01,5817 00,1260 |  |  << mBasicTest.Test_0275_ArryReDim
+25-02-26 15:51:48 01,5821         |  |  >> mBasicTest.Test_0280_ArryTrimm
+25-02-26 15:51:48 01,5851 00,0029 |  |  << mBasicTest.Test_0280_ArryTrimm
+25-02-26 15:51:48 01,5855         |  |  >> mBasicTest.Test_0400_Spaced
+25-02-26 15:51:48 01,5861 00,0007 |  |  << mBasicTest.Test_0400_Spaced
+25-02-26 15:51:48 01,5864         |  |  >> mBasicTest.Test_0800_Coll
+25-02-26 15:51:48 02,2334 00,6470 |  |  << mBasicTest.Test_0800_Coll
+25-02-26 15:51:48 02,2345 02,2345 |  << mBasicTest.Regression
+25-02-26 15:51:48 02,2345 02,2345 << Execution Trace Result of the mBasic Regression test
+25-02-26 15:51:48                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-02-26 15:51:48                 Impact on the overall performance (caused by the trace itself): 0,4 milliseconds!
+===========================================================================================================================================
+25-02-26 15:54:46 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-02-26 15:54:46 seconds seconds >> Execution Trace Result of the mBasic Regression test
+25-02-26 15:54:46 00,0000         |  >> mBasicTest.Test_0275_ArryReDim
+25-02-26 15:54:46 00,1254 00,1254 |  << mBasicTest.Test_0275_ArryReDim
+25-02-26 15:54:46 00,1254 00,1254 << Execution Trace Result of the mBasic Regression test
+25-02-26 15:54:46                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-02-26 15:54:46                 Impact on the overall performance (caused by the trace itself): 0,7 milliseconds!
+25-02-26 15:54:55 00,7229         |  |  >> mBasicTest.Test_0110_Align_Simple
+25-02-26 15:54:55 00,7324 00,0096 |  |  << mBasicTest.Test_0110_Align_Simple
+25-02-26 15:54:55 00,7332         |  |  >> mBasicTest.Test_0120_Align_column_arranged
+25-02-26 15:54:55 00,7429 00,0097 |  |  << mBasicTest.Test_0120_Align_column_arranged
+25-02-26 15:54:55 00,7438         |  |  >> mBasicTest.Test_0200_ArryNextIndex
+25-02-26 15:54:55 00,8417 00,0980 |  |  << mBasicTest.Test_0200_ArryNextIndex
+25-02-26 15:54:55 00,8426         |  |  >> mBasicTest.Test_0210_Arry_Get
+25-02-26 15:54:55 01,0587 00,2162 |  |  << mBasicTest.Test_0210_Arry_Get
+25-02-26 15:54:55 01,0596         |  |  >> mBasicTest.Test_0215_Arry_Let
+25-02-26 15:54:55 01,2783 00,2187 |  |  << mBasicTest.Test_0215_Arry_Let
+25-02-26 15:54:55 01,2791         |  |  >> mBasicTest.Test_0220_ArryAsRnge_RangeAsArray
+25-02-26 15:54:55 01,4037 00,1247 |  |  << mBasicTest.Test_0220_ArryAsRnge_RangeAsArray
+25-02-26 15:54:55 01,4041         |  |  >> mBasicTest.Test_0230_ArryCompare
+25-02-26 15:54:55 01,5644 00,1603 |  |  << mBasicTest.Test_0230_ArryCompare
+25-02-26 15:54:55 01,5660         |  |  >> mBasicTest.Test_0240_ArryDiffers
+25-02-26 15:54:55 01,5842 00,0182 |  |  << mBasicTest.Test_0240_ArryDiffers
+25-02-26 15:54:55 01,5855         |  |  >> mBasicTest.Test_0250_Arry_Various
+25-02-26 15:54:55 01,5879 00,0024 |  |  << mBasicTest.Test_0250_Arry_Various
+25-02-26 15:54:55 01,5894         |  |  >> mBasicTest.Test_0260_ArrayAsDict
+25-02-26 15:54:55 01,6541 00,0647 |  |  << mBasicTest.Test_0260_ArrayAsDict
+25-02-26 15:54:55 01,6546         |  |  >> mBasicTest.Test_0270_ArryRemoveItems
+25-02-26 15:54:55 01,6551         |  |  |  >> mBasicTest.Test_0271_ArryRemoveItems
+25-02-26 15:54:56 01,6781 00,0230 |  |  |  << mBasicTest.Test_0271_ArryRemoveItems
+25-02-26 15:54:56 01,6787         |  |  |  >> mBasicTest.Test_0272_ArryRemoveItems_Error_Conditions
+25-02-26 15:54:56 01,6799 00,0012 |  |  |  << mBasicTest.Test_0272_ArryRemoveItems_Error_Conditions
+25-02-26 15:54:56 01,6803 00,0257 |  |  << mBasicTest.Test_0270_ArryRemoveItems
+25-02-26 15:54:56 01,6809         |  |  >> mBasicTest.Test_0275_ArryReDim
+25-02-26 15:54:56 01,8183 00,1374 |  |  << mBasicTest.Test_0275_ArryReDim
+25-02-26 15:54:56 01,8192         |  |  >> mBasicTest.Test_0280_ArryTrimm
+25-02-26 15:54:56 01,8264 00,0073 |  |  << mBasicTest.Test_0280_ArryTrimm
+25-02-26 15:54:56 01,8273         |  |  >> mBasicTest.Test_0400_Spaced
+25-02-26 15:54:56 01,8299 00,0026 |  |  << mBasicTest.Test_0400_Spaced
+25-02-26 15:54:56 01,8306         |  |  >> mBasicTest.Test_0800_Coll
+25-02-26 15:54:56 02,5311 00,7005 |  |  << mBasicTest.Test_0800_Coll
+25-02-26 15:54:56 02,5320 02,5320 |  << mBasicTest.Regression
+25-02-26 15:54:56 02,5320 02,5320 << Execution Trace Result of the mBasic Regression test
+25-02-26 15:54:56                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-02-26 15:54:56                 Impact on the overall performance (caused by the trace itself): 0,4 milliseconds!
+25-02-26 15:56:10 00,7693         |  |  >> mBasicTest.Test_0110_Align_Simple
+25-02-26 15:56:11 00,7759 00,0066 |  |  << mBasicTest.Test_0110_Align_Simple
+25-02-26 15:56:11 00,7767         |  |  >> mBasicTest.Test_0120_Align_column_arranged
+25-02-26 15:56:11 00,7803 00,0037 |  |  << mBasicTest.Test_0120_Align_column_arranged
+25-02-26 15:56:11 00,7808         |  |  >> mBasicTest.Test_0200_ArryNextIndex
+25-02-26 15:56:11 00,8702 00,0894 |  |  << mBasicTest.Test_0200_ArryNextIndex
+25-02-26 15:56:11 00,8706         |  |  >> mBasicTest.Test_0210_Arry_Get
+25-02-26 15:56:11 01,0853 00,2148 |  |  << mBasicTest.Test_0210_Arry_Get
+25-02-26 15:56:11 01,0858         |  |  >> mBasicTest.Test_0215_Arry_Let
+25-02-26 15:56:11 01,3031 00,2173 |  |  << mBasicTest.Test_0215_Arry_Let
+25-02-26 15:56:11 01,3036         |  |  >> mBasicTest.Test_0220_ArryAsRnge_RangeAsArray
+25-02-26 15:56:11 01,4285 00,1249 |  |  << mBasicTest.Test_0220_ArryAsRnge_RangeAsArray
+25-02-26 15:56:11 01,4289         |  |  >> mBasicTest.Test_0230_ArryCompare
+25-02-26 15:56:11 01,5814 00,1525 |  |  << mBasicTest.Test_0230_ArryCompare
+25-02-26 15:56:11 01,5818         |  |  >> mBasicTest.Test_0240_ArryDiffers
+25-02-26 15:56:11 01,5862 00,0044 |  |  << mBasicTest.Test_0240_ArryDiffers
+25-02-26 15:56:11 01,5866         |  |  >> mBasicTest.Test_0250_Arry_Various
+25-02-26 15:56:11 01,5873 00,0007 |  |  << mBasicTest.Test_0250_Arry_Various
+25-02-26 15:56:11 01,5876         |  |  >> mBasicTest.Test_0260_ArrayAsDict
+25-02-26 15:56:11 01,6442 00,0566 |  |  << mBasicTest.Test_0260_ArrayAsDict
+25-02-26 15:56:11 01,6445         |  |  >> mBasicTest.Test_0270_ArryRemoveItems
+25-02-26 15:56:11 01,6448         |  |  |  >> mBasicTest.Test_0271_ArryRemoveItems
+25-02-26 15:56:11 01,6562 00,0114 |  |  |  << mBasicTest.Test_0271_ArryRemoveItems
+25-02-26 15:56:11 01,6566         |  |  |  >> mBasicTest.Test_0272_ArryRemoveItems_Error_Conditions
+25-02-26 15:56:11 01,6577 00,0011 |  |  |  << mBasicTest.Test_0272_ArryRemoveItems_Error_Conditions
+25-02-26 15:56:11 01,6581 00,0136 |  |  << mBasicTest.Test_0270_ArryRemoveItems
+25-02-26 15:56:11 01,6589         |  |  >> mBasicTest.Test_0275_ArryReDim
+25-02-26 15:56:12 01,7857 00,1268 |  |  << mBasicTest.Test_0275_ArryReDim
+25-02-26 15:56:12 01,7861         |  |  >> mBasicTest.Test_0280_ArryTrimm
+25-02-26 15:56:12 01,7885 00,0024 |  |  << mBasicTest.Test_0280_ArryTrimm
+25-02-26 15:56:12 01,7888         |  |  >> mBasicTest.Test_0400_Spaced
+25-02-26 15:56:12 01,7896 00,0008 |  |  << mBasicTest.Test_0400_Spaced
+25-02-26 15:56:12 01,7901         |  |  >> mBasicTest.Test_0800_Coll
+25-02-26 15:56:12 02,4343 00,6442 |  |  << mBasicTest.Test_0800_Coll
+25-02-26 15:56:12 02,4349 02,4349 |  << mBasicTest.Regression
+25-02-26 15:56:12 02,4349 02,4349 << Execution Trace Result of the mBasic Regression test
+25-02-26 15:56:12                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-02-26 15:56:12                 Impact on the overall performance (caused by the trace itself): 0,3 milliseconds!

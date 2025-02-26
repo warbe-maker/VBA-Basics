@@ -1,21 +1,20 @@
 Attribute VB_Name = "mBasic"
 Option Explicit
 ' ----------------------------------------------------------------------------
-' Standard Module mBasic: Common VBA services (declarations, procedures,
-' ======================= functions potentially usefull  in any VB-Project.
-' When not used as a whole parts may optionally just be copied.
+' Standard Module mBasic: Common Component providing basic VBA services
+' ======================= potentially usefull in any VB-Project. When not used
+' as a whole parts may optionally just be copied.
 '
-' Note: This component is supposed to be autonomous. I.e. is does not require
-'       any other installed component. The Common VBA Message Services
-'       (fMsg and mMsg) and the Common VBA Error Services (mErH) are optional
-'       and only used when installed which is indicated by corresponding
-'       Conditional Compile Arguments `mMsg = 1` and `mErH = 1`.
+' As with all (my) Common Components this component is supposed to be
+' autonomous in the sense it does not require any other installed component.
+' The Common Component "VBA Message Services" (fMsg and mMsg) and
+' the Common Component "VBA Error Services" (mErH) are optional by means
+' of Conditional Compile Arguments `mMsg = 1` and `mErH = 1`. I.e. these
+' indicate when the corresponding components are installed and then will
+' automatically be used. When not installed all services, in case of an error
+' display a best possible error message - with a debugging option however.
 '
-' See the Summary of services in the README
-' https://github.com/warbe-maker/VBA-Basics/blob/master/README.md#summary-of-services
-'
-' supplemented by Specifics and use
-' https://github.com/warbe-maker/VBA-Basics/blob/master/SpecsAndUse.md#specifics-and-usage-examples-for-mbasic-vba-services
+' See the Summary of services by README "mBasic"
 '
 ' Requires:
 ' ---------
@@ -100,8 +99,6 @@ End Enum
         ByVal nShowCmd As Long) _
         As Long
 #End If
-
-Public sc      As New scriptControl
 
 Private Const ERROR_BAD_FORMAT = 11&
 Private Const ERROR_FILE_NOT_FOUND = 2&
@@ -1055,21 +1052,23 @@ Private Sub ArryAsDictAdd(ByVal a_arr As Variant, _
     Dim arrNdcs As Variant
     Dim vItem   As Variant
     
-    For i = LBound(a_arr, a_dim) To UBound(a_arr, a_dim)
-        If a_key = vbNullString _
-        Then sKey = i _
-        Else sKey = a_key & "," & i
-        
-        If a_dim < a_dims Then
-            ArryAsDictAdd a_arr, a_dct, sKey, a_dim + 1, a_dims
-        Else
-            arrNdcs = Split(sKey, ",")
-            vItem = ArryItem(a_arr, arrNdcs)
-            If Not IsError(vItem) And Not IsEmpty(vItem) Then
-                a_dct.Add sKey, vItem
+    With a_dct
+        For i = LBound(a_arr, a_dim) To UBound(a_arr, a_dim)
+            If a_key = vbNullString _
+            Then sKey = i _
+            Else sKey = a_key & "," & i
+            
+            If a_dim < a_dims Then
+                ArryAsDictAdd a_arr, a_dct, sKey, a_dim + 1, a_dims
+            Else
+                arrNdcs = Split(sKey, ",")
+                vItem = ArryItem(a_arr, arrNdcs)
+                If Not IsError(vItem) And Not IsEmpty(vItem) Then
+                    .Add sKey, vItem
+                End If
             End If
-        End If
-    Next i
+        Next i
+    End With
     
 xt: Exit Sub
 
@@ -1213,52 +1212,54 @@ Public Function ArryCompare(ByVal a_v1 As Variant, _
     
     If a_ignore_case Then lMethod = vbTextCompare Else lMethod = vbBinaryCompare
     
-    If Not mBasic.ArryIsAllocated(a_v1) And mBasic.ArryIsAllocated(a_v2) Then
-        If a_ignore_empty Then mBasic.ArryTrimm a_v2
-        For i = LBound(a_v2) To UBound(a_v2)
-            dct.Add i + 1, "'" & a_v2(i) & "'" & vbLf
-        Next i
-    ElseIf mBasic.ArryIsAllocated(a_v1) And Not mBasic.ArryIsAllocated(a_v2) Then
-        If a_ignore_empty Then mBasic.ArryTrimm a_v1
-        For i = LBound(a_v1) To UBound(a_v1)
-            dct.Add i + 1, "'" & a_v1(i) & "'" & vbLf
-        Next i
-    ElseIf Not mBasic.ArryIsAllocated(a_v1) And Not mBasic.ArryIsAllocated(a_v2) Then
-        GoTo xt
-    End If
-    
-    If a_ignore_empty Then mBasic.ArryTrimm a_v1
-    If a_ignore_empty Then mBasic.ArryTrimm a_v2
-    
-    l = 0
-    For i = LBound(a_v1) To Min(UBound(a_v1), UBound(a_v2))
-        If StrComp(a_v1(i), a_v2(i), lMethod) <> 0 Then
-            dct.Add i + 1, "'" & a_v1(i) & "'" & vbLf & "'" & a_v2(i) & "'"
-            l = l + 1
-            If a_stop_after <> 0 And l >= a_stop_after Then
-                GoTo xt
-            End If
+    With dct
+        If Not mBasic.ArryIsAllocated(a_v1) And mBasic.ArryIsAllocated(a_v2) Then
+            If a_ignore_empty Then mBasic.ArryTrimm a_v2
+            For i = LBound(a_v2) To UBound(a_v2)
+                .Add i + 1, "'" & a_v2(i) & "'" & vbLf
+            Next i
+        ElseIf mBasic.ArryIsAllocated(a_v1) And Not mBasic.ArryIsAllocated(a_v2) Then
+            If a_ignore_empty Then mBasic.ArryTrimm a_v1
+            For i = LBound(a_v1) To UBound(a_v1)
+                .Add i + 1, "'" & a_v1(i) & "'" & vbLf
+            Next i
+        ElseIf Not mBasic.ArryIsAllocated(a_v1) And Not mBasic.ArryIsAllocated(a_v2) Then
+            GoTo xt
         End If
-    Next i
-    
-    If UBound(a_v1) < UBound(a_v2) Then
-        For i = UBound(a_v1) + 1 To UBound(a_v2)
-            dct.Add i + 1, "''" & vbLf & " '" & a_v2(i) & "'"
-            l = l + 1
-            If a_stop_after <> 0 And l >= a_stop_after Then
-                GoTo xt
+        
+        If a_ignore_empty Then mBasic.ArryTrimm a_v1
+        If a_ignore_empty Then mBasic.ArryTrimm a_v2
+        
+        l = 0
+        For i = LBound(a_v1) To Min(UBound(a_v1), UBound(a_v2))
+            If StrComp(a_v1(i), a_v2(i), lMethod) <> 0 Then
+                .Add i + 1, "'" & a_v1(i) & "'" & vbLf & "'" & a_v2(i) & "'"
+                l = l + 1
+                If a_stop_after <> 0 And l >= a_stop_after Then
+                    GoTo xt
+                End If
             End If
         Next i
         
-    ElseIf UBound(a_v2) < UBound(a_v1) Then
-        For i = UBound(a_v2) + 1 To UBound(a_v1)
-            dct.Add i + 1, "'" & a_v1(i) & "'" & vbLf & "''"
-            l = l + 1
-            If a_stop_after <> 0 And l >= a_stop_after Then
-                GoTo xt
-            End If
-        Next i
-    End If
+        If UBound(a_v1) < UBound(a_v2) Then
+            For i = UBound(a_v1) + 1 To UBound(a_v2)
+                .Add i + 1, "''" & vbLf & " '" & a_v2(i) & "'"
+                l = l + 1
+                If a_stop_after <> 0 And l >= a_stop_after Then
+                    GoTo xt
+                End If
+            Next i
+            
+        ElseIf UBound(a_v2) < UBound(a_v1) Then
+            For i = UBound(a_v2) + 1 To UBound(a_v1)
+                .Add i + 1, "'" & a_v1(i) & "'" & vbLf & "''"
+                l = l + 1
+                If a_stop_after <> 0 And l >= a_stop_after Then
+                    GoTo xt
+                End If
+            Next i
+        End If
+    End With
 
 xt: Set ArryCompare = dct
     Exit Function
@@ -1296,69 +1297,39 @@ Private Function ArryDefault(ByVal a_arry As Variant) As Variant
     
 End Function
 
-Public Function ArryDiffers(ByVal ad_v1 As Variant, _
-                             ByVal ad_v2 As Variant, _
-                    Optional ByVal ad_ignore_empty_items As Boolean = False, _
-                    Optional ByVal ad_comp_mode As VbCompareMethod = vbTextCompare) As Boolean
+Public Function ArryDiffers(ByVal a_arr1 As Variant, _
+                            ByVal a_arr2 As Variant) As Boolean
 ' ----------------------------------------------------------------------------
-' Returns TRUE when array (ad_v1) differs from array (ad_v2).
+' Returns TRUE when the an array (a_arr1) differs from another (a_arr2).
+' The arrays are compared via an unload to a corresponding Dictionary which
+' keeps all items of a max 8-dimms array each item with a key equal to the
+' indices delimited by a comma.
 ' ----------------------------------------------------------------------------
-    Const PROC  As String = "ArryDiffers"
-    
-    Dim i       As Long
-    Dim j       As Long
-    Dim va()    As Variant
+    Const PROC = "ArryDiffers"
     
     On Error GoTo eh
+    Dim dctArr1 As Dictionary
+    Dim dctArr2 As Dictionary
+    Dim dctDone As New Dictionary
+    Dim v       As Variant
     
-    If Not mBasic.ArryIsAllocated(ad_v1) And mBasic.ArryIsAllocated(ad_v2) Then
-        va = ad_v2
-    ElseIf mBasic.ArryIsAllocated(ad_v1) And Not mBasic.ArryIsAllocated(ad_v2) Then
-        va = ad_v1
-    ElseIf Not mBasic.ArryIsAllocated(ad_v1) And Not mBasic.ArryIsAllocated(ad_v2) Then
-        GoTo xt
-    End If
+    Set dctArr1 = ArryAsDict(a_arr1)
+    Set dctArr2 = ArryAsDict(a_arr2)
 
-    '~~ Leading and trailing empty items are ignored by default
-    mBasic.ArryTrimm ad_v1
-    mBasic.ArryTrimm ad_v2
+    ArryDiffers = True
+    If dctArr1.Count <> dctArr2.Count Then GoTo xt
+    For Each v In dctArr1
+        If Not dctArr2.Exists(v) Then GoTo xt
+        If dctArr1(v) <> dctArr2(v) Then GoTo xt
+        If Not dctDone.Exists(v) Then dctDone.Add v, vbNullString
+    Next v
     
-    If Not ad_ignore_empty_items Then
-        On Error Resume Next
-        If Not ad_ignore_empty_items Then
-            On Error Resume Next
-            ArryDiffers = Join(ad_v1) <> Join(ad_v2)
-            If Err.Number = 0 Then GoTo xt
-            '~~ At least one of the joins resulted in a string exeeding the maximum possible lenght
-            For i = LBound(ad_v1) To Min(UBound(ad_v1), UBound(ad_v2))
-                If ad_v1(i) <> ad_v2(i) Then
-                    ArryDiffers = True
-                    Exit Function
-                End If
-            Next i
-        End If
-    Else
-        i = LBound(ad_v1)
-        j = LBound(ad_v2)
-        For i = i To mBasic.Min(UBound(ad_v1), UBound(ad_v2))
-            While Len(ad_v1(i)) = 0 And i + 1 <= UBound(ad_v1)
-                i = i + 1
-            Wend
-            While Len(ad_v2(j)) = 0 And j + 1 <= UBound(ad_v2)
-                j = j + 1
-            Wend
-            If i <= UBound(ad_v1) And j <= UBound(ad_v2) Then
-                If StrComp(ad_v1(i), ad_v2(j), ad_comp_mode) <> 0 Then
-                    ArryDiffers = True
-                    GoTo xt
-                End If
-            End If
-            j = j + 1
-        Next i
-        If j < UBound(ad_v2) Then
-            ArryDiffers = True
-        End If
-    End If
+    For Each v In dctArr2
+        If Not dctDone.Exists(v) Then GoTo xt
+    Next v
+    
+    ArryDiffers = False
+    Set dctDone = Nothing
     
 xt: Exit Function
 
@@ -1431,41 +1402,37 @@ Public Function ArryIndices(ParamArray a_indices() As Variant) As Collection
     
     Dim cll As New Collection
     Dim i   As Long
-    Dim v   As Variant
+    Dim v2   As Variant
+    Dim v1  As Variant
     
     On Error GoTo xt
     If UBound(a_indices) >= LBound(a_indices) Then
-        Select Case True
-            Case Not ArryIsAllocated(a_indices)
-                '~~ No indices had been provided
-                Exit Function
-            Case IsArray(a_indices(LBound(a_indices)))
-                '~~ The first item is an array if incides
-                For Each v In a_indices(LBound(a_indices))
-                    If IsInteger(CInt(Trim(v))) _
-                    Then cll.Add v _
-                    Else Err.Raise AppErr(1), ErrSrc(PROC), "At least one of the items provided as array is not an integer value!"
-                Next v
-            Case TypeName(a_indices(LBound(a_indices))) = "Collection"
-                '~~ The first item is a Collection of indices
-                Set cll = a_indices(LBound(a_indices))
-            Case TypeName(a_indices(LBound(a_indices))) = "String"
-                '~~ The first item is a string of incides delimited by a comma
-                For Each v In Split(a_indices(LBound(a_indices)), ",")
-                    If IsNumeric(v) Then
-                        cll.Add CInt(Trim(v))
-                    Else
-                        Err.Raise AppErr(2), ErrSrc(PROC), "At least one of the items provided a string delimited by a comma is not an integer value!"
-                    End If
-                Next v
-            Case a_indices(LBound(a_indices)) = Empty
-            Case Else
-                For Each v In a_indices
-                    If IsInteger(v) _
-                    Then cll.Add v _
-                    Else Err.Raise AppErr(3), ErrSrc(PROC), "Any of the provided indices is not an integer value!"
-                Next v
-        End Select
+        For Each v1 In a_indices
+            Select Case True
+                Case IsArray(v1)
+                    '~~ The first item is an array if incides
+                    For Each v2 In a_indices(LBound(a_indices))
+                        If IsInteger(CInt(Trim(v2))) _
+                        Then cll.Add v2 _
+                        Else Err.Raise AppErr(1), ErrSrc(PROC), "At least one of the items provided as array is not an integer value!"
+                    Next v2
+                Case TypeName(v1) = "Collection"
+                    '~~ The first item is a Collection of indices
+                    Set cll = a_indices(LBound(a_indices))
+                
+                Case TypeName(v1) = "String"
+                    '~~ The first item is a string of incides delimited by a comma
+                    For Each v2 In Split(v1, ",")
+                        If IsNumeric(v2) Then
+                            cll.Add CInt(Trim(v2))
+                        Else
+                            Err.Raise AppErr(2), ErrSrc(PROC), "At least one of the items provided a string delimited by a comma is not an integer value!"
+                        End If
+                    Next v2
+                Case IsInteger(v1)
+                    cll.Add v1
+            End Select
+        Next v1
     End If
     
 xt: On Error GoTo 0
@@ -1626,7 +1593,7 @@ Public Sub ArryReDim(ByRef a_arr As Variant, _
     End If
     
 xt: Err.Clear
-    On Error GoTo -1
+    On Error GoTo 0
     Exit Sub
 
 eh: Select Case ErrMsg(ErrSrc(PROC))
@@ -1815,21 +1782,27 @@ Public Sub ArryTrimm(ByRef a_arr As Variant)
 
     On Error GoTo eh
     Dim i   As Long
+    Dim j   As Long
     Dim arr As Variant
     
     On Error GoTo xt
     If UBound(a_arr) >= LBound(a_arr) Then
+        j = LBound(a_arr)
+        ReDim arr(UBound(a_arr))
         For i = LBound(a_arr) To UBound(a_arr)
             Select Case True
                 Case IsError(a_arr(i))
                 Case a_arr(i) = Empty
                 Case Trim$(a_arr(i)) = vbNullString
                 Case Else
-                    If Not Len(Trim(a_arr(i))) = 0 _
-                    Then Arry(arr) = Trim(a_arr(i))
+                    If Not Len(Trim(a_arr(i))) = 0 Then
+                        arr(j) = Trim(a_arr(i))
+                        j = j + 1
+                    End If
             End Select
         Next i
     End If
+    ReDim Preserve arr(j - 1)
     a_arr = arr
     
 xt: On Error GoTo 0
@@ -2123,17 +2096,20 @@ Public Sub DictTest()
 End Sub
 
 Public Function DynExec(ByVal d_vbp As VBProject, _
-                        ByVal d_code As String, _
+                        ByVal d_proc As String, _
                         ByVal d_args As String) As Variant
 ' ----------------------------------------------------------------------------
-' Provides a means to dynamically execute code (d_code) by means of a
-' temporary component created in a VB-Project (d_vbp) to hold the provided
-' code (d_code).
+' Dynamically constructs a function which calls a provided procedure (d_proc)
+' by passing provided arguments (d_args). In other words the function
+' provides a means to dynamically execute a named procedure (d_proc) by means
+' of a temporary component created in a VB-Project (d_vbp).
 '
-' Note: This is one of the very rare solutions to dynamically execute code.
-'       However, is comes with the disadvantage that debugging is hindered
-'       substantially since code holds cannot be used when this function
-'       is executed.
+' Note: This is one of the very rare working solutions to dynamically execute
+'       code. However, is comes with the disadvantage that debugging is
+'       hindered substantially since code holds cannot be used when this
+'       function is executed.
+'       It thus will be appropriate to keep the procedure which calls DynExec
+'       short and DynExec the only call executed.
 '
 ' Requires a reference to: "Microsoft Visual Basic Application Extensibility .."
 '
@@ -2145,9 +2121,8 @@ Public Function DynExec(ByVal d_vbp As VBProject, _
     Dim vResult    As Variant
     Dim sCode      As String
     
-' Dynamically construct and execute the function call
     sCode = "Function TempFunction() As Variant" & vbCrLf
-    sCode = sCode & "TempFunction = " & d_code & "(" & d_args & ")" & vbCrLf
+    sCode = sCode & "TempFunction = " & d_proc & "(" & d_args & ")" & vbCrLf
     sCode = sCode & "End Function"
     
     On Error GoTo eh
@@ -2292,10 +2267,14 @@ Public Function IsInteger(ByVal i_value As Variant) As Boolean
 ' ----------------------------------------------------------------------------
 ' Returns TRUE when the provided argument is numeric, and has no decimals.
 ' ----------------------------------------------------------------------------
-    If Not i_value = Empty Then
-        If IsNumeric(i_value) _
-        Then IsInteger = (i_value = Int(i_value))
-    End If
+    Select Case True
+        Case i_value = 0
+            IsInteger = True
+        Case Not i_value = Empty
+            If IsNumeric(i_value) _
+            Then IsInteger = (i_value = Int(i_value))
+    End Select
+    
 End Function
 
 Public Function IsString(ByVal v As Variant, _
@@ -2351,10 +2330,12 @@ Public Function KeySort(ByRef s_dct As Dictionary) As Dictionary
     Next i
         
     '~~ Transfer based on sorted keys
-    For i = LBound(arr) To UBound(arr)
-        vKey = arr(i)
-        dct.Add key:=vKey, Item:=s_dct.Item(vKey)
-    Next i
+    With dct
+        For i = LBound(arr) To UBound(arr)
+            vKey = arr(i)
+            .Add key:=vKey, Item:=s_dct.Item(vKey)
+        Next i
+    End With
     
 xt: Set s_dct = dct
     Set KeySort = dct
@@ -2583,9 +2564,11 @@ Public Function Spaced(ByVal s As String) As String
     a = StrConv(Trim$(s), vbFromUnicode)
     Spaced = Chr$(a(LBound(a)))
     For i = LBound(a) + 1 To UBound(a)
-        If Chr$(a(i)) = " " _
-        Then Spaced = Spaced & Chr$(160) & Chr$(160) & Chr$(160) _
-        Else Spaced = Spaced & Chr$(160) & Chr$(a(i))
+        If Chr$(a(i)) = " " Then
+            Spaced = Spaced & Chr$(160) & Chr$(160)
+        Else
+            Spaced = Spaced & Chr$(160) & Chr$(a(i))
+        End If
     Next i
 
 End Function
@@ -2691,7 +2674,7 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
 End Function
 
 Public Sub StackPush(ByRef stck As Collection, _
-                     ByVal stck_Item As Variant)
+                     ByVal stck_item As Variant)
 ' ----------------------------------------------------------------------------
 ' Common Stack Push service. Pushes (adds) an Item (stck_Item) to the stack
 ' (stck). When the provided stack (stck) is Nothing the stack is created.
@@ -2700,7 +2683,7 @@ Public Sub StackPush(ByRef stck As Collection, _
     
     On Error GoTo eh
     If stck Is Nothing Then Set stck = New Collection
-    stck.Add stck_Item
+    stck.Add stck_item
 
 xt: Exit Sub
 

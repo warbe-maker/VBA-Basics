@@ -957,10 +957,10 @@ Public Sub Test_0215_Arry_Let()
                 .ResultExpected = "Item(10)"
                     
         .TestId = "0215-2"
+        .Title = "Write to multi-dim array with automated ReDim of any dimensions specs when the requested index is out of bounds"
         .TestedComp = "mBasic"
         .TestedProc = "Arry(Let)"
         .TestedProcType = "Property"
-        .Title = "Write to multi-dim array with automated ReDim of any dimensions specs when the requested index is out of bounds"
         
             .Verification = "When an index is provided for a multi-dim array an Item is updated when within the bounds"
                 arr2 = TestArray(4, 4)
@@ -968,7 +968,7 @@ Public Sub Test_0215_Arry_Let()
                 .Result = Arry(arr2, Array(3, 3))
                 .ResultExpected = "Item(3,3) updated"
             
-            .Verification = "Write a new item to and index of the highest dimension which is beyond the upper boundary"
+            .Verification = "Write a new item with the last dimensions index beyond its current boundary extents the array"
                 arr3 = TestArray(4, 3, 2)
                 .TimerStart
                 Arry(arr3, ArryIndices(3, 3, 5)) = "Item(3,3,5)"
@@ -1143,17 +1143,19 @@ Public Sub Test_0240_ArryDiffers()
         .Verification = "Arrays not differ when only leading and trailing items are empty"
             a1 = Split(",1,2,3,4,5,6,7,,,,", ",")                   ' Test array
             a2 = Split(",,1,2,3,4,5,6,7,,", ",")                    ' Test array
-            .Result = mBasic.ArryDiffers(a1, a2, False)
-            .ResultExpected = False
+            .Result = mBasic.ArryDiffers(a1, a2)
+            .ResultExpected = True
         
         .Verification = "Items at different positions are empty, differ when not ignored"
             a1 = Split(",1,2,,,3,4,5,6,7,,,,", ",")                 ' Test array
             a2 = Split(",,1,,,,,,,,,2,3,4,,,5,6,7,,", ",")          ' Test array
-            .Result = mBasic.ArryDiffers(a1, a2, False)
+            .Result = mBasic.ArryDiffers(a1, a2)
             .ResultExpected = True
         
         .Verification = "Items at different positions are empty, equal when ignored"
-            .Result = mBasic.ArryDiffers(a1, a2, True)
+            a1 = Split("1,2,,,3,4,5,6,7,,,,", ",")                 ' Test array
+            a2 = Split("1,2,,,3,4,5,6,7,,,,", ",")          ' Test array
+            .Result = mBasic.ArryDiffers(a1, a2)
             .ResultExpected = False
         
     End With
@@ -1363,9 +1365,10 @@ Public Sub Test_0275_ArryReDim()
     
     With TestAid
         .TestId = "0275"
-        .Title = "Redim arry with a new 2. dimension and one Item dropped"
+        .Title = "Redim array"
         .TestedProc = "ArryReDim"
         .TestedProcType = "Sub"
+        
         arr = TestArray(8)
         arr(3) = Empty
         
@@ -1478,7 +1481,7 @@ Public Sub Test_0280_ArryTrimm()
     Prepare
     BoP ErrSrc(PROC)
     With TestAid
-        .TestId = "0275"
+        .TestId = "0280"
         .Title = "Remove any leading or trailing spaces and empt items"
         .TestedProc = "ArryTrim"
         .TestedProcType = "Sub"
@@ -1510,13 +1513,18 @@ Public Sub Test_0400_Spaced()
     mBasic.BoP ErrSrc(PROC)
     
     With TestAid
+        .TestId = "0400"
+        .Title = "A provided string is returned spaced with non-breaking spaces `Chr$(160)`"
         .TestedProc = "Spaced"
         .TestedProcType = "Function"
         
-        .TestId = "0400-1"
-        .Title = "A provided string is returned spaced with non-breaking spaces `Chr$(160)`"
-        .ResultExpected = "A" & Chr$(160) & "b" & Chr$(160) & Chr$(160) & "c"
-        .Result = Spaced("Ab c")
+        .Verification = "Result is the string with non-breaking spaces"
+            .Result = mBasic.Spaced("Abc")
+            .ResultExpected = "A" & Chr$(160) & "b" & Chr$(160) & "c"
+        
+        .Verification = "String spaced with non-breaking spaces, including existing spaces"
+            .Result = mBasic.Spaced("Ab c")
+            .ResultExpected = "A" & Chr$(160) & "b" & Chr$(160) & Chr$(160) & Chr$(160) & "c"
     End With
 
 xt: mBasic.EoP ErrSrc(PROC)
@@ -1700,11 +1708,10 @@ Public Sub Test_0800_Coll()
     mBasic.BoP ErrSrc(PROC)
     
     With TestAid
-        ' ==================================================================
-        .TestId = "0800-1"
+        .TestId = "0800"
+        .Title = "Read from, write to Collection"
         .TestedProc = "Coll"
         .TestedProcType = "Property Get"
-        .Title = "Read from, write to Collection"
         
             .Verification = "Read from not existing Collection"
                 .TimerStart
@@ -1766,11 +1773,6 @@ Public Sub Test_0800_Coll()
                 Coll(cll, 10) = obj
                 .Result = Coll(cll, 10)
                 .ResultExpected = Nothing
-        
-        .TestId = "0800-1"
-        .TestedProc = "Coll"
-        .TestedProcType = "Property Let (uses Get for verification!)"
-        .Title = "Read from, write to Collection"
         
             .Verification = "Write to not existing Collection"
                 Set cll = Nothing

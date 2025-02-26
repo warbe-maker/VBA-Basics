@@ -164,15 +164,6 @@ Public Function ShellRun(ByVal sr_string As String, _
 
 End Function
 
-Private Function ArryIsAllocated(arr As Variant) As Boolean
-    
-    On Error Resume Next
-    ArryIsAllocated = VBA.IsArray(arr) _
-                   And Not VBA.IsError(LBound(arr, 1)) _
-                   And LBound(arr, 1) <= UBound(arr, 1)
-    
-End Function
-
 Public Sub Asserted(ParamArray botp_errs_asserted() As Variant)
     vErrsAsserted = botp_errs_asserted
 End Sub
@@ -233,13 +224,10 @@ Private Property Get BoPArguments() As String
 ' subsequent Item.
 ' ----------------------------------------------------------------------------
     Const PROC = "BoPArguments(Get)"
-    
-    On Error GoTo eh
-    Dim s As String
-    
-    If ArryIsAllocated(vArguments) Then
-        s = Join(vArguments, ", ")
-        BoPArguments = "(" & Replace(s, "=, ", " = ") & ")"
+        
+    On Error GoTo xt
+    If UBound(vArguments) >= LBound(vArguments) Then
+        BoPArguments = "(" & Replace(Join(vArguments, ", "), "=, ", " = ") & ")"
     End If
 
 xt: Exit Property
@@ -787,7 +775,7 @@ eh: If ErrMsg(ErrSrc(PROC)) = vbYes Then: Stop: Resume
 End Function
 
 Public Sub StackPush(ByRef stck As Collection, _
-                     ByVal stck_Item As Variant)
+                     ByVal stck_item As Variant)
 ' ----------------------------------------------------------------------------
 ' Common Stack Push service. Pushes (adds) an Item (stck_Item) to the stack
 ' (stck). When the provided stack (stck) is Nothing the stack is created.
@@ -796,7 +784,7 @@ Public Sub StackPush(ByRef stck As Collection, _
     
     On Error GoTo eh
     If stck Is Nothing Then Set stck = New Collection
-    stck.Add stck_Item
+    stck.Add stck_item
 
 xt: Exit Sub
 
