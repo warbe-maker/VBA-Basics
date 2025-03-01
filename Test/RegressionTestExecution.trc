@@ -1,51 +1,207 @@
-25-02-26 15:14:44 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
-25-02-26 15:14:44 seconds seconds >> Begin execution trace 
-25-02-26 15:14:44 00,0000         |  >> mBasicTest.Test_0240_ArryDiffers
+25-03-01 14:51:24 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 14:51:24 seconds seconds >> Begin execution trace 
+25-03-01 14:51:24 00,0000         |  >> mBasicTest.Test_0240_ArryDiffers
 ===========================================================================================================================================
-25-02-26 15:36:26 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
-25-02-26 15:36:26 seconds seconds >> Begin execution trace 
-25-02-26 15:36:26 00,0000         |  >> mBasicTest.Test_0240_ArryDiffers
-25-02-26 15:37:40 74,2136 74,2136 |  << mBasicTest.Test_0240_ArryDiffers
-25-02-26 15:37:40 74,2136 74,2136 << End execution trace 
-25-02-26 15:37:40                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
-25-02-26 15:37:40                 Impact on the overall performance (caused by the trace itself): 0,6 milliseconds!
+25-03-01 14:58:33 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 14:58:33 seconds seconds >> Begin execution trace 
+25-03-01 14:58:33 00,0000         |  >> mBasicTest.Test_0240_ArryDiffers
 ===========================================================================================================================================
-25-02-26 15:39:28 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
-25-02-26 15:39:28 seconds seconds >> Begin execution trace 
-25-02-26 15:39:28 00,0000         |  >> mBasicTest.Test_0400_Spaced
-25-02-26 15:39:51 23,1041 23,1041 |  << mBasicTest.Test_0400_Spaced
-25-02-26 15:39:51 23,1041 23,1041 << End execution trace 
-25-02-26 15:39:51                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
-25-02-26 15:39:51                 Impact on the overall performance (caused by the trace itself): 0,8 milliseconds!
+25-03-01 14:59:42 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 14:59:42 seconds seconds >> Begin execution trace 
+25-03-01 14:59:42 00,0000         |  >> mBasicTest.Test_0240_ArryDiffers
 ===========================================================================================================================================
-25-02-26 15:39:55 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
-25-02-26 15:39:55 seconds seconds >> Begin execution trace 
-25-02-26 15:39:55 00,0000         |  >> mBasicTest.Test_0400_Spaced
-25-02-26 15:39:59 03,3932 03,3932 |  << mBasicTest.Test_0400_Spaced
-25-02-26 15:39:59 03,3932 03,3932 << End execution trace 
-25-02-26 15:39:59                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
-25-02-26 15:39:59                 Impact on the overall performance (caused by the trace itself): 2,8 milliseconds!
+25-03-01 15:00:35 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 15:00:35 seconds seconds >> Begin execution trace 
+25-03-01 15:00:35 00,0000         |  >> mBasicTest.Test_0240_ArryDiffers
 ===========================================================================================================================================
-25-02-26 15:41:21 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
-25-02-26 15:41:21 seconds seconds >> Begin execution trace 
-25-02-26 15:41:21 00,0000         |  >> mBasicTest.Test_0400_Spaced
-25-02-26 15:42:56 95,0303 95,0303 |  << mBasicTest.Test_0400_Spaced
-25-02-26 15:42:56 95,0303 95,0303 << End execution trace 
-25-02-26 15:42:56                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
-25-02-26 15:42:56                 Impact on the overall performance (caused by the trace itself): 1,3 milliseconds!
+25-03-01 15:04:05 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 15:04:05 seconds seconds >> Begin execution trace 
+25-03-01 15:04:05 00,0000         |  >> mBasicTest.Test_0240_ArryDiffers
+25-03-01 15:04:44 38,3572 38,3572 |  << mBasicTest.Test_0240_ArryDiffers
+25-03-01 15:04:44 38,3572 38,3572 << End execution trace 
+25-03-01 15:04:44                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 15:04:44                 Impact on the overall performance (caused by the trace itself): 1,5 milliseconds!
 ===========================================================================================================================================
-25-02-26 15:44:09 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
-25-02-26 15:44:09 seconds seconds >> Begin execution trace 
-25-02-26 15:44:09 00,0000         |  >> mBasicTest.Test_0400_Spaced
-25-02-26 15:44:22 13,6832 13,6832 |  << mBasicTest.Test_0400_Spaced
-25-02-26 15:44:22 13,6832 13,6832 << End execution trace 
-25-02-26 15:44:22                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
-25-02-26 15:44:22                 Impact on the overall performance (caused by the trace itself): 1,2 milliseconds!
+25-03-01 15:06:25 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 15:06:25 seconds seconds >> Begin execution trace 
+25-03-01 15:06:25 00,0000         |  >> mBasicTest.Test_0240_ArryDiffers
+25-03-01 15:06:36 10,7351 10,7351 |  << mBasicTest.Test_0240_ArryDiffers
+25-03-01 15:06:36 10,7351 10,7351 << End execution trace 
+25-03-01 15:06:36                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 15:06:36                 Impact on the overall performance (caused by the trace itself): 0,9 milliseconds!
 ===========================================================================================================================================
-25-02-26 15:50:53 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
-25-02-26 15:50:53 seconds seconds >> Begin execution trace 
-25-02-26 15:50:53 00,0000         |  >> mBasicTest.Test_0400_Spaced
-25-02-26 15:51:14 21,2158 21,2158 |  << mBasicTest.Test_0400_Spaced
-25-02-26 15:51:14 21,2158 21,2158 << End execution trace 
-25-02-26 15:51:14                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
-25-02-26 15:51:14                 Impact on the overall performance (caused by the trace itself): 1,2 milliseconds!
+25-03-01 17:20:11 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 17:20:11 seconds seconds >> Begin execution trace 
+25-03-01 17:20:11 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 17:31:41 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 17:31:41 seconds seconds >> Begin execution trace 
+25-03-01 17:31:41 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 17:43:24 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 17:43:24 seconds seconds >> Begin execution trace 
+25-03-01 17:43:24 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 17:44:47 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 17:44:47 seconds seconds >> Begin execution trace 
+25-03-01 17:44:47 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 17:47:17 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 17:47:17 seconds seconds >> Begin execution trace 
+25-03-01 17:47:17 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 17:49:12 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 17:49:12 seconds seconds >> Begin execution trace 
+25-03-01 17:49:12 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 17:49:59 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 17:49:59 seconds seconds >> Begin execution trace 
+25-03-01 17:49:59 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+25-03-01 17:51:11 67,5355 67,5355 |  << mBasicTest.Test_0215_Arry_Let (Application Error 1 )
+25-03-01 17:51:11 67,5355 67,5355 << End execution trace 
+25-03-01 17:51:11                 Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 17:51:11                 Impact on the overall performance (caused by the trace itself): 3,7 milliseconds!
+===========================================================================================================================================
+25-03-01 17:51:33 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 17:51:33 seconds seconds >> Begin execution trace 
+25-03-01 17:51:33 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 17:56:07 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 17:56:07 seconds seconds >> Begin execution trace 
+25-03-01 17:56:07 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 17:57:51 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 17:57:51 seconds seconds >> Begin execution trace 
+25-03-01 17:57:51 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 18:00:08 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 18:00:08 seconds seconds >> Begin execution trace 
+25-03-01 18:00:08 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 18:03:04 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 18:03:04 seconds seconds >> Begin execution trace 
+25-03-01 18:03:04 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 18:04:35 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 18:04:35 seconds seconds >> Begin execution trace 
+25-03-01 18:04:35 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 18:11:58 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 18:11:58 seconds seconds >> Begin execution trace 
+25-03-01 18:11:58 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 18:12:31 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 18:12:31 seconds seconds >> Begin execution trace 
+25-03-01 18:12:31 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 18:15:29 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 18:15:29 seconds seconds >> Begin execution trace 
+25-03-01 18:15:29 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 18:34:05 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 18:34:05 seconds seconds >> Begin execution trace 
+25-03-01 18:34:05 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 18:35:18 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 18:35:18 seconds seconds >> Begin execution trace 
+25-03-01 18:35:18 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 18:38:11 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 18:38:11 seconds seconds >> Begin execution trace 
+25-03-01 18:38:11 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 18:42:38 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 18:42:38 seconds seconds >> Begin execution trace 
+25-03-01 18:42:38 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 18:51:37 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 18:51:37 seconds seconds >> Begin execution trace 
+25-03-01 18:51:37 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 18:53:24 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 18:53:24 seconds seconds >> Begin execution trace 
+25-03-01 18:53:24 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 18:58:38 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 18:58:38 seconds seconds >> Begin execution trace 
+25-03-01 18:58:38 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 19:00:02 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 19:00:02 seconds seconds >> Begin execution trace 
+25-03-01 19:00:02 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 19:04:52 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 19:04:52 seconds seconds >> Begin execution trace 
+25-03-01 19:04:52 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 19:06:49 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 19:06:49 seconds seconds >> Begin execution trace 
+25-03-01 19:06:49 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 19:08:11 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 19:08:11 seconds seconds >> Begin execution trace 
+25-03-01 19:08:11 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 19:12:45 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 19:12:45 seconds seconds >> Begin execution trace 
+25-03-01 19:12:45 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 19:17:17 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 19:17:17 seconds seconds >> Begin execution trace 
+25-03-01 19:17:17 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 19:18:46 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 19:18:46 seconds seconds >> Begin execution trace 
+25-03-01 19:18:46 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 19:23:06 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 19:23:06 seconds seconds >> Begin execution trace 
+25-03-01 19:23:06 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 19:24:21 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 19:24:21 seconds seconds >> Begin execution trace 
+25-03-01 19:24:21 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 19:26:25 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 19:26:25 seconds seconds >> Begin execution trace 
+25-03-01 19:26:25 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 19:26:57 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 19:26:57 seconds seconds >> Begin execution trace 
+25-03-01 19:26:57 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 19:28:10 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 19:28:10 seconds seconds >> Begin execution trace 
+25-03-01 19:28:10 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 19:28:48 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 19:28:48 seconds seconds >> Begin execution trace 
+25-03-01 19:28:48 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 19:29:20 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 19:29:20 seconds seconds >> Begin execution trace 
+25-03-01 19:29:20 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 19:32:40 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 19:32:40 seconds seconds >> Begin execution trace 
+25-03-01 19:32:40 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 19:34:50 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 19:34:50 seconds seconds >> Begin execution trace 
+25-03-01 19:34:50 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 19:41:40 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 19:41:40 seconds seconds >> Begin execution trace 
+25-03-01 19:41:40 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 19:45:51 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 19:45:51 seconds seconds >> Begin execution trace 
+25-03-01 19:45:51 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 19:47:42 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 19:47:42 seconds seconds >> Begin execution trace 
+25-03-01 19:47:42 00,0000         |  >> mBasicTest.Test_0215_Arry_Let
+===========================================================================================================================================
+25-03-01 19:49:19 Elapsed Length  Execution trace by 'Common VBA Execution Trace Service (mTrc)' (https://github.com/warbe-maker/VBA-Trace)
+25-03-01 19:49:19 seconds seconds >> Begin execution trace 
+25-03-01 19:49:19 00,0000         |  >> mBasicTest.Test_0215_Arry_Let

@@ -191,10 +191,12 @@ End Sub
 
 Private Function TestArray(ParamArray t_specs() As Variant) As Variant
 ' ------------------------------------------------------------------------------
-' Returns an array (t_arry) with items like "Item(x,y,z)" whereby the integers
+' Returns an array t_specs(0) with items like "Item(x,y,z)" whereby the integers
 ' in the brackets correspond with the item's indices in a n-dim (up to 8).
 ' When a dim-ed array (t_arry) is provided its dimension specs are mandatory,
-' else the provided specs (t_specs) are used to provide the array.
+' else the provided specs (t_specs(1), t_specs(2), ... are used to provide the
+' array dimension specifics.
+'
 ' Uses: ArryDims
 ' ------------------------------------------------------------------------------
     
@@ -213,7 +215,7 @@ Private Function TestArray(ParamArray t_specs() As Variant) As Variant
         lBase = LBound(Array("x"))
         If IsArray(t_specs(0)) Then
             arr = t_specs(0)
-            lDims = ArryDims(arr, cllSpecs)
+            lDims = ArryDims(arr)
         Else
             lDims = UBound(t_specs) - LBound(t_specs) + 1
             For Each v In t_specs
@@ -348,6 +350,7 @@ Public Sub Regression()
     mBasicTest.Test_0200_ArryNextIndex
     mBasicTest.Test_0210_Arry_Get
     mBasicTest.Test_0215_Arry_Let
+    mBasicTest.Test_0216_Arry_Let_Performance
     mBasicTest.Test_0220_ArryAsRnge_RngeAsArry
     mBasicTest.Test_0230_ArryCompare
     mBasicTest.Test_0240_ArryDiffers
@@ -401,7 +404,6 @@ Public Sub Test_0260_ArrayAsDict()
     With TestAid
         .TestId = "0260"
         .Title = "Unload/reload multidimensional arry to Dictionary"
-        .TestedComp = "mBasic"
         
         ReDim arr(1 To 2, 2 To 3, 3 To 4, 4 To 5, 5 To 6)
         For i = LBound(arr, 1) To UBound(arr, 1)
@@ -546,9 +548,10 @@ Public Sub Test_0010_Fundamentals()
 '            is initialized which is not the case once it had already been
 '            initialized!
 ' ----------------------------------------------------------------------------
-    Dim arr As Variant
-    Dim c   As Currency
-    Dim cll As New Collection
+    Dim arr         As Variant
+    Dim c           As Currency
+    Dim cll         As New Collection
+    Dim arrLong()   As Long
     
     Set TestAid = Nothing
     Prepare
@@ -601,6 +604,24 @@ Public Sub Test_0010_Fundamentals()
             cll.Add 70
             .Result = Max(10, cll, 50, 2)
             .ResultExpected = 70
+    
+        .Verification = "An active array item (not IsError and not = default is identified as such"
+            .TestedProc = "ArryItemIsActive"
+            .TestedProcType = "Function"
+            ReDim arrLong(1 To 5)
+            arrLong(1) = 1
+            arrLong(3) = 0 ' default and thus inactive
+            arrLong(5) = 5
+            .Result = ArryItemIsActive(arrLong, 0, 5)
+            .ResultExpected = True
+    
+        .Verification = "An in-active array item (IsError) is identified as such"
+            .Result = ArryItemIsActive(arrLong, 0, 2)
+            .ResultExpected = False
+    
+        .Verification = "An in-active array item (= default) is identified as such"
+            .Result = ArryItemIsActive(arrLong, 0, 3)
+            .ResultExpected = False
     
     End With
     
@@ -762,7 +783,6 @@ Public Sub Test_0200_ArryNextIndex()
     
     With TestAid
         .TestId = "0200"
-        .TestedComp = "mBasic"
         .TestedProc = "ArryNextIndex"
         .TestedProcType = "Function"
         .Title = "Get next index of a multi-dim arry"
@@ -832,7 +852,6 @@ Public Sub Test_0210_Arry_Get()
     With TestAid
         .TestId = "0210-1"
         .Title = "Array read"
-        .TestedComp = "mBasic"
         .TestedProc = "Arry(Get)"
         .TestedProcType = "Property"
         
@@ -935,87 +954,109 @@ Public Sub Test_0215_Arry_Let()
     
     With TestAid
         .TestId = "0215-1"
-        .Title = "Write 1-dim Array (results are verified by means of Array-Get)"
-        .TestedComp = "mBasic"
+        .Title = "Write 1-dim Array"
         .TestedProc = "Arry(Let)"
         .TestedProcType = "Property"
         
-            .Verification = "Writing an element to a yet not allocated array returns a 1-dim array with one Item"
-                Set arr2 = Nothing
-                .TimerStart
-                Arry(arr2) = "Item(0)"
-                .TimerEnd
-                .Result = Arry(arr2, 0)
-                .ResultExpected = "Item(0)"
-            
-            .Verification = "Adding an Item to a not yet allocated array with a certain index returns a 1-dim array with one Item at the given index"
-                .TimerStart
-                ArryErase arr2
-                Arry(arr2, 10) = "Item(10)"
-                .TimerEnd
-                .Result = Arry(arr2, 10)
-                .ResultExpected = "Item(10)"
+        .Verification = "Writing an element to a yet not allocated array without providing an index creates a 1-dim array with one item"
+            .Comment = "Result is verified by means of Array(Get)"
+            Set arr2 = Nothing
+            .TimerStart
+            Arry(arr2) = "Item(0)"
+            .TimerEnd
+            .Result = Arry(arr2, 0)
+            .ResultExpected = "Item(0)"
+        
+        .Verification = "Writing an element to a yet not allocated array returns a 1-dim array with one Item"
+            .Comment = "Result is verified by means of Array(Get)"
+            Set arr2 = Nothing
+            .TimerStart
+            Arry(arr2, 10) = "Item(10)"
+            .TimerEnd
+            .Result = Arry(arr2, 10)
+            .ResultExpected = "Item(10)"
+        
+        .Verification = "Adding an Item to a not yet allocated array with a certain index returns a 1-dim array with one Item at the given index"
+            .Comment = "Result is verified by means of Array(Get)"
+            .TimerStart
+            ArryErase arr2
+            Arry(arr2, 10) = "Item(10)"
+            .TimerEnd
+            .Result = Arry(arr2, 10)
+            .ResultExpected = "Item(10)"
+                    
+        .Verification = "Adding an Item to an allocated array with a certain index expands the array as required"
+            .Comment = "Result is verified by means of Array(Get)"
+            .TimerStart
+            Arry(arr2, 100) = "Item(100)"
+            .TimerEnd
+            .Result = Arry(arr2, 100)
+            .ResultExpected = "Item(100)"
                     
         .TestId = "0215-2"
         .Title = "Write to multi-dim array with automated ReDim of any dimensions specs when the requested index is out of bounds"
-        .TestedComp = "mBasic"
         .TestedProc = "Arry(Let)"
         .TestedProcType = "Property"
         
-            .Verification = "When an index is provided for a multi-dim array an Item is updated when within the bounds"
-                arr2 = TestArray(4, 4)
-                Arry(arr2, Array(3, 3)) = "Item(3,3) updated"
-                .Result = Arry(arr2, Array(3, 3))
-                .ResultExpected = "Item(3,3) updated"
+        .Verification = "When an index is provided for a yet un-dimensioned multi-dim array it is dimensioned with the bounds provided by the indices"
+            Set arr2 = Nothing
+            .Comment = "Result is verified by means of Array(Get)"
+            Arry(arr2, Array(3, 3)) = "Item(3,3)"
+            .Result = Arry(arr2, Array(3, 3))
+            .ResultExpected = "Item(3,3)"
+        
+        .Verification = "Write a new item with the last dimensions index beyond its current boundary extents the array"
+            .Comment = "Result is verified by means of Array(Get)"
+            arr3 = TestArray(4, 3, 2)
+            .TimerStart
+            Arry(arr3, ArryIndices(3, 3, 5)) = "Item(3,3,5)"
+            .TimerEnd
+            .Result = Arry(arr3, ArryIndices(3, 3, 5))
+            .ResultExpected = "Item(3,3,5)"
+
+        .Verification = "Write an item to a yet not dimensioned arry"
+            .Comment = "Result is verified by means of Array(Get)"
+            Set arr3 = Nothing
+            .TimerStart
+            Arry(arr3, "2,3,4") = "Item(2,3,4)"
+            .Result = Arry(arr3, "2,3,4")
+            .ResultExpected = "Item(2,3,4)"
+        
+        .Verification = "The multi-dim array created along with writing an item has a from spec based on the ""Base Option"""
+            .Result = LBound(arr3, 2)
+            .ResultExpected = 0
             
-            .Verification = "Write a new item with the last dimensions index beyond its current boundary extents the array"
-                arr3 = TestArray(4, 3, 2)
-                .TimerStart
-                Arry(arr3, ArryIndices(3, 3, 5)) = "Item(3,3,5)"
-                .TimerEnd
-                .Result = Arry(arr3, ArryIndices(3, 3, 5))
-                .ResultExpected = "Item(3,3,5)"
-    
-            .Verification = "Write an item to a yet not dimensioned arry"
-                Set arr3 = Nothing
-                .TimerStart
-                Arry(arr3, "2,3,4") = "Item(2,3,4)"
-                .Result = Arry(arr3, "2,3,4")
-                .ResultExpected = "Item(2,3,4)"
+        .Verification = "Write an item to an already dimensioned but yet un-allocated array"
+            .Comment = "Result is verified by means of Array(Get)"
+            Set arr3 = Nothing
+            ReDim arr3(1 To 2, 2 To 3, 3 To 4)
+            .TimerStart
+            Arry(arr3, "2,3,4") = "Item(2,3,4)"
+            .Result = Arry(arr3, "2,3,4")
+            .ResultExpected = "Item(2,3,4)"
             
-            .Verification = "The multi-dim array created along with writing an item has a from spec based on the ""Base Option"""
-                .Result = LBound(arr3, 2)
-                .ResultExpected = 0
-                
-            .Verification = "Write an item to an already specifically dimensioned but yet un-allocated array"
-                Set arr3 = Nothing
-                ReDim arr3(1 To 2, 2 To 3, 3 To 4)
-                .TimerStart
-                Arry(arr3, "2,3,4") = "Item(2,3,4)"
-                .Result = Arry(arr3, "2,3,4")
-                .ResultExpected = "Item(2,3,4)"
-                
-            .Verification = "The multi-dim array created along with writing an item has correctly considered the dimensions LBound"
-                .Result = LBound(arr3, 2)
-                .ResultExpected = 2
+        .Verification = "The multi-dim array created along with writing an item has correctly considered the dimensions LBound"
+            .Result = LBound(arr3, 2)
+            .ResultExpected = 2
+        
+        .Verification = "Writing to a multi-dim array by extending its last dimension does not effect the from specification of it"
+            .TimerStart
+            Arry(arr3, "2,3,6") = "Item(2,3,6)"
+            .TimerEnd
+            .Result = LBound(arr3, 2)
+            .ResultExpected = 2
             
-            .Verification = "Writing to a multi-dim array by extending its last dimension does not effect the from specification of it"
-                .TimerStart
-                Arry(arr3, "2,3,6") = "Item(2,3,6)"
-                .TimerEnd
-                .Result = LBound(arr3, 2)
-                .ResultExpected = 2
-                
-            .Verification = "Writing to a multi-dim array by extending any other but the last dimension re-dims it accordingly"
-                .TimerStart
-                Arry(arr3, "2,4,6") = "Item(2,4,6)"
-                .TimerEnd
-                .Result = Arry(arr3, "2,4,6")
-                .ResultExpected = "Item(2,4,6)"
-            
-            .Verification = "Writing with the involment of ArryRedim did not effect any dimensions low bound"
-                .Result = LBound(arr3, 2)
-                .ResultExpected = 2
+        .Verification = "Writing to a multi-dim array by extending any other but the last dimension re-dims it accordingly"
+            .Comment = "Result is verified by means of Array(Get)"
+            .TimerStart
+            Arry(arr3, "2,4,6") = "Item(2,4,6)"
+            .TimerEnd
+            .Result = Arry(arr3, "2,4,6")
+            .ResultExpected = "Item(2,4,6)"
+        
+        .Verification = "Writing with the involment of ArryRedim did not effect any dimensions low bound"
+            .Result = LBound(arr3, 2)
+            .ResultExpected = 2
             
     End With
     
@@ -1027,6 +1068,60 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
         Case Else:      GoTo xt
     End Select
 End Sub
+
+Public Sub Test_0216_Arry_Let_Performance()
+' ----------------------------------------------------------------------------
+' The results of these tests are only displayed along with the regression test
+' summary.
+' ----------------------------------------------------------------------------
+    Const PROC = "Test_0216_Arry_Let_Performance"
+    
+    On Error GoTo eh
+    Dim arr     As Variant
+    Dim i       As Long
+    
+    Prepare
+    BoP ErrSrc(PROC)
+    
+    With TestAid
+        .TestId = "0216"
+        .Title = "Performance of writing to an array the usual way versus using the universal Arry service"
+                 
+        .TestedProc = "Arry(Let)"
+        .TestedProcType = "Property"
+            .Verification = "Writing 1000 elements the usual way in a correspondingly dimensioned array"
+                .Comment = "Test result is the difference of the exceuton time!"
+                ReDim arr(1 To 1000)
+                .TimerStart
+                For i = 1 To 1000
+                    arr(i) = "Item(" & i & ")"
+                Next i
+                .TimerEnd
+                .Result = arr
+                .ResultExpected = arr
+            
+            .Verification = "Writing 1000 elements by the Arry service"
+                .Comment = "Test result is the difference of the exceuton time!"
+                ReDim arr(1 To 1000)
+                .TimerStart
+                For i = 1 To 1000
+                    Arry(arr, i) = "Item(" & i & ")"
+                Next i
+                .TimerEnd
+                .Result = arr
+                .ResultExpected = arr
+            
+    End With
+    
+xt: EoP ErrSrc(PROC)
+    Exit Sub
+
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
+End Sub
+
 
 Public Sub Test_0230_ArryCompare()
     Const PROC = "Test_0230_ArryCompare"
@@ -1184,13 +1279,35 @@ Public Sub Test_0245_ArryDims()
     With TestAid
         .TestId = "0245"
         .Title = "Array dimensions"
-        .TestedProc = "ArryDims"
-        .TestedProcType = "Function"
         
-        .Verification = "Specified but un-allocated"
+        .Verification = "ArryDims returns 1 for a 1-dim array"
+            .TestedProc = "ArryDims"
+            .TestedProcType = "Function"
             ReDim arr(3 To 5)
-            ArryDims arr, cllSpecs, lDims
+            .Result = ArryDims(arr)
+            .ResultExpected = 1
             
+        .Verification = "ArrySpecs()(1,1) returns the LBound of the first dimension"
+            .TestedProc = "ArrySpecs"
+            .TestedProcType = "Function"
+            ReDim arr(3 To 5)
+            .Result = ArrySpecs(arr, ArryDims(arr))(1, 1)
+            .ResultExpected = 3
+    
+        .Verification = "ArryDims returns 1 for a 1-dim array"
+            .TestedProc = "ArryDims"
+            .TestedProcType = "Function"
+            ReDim arr(3 To 5, 2 To 8, 1 To 4)
+            .Result = ArryDims(arr)
+            .ResultExpected = 3
+            
+        .Verification = "ArrySpecs()(2,2) returns the UBound of the second dimension"
+            .TestedProc = "ArrySpecs"
+            .TestedProcType = "Function"
+            ReDim arr(3 To 5, 2 To 8, 1 To 4)
+            .Result = ArrySpecs(arr, ArryDims(arr))(2, 2)
+            .ResultExpected = 8
+    
     End With
     
 xt: EoP ErrSrc(PROC)
@@ -1212,7 +1329,6 @@ Public Sub Test_0250_Arry_Various()
     
     With TestAid
         .Title = "Various array serviced"
-        .TestedComp = "mBasic"
         .TestedProc = "ArryIsAllocated"
         .TestedProcType = "Function"
         
@@ -1274,7 +1390,6 @@ Public Sub Test_0271_ArryRemoveItems_Function()
     With TestAid
         .TestId = "0271"
         .Title = ""
-        .TestedComp = "mBasic"
         .TestedProc = "ArraRemoveItems"
         .TestedProcType = "Sub"
         
@@ -1364,31 +1479,40 @@ Public Sub Test_0275_ArryReDim()
     BoP ErrSrc(PROC)
     
     With TestAid
-        .TestId = "0275"
-        .Title = "Redim array"
-        .TestedProc = "ArryReDim"
-        .TestedProcType = "Sub"
-        
-        arr = TestArray(8)
-        arr(3) = Empty
-        
+        .TestId = "0275-1"
+        .Title = "Redim array basics"
+                
         .Verification = "Number of items when any = Empty is ignored"
+            .TestedProc = "ArryItems"
+            .TestedProcType = "Function"
+            ReDim arr(1 To 8)
+            arr = TestArray(arr)
+            arr(3) = Empty
             .TimerStart
             .Result = mBasic.ArryItems(arr, True)
             .TimerEnd
-            .ResultExpected = 8
+            .ResultExpected = 7
         
         .Verification = "Number of items when any Empty isn't ignored"
+            .TestedProc = "ArryItems"
+            .TestedProcType = "Function"
             .TimerStart
             .Result = mBasic.ArryItems(arr, False)
             .TimerEnd
-            .ResultExpected = 9
+            .ResultExpected = 8
+        
+        .TestId = "0275-2"
+        .Title = "Redim array"
         
         '~~ Provide the expected Result array
         ReDim arrOut(1 To 2, 0 To 1, 1 To 6)
        
         .Verification = "The resulting array has two more (3) dimensions resulting in 24 items"
-            arr = TestArray(8)
+            .TestedProc = "ArryReDim(S), ArryUnload(F)"
+            .TestedProcType = "Sub, Function"
+        
+            ReDim arr(1 To 8)
+            arr = TestArray(arr) ' filled with defaults
             arr(3) = Empty
             arrOut(1, 0, 1) = "Item(1)"
             arrOut(1, 0, 2) = "Item(2)"
@@ -1396,7 +1520,7 @@ Public Sub Test_0275_ArryReDim()
             arrOut(1, 0, 5) = "Item(5)"
             arrOut(1, 0, 6) = "Item(6)"
             .TimerStart
-            mBasic.ArryReDim arr, "+:1,2", "+:0,1", "1:1,6"
+            mBasic.ArryReDim arr, "+:1 to 2", "+:0 to 1", "1:1 to 6"
             .TimerEnd
             .Result = mBasic.ArryDims(arr)
             .ResultExpected = 3

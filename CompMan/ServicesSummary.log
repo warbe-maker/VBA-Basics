@@ -1,99 +1,116 @@
-25-02-25-19:06:59  Standard-Module  mBasicTest      Modified VBComponent e x p o r t e d !                       
-25-02-25-19:07:00 ExportChangedComponents (by CompMan.xlsb) for Basic.xlsm: 1 of 12 exported (mBasicTest)     See the VBE CompMan menu for 1 Common Component is pending release!  (see E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\Services.log for log details)
-25-02-26-14:43:58 ===============================================================================================
-25-02-26-14:43:58  Standard-Module  mCompManClient  Code difference Line 0081 Serviced (CodeModule)............. 
-25-02-26-14:43:58                                   Code difference Line 0081 Public (Export-File) of  m C o m p 
-25-02-26-14:43:58  UserForm         fMsg            Serviced Common Component used is up-to-date                 
-25-02-26-14:43:58  Class-Module     clsTrc          Serviced Common Component used is up-to-date                 
-25-02-26-14:43:58  Standard-Module  mErH            Serviced Common Component used is up-to-date                 
-25-02-26-14:43:58  Standard-Module  mMsg            Serviced Common Component used is up-to-date                 
-25-02-26-14:43:58  Standard-Module  mTrc            Serviced Common Component used is up-to-date                 
-25-02-26-14:43:58  Class-Module     clsTestAid      Serviced Common Component used is up-to-date                 
-25-02-26-14:44:03  Standard-Module  mCompManClient  Last modified at date/time changed from     2025-02-03 14:05 
-25-02-26-14:44:03                                                                        to     2025-02-26 13:33 
-25-02-26-14:44:03                                   Last modified in Workbook changed from       E:\Sync\Excel V 
-25-02-26-14:44:03                                                                       to       E:\Sync\Excel V 
-25-02-26-14:44:03                                   Lastr modified Export-File changed from      E:\Sync\Excel V 
-25-02-26-14:44:03                                                                        to      E:\Sync\Excel V 
-25-02-26-14:44:03                                   Serviced Common Component updated by re-import of the public 
-25-02-26-15:10:12 ==========================================================================================================
-25-02-26-15:10:12  Standard-Module  mBasic.........:  Last modified at date/time changed from     2025-02-25 18:02:48 (UTC) 
-25-02-26-15:10:12                                                                          to     2025-02-26 14:10:12 (UTC) 
-25-02-26-15:10:12                                     Last modified at date/time changed from     2025-02-25 18:02:48 (UTC) 
-25-02-26-15:10:12                                                                          to     2025-02-26 14:10:12 (UTC) 
-25-02-26-15:10:13 ========================================================================================================
-25-02-26-15:10:13  Standard-Module  mBasic_RnmdByC  Component "mBasic_RnmdByCompMan" (resulting from rename to enable imp 
-25-02-26-15:10:13 ExportChangedComponents (by CompMan.xlsb) for Basic.xlsm: 0 of 13 exported     See the VBE CompMan menu for 1 Common Component is pending release!  (see E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\Services.log for log details)
-25-02-26-15:57:24 ===============================================================================================
-25-02-26-15:57:24  Standard-Module  mBasicTest      Modified VBComponent e x p o r t e d !                       
-25-02-26-15:57:25  Class-Module     clsTestAid      Common Component code change:                                
-25-02-26-15:57:25                                   Line 4017 Serviced (CodeModule)....:             Case "Workb 
-25-02-26-15:57:25                                   Line 4017 Serviced (Export-File)...:             Case "Workb 
-25-02-26-15:57:25                                   Last modified at date/time changed from     2025-02-25 16:52 
-25-02-26-15:57:25                                                                        to     2025-02-26 14:57 
-25-02-26-15:57:25                                   Last modified in Workbook changed from       E:\Sync\Excel V 
-25-02-26-15:57:25                                                                       to       E:\Sync\Excel V 
-25-02-26-15:57:25                                   Lastr modified Export-File changed from      E:\Sync\Excel V 
-25-02-26-15:57:25                                                                        to      E:\Sync\Excel V 
-25-02-26-15:57:25                                   Last modified at date/time changed from                      
-25-02-26-15:57:25                                                                        to     2025-02-26 14:57 
-25-02-26-15:57:25                                   Last modified by user changed from                           
-25-02-26-15:57:25                                                                   to          warbe            
-25-02-26-15:57:25                                   Last modified in Workbook changed from                       
-25-02-26-15:57:25                                                                       to       E:\Sync\Excel V 
-25-02-26-15:57:25                                   Last modified kind of component changed from                 
-25-02-26-15:57:25                                                                             to used            
-25-02-26-15:57:25                                   Lastr modified Export-File changed from                      
-25-02-26-15:57:25                                                                        to      E:\Sync\Excel V 
-25-02-26-15:57:25                                   Modified Common Component: Release registered pending        
-25-02-26-15:57:25                                   Serviced Common Component modified: E x p o r t e d !        
-25-02-26-15:57:25                                   Serviced Common Component modified: Properties in CommComps. 
-25-02-26-15:57:25                                   Serviced Common Component modified: Registered pending relea 
-25-02-26-15:57:25  Standard-Module  mBasic          Common Component code change:                                
-25-02-26-15:57:25                                   Line 1248 Serviced (CodeModule)....: Public Function ArryDif 
-25-02-26-15:57:25                                   Line 1248 Serviced (Export-File)...: Public Function ArryDif 
-25-02-26-15:57:26                                   Last modified at date/time changed from     2025-02-26 14:10 
-25-02-26-15:57:26                                                                        to     2025-02-26 14:57 
-25-02-26-15:57:26                                   Last modified at date/time changed from     2025-02-26 14:10 
-25-02-26-15:57:26                                                                        to     2025-02-26 14:57 
-25-02-26-15:57:26                                   Modified Common Component: Release registered pending        
-25-02-26-15:57:26                                   Serviced Common Component modified: E x p o r t e d !        
-25-02-26-15:57:26                                   Serviced Common Component modified: Re-registered pending re 
-25-02-26-15:57:26 ExportChangedComponents (by CompMan.xlsb) for Basic.xlsm: 3 of 12 exported (mBasicTest, clsTestAid, mBasic)     See the VBE CompMan menu for 2 Common Components pending release!  (see E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\Services.log for log details)
-25-02-26-16:17:19 ===============================================================================================
-25-02-26-16:17:19  Standard-Module  mBasic          Common Component code change:                                
-25-02-26-16:17:19                                   Line 0002 Serviced (CodeModule)....: ' Standard Module mBasi 
-25-02-26-16:17:19                                   Line 0002 Serviced (Export-File)...: ' Standard Module mBasi 
-25-02-26-16:17:19                                   Last modified at date/time      changed from 2025-02-26 14:5 
-25-02-26-16:17:19                                                                             to 2025-02-26 15:1 
-25-02-26-16:17:19                                   Last modified at date/time changed from                      
-25-02-26-16:17:19                                                                        to     2025-02-26 15:17 
-25-02-26-16:17:19                                   Last modified by user changed from                           
-25-02-26-16:17:19                                                                   to          warbe            
-25-02-26-16:17:19                                   Last modified in Workbook changed from                       
-25-02-26-16:17:19                                                                       to       E:\Sync\Excel V 
-25-02-26-16:17:19                                   Last modified kind of component changed from                 
-25-02-26-16:17:19                                                                             to hosted          
-25-02-26-16:17:19                                   Lastr modified Export-File changed from                      
-25-02-26-16:17:19                                                                        to      E:\Sync\Excel V 
-25-02-26-16:17:19                                   Pending Common Component's properties set equal serviced     
-25-02-26-16:17:19                                   Modified Common Component: Release registered pending        
-25-02-26-16:17:19                                   Serviced Common Component modified: E x p o r t e d !        
-25-02-26-16:17:19                                   Serviced Common Component modified: Properties in CommComps. 
-25-02-26-16:17:19                                   Serviced Common Component modified: Registered pending relea 
-25-02-26-16:17:20 ExportChangedComponents (by CompMan.xlsb) for Basic.xlsm: 1 of 12 exported (mBasic)     See the VBE CompMan menu for 1 Common Component is pending release!  (see E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\Services.log for log details)
-25-02-26-16:21:28 ===============================================================================================
-25-02-26-16:21:28  Standard-Module  mBasic          Common Component code change:                                
-25-02-26-16:21:28                                   Line 0003 Serviced (CodeModule)....: ' ===================== 
-25-02-26-16:21:28                                   Line 0003 Serviced (Export-File)...: ' ===================== 
-25-02-26-16:21:28                                   Last modified at date/time      changed from 2025-02-26 15:1 
-25-02-26-16:21:28                                                                             to 2025-02-26 15:2 
-25-02-26-16:21:28                                   Last modified at date/time      changed from 2025-02-26 15:1 
-25-02-26-16:21:28                                                                             to 2025-02-26 15:2 
-25-02-26-16:21:28                                   Pending Common Component's properties set equal serviced     
-25-02-26-16:21:28                                   Modified Common Component: Release registered pending        
-25-02-26-16:21:28                                   Serviced Common Component modified: E x p o r t e d !        
-25-02-26-16:21:28                                   Serviced Common Component modified: Re-registered pending re 
-25-02-26-16:21:28 ExportChangedComponents (by CompMan.xlsb) for Basic.xlsm: 1 of 12 exported (mBasic)     See the VBE CompMan menu for 1 Common Component is pending release!  (see E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\Services.log for log details)
-25-02-26-16:41:45 =========================================================================================================================================================
-25-02-26-16:41:45 ExportChangedComponents (by CompMan.xlam) for Basic.xlsm: 0 of 12 exported  (see E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\Services.log for log details)
+25-03-01-17:30:37  Standard-Module  mBasicTest      Modified VBComponent e x p o r t e d !                       
+25-03-01-17:30:37  Standard-Module  mBasic          Common Component modified:                                   
+25-03-01-17:30:37                                   Line 0285 Serviced (CodeModule)....:                         
+25-03-01-17:30:37                                   Line 0285 Serviced (Export-File)...:                         
+25-03-01-17:30:38                                   Last modified at date/time      changed from 2025-03-01 16:1 
+25-03-01-17:30:38                                                                             to 2025-03-01 16:3 
+25-03-01-17:30:38                                   Last modified at date/time      changed from 2025-03-01 16:1 
+25-03-01-17:30:38                                                                             to 2025-03-01 16:3 
+25-03-01-17:30:38                                   Pending Common Component's properties set equal serviced     
+25-03-01-17:30:38                                   Modified Common Component: Release registered pending        
+25-03-01-17:30:38                                   Serviced Common Component modified: E x p o r t e d !        
+25-03-01-17:30:38                                   Serviced Common Component modified: Re-registered pending re 
+25-03-01-17:30:38 ExportChangedComponents (by CompMan.xlam) for Basic.xlsm: 2 of 12 exported (mBasicTest, mBasic)     See the VBE CompMan menu for 2 Common Components pending release!  (see E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\Services.log for log details)
+25-03-01-17:47:06 ===============================================================================================
+25-03-01-17:47:06  Standard-Module  mBasicTest      Modified VBComponent e x p o r t e d !                       
+25-03-01-17:47:07  Standard-Module  mBasic          Common Component modified:                                   
+25-03-01-17:47:07                                   Line 0184 Serviced (CodeModule)....:     lDimsIn = ArryDims( 
+25-03-01-17:47:07                                   Line 0184 Serviced (Export-File)...:     aSpecsIn = ArrySpec 
+25-03-01-17:47:07                                   Last modified at date/time      changed from 2025-03-01 16:3 
+25-03-01-17:47:07                                                                             to 2025-03-01 16:4 
+25-03-01-17:47:07                                   Last modified at date/time      changed from 2025-03-01 16:3 
+25-03-01-17:47:07                                                                             to 2025-03-01 16:4 
+25-03-01-17:47:07                                   Pending Common Component's properties set equal serviced     
+25-03-01-17:47:07                                   Modified Common Component: Release registered pending        
+25-03-01-17:47:07                                   Serviced Common Component modified: E x p o r t e d !        
+25-03-01-17:47:07                                   Serviced Common Component modified: Re-registered pending re 
+25-03-01-17:47:07  Class-Module     clsTrc          Common Component modified:                                   
+25-03-01-17:47:07                                   Line 0204 Serviced (CodeModule)....:                         
+25-03-01-17:47:07                                   Line 0204 Serviced (Export-File)...:     Dim aSpecs          
+25-03-01-17:47:08                                   Last modified at date/time      changed from 2025-03-01 16:1 
+25-03-01-17:47:08                                                                             to 2025-03-01 16:4 
+25-03-01-17:47:08                                   Last modified at date/time      changed from 2025-03-01 16:1 
+25-03-01-17:47:08                                                                             to 2025-03-01 16:4 
+25-03-01-17:47:08                                   Pending Common Component's properties set equal serviced     
+25-03-01-17:47:08                                   Modified Common Component: Release registered pending        
+25-03-01-17:47:08                                   Serviced Common Component modified: E x p o r t e d !        
+25-03-01-17:47:08                                   Serviced Common Component modified: Re-registered pending re 
+25-03-01-17:47:08 ExportChangedComponents (by CompMan.xlam) for Basic.xlsm: 3 of 12 exported (mBasicTest, mBasic, clsTrc)     See the VBE CompMan menu for 2 Common Components pending release!  (see E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\Services.log for log details)
+25-03-01-19:26:43 ===============================================================================================
+25-03-01-19:26:43  Standard-Module  mBasicTest      Modified VBComponent e x p o r t e d !                       
+25-03-01-19:26:43  Standard-Module  mBasic          Common Component modified:                                   
+25-03-01-19:26:43                                   Line 0179 Serviced (CodeModule)....:     Dim lDimsOutBound   
+25-03-01-19:26:43                                   Line 0179 Serviced (Export-File)...:                         
+25-03-01-19:26:44                                   Last modified at date/time      changed from 2025-03-01 16:4 
+25-03-01-19:26:44                                                                             to 2025-03-01 18:2 
+25-03-01-19:26:44                                   Last modified at date/time      changed from 2025-03-01 16:4 
+25-03-01-19:26:44                                                                             to 2025-03-01 18:2 
+25-03-01-19:26:44                                   Pending Common Component's properties set equal serviced     
+25-03-01-19:26:44                                   Modified Common Component: Release registered pending        
+25-03-01-19:26:44                                   Serviced Common Component modified: E x p o r t e d !        
+25-03-01-19:26:44                                   Serviced Common Component modified: Re-registered pending re 
+25-03-01-19:26:44 ExportChangedComponents (by CompMan.xlam) for Basic.xlsm: 2 of 12 exported (mBasicTest, mBasic)     See the VBE CompMan menu for 2 Common Components pending release!  (see E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\Services.log for log details)
+25-03-01-19:34:36 ===============================================================================================
+25-03-01-19:34:36  Standard-Module  mBasic          Common Component modified:                                   
+25-03-01-19:34:36                                   Line 0287 Serviced (CodeModule)....:             If lDimsOut 
+25-03-01-19:34:36                                   Line 0287 Serviced (Export-File)...:             If lDimsOut 
+25-03-01-19:34:37                                   Last modified at date/time      changed from 2025-03-01 18:2 
+25-03-01-19:34:37                                                                             to 2025-03-01 18:3 
+25-03-01-19:34:37                                   Last modified at date/time      changed from 2025-03-01 18:2 
+25-03-01-19:34:37                                                                             to 2025-03-01 18:3 
+25-03-01-19:34:37                                   Pending Common Component's properties set equal serviced     
+25-03-01-19:34:37                                   Modified Common Component: Release registered pending        
+25-03-01-19:34:37                                   Serviced Common Component modified: E x p o r t e d !        
+25-03-01-19:34:37                                   Serviced Common Component modified: Re-registered pending re 
+25-03-01-19:34:37 ExportChangedComponents (by CompMan.xlam) for Basic.xlsm: 1 of 12 exported (mBasic)     See the VBE CompMan menu for 2 Common Components pending release!  (see E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\Services.log for log details)
+25-03-01-19:49:05 ===============================================================================================
+25-03-01-19:49:05  Standard-Module  mBasic          Common Component modified:                                   
+25-03-01-19:49:05                                   Line 0287 Serviced (CodeModule)....:             If lDimsOut 
+25-03-01-19:49:05                                   Line 0287 Serviced (Export-File)...:             If lDimsOut 
+25-03-01-19:49:05                                   Last modified at date/time      changed from 2025-03-01 18:3 
+25-03-01-19:49:05                                                                             to 2025-03-01 18:4 
+25-03-01-19:49:05                                   Last modified at date/time      changed from 2025-03-01 18:3 
+25-03-01-19:49:05                                                                             to 2025-03-01 18:4 
+25-03-01-19:49:05                                   Pending Common Component's properties set equal serviced     
+25-03-01-19:49:05                                   Modified Common Component: Release registered pending        
+25-03-01-19:49:05                                   Serviced Common Component modified: E x p o r t e d !        
+25-03-01-19:49:05                                   Serviced Common Component modified: Re-registered pending re 
+25-03-01-19:49:05 ExportChangedComponents (by CompMan.xlam) for Basic.xlsm: 1 of 12 exported (mBasic)     See the VBE CompMan menu for 2 Common Components pending release!  (see E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\Services.log for log details)
+25-03-01-19:49:34 ===============================================================================================================================================================================================================================
+25-03-01-19:49:34 ExportChangedComponents (by CompMan.xlam) for Basic.xlsm: 0 of 12 exported     See the VBE CompMan menu for 2 Common Components pending release!  (see E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\Services.log for log details)
+25-03-01-19:49:46 ===============================================================================================================================================================================================================================
+25-03-01-19:49:46 ExportChangedComponents (by CompMan.xlam) for Basic.xlsm: 0 of 12 exported     See the VBE CompMan menu for 2 Common Components pending release!  (see E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\Services.log for log details)
+25-03-01-19:49:55 ===============================================================================================================================================================================================================================
+25-03-01-19:49:55 ExportChangedComponents (by CompMan.xlam) for Basic.xlsm: 0 of 12 exported     See the VBE CompMan menu for 2 Common Components pending release!  (see E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\Services.log for log details)
+25-03-01-19:51:39 =================================================================================================================================================================================================================================
+25-03-01-19:51:39 ExportChangedComponents (by CompMan.xlam) for Basic.xlsm: 0 of 12 exported     See the VBE CompMan menu for 1 Common Component is pending release!  (see E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\Services.log for log details)
+25-03-01-19:57:04 ===============================================================================================
+25-03-01-19:57:04  Class-Module     clsTestAid      Common Component modified:                                   
+25-03-01-19:57:04                                   Line 0282 Serviced (CodeModule)....:           LogItemTestId 
+25-03-01-19:57:04                                   Line 0282 Serviced (Export-File)...:     LogItemTestId(aLogH 
+25-03-01-19:57:04                                   Last modified at date/time      changed from 2025-02-26 15:4 
+25-03-01-19:57:04                                                                             to 2025-03-01 18:5 
+25-03-01-19:57:04                                   Last modified in Workbook       changed from E:\Sync\Excel V 
+25-03-01-19:57:04                                                                             to E:\Sync\Excel V 
+25-03-01-19:57:04                                   Last modified on computer       changed from                 
+25-03-01-19:57:04                                                                             to THINKPAD-YOGA   
+25-03-01-19:57:04                                   Lastr modified Export-File      changed from E:\Sync\Excel V 
+25-03-01-19:57:04                                                                             to E:\Sync\Excel V 
+25-03-01-19:57:04                                   Last modified at date/time      changed from                 
+25-03-01-19:57:04                                                                             to 2025-03-01 18:5 
+25-03-01-19:57:04                                   Last modified by user           changed from                 
+25-03-01-19:57:04                                                                             to warbe           
+25-03-01-19:57:04                                   Last modified in Workbook       changed from                 
+25-03-01-19:57:04                                                                             to E:\Sync\Excel V 
+25-03-01-19:57:04                                   Last modified kind of component changed from                 
+25-03-01-19:57:04                                                                             to used            
+25-03-01-19:57:04                                   Last modified on computer       changed from                 
+25-03-01-19:57:04                                                                             to THINKPAD-YOGA   
+25-03-01-19:57:04                                   Lastr modified Export-File      changed from                 
+25-03-01-19:57:04                                                                             to E:\Sync\Excel V 
+25-03-01-19:57:04                                   Pending Common Component's properties set equal serviced     
+25-03-01-19:57:04                                   Modified Common Component: Release registered pending        
+25-03-01-19:57:04                                   Serviced Common Component modified: E x p o r t e d !        
+25-03-01-19:57:04                                   Serviced Common Component modified: Properties in CommComps. 
+25-03-01-19:57:04                                   Serviced Common Component modified: Registered pending relea 
+25-03-01-19:57:05 ExportChangedComponents (by CompMan.xlam) for Basic.xlsm: 1 of 12 exported (clsTestAid)     See the VBE CompMan menu for 1 Common Component is pending release!  (see E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\Services.log for log details)

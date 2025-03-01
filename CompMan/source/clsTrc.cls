@@ -70,7 +70,7 @@ Option Explicit
 ' See: https://github.com/warbe-maker/VBA-Trace
 ' ----------------------------------------------------------------------------
 Private Const GITHUB_REPO_URL   As String = "https://github.com/warbe-maker/VBA-Trace"
-Private FSo                     As New FileSystemObject
+Private fso                     As New FileSystemObject
 
 #If Not mMsg = 1 Then
     ' ------------------------------------------------------------------------
@@ -163,7 +163,7 @@ End Sub
 
 Private Sub Class_Terminate()
     
-    Set FSo = Nothing
+    Set fso = Nothing
     If lKeepLogs <> 0 Then Reorg sFileFullName, lKeepLogs
     
 End Sub
@@ -521,7 +521,7 @@ Friend Property Let FileFullName(ByVal s As String)
 ' ----------------------------------------------------------------------------
     Dim lDaysAge As Long
     
-    With FSo
+    With fso
         sFileFullName = s
         If .FileExists(sFileFullName) Then
             '~~ In case the file already existed it may have passed the KeepLogs limit
@@ -659,7 +659,7 @@ Private Function ArrayAsFile(ByVal a_arry As Variant, _
         Else Open a_file For Output As #1
         Print #1, Join(a_arry, vbCrLf)
         Close #1
-        Set ArrayAsFile = FSo.GetFile(a_file)
+        Set ArrayAsFile = fso.GetFile(a_file)
    End If
    
 xt:
@@ -667,6 +667,37 @@ End Function
 
 Private Function ArryErase(ByRef c_arr As Variant)
     If IsArray(c_arr) Then Erase c_arr
+End Function
+
+Private Function ArryDims(ByVal a_arr As Variant, _
+                 Optional ByRef a_dim_specs As Collection, _
+                 Optional ByRef a_dims As Long) As Long
+' ----------------------------------------------------------------------------
+' Returns:
+' - the dimensions of an array (a_arr), optionally also as argument (a_dims)
+' - the from to specs (a_dimsfrom, a_dimsto) delimited by kommas for each dim
+' - an arry with the from/to specs, representing th dimensions 1 to n
+' ----------------------------------------------------------------------------
+    Dim arrSpecs(1 To 2) As Variant
+    Dim cll              As New Collection
+    Dim i                As Long
+    
+    For i = 1 To 8
+        On Error Resume Next
+        arrSpecs(1) = LBound(a_arr, i)
+        If Err.Number <> 0 Then
+            Exit For
+        Else
+            arrSpecs(2) = UBound(a_arr, i)
+            cll.Add arrSpecs
+        End If
+    Next i
+        
+xt: ArryDims = cll.Count
+    Set a_dim_specs = cll
+    a_dims = cll.Count
+    Set cll = Nothing
+
 End Function
 
 Public Sub BoC(ByVal b_id As String, _
@@ -933,7 +964,7 @@ Private Function FileAsArray(ByVal f_file As Variant, _
     Dim sSplit  As String
     Dim s       As String
     
-    If TypeName(f_file) = "String" Then f_file = FSo.GetFile(f_file)
+    If TypeName(f_file) = "String" Then f_file = fso.GetFile(f_file)
     s = FileAsString(f_file, sSplit, f_empty_excluded)
     FileAsArray = StringAsArray(s, sSplit, f_trim)
     
@@ -961,11 +992,11 @@ Public Function FileAsString(ByVal f_file As Variant, _
     
     If TypeName(f_file) = "File" Then f_file = f_file.Path
     '~~ An error is passed on to the caller
-    If Not FSo.FileExists(f_file) Then Err.Raise AppErr(1), ErrSrc(PROC), _
+    If Not fso.FileExists(f_file) Then Err.Raise AppErr(1), ErrSrc(PROC), _
                                        "The file, provided by a full name, does not exist!"
     
     Open f_file For Input As #1
-    s = Input$(lOf(1), 1)
+    s = Input$(LOF(1), 1)
     Close #1
     
     f_split = SplitIndctr(s) ' may be vbCrLf or vbLf (when file is a download)
@@ -1062,7 +1093,7 @@ Private Sub LogBgn(ByVal l_ntry As Collection, _
                     , l_strng:="Execution trace by 'Common VBA Execution Trace Service (mTrc)' (" & GITHUB_REPO_URL & ")")
         
         '~~ Separator line
-        If FSo.FileExists(FileFullName) Then Log = String(Len(s), "=")
+        If fso.FileExists(FileFullName) Then Log = String(Len(s), "=")
         Log = s
         
         '~~ Trace-Log title
@@ -1254,7 +1285,7 @@ Public Sub NewFile(Optional ByVal n_file As String = vbNullString)
 ' full name becomes a temp file
 ' ----------------------------------------------------------------------------
     If n_file = vbNullString Then n_file = FileFullName
-    With FSo
+    With fso
         If .FileExists(n_file) Then .DeleteFile n_file, True
     End With
     sFileFullName = n_file
@@ -1334,7 +1365,7 @@ Private Sub Reorg(ByVal r_file_full_name As String, _
     Dim v       As Variant
     Dim bTop    As Boolean: bTop = True
     
-    If Not FSo.FileExists(r_file_full_name) Then GoTo xt
+    If Not fso.FileExists(r_file_full_name) Then GoTo xt
     If r_keep = 0 Then GoTo xt
     
     '~~ Collect the logs (i.e. lines delimited by a log delimiter line)
@@ -1628,11 +1659,11 @@ Private Function TempFile(Optional ByVal f_path As String = vbNullString, _
     Dim sTemp As String
     
     If VBA.Left$(f_extension, 1) <> "." Then f_extension = "." & f_extension
-    sTemp = Replace(FSo.GetTempName, ".tmp", f_extension)
+    sTemp = Replace(fso.GetTempName, ".tmp", f_extension)
     If f_path = vbNullString Then f_path = CurDir
     sTemp = VBA.Replace(f_path & "\" & sTemp, "\\", "\")
     TempFile = sTemp
-    If f_create_as_textstream Then FSo.CreateTextFile sTemp
+    If f_create_as_textstream Then fso.CreateTextFile sTemp
 
 End Function
 

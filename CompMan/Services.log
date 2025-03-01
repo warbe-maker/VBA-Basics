@@ -1,67 +1,89 @@
-25-02-26-15:57:24  Standard-Module  mBasicTest.....:  Modified VBComponent e x p o r t e d !                       
-25-02-26-15:57:25  Class-Module     clsTestAid.....:  Common Component code change:                                
-25-02-26-15:57:25                                     Line 4017 Serviced (CodeModule)....:             Case "Workbook":    VarDiffs = WrkbDiffs(v_res, v_exp) 
-25-02-26-15:57:25                                     Line 4017 Serviced (Export-File)...:             Case "Workbook"                                        
-25-02-26-15:57:25                                     Last modified at date/time changed from     2025-02-25 16:52:22 (UTC)                                   
-25-02-26-15:57:25                                                                          to     2025-02-26 14:57:25 (UTC)                                   
-25-02-26-15:57:25                                     Last modified in Workbook changed from       E:\Sync\Excel VBA\DevAndTest\CompMan\CompMan.xlsb          
-25-02-26-15:57:25                                                                         to       E:\Sync\Excel VBA\DevAndTest\Basic\Basic.xlsm              
-25-02-26-15:57:25                                     Lastr modified Export-File changed from      E:\Sync\Excel VBA\DevAndTest\CompMan\CompMan\source\clsTestAid.cls 
-25-02-26-15:57:25                                                                          to      E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\source\clsTestAid.cls   
-25-02-26-15:57:25                                     Last modified at date/time changed from                                                                         
-25-02-26-15:57:25                                                                          to     2025-02-26 14:57:25 (UTC)                                           
-25-02-26-15:57:25                                     Last modified by user changed from                                                                              
-25-02-26-15:57:25                                                                     to          warbe                                                               
-25-02-26-15:57:25                                     Last modified in Workbook changed from                                                                          
-25-02-26-15:57:25                                                                         to       E:\Sync\Excel VBA\DevAndTest\Basic\Basic.xlsm                      
-25-02-26-15:57:25                                     Last modified kind of component changed from                                                                    
-25-02-26-15:57:25                                                                               to used                                                               
-25-02-26-15:57:25                                     Lastr modified Export-File changed from                                                                         
-25-02-26-15:57:25                                                                          to      E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\source\clsTestAid.cls   
-25-02-26-15:57:25                                     Modified Common Component: Release registered pending                                                           
-25-02-26-15:57:25                                     Serviced Common Component modified: E x p o r t e d !                                                           
-25-02-26-15:57:25                                     Serviced Common Component modified: Properties in CommComps.dat updated                                         
-25-02-26-15:57:25                                     Serviced Common Component modified: Registered pending release                                                  
-25-02-26-15:57:25  Standard-Module  mBasic.........:  Common Component code change:                                                                                   
-25-02-26-15:57:25                                     Line 1248 Serviced (CodeModule)....: Public Function ArryDiffers(ByVal a_arr1 As Variant, _                     
-25-02-26-15:57:25                                     Line 1248 Serviced (Export-File)...: Public Function ArryDiffers(ByVal ad_v1 As Variant, _                      
-25-02-26-15:57:26                                     Last modified at date/time changed from     2025-02-26 14:10:12 (UTC)                                           
-25-02-26-15:57:26                                                                          to     2025-02-26 14:57:26 (UTC)                                           
-25-02-26-15:57:26                                     Last modified at date/time changed from     2025-02-26 14:10:12 (UTC)                                           
-25-02-26-15:57:26                                                                          to     2025-02-26 14:57:26 (UTC)                                           
-25-02-26-15:57:26                                     Modified Common Component: Release registered pending                                                           
-25-02-26-15:57:26                                     Serviced Common Component modified: E x p o r t e d !                                                           
-25-02-26-15:57:26                                     Serviced Common Component modified: Re-registered pending release                                               
-25-02-26-16:17:19 =================================================================================================
-25-02-26-16:17:19  Standard-Module  mBasic.........:  Common Component code change:                                
-25-02-26-16:17:19                                     Line 0002 Serviced (CodeModule)....: ' Standard Module mBasic: Common Component providing basic VBA services 
-25-02-26-16:17:19                                     Line 0002 Serviced (Export-File)...: ' Standard Module mBasic: Common VBA services (declarations, procedures, 
-25-02-26-16:17:19                                     Last modified at date/time      changed from 2025-02-26 14:57:26 (UTC)                                        
-25-02-26-16:17:19                                                                               to 2025-02-26 15:17:19 (UTC)                                        
-25-02-26-16:17:19                                     Last modified at date/time changed from                                                                       
-25-02-26-16:17:19                                                                          to     2025-02-26 15:17:19 (UTC)                                         
-25-02-26-16:17:19                                     Last modified by user changed from                                                                            
-25-02-26-16:17:19                                                                     to          warbe                                                             
-25-02-26-16:17:19                                     Last modified in Workbook changed from                                                                        
-25-02-26-16:17:19                                                                         to       E:\Sync\Excel VBA\DevAndTest\Basic\Basic.xlsm                    
-25-02-26-16:17:19                                     Last modified kind of component changed from                                                                  
-25-02-26-16:17:19                                                                               to hosted                                                           
-25-02-26-16:17:19                                     Lastr modified Export-File changed from                                                                       
-25-02-26-16:17:19                                                                          to      E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\source\mBasic.bas     
-25-02-26-16:17:19                                     Pending Common Component's properties set equal serviced                                                      
-25-02-26-16:17:19                                     Modified Common Component: Release registered pending                                                         
-25-02-26-16:17:19                                     Serviced Common Component modified: E x p o r t e d !                                                         
-25-02-26-16:17:19                                     Serviced Common Component modified: Properties in CommComps.dat updated                                       
-25-02-26-16:17:19                                     Serviced Common Component modified: Registered pending release                                                
-25-02-26-16:21:28 =================================================================================================
-25-02-26-16:21:28  Standard-Module  mBasic.........:  Common Component code change:                                
-25-02-26-16:21:28                                     Line 0003 Serviced (CodeModule)....: ' ======================= potentially usefull in any VB-Project. When not used 
-25-02-26-16:21:28                                     Line 0003 Serviced (Export-File)...: ' ======================= (declarations, procedures,functions potentially      
-25-02-26-16:21:28                                     Last modified at date/time      changed from 2025-02-26 15:17:19 (UTC)                                              
-25-02-26-16:21:28                                                                               to 2025-02-26 15:21:28 (UTC)                                              
-25-02-26-16:21:28                                     Last modified at date/time      changed from 2025-02-26 15:17:19 (UTC)                                              
-25-02-26-16:21:28                                                                               to 2025-02-26 15:21:28 (UTC)                                              
-25-02-26-16:21:28                                     Pending Common Component's properties set equal serviced                                                            
-25-02-26-16:21:28                                     Modified Common Component: Release registered pending                                                               
-25-02-26-16:21:28                                     Serviced Common Component modified: E x p o r t e d !                                                               
-25-02-26-16:21:28                                     Serviced Common Component modified: Re-registered pending release                                                   
+25-03-01-17:47:06  Standard-Module  mBasicTest.....:  Modified VBComponent e x p o r t e d !                       
+25-03-01-17:47:07  Standard-Module  mBasic.........:  Common Component modified:                                   
+25-03-01-17:47:07                                     Line 0184 Serviced (CodeModule)....:     lDimsIn = ArryDims(a_arr) 
+25-03-01-17:47:07                                     Line 0184 Serviced (Export-File)...:     aSpecsIn = ArrySpecs(a_arr)                 ' the provided array's number of dimesion and their from/to specifics (when dimesioned) 
+25-03-01-17:47:07                                     Last modified at date/time      changed from 2025-03-01 16:30:38 (UTC)                                                                                                       
+25-03-01-17:47:07                                                                               to 2025-03-01 16:47:07 (UTC)                                                                                                       
+25-03-01-17:47:07                                     Last modified at date/time      changed from 2025-03-01 16:30:38 (UTC)                                                                                                       
+25-03-01-17:47:07                                                                               to 2025-03-01 16:47:07 (UTC)                                                                                                       
+25-03-01-17:47:07                                     Pending Common Component's properties set equal serviced                                                                                                                     
+25-03-01-17:47:07                                     Modified Common Component: Release registered pending                                                                                                                        
+25-03-01-17:47:07                                     Serviced Common Component modified: E x p o r t e d !                                                                                                                        
+25-03-01-17:47:07                                     Serviced Common Component modified: Re-registered pending release                                                                                                            
+25-03-01-17:47:07  Class-Module     clsTrc.........:  Common Component modified:                                                                                                                                                   
+25-03-01-17:47:07                                     Line 0204 Serviced (CodeModule)....:                                                                                                                                         
+25-03-01-17:47:07                                     Line 0204 Serviced (Export-File)...:     Dim aSpecs          As Variant                                                                                                      
+25-03-01-17:47:08                                     Last modified at date/time      changed from 2025-03-01 16:19:48 (UTC)                                                                                                       
+25-03-01-17:47:08                                                                               to 2025-03-01 16:47:08 (UTC)                                                                                                       
+25-03-01-17:47:08                                     Last modified at date/time      changed from 2025-03-01 16:19:48 (UTC)                                                                                                       
+25-03-01-17:47:08                                                                               to 2025-03-01 16:47:08 (UTC)                                                                                                       
+25-03-01-17:47:08                                     Pending Common Component's properties set equal serviced                                                                                                                     
+25-03-01-17:47:08                                     Modified Common Component: Release registered pending                                                                                                                        
+25-03-01-17:47:08                                     Serviced Common Component modified: E x p o r t e d !                                                                                                                        
+25-03-01-17:47:08                                     Serviced Common Component modified: Re-registered pending release                                                                                                            
+25-03-01-19:26:43 =================================================================================================
+25-03-01-19:26:43  Standard-Module  mBasicTest.....:  Modified VBComponent e x p o r t e d !                       
+25-03-01-19:26:43  Standard-Module  mBasic.........:  Common Component modified:                                   
+25-03-01-19:26:43                                     Line 0179 Serviced (CodeModule)....:     Dim lDimsOutBound   As Long 
+25-03-01-19:26:43                                     Line 0179 Serviced (Export-File)...:                                 
+25-03-01-19:26:44                                     Last modified at date/time      changed from 2025-03-01 16:47:07 (UTC) 
+25-03-01-19:26:44                                                                               to 2025-03-01 18:26:44 (UTC) 
+25-03-01-19:26:44                                     Last modified at date/time      changed from 2025-03-01 16:47:07 (UTC) 
+25-03-01-19:26:44                                                                               to 2025-03-01 18:26:44 (UTC) 
+25-03-01-19:26:44                                     Pending Common Component's properties set equal serviced               
+25-03-01-19:26:44                                     Modified Common Component: Release registered pending                  
+25-03-01-19:26:44                                     Serviced Common Component modified: E x p o r t e d !                  
+25-03-01-19:26:44                                     Serviced Common Component modified: Re-registered pending release      
+25-03-01-19:34:36 =================================================================================================
+25-03-01-19:34:36  Standard-Module  mBasic.........:  Common Component modified:                                   
+25-03-01-19:34:36                                     Line 0287 Serviced (CodeModule)....:             If lDimsOutBound = 1 And IsArray(cllBoundsOut(cllBoundsOut.Count)) Then 
+25-03-01-19:34:36                                     Line 0287 Serviced (Export-File)...:             If lDimsOut = 0 Or lDimsOutBound = 1 And IsArray(cllBoundsOut(cllBoundsOut.Count)) Then 
+25-03-01-19:34:37                                     Last modified at date/time      changed from 2025-03-01 18:26:44 (UTC)                                                                   
+25-03-01-19:34:37                                                                               to 2025-03-01 18:34:37 (UTC)                                                                   
+25-03-01-19:34:37                                     Last modified at date/time      changed from 2025-03-01 18:26:44 (UTC)                                                                   
+25-03-01-19:34:37                                                                               to 2025-03-01 18:34:37 (UTC)                                                                   
+25-03-01-19:34:37                                     Pending Common Component's properties set equal serviced                                                                                 
+25-03-01-19:34:37                                     Modified Common Component: Release registered pending                                                                                    
+25-03-01-19:34:37                                     Serviced Common Component modified: E x p o r t e d !                                                                                    
+25-03-01-19:34:37                                     Serviced Common Component modified: Re-registered pending release                                                                        
+25-03-01-19:49:05 =================================================================================================
+25-03-01-19:49:05  Standard-Module  mBasic.........:  Common Component modified:                                   
+25-03-01-19:49:05                                     Line 0287 Serviced (CodeModule)....:             If lDimsOutBound = 0 Then 
+25-03-01-19:49:05                                     Line 0287 Serviced (Export-File)...:             If lDimsOutBound = 1 And IsArray(cllBoundsOut(cllBoundsOut.Count)) Then 
+25-03-01-19:49:05                                     Last modified at date/time      changed from 2025-03-01 18:34:37 (UTC)                                                   
+25-03-01-19:49:05                                                                               to 2025-03-01 18:49:05 (UTC)                                                   
+25-03-01-19:49:05                                     Last modified at date/time      changed from 2025-03-01 18:34:37 (UTC)                                                   
+25-03-01-19:49:05                                                                               to 2025-03-01 18:49:05 (UTC)                                                   
+25-03-01-19:49:05                                     Pending Common Component's properties set equal serviced                                                                 
+25-03-01-19:49:05                                     Modified Common Component: Release registered pending                                                                    
+25-03-01-19:49:05                                     Serviced Common Component modified: E x p o r t e d !                                                                    
+25-03-01-19:49:05                                     Serviced Common Component modified: Re-registered pending release                                                        
+25-03-01-19:57:04 =================================================================================================
+25-03-01-19:57:04  Class-Module     clsTestAid.....:  Common Component modified:                                   
+25-03-01-19:57:04                                     Line 0282 Serviced (CodeModule)....:           LogItemTestId(aLogHeader) = "Test" & vbLf & "Id":               LogItemTestId(aLogColFrmt) = Array(0, xlCenter) 
+25-03-01-19:57:04                                     Line 0282 Serviced (Export-File)...:     LogItemTestId(aLogHeader) = "Test" & vbLf & "Id":               LogItemTestId(aLogColFrmt) = Array(0, xlCenter)       
+25-03-01-19:57:04                                     Last modified at date/time      changed from 2025-02-26 15:40:36 (UTC)                                                                                         
+25-03-01-19:57:04                                                                               to 2025-03-01 18:57:04 (UTC)                                                                                         
+25-03-01-19:57:04                                     Last modified in Workbook       changed from E:\Sync\Excel VBA\DevAndTest\CompMan\CompMan.xlsb                                                                 
+25-03-01-19:57:04                                                                               to E:\Sync\Excel VBA\DevAndTest\Basic\Basic.xlsm                                                                     
+25-03-01-19:57:04                                     Last modified on computer       changed from                                                                                                                   
+25-03-01-19:57:04                                                                               to THINKPAD-YOGA                                                                                                     
+25-03-01-19:57:04                                     Lastr modified Export-File      changed from E:\Sync\Excel VBA\DevAndTest\CompMan\CompMan\source\clsTestAid.cls                                                
+25-03-01-19:57:04                                                                               to E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\source\clsTestAid.cls                                                  
+25-03-01-19:57:04                                     Last modified at date/time      changed from                                                                                                                   
+25-03-01-19:57:04                                                                               to 2025-03-01 18:57:04 (UTC)                                                                                         
+25-03-01-19:57:04                                     Last modified by user           changed from                                                                                                                   
+25-03-01-19:57:04                                                                               to warbe                                                                                                             
+25-03-01-19:57:04                                     Last modified in Workbook       changed from                                                                                                                   
+25-03-01-19:57:04                                                                               to E:\Sync\Excel VBA\DevAndTest\Basic\Basic.xlsm                                                                     
+25-03-01-19:57:04                                     Last modified kind of component changed from                                                                                                                   
+25-03-01-19:57:04                                                                               to used                                                                                                              
+25-03-01-19:57:04                                     Last modified on computer       changed from                                                                                                                   
+25-03-01-19:57:04                                                                               to THINKPAD-YOGA                                                                                                     
+25-03-01-19:57:04                                     Lastr modified Export-File      changed from                                                                                                                   
+25-03-01-19:57:04                                                                               to E:\Sync\Excel VBA\DevAndTest\Basic\CompMan\source\clsTestAid.cls                                                  
+25-03-01-19:57:04                                     Pending Common Component's properties set equal serviced                                                                                                       
+25-03-01-19:57:04                                     Modified Common Component: Release registered pending                                                                                                          
+25-03-01-19:57:04                                     Serviced Common Component modified: E x p o r t e d !                                                                                                          
+25-03-01-19:57:04                                     Serviced Common Component modified: Properties in CommComps.dat updated                                                                                        
+25-03-01-19:57:04                                     Serviced Common Component modified: Registered pending release                                                                                                 

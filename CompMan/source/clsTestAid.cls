@@ -297,18 +297,18 @@ Private Sub Class_Initialize()
     sLogBookFullName = sTestFolder & "\" & sLogBookName
 
     '~~ Initialize Log headers                                      Initialize column formats (indentation, alignment, merge equal content)
-    LogItemTestId(aLogHeader) = "Test" & vbLf & "Id":               LogItemTestId(aLogColFrmt) = Array(0, xlCenter)
-    LogItemCompName(aLogHeader) = "Tested" & vbLf & "Component":    LogItemCompName(aLogColFrmt) = Array(1, xlLeft)
-    LogItemTitle(aLogHeader) = "Test Title/Description":            LogItemTitle(aLogColFrmt) = Array(1, xlLeft, True)
-    LogItemProcName(aLogHeader) = "Tested" & vbLf & "Procedure":    LogItemProcName(aLogColFrmt) = Array(1, xlLeft)
-    LogItemProcType(aLogHeader) = "Procedure" & vbLf & "Type":      LogItemProcType(aLogColFrmt) = Array(1, xlLeft)
-    LogItemVrfctnNo(aLogHeader) = "Verif." & vbLf & "No":           LogItemVrfctnNo(aLogColFrmt) = Array(0, xlCenter)
+          LogItemTestId(aLogHeader) = "Test" & vbLf & "Id":               LogItemTestId(aLogColFrmt) = Array(0, xlCenter)
+        LogItemCompName(aLogHeader) = "Tested" & vbLf & "Component":    LogItemCompName(aLogColFrmt) = Array(1, xlLeft)
+           LogItemTitle(aLogHeader) = "Test Title/Description":            LogItemTitle(aLogColFrmt) = Array(1, xlLeft, True)
+        LogItemProcName(aLogHeader) = "Tested" & vbLf & "Procedure":    LogItemProcName(aLogColFrmt) = Array(1, xlLeft)
+        LogItemProcType(aLogHeader) = "Procedure" & vbLf & "Type":      LogItemProcType(aLogColFrmt) = Array(1, xlLeft)
+        LogItemVrfctnNo(aLogHeader) = "Verif." & vbLf & "No":           LogItemVrfctnNo(aLogColFrmt) = Array(0, xlCenter)
     LogItemVrfctnResExp(aLogHeader) = "Result Expected":            LogItemVrfctnResExp(aLogColFrmt) = Array(0, xlCenter)
-    LogItemVrfctnRes(aLogHeader) = "Result":                        LogItemVrfctnRes(aLogColFrmt) = Array(0, xlCenter)
-    LogItemVrfctnDesc(aLogHeader) = "Verification Description":     LogItemVrfctnDesc(aLogHeader) = Array(1, xlLeft, True)
-    LogItemVrfydType(aLogHeader) = "Verified" & vbLf & "Type":      LogItemVrfydType(aLogColFrmt) = Array(1, xlLeft)
-    LogItemVxcTime(aLogHeader) = "Exec-Time" & vbLf & "(msec)":     LogItemVxcTime(aLogColFrmt) = Array(1, xlRight)
-    LogItemComment(aLogHeader) = "Comment":                         LogItemComment(aLogColFrmt) = Array(1, xlLeft, True)
+       LogItemVrfctnRes(aLogHeader) = "Result":                        LogItemVrfctnRes(aLogColFrmt) = Array(0, xlCenter)
+      LogItemVrfctnDesc(aLogHeader) = "Verification Description":     LogItemVrfctnDesc(aLogColFrmt) = Array(1, xlLeft, True)
+       LogItemVrfydType(aLogHeader) = "Verified" & vbLf & "Type":      LogItemVrfydType(aLogColFrmt) = Array(1, xlLeft)
+         LogItemVxcTime(aLogHeader) = "Exec-Time" & vbLf & "(msec)":     LogItemVxcTime(aLogColFrmt) = Array(1, xlRight)
+         LogItemComment(aLogHeader) = "Comment":                         LogItemComment(aLogColFrmt) = Array(1, xlLeft, True)
 
 End Sub
 
@@ -1106,7 +1106,7 @@ Private Sub ArryAsDictAdd(ByVal a_arr As Variant, _
     On Error GoTo eh
     Dim i       As Long
     Dim sKey    As String
-    Dim arrNdcs As Variant
+    Dim ArrNdcs As Variant
     Dim vItem   As Variant
     
     For i = LBound(a_arr, a_dim) To UBound(a_arr, a_dim)
@@ -1117,8 +1117,8 @@ Private Sub ArryAsDictAdd(ByVal a_arr As Variant, _
         If a_dim < a_dims Then
             ArryAsDictAdd a_arr, a_dct, sKey, a_dim + 1, a_dims
         Else
-            arrNdcs = Split(sKey, ",")
-            vItem = ArryItem(a_arr, arrNdcs)
+            ArrNdcs = Split(sKey, ",")
+            vItem = ArryItem(a_arr, ArrNdcs)
             If Not IsError(vItem) And Not IsEmpty(vItem) Then
                 a_dct.Add sKey, vItem
             End If
@@ -1563,7 +1563,7 @@ Private Sub ArryReDim(ByRef a_arr As Variant, _
     End If
     
 xt: Err.Clear
-    On Error GoTo -1
+    On Error GoTo 0
     Exit Sub
 
 eh: Select Case ErrMsg(ErrSrc(PROC))
@@ -1956,7 +1956,7 @@ Private Function CollAsDict(ByVal v_items As Collection) As Dictionary
                 .Add v, 1
             Else
                 s = v
-                l = .Item(v) + 1
+                l = .item(v) + 1
                 .Remove v
                 .Add s, l
             End If
@@ -2502,7 +2502,7 @@ Private Function FileAsDict(ByVal v_items As File) As Dictionary
                 .Add v, 1
             Else
                 s = v
-                l = .Item(v) + 1
+                l = .item(v) + 1
                 .Remove v
                 .Add s, l
             End If
@@ -2967,7 +2967,7 @@ Private Function KeySort(ByRef k_dct As Dictionary) As Dictionary
     With dct
         For i = LBound(arr) To UBound(arr)
             vKey = arr(i)
-            .Add key:=vKey, Item:=k_dct.Item(vKey)
+            .Add key:=vKey, item:=k_dct.item(vKey)
         Next i
     End With
     
@@ -4153,11 +4153,11 @@ Public Function TimerEnd(Optional t_msecs As Double) As Double
     With cllTimerStack
         If .Count = 0 _
         Then Err.Raise AppErr(1), ErrSrc(PROC), "TimerEnd called without a corresponding TimerStart!"
-        cStart = .Item(.Count)  ' pop ticks at timer start
+        cStart = .item(.Count)  ' pop ticks at timer start
         .Remove .Count
     End With
     With cllTicksStackOvrhd
-        cOvrhd = .Item(.Count) ' pop ticks overhead at timer start
+        cOvrhd = .item(.Count) ' pop ticks overhead at timer start
         .Remove .Count
     End With
     
@@ -4320,7 +4320,8 @@ Private Function VarDiffs(ByVal v_res As Variant, _
     sVrfctnType = TypeName(v_res)
     If VBA.IsObject(v_res) Then
          Select Case sVrfctnType
-            Case "Workbook":    VarDiffs = WrkbDiffs(v_res, v_exp)
+            Case "Workbook"
+               VarDiffs = WrkbDiffs(v_res, v_exp)
             Case "Collection":  VarDiffs = CollDiffs(v_res, v_exp)
             Case "Dictionary":  VarDiffs = DictDiffs(v_res, v_exp)
             Case "File":        VarDiffs = FileDiffs(v_res, v_exp)
