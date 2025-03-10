@@ -173,7 +173,7 @@ Private Function ErrMsg(ByVal err_source As String, _
 xt:
 End Function
 
-Private Sub Prepare(Optional ByVal p_regression As Boolean = False)
+Private Sub Prepare()
     
     mErH.Regression = bModeRegression
 
@@ -192,7 +192,7 @@ End Sub
 Private Function TestArray(ParamArray t_specs() As Variant) As Variant
 ' ------------------------------------------------------------------------------
 ' Returns an array t_specs(0) with items like "Item(x,y,z)" whereby the integers
-' in the brackets correspond with the item's indices in a n-dim (up to 8).
+' in the brackets correspond with the Item's indices in a n-dim (up to 8).
 ' When a dim-ed array (t_arry) is provided its dimension specs are mandatory,
 ' else the provided specs (t_specs(1), t_specs(2), ... are used to provide the
 ' array dimension specifics.
@@ -387,16 +387,13 @@ Public Sub Test_0260_ArrayAsDict()
 
     On Error GoTo eh
     Dim arr     As Variant
-    Dim dct     As Dictionary
     Dim i       As Long
     Dim j       As Long
     Dim k       As Long
     Dim l       As Long
     Dim m       As Long
     Dim dctRes  As Dictionary
-    Dim dctExp  As Dictionary
     Dim arrRes  As Variant
-    Dim arrExp  As Variant
     
     Prepare
     BoP ErrSrc(PROC)
@@ -425,7 +422,7 @@ Public Sub Test_0260_ArrayAsDict()
             Set dctRes = ArryAsDict(arr)
             .TimerEnd
             .Result = dctRes.Count
-            .ResultExpected = ArryItems(arr)
+            .ResultExpected = CInt(ArryItems(arr))
             
         .Verification = "The number of items in the array is equal to those in the Dictionary"
             .TestedProc = "DictAsArray"
@@ -549,9 +546,9 @@ Public Sub Test_0010_Fundamentals()
 '            initialized!
 ' ----------------------------------------------------------------------------
     Dim arr         As Variant
-    Dim c           As Currency
     Dim cll         As New Collection
     Dim arrLong()   As Long
+    Dim l           As Long
     
     Set TestAid = Nothing
     Prepare
@@ -561,6 +558,7 @@ Public Sub Test_0010_Fundamentals()
         .TestedProc = "TimerStart, TimerEnd"
         
         .Verification = "Timer precision proof: The execution time of ""sleep 500"" should be as close as possible to 500 msec"
+            .Comment = "The difference to 500 is regarded the unavoidable precision failure - which should usually be less than 10 milliseconds!"
             .TestedProc = "TimerStart, TimerEnd"
             .TestedProcType = "Sub, Function"
             .TimerStart
@@ -575,6 +573,37 @@ Public Sub Test_0010_Fundamentals()
             .Result = arr(2, 2, 2)
             .ResultExpected = "Item(2,2,2)"
 
+        .Verification = "Indices provided as string are returned as array 1 to n"
+            .TestedProc = "ArryNdcs"
+            .TestedProcType = "Function"
+            arr = mBasic.ArryNdcs(l, "1,2 , 3")
+            .Result = l
+            .ResultExpected = 3
+        
+        .Verification = "Indices provided as string are returned as array 1 to n"
+            .Result = arr(1) & "," & arr(2) & "," & arr(3)
+            .ResultExpected = "1,2,3"
+
+        .Verification = "Indices provided as string are returned as array 1 to n"
+            .TestedProc = "ArryNdcs"
+            .TestedProcType = "Function"
+            arr = mBasic.ArryNdcs(l, mBasic.ArryNdcs(l, "1,2 , 3"))
+            .Result = arr(1) & "," & arr(2) & "," & arr(3)
+            .ResultExpected = "1,2,3"
+        
+        .Verification = "Indices provided as string are returned as array 1 to n"
+            .Result = CInt(arr(3))
+            .ResultExpected = 3
+            
+        .Verification = "Indices provided as array are returned as array 1 to n"
+            arr = mBasic.ArryNdcs(l, Array(3, 5, 7))
+            .Result = CInt(arr(3))
+            .ResultExpected = 7
+        
+        .Verification = "Indices provided as array are returned as array 1 to n"
+            .Result = CInt(l)
+            .ResultExpected = 3
+            
         .Verification = "An aleady redimed TestArray is provided conforming with expectations"
             ReDim arr(3, 3, 3)
             arr = TestArray(arr)
@@ -592,7 +621,7 @@ Public Sub Test_0010_Fundamentals()
             .ResultExpected = 50
 
         .Verification = "Max returns the max length when arguments are strings"
-            .Result = Max("1234", "12345678", "123")
+            .Result = Max("1x34", "1234y678", "1z3") ' numeric value as string is still considered a value
             .ResultExpected = CLng(8)
 
         .Verification = "Max returns the max value of provided arguments of which some are provided as array"
@@ -605,24 +634,72 @@ Public Sub Test_0010_Fundamentals()
             .Result = Max(10, cll, 50, 2)
             .ResultExpected = 70
     
-        .Verification = "An active array item (not IsError and not = default is identified as such"
+        .Verification = "An active array Item (not IsError and not = default is identified as such"
             .TestedProc = "ArryItemIsActive"
             .TestedProcType = "Function"
             ReDim arrLong(1 To 5)
-            arrLong(1) = 1
-            arrLong(3) = 0 ' default and thus inactive
-            arrLong(5) = 5
-            .Result = ArryItemIsActive(arrLong, 0, 5)
-            .ResultExpected = True
-    
-        .Verification = "An in-active array item (IsError) is identified as such"
+            arrLong(1) = 1  ' 1 active
+                            ' 2 error and thus inactive
+            arrLong(3) = 0  ' 3 default and thus inactive
+                            ' 4 error and thus inactive
+            arrLong(5) = 5  ' 5 active
             .Result = ArryItemIsActive(arrLong, 0, 2)
             .ResultExpected = False
     
-        .Verification = "An in-active array item (= default) is identified as such"
+        .Verification = "An in-active array Item (= default) is identified as such"
+            ReDim arrLong(1 To 5)
+            arrLong(1) = 1  ' 1 active
+                            ' 2 error and thus inactive
+            arrLong(3) = 0  ' 3 default and thus inactive
+                            ' 4 error and thus inactive
+            arrLong(5) = 5  ' 5 active
             .Result = ArryItemIsActive(arrLong, 0, 3)
             .ResultExpected = False
+            
+        .Verification = "An in-active array Item (= default) is identified as such"
+            .TestedProc = "ArryItems"
+            .TestedProcType = "Function"
+            ReDim arrLong(1 To 5)
+            arrLong(1) = 1  ' 1 active
+                            ' 2 error and thus inactive
+            arrLong(3) = 0  ' 3 default and thus inactive
+                            ' 4 error and thus inactive
+            arrLong(5) = 5  ' 5 active
+            .Result = ArryItems(arrLong, True)
+            .ResultExpected = 2
     
+        .Verification = "An active array Item (not IsError and not = default is identified as such"
+            .TestedProc = "ArryItems"
+            .TestedProcType = "Function"
+            ReDim arrLong(1 To 5)
+            arrLong(1) = 1  ' 1 active
+                            ' 2 error and thus inactive
+            arrLong(3) = 0  ' 3 default and thus inactive
+                            ' 4 error and thus inactive
+            arrLong(5) = 5  ' 5 active
+            .Result = ArryItems(arrLong, False)
+            .ResultExpected = 5
+            
+        .Verification = "Mixed multi-dimensional arry (with ""jagged"" array items"
+            .TestedProc = "ArryItems"
+            .TestedProcType = "Function"
+            ReDim arr(1 To 3, 5 To 10)
+            arr = TestArray(arr)            ' 3 x 6 = 18 - 1 = 17 items (one item is a "jagged" array!)
+            arr(2, 8) = Array(2, 0, , 3)    ' + 2 active items = 19 items active
+            arr(2, 6) = Empty               ' - 1 = 18 Items
+            .Result = ArryItems(arr, True)
+            .ResultExpected = 18
+            
+        .Verification = "Mixed multi-dimensional arry (with ""jagged"" array items"
+            .TestedProc = "ArryItems"
+            .TestedProcType = "Function"
+            ReDim arr(1 To 3, 5 To 10)      ' 3 x 6 = 18 - 1 = 17 items (one item is a "jagged" array!)
+            arr = TestArray(arr)
+            arr(2, 8) = Array(2, 0, , 3)    ' + 4 "jagged array items = 21
+            .Result = ArryItems(arr, False)
+            .ResultExpected = 21
+         
+         If Not bModeRegression Then .ResultLogSummary
     End With
     
 End Sub
@@ -840,9 +917,6 @@ Public Sub Test_0210_Arry_Get()
     On Error GoTo eh
     Dim arr1    As Variant
     Dim arr2    As Variant
-    Dim a3      As Variant
-    Dim dctDiff As Variant
-    Dim v       As Variant
     Dim arr3()  As Object
     Dim arr4()  As Boolean
     
@@ -881,7 +955,7 @@ Public Sub Test_0210_Arry_Get()
             .Verification = "Read from a 3-dim array"
                 arr1 = TestArray(3, 3, 3) ' 4 x 4 x 4 = 64 items
                 .TimerStart
-                .Result = Arry(arr1, ArryIndices(1, 2, 2))
+                .Result = Arry(arr1, "1, 2, 2")
                 .TimerEnd
                 .ResultExpected = "Item(1,2,2)"
             
@@ -895,9 +969,9 @@ Public Sub Test_0210_Arry_Get()
             .Verification = "Return default from a non-existing or not allocated array"
                 arr1 = TestArray(3, 3, 3) ' 27 elements
                 .TimerStart
-                Arry(arr1, ArryIndices(2, 2, 1)) = "Item(2,2,1) updated"
+                Arry(arr1, Array(2, 2, 1)) = "Item(2,2,1) updated"
                 .TimerEnd
-                .Result = Arry(arr1, ArryIndices(2, 2, 1))
+                .Result = Arry(arr1, Array(2, 2, 1))
                 .ResultExpected = "Item(2,2,1) updated"
         
             .Verification = "Return the array's type specific default for an index ouside the bounds of the provided array"
@@ -910,7 +984,7 @@ Public Sub Test_0210_Arry_Get()
             .Verification = "Returns the array's type specific default for an index outside the bounds of a 2-dim array"
                 arr2 = TestArray(4, 4)
                 .TimerStart
-                .Result = Arry(arr2, ArryIndices(5, 4))
+                .Result = Arry(arr2, "5, 4")
                 .TimerEnd
                 .ResultExpected = Empty
                 
@@ -919,7 +993,7 @@ Public Sub Test_0210_Arry_Get()
                 .Result = Arry(arr3, 2)
                 .ResultExpected = Nothing
                 
-            .Verification = "An array of Booleans returns False for any item out of bounds"
+            .Verification = "An array of Booleans returns False for any Item out of bounds"
                 ReDim arr4(1 To 5)
                 .Result = Arry(arr4, 6)
                 .ResultExpected = False
@@ -943,11 +1017,9 @@ Public Sub Test_0215_Arry_Let()
     Const PROC = "Test_0215_Arry_Let"
     
     On Error GoTo eh
-    Dim arr1    As Variant
     Dim arr2    As Variant
     Dim arr3    As Variant
-    Dim dctDiff As Variant
-    Dim v       As Variant
+    Dim l       As Long
     
     Prepare
     BoP ErrSrc(PROC)
@@ -958,13 +1030,12 @@ Public Sub Test_0215_Arry_Let()
         .TestedProc = "Arry(Let)"
         .TestedProcType = "Property"
         
-        .Verification = "Writing an element to a yet not allocated array without providing an index creates a 1-dim array with one item"
-            .Comment = "Result is verified by means of Array(Get)"
+        .Verification = "Writing an element to a yet not allocated array without providing an index creates a 1-dim array with one Item"
             Set arr2 = Nothing
             .TimerStart
             Arry(arr2) = "Item(0)"
             .TimerEnd
-            .Result = Arry(arr2, 0)
+            .Result = arr2(0)
             .ResultExpected = "Item(0)"
         
         .Verification = "Writing an element to a yet not allocated array returns a 1-dim array with one Item"
@@ -973,7 +1044,7 @@ Public Sub Test_0215_Arry_Let()
             .TimerStart
             Arry(arr2, 10) = "Item(10)"
             .TimerEnd
-            .Result = Arry(arr2, 10)
+            .Result = arr2(10)
             .ResultExpected = "Item(10)"
         
         .Verification = "Adding an Item to a not yet allocated array with a certain index returns a 1-dim array with one Item at the given index"
@@ -995,38 +1066,42 @@ Public Sub Test_0215_Arry_Let()
                     
         .TestId = "0215-2"
         .Title = "Write to multi-dim array with automated ReDim of any dimensions specs when the requested index is out of bounds"
-        .TestedProc = "Arry(Let)"
-        .TestedProcType = "Property"
         
         .Verification = "When an index is provided for a yet un-dimensioned multi-dim array it is dimensioned with the bounds provided by the indices"
+            .TestedProc = "Arry(Let), Arry(Get)"
+            .TestedProcType = "Property"
             Set arr2 = Nothing
             .Comment = "Result is verified by means of Array(Get)"
-            Arry(arr2, Array(3, 3)) = "Item(3,3)"
-            .Result = Arry(arr2, Array(3, 3))
+            Arry(arr2, "3,3") = "Item(3,3)"
+            .Result = Arry(arr2, "3,3")
             .ResultExpected = "Item(3,3)"
         
-        .Verification = "Write a new item with the last dimensions index beyond its current boundary extents the array"
+        .Verification = "Write a new Item with the last dimensions index beyond its current boundary extents the array"
+            .TestedProc = "Arry(Let), Arry(Get)"
+            .TestedProcType = "Property"
             .Comment = "Result is verified by means of Array(Get)"
             arr3 = TestArray(4, 3, 2)
             .TimerStart
-            Arry(arr3, ArryIndices(3, 3, 5)) = "Item(3,3,5)"
+            Arry(arr3, ArryNdcs(l, 3, 3, 5)) = "Item(3,3,5)"
             .TimerEnd
-            .Result = Arry(arr3, ArryIndices(3, 3, 5))
+            .Result = Arry(arr3, "3, 3, 5")
             .ResultExpected = "Item(3,3,5)"
 
-        .Verification = "Write an item to a yet not dimensioned arry"
+        .Verification = "Write an Item to a yet not dimensioned arry"
             .Comment = "Result is verified by means of Array(Get)"
+            .TestedProc = "Arry(Let), Arry(Get)"
+            .TestedProcType = "Property"
             Set arr3 = Nothing
             .TimerStart
             Arry(arr3, "2,3,4") = "Item(2,3,4)"
             .Result = Arry(arr3, "2,3,4")
             .ResultExpected = "Item(2,3,4)"
         
-        .Verification = "The multi-dim array created along with writing an item has a from spec based on the ""Base Option"""
+        .Verification = "The multi-dim array created along with writing an Item has a from spec based on the ""Base Option"""
             .Result = LBound(arr3, 2)
             .ResultExpected = 0
             
-        .Verification = "Write an item to an already dimensioned but yet un-allocated array"
+        .Verification = "Write an Item to an already dimensioned but yet un-allocated array"
             .Comment = "Result is verified by means of Array(Get)"
             Set arr3 = Nothing
             ReDim arr3(1 To 2, 2 To 3, 3 To 4)
@@ -1035,21 +1110,25 @@ Public Sub Test_0215_Arry_Let()
             .Result = Arry(arr3, "2,3,4")
             .ResultExpected = "Item(2,3,4)"
             
-        .Verification = "The multi-dim array created along with writing an item has correctly considered the dimensions LBound"
+        .Verification = "The multi-dim array created along with writing an Item has correctly considered the dimensions LBound"
             .Result = LBound(arr3, 2)
             .ResultExpected = 2
         
-        .Verification = "Writing to a multi-dim array by extending its last dimension does not effect the from specification of it"
+        .Verification = "When a multi-dim array's last dimension is expanded thi does not effect the lower bound of it"
             .TimerStart
             Arry(arr3, "2,3,6") = "Item(2,3,6)"
             .TimerEnd
             .Result = LBound(arr3, 2)
             .ResultExpected = 2
             
-        .Verification = "Writing to a multi-dim array by extending any other but the last dimension re-dims it accordingly"
-            .Comment = "Result is verified by means of Array(Get)"
+        .Verification = "Another but the last dimension's upper bound is extended by writing an item"
+            .Comment = "Result is verified by means of Arry(Get)"
+            Set arr3 = Nothing
+            ReDim arr3(1 To 2, 2 To 3, 3 To 4)
+            Arry(arr3, "2,3,4") = "Item(2,3,4)"
+            Arry(arr3, "2,3,6") = "Item(2,3,6)" ' extends upper bound last dim
             .TimerStart
-            Arry(arr3, "2,4,6") = "Item(2,4,6)"
+            Arry(arr3, "2,4,6") = "Item(2,4,6)" ' extends upper bound 2nd dim
             .TimerEnd
             .Result = Arry(arr3, "2,4,6")
             .ResultExpected = "Item(2,4,6)"
@@ -1058,6 +1137,7 @@ Public Sub Test_0215_Arry_Let()
             .Result = LBound(arr3, 2)
             .ResultExpected = 2
             
+        If Not bModeRegression Then .ResultLogSummary
     End With
     
 xt: EoP ErrSrc(PROC)
@@ -1085,11 +1165,11 @@ Public Sub Test_0216_Arry_Let_Performance()
     
     With TestAid
         .TestId = "0216"
-        .Title = "Performance of writing to an array the usual way versus using the universal Arry service"
+        .Title = "Performance comparison pure VBA versus Arry(Let) service"
                  
         .TestedProc = "Arry(Let)"
         .TestedProcType = "Property"
-            .Verification = "Writing 1000 elements the usual way in a correspondingly dimensioned array"
+            .Verification = "Writing 1000 elements into a correspondingly pre-dimensioned array by pure VBA"
                 .Comment = "Test result is the difference of the exceuton time!"
                 ReDim arr(1 To 1000)
                 .TimerStart
@@ -1100,7 +1180,7 @@ Public Sub Test_0216_Arry_Let_Performance()
                 .Result = arr
                 .ResultExpected = arr
             
-            .Verification = "Writing 1000 elements by the Arry service"
+            .Verification = "Writing 1000 elements into a correspondingly pre-dimensioned array by the Arry(Let) service"
                 .Comment = "Test result is the difference of the exceuton time!"
                 ReDim arr(1 To 1000)
                 .TimerStart
@@ -1111,6 +1191,7 @@ Public Sub Test_0216_Arry_Let_Performance()
                 .Result = arr
                 .ResultExpected = arr
             
+        If Not bModeRegression Then .ResultLogSummary
     End With
     
 xt: EoP ErrSrc(PROC)
@@ -1130,7 +1211,6 @@ Public Sub Test_0230_ArryCompare()
     Dim aRes      As Variant
     Dim aExp      As Variant
     Dim dctDiff As Variant
-    Dim v       As Variant
     
     Prepare
     BoP ErrSrc(PROC)
@@ -1270,8 +1350,6 @@ Public Sub Test_0245_ArryDims()
     
     On Error GoTo eh
     Dim arr         As Variant
-    Dim lDims       As Long
-    Dim cllSpecs    As Collection
     
     Prepare
     BoP ErrSrc(PROC)
@@ -1381,8 +1459,6 @@ Public Sub Test_0271_ArryRemoveItems_Function()
     On Error GoTo eh
     Dim arrExp  As Variant ' expected reult array
     Dim arrRes  As Variant ' result array
-    Dim i       As Long
-    Dim v       As Variant
     
     Prepare
     BoP ErrSrc(PROC)
@@ -1418,7 +1494,7 @@ Public Sub Test_0271_ArryRemoveItems_Function()
             .Result = arrRes
             .ResultExpected = arrExp
         
-        .Verification = "Remove item 8 (the last item)"
+        .Verification = "Remove Item 8 (the last Item)"
             ReDim arrRes(1 To 8):   arrRes = TestArray(arrRes)
             ReDim arrExp(1 To 7):   arrExp = TestArray(arrExp)
             arrExp(1) = "Item(1)"
@@ -1432,7 +1508,7 @@ Public Sub Test_0271_ArryRemoveItems_Function()
             .Result = arrRes
             .ResultExpected = arrExp
             
-        .Verification = "Remove 2 beginning with the 3rd item in an array -2 to 4"
+        .Verification = "Remove 2 beginning with the 3rd Item in an array -2 to 4"
             ReDim arrRes(-2 To 4):  arrRes = TestArray(arrRes)
             ReDim arrExp(-2 To 2):  arrExp = TestArray(arrExp)
             arrExp(-2) = "Item(-2)"
@@ -1473,7 +1549,6 @@ Public Sub Test_0275_ArryReDim()
     On Error GoTo eh
     Dim arr     As Variant
     Dim arrOut  As Variant
-    Dim i       As Long, j As Long, k As Long, l As Long
 
     Prepare
     BoP ErrSrc(PROC)
@@ -1630,8 +1705,6 @@ End Sub
 
 Public Sub Test_0400_Spaced()
     Const PROC = "Test_0400_Spaced"
-    
-    Dim s As String
     
     Prepare
     mBasic.BoP ErrSrc(PROC)
@@ -1797,7 +1870,6 @@ Public Sub Test_0700_Timer()
     Dim i As Long
     Dim SecsMin     As Currency
     Dim SecsMax     As Currency
-    Dim SecsElapsed As Currency
     Dim SecsWait    As Single
     Dim cBegin      As Currency
     Dim cEnd        As Currency
@@ -1921,7 +1993,7 @@ Public Sub Test_0800_Coll()
                 .TimerEnd
                 .ResultExpected = "Z"
                 
-            .Verification = "Argument is not an integer/index results in the index of the found item"
+            .Verification = "Argument is not an integer/index results in the index of the found Item"
                 .TimerStart
                 .Result = Coll(cll, "Z")
                 .TimerEnd
@@ -1945,54 +2017,54 @@ Public Sub Test_0850_Dict()
     Dim k   As Long
     Dim l   As Long
     
-    dict(dct, "X") = 1                  ' add
-    dict(dct, "X") = 2                  ' ignore
-    Debug.Assert dict(dct, "X") = 1     ' Assert
-    dict(dct, "X", enReplace) = 2       ' replace
-    Debug.Assert dict(dct, "X") = 2     ' Assert
+    Dict(dct, "X") = 1                  ' add
+    Dict(dct, "X") = 2                  ' ignore
+    Debug.Assert Dict(dct, "X") = 1     ' Assert
+    Dict(dct, "X", enReplace) = 2       ' replace
+    Debug.Assert Dict(dct, "X") = 2     ' Assert
     
-    dict(dct, "X", enIncrement) = 5     ' Increment
-    Debug.Assert dict(dct, "X") = 7     ' Assert
-    dict(dct, "X", enIncrement) = -3    ' (de)increment
-    Debug.Assert dict(dct, "X") = 4     ' Assert
+    Dict(dct, "X", enIncrement) = 5     ' Increment
+    Debug.Assert Dict(dct, "X") = 7     ' Assert
+    Dict(dct, "X", enIncrement) = -3    ' (de)increment
+    Debug.Assert Dict(dct, "X") = 4     ' Assert
         
     '~~ Assert defaults when not existing
-    Debug.Assert dict(dct, "B") Is Nothing
-    dict(dct, "B") = vbNullString
-    Debug.Assert dict(dct, "B") = vbNullString
+    Debug.Assert Dict(dct, "B") Is Nothing
+    Dict(dct, "B") = vbNullString
+    Debug.Assert Dict(dct, "B") = vbNullString
     
     '~~ Collect
     Set dct = Nothing
-    dict(dct, "A", enCollect) = "Axel"
-    dict(dct, "A", enCollect) = "Anton"
-    dict(dct, "A", enCollect) = "Abraham"
-    dict(dct, "B", enCollect) = "Bobo"
-    dict(dct, "B", enCollect) = "Bilbo"
-    dict(dct, "B", enCollect) = "Batman"
-    Debug.Assert dict(dct, "A").Count = 3
-    Debug.Assert dict(dct, "B").Count = 3
-    Debug.Assert dict(dct, "A")(1) = "Axel"
-    Debug.Assert dict(dct, "A")(2) = "Anton"
-    Debug.Assert dict(dct, "A")(3) = "Abraham"
-    Debug.Assert dict(dct, "B")(1) = "Bobo"
-    Debug.Assert dict(dct, "B")(2) = "Bilbo"
-    Debug.Assert dict(dct, "B")(3) = "Batman"
+    Dict(dct, "A", enCollect) = "Axel"
+    Dict(dct, "A", enCollect) = "Anton"
+    Dict(dct, "A", enCollect) = "Abraham"
+    Dict(dct, "B", enCollect) = "Bobo"
+    Dict(dct, "B", enCollect) = "Bilbo"
+    Dict(dct, "B", enCollect) = "Batman"
+    Debug.Assert Dict(dct, "A").Count = 3
+    Debug.Assert Dict(dct, "B").Count = 3
+    Debug.Assert Dict(dct, "A")(1) = "Axel"
+    Debug.Assert Dict(dct, "A")(2) = "Anton"
+    Debug.Assert Dict(dct, "A")(3) = "Abraham"
+    Debug.Assert Dict(dct, "B")(1) = "Bobo"
+    Debug.Assert Dict(dct, "B")(2) = "Bilbo"
+    Debug.Assert Dict(dct, "B")(3) = "Batman"
     
     '~~ Collect sorted
     Set dct = Nothing
-    dict(dct, "A", enCollectSorted) = "Axel"
-    dict(dct, "A", enCollectSorted) = "Anton"
-    dict(dct, "A", enCollectSorted) = "Abraham"
-    dict(dct, "B", enCollectSorted) = "Bobo"
-    dict(dct, "B", enCollectSorted) = "Bilbo"
-    dict(dct, "B", enCollectSorted) = "Batman"
-    Debug.Assert dict(dct, "A").Count = 3
-    Debug.Assert dict(dct, "A")(1) = "Abraham"
-    Debug.Assert dict(dct, "A")(2) = "Anton"
-    Debug.Assert dict(dct, "A")(3) = "Axel"
-    Debug.Assert dict(dct, "B")(1) = "Batman"
-    Debug.Assert dict(dct, "B")(2) = "Bilbo"
-    Debug.Assert dict(dct, "B")(3) = "Bobo"
+    Dict(dct, "A", enCollectSorted) = "Axel"
+    Dict(dct, "A", enCollectSorted) = "Anton"
+    Dict(dct, "A", enCollectSorted) = "Abraham"
+    Dict(dct, "B", enCollectSorted) = "Bobo"
+    Dict(dct, "B", enCollectSorted) = "Bilbo"
+    Dict(dct, "B", enCollectSorted) = "Batman"
+    Debug.Assert Dict(dct, "A").Count = 3
+    Debug.Assert Dict(dct, "A")(1) = "Abraham"
+    Debug.Assert Dict(dct, "A")(2) = "Anton"
+    Debug.Assert Dict(dct, "A")(3) = "Axel"
+    Debug.Assert Dict(dct, "B")(1) = "Batman"
+    Debug.Assert Dict(dct, "B")(2) = "Bilbo"
+    Debug.Assert Dict(dct, "B")(3) = "Bobo"
     
     '~~ Performance
     l = 100000
@@ -2001,7 +2073,7 @@ Public Sub Test_0850_Dict()
         .TimerStart
         For i = 1 To l
             k = Int((l * Rnd) + 1)
-            dict(dct, k) = vbNullString ' add, ignore duplicates
+            Dict(dct, k) = vbNullString ' add, ignore duplicates
         Next i
         .TimerEnd
         Debug.Print vbLf & "Add ignore duplicates:"
@@ -2017,7 +2089,7 @@ Public Sub Test_0850_Dict()
         .TimerStart
         For i = 1 To l
             k = Int((l * Rnd) + 1)
-            dict(dct, k, enCollect) = k ' add, ignore duplicates
+            Dict(dct, k, enCollect) = k ' add, ignore duplicates
         Next i
         .TimerEnd
         Debug.Print vbLf & "Collect duplicates (unsorted):"

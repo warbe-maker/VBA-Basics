@@ -268,12 +268,6 @@ Private sLogBookName                As String
 
 Private Sub Class_Initialize()
     
-    Const lLoop As Long = 2000
-    
-    Dim cTime           As Currency
-    Dim cTimerTestStart As Currency
-    Dim i               As Long
-    
     Set cllTempTestItems = New Collection
     sTestFileNameScheme = "Test-<id>-<vn>-<nm>.<xt>"                     ' default tes file name scheme
     TestFolder = ThisWorkbook.Path & "\Test"                             ' default test folder
@@ -392,7 +386,7 @@ Private Property Let Arry(Optional ByRef a_arr As Variant, _
     ArryDims a_arr, cllDimSpecs, lDimsArry      ' DimsArray will be 0 when yet not allocated or not an array
     
     '~~ Get the provided indices as Collection
-    Set cllSpecNdcs = ArryIndices(a_indices)
+    Set cllSpecNdcs = ArryNdcsCll(a_indices)
     lDimsSpec = cllSpecNdcs.Count               ' may be 0 when none had been provided
     
     If lDimsArry <> 0 Then
@@ -556,8 +550,6 @@ Private Property Get Arry(Optional ByRef a_arr As Variant, _
 '
 ' W. Rauschenberger Berlin, Jan 2025
 ' ----------------------------------------------------------------------------
-    Const PROC = "Arry(Get)"
-    
     Dim lDims  As Long
     Dim bObject As Boolean
     
@@ -579,7 +571,7 @@ Private Property Get Arry(Optional ByRef a_arr As Variant, _
     lDims = ArryDims(a_arr) ' This will return 0 for anything not an array or not a specified array
     
     If lDims > 0 Then
-        Set a_indices = ArryIndices(a_indices) ' transforms any kind of provided inedx/indices into a Collection (1 to n)
+        Set a_indices = ArryNdcsCll(a_indices) ' transforms any kind of provided inedx/indices into a Collection (1 to n)
     End If
     
     On Error Resume Next
@@ -699,7 +691,7 @@ End Property
 
 Public Property Let Comment(ByVal s As String):                                                         sComment = s:                                                   End Property
 
-Private Property Let dict(Optional ByRef d_dct As Dictionary, _
+Private Property Let Dict(Optional ByRef d_dct As Dictionary, _
                           Optional ByVal d_key As Variant, _
                                    ByVal d_Item As Variant)
     If d_dct Is Nothing Then Set d_dct = New Dictionary
@@ -1223,7 +1215,7 @@ Private Function ArryBounds(ByVal a_arr As Variant, _
     Dim lDimsSpec           As Long
     
     lDimsArry = ArryDims(a_arr)
-    Set cllSpecNdcs = ArryIndices(a_indices)
+    Set cllSpecNdcs = ArryNdcsCll(a_indices)
     lDimsSpec = cllSpecNdcs.Count
     
     If lDimsSpec > lDimsArry Then GoTo xt
@@ -1380,7 +1372,7 @@ Private Function ArryHasElements(ByVal a_arr As Variant) As Boolean
 
 End Function
 
-Private Function ArryIndices(ParamArray a_indices() As Variant) As Collection
+Private Function ArryNdcsCll(ParamArray a_indices() As Variant) As Collection
 ' ----------------------------------------------------------------------------
 ' Returns provided indices (a_indices) as Collection whereby the indices may
 ' be provided: - as integers (one for each dimension)
@@ -1390,7 +1382,6 @@ Private Function ArryIndices(ParamArray a_indices() As Variant) As Collection
     Const PROC = "ArryIncides"
     
     Dim cll As New Collection
-    Dim i   As Long
     Dim v   As Variant
     
     On Error GoTo xt
@@ -1431,7 +1422,7 @@ Private Function ArryIndices(ParamArray a_indices() As Variant) As Collection
     End With
     
 xt: On Error GoTo 0
-    Set ArryIndices = cll
+    Set ArryNdcsCll = cll
     Set cll = Nothing
     
 End Function
@@ -1457,8 +1448,6 @@ Private Function ArryItems(ByVal a_arr As Variant, _
 ' a type specific default are excluded (a_default_excluded = True) only
 ' "active= items/elements are counted.
 ' ----------------------------------------------------------------------------
-    
-    Dim lDim    As Long
     Dim lItems  As Long
     Dim lDims   As Long
     Dim v       As Variant
@@ -1714,9 +1703,8 @@ Private Sub ArryUnloadAdd(ByVal a_arr As Variant, _
     Const PROC = "ArryUnloadAdd"
     
     On Error GoTo eh
-    Dim i       As Long
-    Dim sIndices   As String
-    Dim arrIndices As Variant
+    Dim i           As Long
+    Dim sIndices    As String
     
     For i = LBound(a_arr, a_dim) To UBound(a_arr, a_dim)
         If a_indices = vbNullString _
@@ -3475,7 +3463,6 @@ Private Sub LogTerminate()
     Const PROC = "LogTerminate"
 
     On Error GoTo eh
-    Dim s As String
     Dim wbk As Workbook
     
     If appLog Is Nothing Then GoTo xt
@@ -3565,8 +3552,6 @@ Private Sub ResultLogDetails()
     Const PROC = "ResultLogDetails"
     
     On Error GoTo eh
-    Dim i               As Long
-    Dim rngHeader       As Range
         
     If cllLogDetails Is Nothing Then GoTo xt
     If cllLogDetails.Count = 0 Then GoTo xt
@@ -3606,8 +3591,7 @@ Public Sub ResultLogSummary()
     Const PROC = "ResultLogSummary"
     
     On Error GoTo eh
-    Dim v           As Variant
-    Dim rngHeader   As Range
+    Dim v As Variant
     
     If cllVrfctnSummary.Count = 0 Then Exit Sub
     LogSheetInitializeSummary
@@ -4170,18 +4154,6 @@ Public Function TimerEnd(Optional t_msecs As Double) As Double
     
 End Function
 
-Private Function TimerExecTimeFormatted(ByVal t_exec_time As Currency) As String
-' ------------------------------------------------------------------------------
-' Returns the Currency (t_exec_time) formatted with a length of 11.
-' ------------------------------------------------------------------------------
-    Dim s As String
-    
-    s = Split(FormatCurrency(t_exec_time, 4, vbTrue, vbUseDefault, vbFalse), " ")(0)
-    s = String(11 - Len(s), " ") & s
-    TimerExecTimeFormatted = s
-    
-End Function
-
 Public Sub TimerStart(Optional ByVal t_with_calibration = True)
     
     If t_with_calibration Then TimerCalibration
@@ -4353,10 +4325,6 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
-End Function
-
-Private Function VrfctnId() As String
-    VrfctnId = sTestId & "-" & Format(lVrfctnNumber, "00")
 End Function
 
 Private Function WrkbDiffs(ByVal v_res As Workbook, _

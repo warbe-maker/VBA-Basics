@@ -22,7 +22,7 @@ Private Property Let My1DimArray(Optional ByVal m_indices As Variant, ByVal m_it
     Arry(arrMy1DimArray, m_indices) = m_item
 End Property
 
-Private Sub AnyProc1()
+Public Sub AnyProc1()
 ' ---------------------------------------------------------------------------
 ' Usage example 1-dim array
 ' ---------------------------------------------------------------------------
@@ -39,7 +39,7 @@ Private Sub AnyProc1()
     
 End Sub
 
-Private Sub Example3DimArray1()
+Public Sub Example3DimArray1()
 ' ---------------------------------------------------------------------------
 ' Usage example 3-dim array, direct use of Arry service, un-Redim-ed
 ' ---------------------------------------------------------------------------
@@ -66,7 +66,7 @@ Private Sub Example3DimArray1()
       
 End Sub
 
-Private Sub Example3DimArray2()
+Public Sub Example3DimArray2()
 ' ---------------------------------------------------------------------------
 ' Usage example 3-dim array, direct use of Arry service, pre-Redim-ed
 ' ---------------------------------------------------------------------------
