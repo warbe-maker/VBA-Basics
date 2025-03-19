@@ -405,7 +405,7 @@ End Property
 
 Private Property Let ArryItem(Optional ByRef a_arr As Variant, _
                               Optional ByVal a_ndcs As Variant, _
-                                       ByVal a_Item As Variant)
+                                       ByVal a_item As Variant)
 ' ---------------------------------------------------------------------------
 ' Writes an Item (a_Item) to an array (a_arr) by means of provided indices
 ' (a_ndcs) which covers up to 8 dimensions.
@@ -415,14 +415,14 @@ Private Property Let ArryItem(Optional ByRef a_arr As Variant, _
     
     On Error Resume Next ' not assignable items are ignored
     Select Case lDims
-        Case 1: a_arr(a_ndcs(1)) = a_Item
-        Case 2: a_arr(a_ndcs(1), a_ndcs(2)) = a_Item
-        Case 3: a_arr(a_ndcs(1), a_ndcs(2), a_ndcs(3)) = a_Item
-        Case 4: a_arr(a_ndcs(1), a_ndcs(2), a_ndcs(3), a_ndcs(4)) = a_Item
-        Case 5: a_arr(a_ndcs(1), a_ndcs(2), a_ndcs(3), a_ndcs(4), a_ndcs(5)) = a_Item
-        Case 6: a_arr(a_ndcs(1), a_ndcs(2), a_ndcs(3), a_ndcs(4), a_ndcs(5), a_ndcs(6)) = a_Item
-        Case 7: a_arr(a_ndcs(1), a_ndcs(2), a_ndcs(3), a_ndcs(4), a_ndcs(5), a_ndcs(6), a_ndcs(7)) = a_Item
-        Case 8: a_arr(a_ndcs(1), a_ndcs(2), a_ndcs(3), a_ndcs(4), a_ndcs(5), a_ndcs(6), a_ndcs(7), a_ndcs(8)) = a_Item
+        Case 1: a_arr(a_ndcs(1)) = a_item
+        Case 2: a_arr(a_ndcs(1), a_ndcs(2)) = a_item
+        Case 3: a_arr(a_ndcs(1), a_ndcs(2), a_ndcs(3)) = a_item
+        Case 4: a_arr(a_ndcs(1), a_ndcs(2), a_ndcs(3), a_ndcs(4)) = a_item
+        Case 5: a_arr(a_ndcs(1), a_ndcs(2), a_ndcs(3), a_ndcs(4), a_ndcs(5)) = a_item
+        Case 6: a_arr(a_ndcs(1), a_ndcs(2), a_ndcs(3), a_ndcs(4), a_ndcs(5), a_ndcs(6)) = a_item
+        Case 7: a_arr(a_ndcs(1), a_ndcs(2), a_ndcs(3), a_ndcs(4), a_ndcs(5), a_ndcs(6), a_ndcs(7)) = a_item
+        Case 8: a_arr(a_ndcs(1), a_ndcs(2), a_ndcs(3), a_ndcs(4), a_ndcs(5), a_ndcs(6), a_ndcs(7), a_ndcs(8)) = a_item
     End Select
     
 End Property
@@ -461,14 +461,14 @@ Public Property Get Coll(Optional ByRef c_coll As Collection, _
             With c_coll
                 If IsObject(c_argmnt) Then
                     For i = 1 To .Count
-                        If .Item(i) Is c_argmnt Then
+                        If .item(i) Is c_argmnt Then
                             Coll = i
                             GoTo xt
                         End If
                     Next i
                 Else
                     For i = 1 To .Count
-                        If .Item(i) = c_argmnt Then
+                        If .item(i) = c_argmnt Then
                             Coll = i
                             GoTo xt
                         End If
@@ -555,7 +555,7 @@ Public Property Let Dict(Optional ByRef d_dct As Dictionary = Nothing, _
                                 With cll
                                     ReDim arr(0 To .Count - 1)
                                     For i = 0 To .Count - 1
-                                        arr(i) = .Item(i + 1)
+                                        arr(i) = .item(i + 1)
                                     Next i
                                 End With
                                 For i = LBound(arr) To UBound(arr) - 1
@@ -1076,20 +1076,20 @@ Public Sub ArryAsRnge(ByVal a_arr As Variant, _
     Select Case True
         Case lDims = 1 And a_transpose:     '~~ One column, n rows
                                             Set rTarget = a_rng.Cells(1, 1).Resize(UBound(a_arr) + 1, 1)
-                                            rTarget.value = Application.Transpose(a_arr)
+                                            rTarget.Value = Application.Transpose(a_arr)
                                             Set a_rng = rTarget
                                             
         Case lDims = 1 And Not a_transpose: '~~ n columns, one row
                                             Set rTarget = a_rng.Cells(1, 1).Resize(1, UBound(a_arr) + 1)
-                                            rTarget.value = a_arr
+                                            rTarget.Value = a_arr
                                             Set a_rng = rTarget
         
         Case lDims = 2 And Not a_transpose: Set rTarget = a_rng.Cells(1, 1).Resize(UBound(a_arr, 1) + 1, UBound(a_arr, 2) + 1)
-                                            rTarget.value = a_arr
+                                            rTarget.Value = a_arr
                                             Set a_rng = rTarget
         
         Case lDims = 2 And a_transpose:     Set rTarget = a_rng.Cells(1, 1).Resize(UBound(a_arr, 2) + 1, UBound(a_arr, 1) + 1)
-                                            rTarget.value = Application.Transpose(a_arr)
+                                            rTarget.Value = Application.Transpose(a_arr)
                                             Set a_rng = rTarget
                 
         Case Else
@@ -1405,8 +1405,8 @@ Public Function ArryNdcs(ByRef a_dims As Long, _
                     With cll
                         ReDim arr(1 To .Count)
                         For i = 1 To .Count
-                            If IsInteger(CInt(Trim(.Item(i)))) _
-                            Then arr(i) = .Item(i) _
+                            If IsInteger(CInt(Trim(.item(i)))) _
+                            Then arr(i) = .item(i) _
                             Else Err.Raise AppErr(1), ErrSrc(PROC), "At least one of the items provided as array is not an integer value!"
                         Next i
                     End With
@@ -1823,7 +1823,7 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
 End Function
 
 Public Sub ArryRemoveItems(ByRef a_arry As Variant, _
-                  Optional ByVal a_Item As Long = -99999, _
+                  Optional ByVal a_item As Long = -99999, _
                   Optional ByVal a_indx As Long = -99999, _
                   Optional ByVal a_items As Long = 1)
 ' ------------------------------------------------------------------------------
@@ -1856,18 +1856,18 @@ Public Sub ArryRemoveItems(ByRef a_arry As Variant, _
             Case Not ArryDims(a_arry) = 1
                 Err.Raise AppErr(1), ErrSrc(PROC), "Array must not be multidimensional!"
             
-            Case a_Item = -99999 And a_indx <> -99999
+            Case a_item = -99999 And a_indx <> -99999
                 If a_indx < lLbnd Or a_indx > lUbnd _
                 Then Err.Raise AppErr(2), ErrSrc(PROC), "The provided index is out of the array's bounds!"
             
-            Case a_Item >= 0 And a_indx = -99999
+            Case a_item >= 0 And a_indx = -99999
                 '~~ When an Item is provided which is within the number of items in the array
                 '~~ it is transformed into an index
-                If a_Item < 1 Or a_Item > lItems _
+                If a_item < 1 Or a_item > lItems _
                 Then Err.Raise AppErr(3), ErrSrc(PROC), "The provided Item number is 0 or exceeds the number of items in the array!"
                 ' lBnd = 1 And Item = 4 > index = Item
                 ' lBnd = 4 And Item = 2 > index = 5
-                a_indx = lLbnd + a_Item - 1
+                a_indx = lLbnd + a_item - 1
             
             Case Else
                 Err.Raise AppErr(4), ErrSrc(PROC), "Neither an Item nor an index had been provided or both which is conflicting!"
@@ -2684,7 +2684,7 @@ Public Function KeySort(ByRef s_dct As Dictionary) As Dictionary
     With dct
         For i = LBound(arr) To UBound(arr)
             vKey = arr(i)
-            .Add key:=vKey, Item:=s_dct.Item(vKey)
+            .Add key:=vKey, item:=s_dct.item(vKey)
         Next i
     End With
     
@@ -2834,11 +2834,26 @@ Public Sub README(Optional ByVal r_base_url As String = "https://github.com/warb
         
 End Sub
 
+Public Function RepeatString(ByVal r_str As String, _
+                             ByVal r_cnt As Integer) As String
+' ----------------------------------------------------------------------------
+' Returns a string (r_str) repeated n (r_cnt) times.
+' ----------------------------------------------------------------------------
+    Dim i As Long
+    Dim s As String
+
+    For i = 1 To r_cnt
+        s = s & r_str
+    Next i
+    RepeatString = s
+    
+End Function
+
 Public Function RngeAsArry(ByVal r_rng As Range) As Variant
 ' ----------------------------------------------------------------------------
-'
+' Returns a range (r_rng) as arry.
 ' ----------------------------------------------------------------------------
-    RngeAsArry = r_rng.value
+    RngeAsArry = r_rng.Value
     
 End Function
 
@@ -2925,7 +2940,7 @@ Public Function Spaced(ByVal s As String) As String
 End Function
 
 Public Function StackEd(ByVal s_stck As Collection, _
-               Optional ByRef s_Item As Variant = -999999999, _
+               Optional ByRef s_item As Variant = -999999999, _
                Optional ByRef s_lvl As Long = 0) As Variant
 ' ----------------------------------------------------------------------------
 ' Returns:
@@ -2948,36 +2963,36 @@ Public Function StackEd(ByVal s_stck As Collection, _
         Case s_lvl <> 0 And s_lvl > s_stck.Count
             GoTo xt
 
-        Case s_lvl = 0 And VarType(s_Item) <> vbObject
-            If s_Item = -999999999 Then GoTo xt
+        Case s_lvl = 0 And VarType(s_item) <> vbObject
+            If s_item = -999999999 Then GoTo xt
             '~~ A specific Item has been provided
             For i = 1 To s_stck.Count
-                If s_stck(i) = s_Item Then
+                If s_stck(i) = s_item Then
                     s_lvl = i
                     StackEd = True
                     GoTo xt
                 End If
             Next i
         
-        Case s_lvl = 0 And VarType(s_Item) = vbObject
+        Case s_lvl = 0 And VarType(s_item) = vbObject
             For i = 1 To s_stck.Count
-                If s_stck(i) Is s_Item Then
+                If s_stck(i) Is s_item Then
                     s_lvl = i
                     StackEd = True
                     GoTo xt
                 End If
             Next i
                     
-        Case VarType(s_Item) <> vbObject
-            If s_Item = -999999999 Then
+        Case VarType(s_item) <> vbObject
+            If s_item = -999999999 Then
                 StackEd = s_stck(s_lvl)
-            ElseIf s_stck(s_lvl) = s_Item Then
+            ElseIf s_stck(s_lvl) = s_item Then
                 StackEd = True
                 GoTo xt
             End If
         
-        Case VarType(s_Item) = vbObject
-            If s_stck(s_lvl) Is s_Item Then
+        Case VarType(s_item) = vbObject
+            If s_stck(s_lvl) Is s_item Then
                 StackEd = True
                 GoTo xt
             End If
@@ -3024,17 +3039,17 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Function
 
-Public Sub StackPush(ByRef stck As Collection, _
-                     ByVal stck_Item As Variant)
+Public Sub StackPush(ByRef s_stck As Collection, _
+                     ByVal s_item As Variant)
 ' ----------------------------------------------------------------------------
-' Common Stack Push service. Pushes (adds) an Item (stck_Item) to the stack
-' (stck). When the provided stack (stck) is Nothing the stack is created.
+' Common Stack Push service. Pushes (adds) an Item (s_item) to the stack
+' (s_stck). When the provided stack (s_stck) is Nothing the stack is created.
 ' ----------------------------------------------------------------------------
     Const PROC = "StckPush"
     
     On Error GoTo eh
-    If stck Is Nothing Then Set stck = New Collection
-    stck.Add stck_Item
+    If s_stck Is Nothing Then Set s_stck = New Collection
+    s_stck.Add s_item
 
 xt: Exit Sub
 
@@ -3044,18 +3059,18 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Function StackTop(ByVal stck As Collection) As Variant
+Public Function StackTop(ByVal s_stck As Collection) As Variant
 ' ----------------------------------------------------------------------------
-' Common Stack Top service. Returns the top Item from the stack (stck), i.e.
+' Common Stack Top service. Returns the top Item from the stack (s_stck), i.e.
 ' the Item last pushed. If the stack is empty a vbNullString is returned.
 ' ----------------------------------------------------------------------------
     Const PROC = "StckTop"
     
     On Error GoTo eh
-    If StackIsEmpty(stck) Then GoTo xt
-    If IsObject(stck(stck.Count)) _
-    Then Set StackTop = stck(stck.Count) _
-    Else StackTop = stck(stck.Count)
+    If StackIsEmpty(s_stck) Then GoTo xt
+    If IsObject(s_stck(s_stck.Count)) _
+    Then Set StackTop = s_stck(s_stck.Count) _
+    Else StackTop = s_stck(s_stck.Count)
 
 xt: Exit Function
 

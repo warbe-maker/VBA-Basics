@@ -416,8 +416,7 @@ Public Sub Test_0260_ArrayAsDict()
         Next i
         
         .Verification = "The number of items in the Dictionary are equal to those in the array"
-            .TestedProc = "ArryAsDict"
-            .TestedProcType = "Function"
+            .TestedProc = "Function ArryAsDict"
             .TimerStart
             Set dctRes = ArryAsDict(arr)
             .TimerEnd
@@ -425,8 +424,7 @@ Public Sub Test_0260_ArrayAsDict()
             .ResultExpected = CInt(ArryItems(arr))
             
         .Verification = "The number of items in the array is equal to those in the Dictionary"
-            .TestedProc = "DictAsArray"
-            .TestedProcType = "Function"
+            .TestedProc = "Function DictAsArray"
             .TimerStart
             arrRes = mBasic.DictAsArry(dctRes)
             .TimerEnd
@@ -460,8 +458,7 @@ Public Sub Test_0220_ArryAsRnge_RngeAsArry()
             .Title = "Array as range, range as array"
             
             .Verification = "The 1-dim array is written to the range not transposed"
-                .TestedProc = "ArryAsRnge, RngeAsArry"
-                .TestedProcType = "Sub, Function"
+                .TestedProc = "Sub ArryAsRnge" & vbLf & "Function RngeAsArry"
                 arr = TestArray(6)
                 arr(3) = Empty
                 Set rng = wsBasic.Range("celArryAsRangeTarget1")
@@ -472,8 +469,7 @@ Public Sub Test_0220_ArryAsRnge_RngeAsArry()
                 .ResultExpected = wsBasic.Range("rngExpected1")
             
             .Verification = "The 1-dim array is written to the range transposed"
-                .TestedProc = "RngeAsArry"
-                .TestedProcType = "Function"
+                .TestedProc = "Function RngeAsArry"
                 arr = TestArray(6)
                 arr(3) = Empty
                 Set rng = wsBasic.Range("celArryAsRangeTarget2")
@@ -484,8 +480,7 @@ Public Sub Test_0220_ArryAsRnge_RngeAsArry()
                 .ResultExpected = wsBasic.Range("rngExpected2")
     
             .Verification = "The 2-dim array is written to the range not transposed"
-                .TestedProc = "ArryAsRnge"
-                .TestedProcType = "Sub"
+                .TestedProc = "Sub ArryAsRnge"
                 arr = TestArray(3, 3)
                 arr(0, 0) = Empty
                 arr(1, 0) = Empty
@@ -499,8 +494,7 @@ Public Sub Test_0220_ArryAsRnge_RngeAsArry()
                 .ResultExpected = wsBasic.Range("rngExpected3")
 
             .Verification = "The 2-dim array is written to the range transposed"
-                .TestedProc = "RngeAsArry"
-                .TestedProcType = "Function"
+                .TestedProc = "Function RngeAsArry"
                 arr = TestArray(3, 3)
                 arr(0, 0) = Empty
                 arr(1, 0) = Empty
@@ -553,14 +547,13 @@ Public Sub Test_0010_Fundamentals()
     Set TestAid = Nothing
     Prepare
     With TestAid
-        .TestId = "0010"
+        .TestId = "0010-1"
         .Title = "Fundamental services"
-        .TestedProc = "TimerStart, TimerEnd"
         
-        .Verification = "Timer precision proof: The execution time of ""sleep 500"" should be as close as possible to 500 msec"
-            .Comment = "The difference to 500 is regarded the unavoidable precision failure - which should usually be less than 10 milliseconds!"
-            .TestedProc = "TimerStart, TimerEnd"
-            .TestedProcType = "Sub, Function"
+        .Verification = "Timer precision proof"
+            .CommentOnVerification = "The difference to 500 is considered an unavoidable precision failure - which should usually be less than 10 milliseconds!"
+            .TestedComp = "clsTestAid"
+            .TestedProc = "Sub TimerStart" & vbLf & "Function TimerEnd"
             .TimerStart
             .SleepMsecs 500 '~~ Nothing executed
             Debug.Print "Sleep 500 = " & .TimerEnd & " exec time in msecs"
@@ -568,14 +561,19 @@ Public Sub Test_0010_Fundamentals()
             .ResultExpected = True
 
         .Verification = "A TestArray is provided conforming with expectations"
+            .TestedComp = "mBasicTest"
+            .TestedProc = "Function TestArray"
             Set arr = Nothing
             arr = TestArray(2, 2, 2)
             .Result = arr(2, 2, 2)
             .ResultExpected = "Item(2,2,2)"
 
+        .TestId = "0010-2"
+        .Title = "Fundamental services"
+        .TestedComp = "mBasic"
+        
         .Verification = "Indices provided as string are returned as array 1 to n"
-            .TestedProc = "ArryNdcs"
-            .TestedProcType = "Function"
+            .TestedProc = "Function ArryNdcs"
             arr = mBasic.ArryNdcs(l, "1,2 , 3")
             .Result = l
             .ResultExpected = 3
@@ -585,8 +583,7 @@ Public Sub Test_0010_Fundamentals()
             .ResultExpected = "1,2,3"
 
         .Verification = "Indices provided as string are returned as array 1 to n"
-            .TestedProc = "ArryNdcs"
-            .TestedProcType = "Function"
+            .TestedProc = "Function ArryNdcs"
             arr = mBasic.ArryNdcs(l, mBasic.ArryNdcs(l, "1,2 , 3"))
             .Result = arr(1) & "," & arr(2) & "," & arr(3)
             .ResultExpected = "1,2,3"
@@ -611,8 +608,7 @@ Public Sub Test_0010_Fundamentals()
             .ResultExpected = "Item(1,2,3)"
 
         .Verification = "Max value without arguments is 0"
-            .TestedProc = "Max"
-            .TestedProcType = "Function"
+            .TestedProc = "Function Max"
             .Result = Max()
             .ResultExpected = 0
 
@@ -635,8 +631,7 @@ Public Sub Test_0010_Fundamentals()
             .ResultExpected = 70
     
         .Verification = "An active array Item (not IsError and not = default is identified as such"
-            .TestedProc = "ArryItemIsActive"
-            .TestedProcType = "Function"
+            .TestedProc = "Function ArryItemIsActive"
             ReDim arrLong(1 To 5)
             arrLong(1) = 1  ' 1 active
                             ' 2 error and thus inactive
@@ -657,8 +652,7 @@ Public Sub Test_0010_Fundamentals()
             .ResultExpected = False
             
         .Verification = "An in-active array Item (= default) is identified as such"
-            .TestedProc = "ArryItems"
-            .TestedProcType = "Function"
+            .TestedProc = "Function ArryItems"
             ReDim arrLong(1 To 5)
             arrLong(1) = 1  ' 1 active
                             ' 2 error and thus inactive
@@ -669,8 +663,7 @@ Public Sub Test_0010_Fundamentals()
             .ResultExpected = 2
     
         .Verification = "An active array Item (not IsError and not = default is identified as such"
-            .TestedProc = "ArryItems"
-            .TestedProcType = "Function"
+            .TestedProc = "Function ArryItems"
             ReDim arrLong(1 To 5)
             arrLong(1) = 1  ' 1 active
                             ' 2 error and thus inactive
@@ -681,8 +674,7 @@ Public Sub Test_0010_Fundamentals()
             .ResultExpected = 5
             
         .Verification = "Mixed multi-dimensional arry (with ""jagged"" array items"
-            .TestedProc = "ArryItems"
-            .TestedProcType = "Function"
+            .TestedProc = "Function ArryItems"
             ReDim arr(1 To 3, 5 To 10)
             arr = TestArray(arr)            ' 3 x 6 = 18 - 1 = 17 items (one item is a "jagged" array!)
             arr(2, 8) = Array(2, 0, , 3)    ' + 2 active items = 19 items active
@@ -691,8 +683,7 @@ Public Sub Test_0010_Fundamentals()
             .ResultExpected = 18
             
         .Verification = "Mixed multi-dimensional arry (with ""jagged"" array items"
-            .TestedProc = "ArryItems"
-            .TestedProcType = "Function"
+            .TestedProc = "Function ArryItems"
             ReDim arr(1 To 3, 5 To 10)      ' 3 x 6 = 18 - 1 = 17 items (one item is a "jagged" array!)
             arr = TestArray(arr)
             arr(2, 8) = Array(2, 0, , 3)    ' + 4 "jagged array items = 21
@@ -712,8 +703,7 @@ Public Sub Test_0110_Align_Simple()
     
     With TestAid
         .TestId = "0100"
-            .TestedProc = "Align"
-            .TestedProcType = "Function"
+            .TestedProc = "Function Align"
             .Title = "Align strings"
             
             .Verification = "Align simple left filled with "" -"""
@@ -785,8 +775,7 @@ Public Sub Test_0120_Align_column_arranged()
     
     .TestId = "0120"
         .Title = "Align string as arranged in a column"
-        .TestedProc = "Align"
-        .TestedProcType = "Function"
+        .TestedProc = "Function Align"
     
         .Verification = "Align col arranged left filled with "" -"""
             .ResultExpected = " Abcde ---- "
@@ -860,8 +849,7 @@ Public Sub Test_0200_ArryNextIndex()
     
     With TestAid
         .TestId = "0200"
-        .TestedProc = "ArryNextIndex"
-        .TestedProcType = "Function"
+        .TestedProc = "Function ArryNextIndex"
         .Title = "Get next index of a multi-dim arry"
         
             .Verification = "Next index for a 1-dim array is provided"
@@ -926,8 +914,7 @@ Public Sub Test_0210_Arry_Get()
     With TestAid
         .TestId = "0210-1"
         .Title = "Array read"
-        .TestedProc = "Arry(Get)"
-        .TestedProcType = "Property"
+        .TestedProc = "Property Get Arry"
         
             .Verification = "Read from not-an-array returns Null"
                 .Result = Arry(arr1, 1)
@@ -1027,8 +1014,7 @@ Public Sub Test_0215_Arry_Let()
     With TestAid
         .TestId = "0215-1"
         .Title = "Write 1-dim Array"
-        .TestedProc = "Arry(Let)"
-        .TestedProcType = "Property"
+        .TestedProc = "Property Let Arry"
         
         .Verification = "Writing an element to a yet not allocated array without providing an index creates a 1-dim array with one Item"
             Set arr2 = Nothing
@@ -1068,8 +1054,7 @@ Public Sub Test_0215_Arry_Let()
         .Title = "Write to multi-dim array with automated ReDim of any dimensions specs when the requested index is out of bounds"
         
         .Verification = "When an index is provided for a yet un-dimensioned multi-dim array it is dimensioned with the bounds provided by the indices"
-            .TestedProc = "Arry(Let), Arry(Get)"
-            .TestedProcType = "Property"
+            .TestedProc = "Property Let Arry" & vbLf & "Property Let Arry"
             Set arr2 = Nothing
             .Comment = "Result is verified by means of Array(Get)"
             Arry(arr2, "3,3") = "Item(3,3)"
@@ -1077,8 +1062,7 @@ Public Sub Test_0215_Arry_Let()
             .ResultExpected = "Item(3,3)"
         
         .Verification = "Write a new Item with the last dimensions index beyond its current boundary extents the array"
-            .TestedProc = "Arry(Let), Arry(Get)"
-            .TestedProcType = "Property"
+            .TestedProc = "Property Let Arry" & vbLf & "Property Let Arry"
             .Comment = "Result is verified by means of Array(Get)"
             arr3 = TestArray(4, 3, 2)
             .TimerStart
@@ -1089,8 +1073,7 @@ Public Sub Test_0215_Arry_Let()
 
         .Verification = "Write an Item to a yet not dimensioned arry"
             .Comment = "Result is verified by means of Array(Get)"
-            .TestedProc = "Arry(Let), Arry(Get)"
-            .TestedProcType = "Property"
+            .TestedProc = "Property Let Arry" & vbLf & "Property Let Arry"
             Set arr3 = Nothing
             .TimerStart
             Arry(arr3, "2,3,4") = "Item(2,3,4)"
@@ -1166,9 +1149,8 @@ Public Sub Test_0216_Arry_Let_Performance()
     With TestAid
         .TestId = "0216"
         .Title = "Performance comparison pure VBA versus Arry(Let) service"
-                 
-        .TestedProc = "Arry(Let)"
-        .TestedProcType = "Property"
+        .TestedProc = "Property Let Arry"
+        
             .Verification = "Writing 1000 elements into a correspondingly pre-dimensioned array by pure VBA"
                 .Comment = "Test result is the difference of the exceuton time!"
                 ReDim arr(1 To 1000)
@@ -1217,9 +1199,8 @@ Public Sub Test_0230_ArryCompare()
     
     With TestAid
         .TestId = "0230"
-            .TestedProc = "ArryCompare"
-            .TestedProcType = "Sub"
             .Title = "Compare a Result array with an expected array and return a Dictionary with the differences by irnoring empty items"
+            .TestedProc = "Sub ArryCompare"
         
             .Verification = "Compare array with 4th Item different (stop at first difference)"
                 aRes = Split("1,2,3,4,5,6,7", ",")
@@ -1312,8 +1293,7 @@ Public Sub Test_0240_ArryDiffers()
     With TestAid
         .TestId = "0240"
         .Title = "Compare arrays"
-        .TestedProc = "ArryDiffers"
-        .TestedProcType = "Function"
+        .TestedProc = "Function ArryDiffers"
         
         .Verification = "Arrays not differ when only leading and trailing items are empty"
             a1 = Split(",1,2,3,4,5,6,7,,,,", ",")                   ' Test array
@@ -1359,29 +1339,25 @@ Public Sub Test_0245_ArryDims()
         .Title = "Array dimensions"
         
         .Verification = "ArryDims returns 1 for a 1-dim array"
-            .TestedProc = "ArryDims"
-            .TestedProcType = "Function"
+            .TestedProc = "Function ArryDims"
             ReDim arr(3 To 5)
             .Result = ArryDims(arr)
             .ResultExpected = 1
             
         .Verification = "ArrySpecs()(1,1) returns the LBound of the first dimension"
-            .TestedProc = "ArrySpecs"
-            .TestedProcType = "Function"
+            .TestedProc = "Function ArrySpecs"
             ReDim arr(3 To 5)
             .Result = ArrySpecs(arr, ArryDims(arr))(1, 1)
             .ResultExpected = 3
     
         .Verification = "ArryDims returns 1 for a 1-dim array"
-            .TestedProc = "ArryDims"
-            .TestedProcType = "Function"
+            .TestedProc = "Function ArryDims"
             ReDim arr(3 To 5, 2 To 8, 1 To 4)
             .Result = ArryDims(arr)
             .ResultExpected = 3
             
         .Verification = "ArrySpecs()(2,2) returns the UBound of the second dimension"
-            .TestedProc = "ArrySpecs"
-            .TestedProcType = "Function"
+            .TestedProc = "Function ArrySpecs"
             ReDim arr(3 To 5, 2 To 8, 1 To 4)
             .Result = ArrySpecs(arr, ArryDims(arr))(2, 2)
             .ResultExpected = 8
@@ -1406,9 +1382,9 @@ Public Sub Test_0250_Arry_Various()
     BoP ErrSrc(PROC)
     
     With TestAid
+        .TestId = "250"
         .Title = "Various array serviced"
-        .TestedProc = "ArryIsAllocated"
-        .TestedProcType = "Function"
+        .TestedProc = "Function ArryIsAllocated"
         
         .Verification = "Number of dimensions"
         .Verification = "Array is not allocated"
@@ -1465,10 +1441,8 @@ Public Sub Test_0271_ArryRemoveItems_Function()
     
     With TestAid
         .TestId = "0271"
-        .Title = ""
-        .TestedProc = "ArraRemoveItems"
-        .TestedProcType = "Sub"
-        
+        .Title = "Remove indicated items from an array"
+        .TestedProc = "Sub ArryRemoveItems"
         
         .Verification = "Items 4 and 5 are removed"
             ReDim arrRes(1 To 8):   arrRes = TestArray(arrRes)
@@ -1558,8 +1532,7 @@ Public Sub Test_0275_ArryReDim()
         .Title = "Redim array basics"
                 
         .Verification = "Number of items when any = Empty is ignored"
-            .TestedProc = "ArryItems"
-            .TestedProcType = "Function"
+            .TestedProc = "Function ArryItems"
             ReDim arr(1 To 8)
             arr = TestArray(arr)
             arr(3) = Empty
@@ -1569,8 +1542,7 @@ Public Sub Test_0275_ArryReDim()
             .ResultExpected = 7
         
         .Verification = "Number of items when any Empty isn't ignored"
-            .TestedProc = "ArryItems"
-            .TestedProcType = "Function"
+            .TestedProc = "Function ArryItems"
             .TimerStart
             .Result = mBasic.ArryItems(arr, False)
             .TimerEnd
@@ -1583,8 +1555,7 @@ Public Sub Test_0275_ArryReDim()
         ReDim arrOut(1 To 2, 0 To 1, 1 To 6)
        
         .Verification = "The resulting array has two more (3) dimensions resulting in 24 items"
-            .TestedProc = "ArryReDim(S), ArryUnload(F)"
-            .TestedProcType = "Sub, Function"
+            .TestedProc = "Sub ArryReDim(S)" & vbLf & "Function ArryUnload(F)"
         
             ReDim arr(1 To 8)
             arr = TestArray(arr) ' filled with defaults
@@ -1681,11 +1652,10 @@ Public Sub Test_0280_ArryTrimm()
     BoP ErrSrc(PROC)
     With TestAid
         .TestId = "0280"
-        .Title = "Remove any leading or trailing spaces and empt items"
-        .TestedProc = "ArryTrim"
-        .TestedProcType = "Sub"
+        .Title = "Trim array by removing any empty items"
+        .TestedProc = "ArryTrim (Sub)"
     
-        .Verification = "Empty items are removed"
+        .Verification = "The expected result has all empty items removed"
             arrRes = Array(, , 1, 2, 3, 4, 5, 6, 7, , , " ", " , ", vbCr, vbCrLf, vbLf)
             arrExp = Array(1, 2, 3, 4, 5, 6, 7, ",", vbCr, vbCrLf, vbLf)
             mBasic.ArryTrimm arrRes
@@ -1712,8 +1682,7 @@ Public Sub Test_0400_Spaced()
     With TestAid
         .TestId = "0400"
         .Title = "A provided string is returned spaced with non-breaking spaces `Chr$(160)`"
-        .TestedProc = "Spaced"
-        .TestedProcType = "Function"
+        .TestedProc = "Spaced (Function)"
         
         .Verification = "Result is the string with non-breaking spaces"
             .Result = mBasic.Spaced("Abc")
@@ -1740,109 +1709,97 @@ Public Sub Test_0500_Stack()
     mBasic.BoP ErrSrc(PROC)
     
     With TestAid
-        ' ==================================================================
-        .TestId = "0500-10"
-        .TestedProc = "StackIsEmpty"
+        .TestId = "0500"
+        .Title = "Stack services"
+        
         .Verification = "Returns TRUE when empty or stack not exists"
-        .ResultExpected = True
-        .Result = mBasic.StackIsEmpty(cllStack)
-        
-        ' ==================================================================
-        .TestId = "0500-20"
-        .TestedProc = "StackIsEmpty"
+            .TestedProc = "StackIsEmpty (Function)"
+            .ResultExpected = True
+            .Result = mBasic.StackIsEmpty(cllStack)
+               
         .Verification = "Returns FALSE when exists and not empty"
-        mBasic.StackPush cllStack, wsBasic
-        .ResultExpected = False
-        .Result = mBasic.StackIsEmpty(cllStack)
+            .TestedProc = "StackIsEmpty (Function)"
+            mBasic.StackPush cllStack, wsBasic
+            .ResultExpected = False
+            .Result = mBasic.StackIsEmpty(cllStack)
         
-        ' ==================================================================
-        .TestId = "0500-30"
-        .TestedProc = "StackTop"
         .Verification = "Returns the object first stacked object"
-        Set cllStack = Nothing
-        mBasic.StackPush cllStack, wsBasic
-        Set v = mBasic.StackTop(cllStack)
-        .ResultExpected = True
-        .Result = v Is wsBasic
-        
-        ' ==================================================================
-        .TestId = "0500-30"
-        .TestedProc = "StackEd"
-        .Verification = "Returns TRUE for a stacked object"
-        Set cllStack = Nothing
-        mBasic.StackPush cllStack, wsBasic
-        .ResultExpected = True
-        .Result = mBasic.StackEd(cllStack, wsBasic, iLevel)
-        .Verification = "Returns the stacked objects stack level"
-        .ResultExpected = 1
-        .Result = iLevel
-        
-        ' ==================================================================
-        .TestId = "0500-30"
-        .TestedProc = "StackEd"
-        .Verification = "Returns TRUE when a given object is stacked at a given level"
-        Set cllStack = Nothing
-        mBasic.StackPush cllStack, wsBasic
-        .ResultExpected = True
-        .Result = mBasic.StackEd(cllStack, wsBasic, 1)
-        
-        ' ==================================================================
-        .TestId = "0500-40"
-        .TestedProc = "StackTop"
-        .Verification = "Returns the stacked object"
-        Set cllStack = Nothing
-        mBasic.StackPush cllStack, wsBasic
-        Set v = mBasic.StackTop(cllStack)
-        .ResultExpected = True
-        .Result = v Is wsBasic
-        
-        ' ==================================================================
-        .TestId = "0500-50"
-        .TestedProc = "StackPop"
-        .Verification = "Returns the stacked object"
-        Set cllStack = Nothing
-        mBasic.StackPush cllStack, wsBasic
-        Set v = mBasic.StackPop(cllStack)
-        .ResultExpected = True
-        .Result = v Is wsBasic
-        .Verification = "StackIsEmpty returns TRUE after StackPop"
-        .ResultExpected = True
-        .Result = mBasic.StackIsEmpty(cllStack)
-        .Verification = "StackPop for an empty stack returns a vbNullString"
-        .ResultExpected = vbNullString
-        .Result = mBasic.StackPop(cllStack)
-        .Verification = "StackTop for an empty stack returns a vbNullString"
-        .ResultExpected = vbNullString
-        .Result = mBasic.StackTop(cllStack)
-        .Verification = "StackTop returns the stacked Item"
-        mBasic.StackPush cllStack, 10
-        .ResultExpected = 10
-        .Result = mBasic.StackTop(cllStack)
-    
-        ' ==================================================================
-        .TestId = "0500-60"
-        .TestedProc = "StackPop"
-        .Verification = "StackEd returns the Item for a given level"
-        Set cllStack = Nothing
-        For i = 1 To 10
-            mBasic.StackPush cllStack, 10 * i
-        Next i
-        .ResultExpected = 80
-        .Result = mBasic.StackEd(cllStack, , 8)
+            .TestedProc = "StackTop (Function)"
+            Set cllStack = Nothing
+            mBasic.StackPush cllStack, wsBasic
+            Set v = mBasic.StackTop(cllStack)
+            .ResultExpected = True
+            .Result = v Is wsBasic
                 
-        ' ==================================================================
-        .TestId = "0500-70"
-        .TestedProc = "StackPop"
+        .Verification = "Returns TRUE for a stacked object"
+           .TestedProc = "StackEd (Function)"
+            Set cllStack = Nothing
+            mBasic.StackPush cllStack, wsBasic
+            .ResultExpected = True
+            .Result = mBasic.StackEd(cllStack, wsBasic, iLevel)
+        
+        .Verification = "Returns the stacked objects stack level"
+            .ResultExpected = 1
+            .Result = iLevel
+                
+        .Verification = "Returns TRUE when a given object is stacked at a given level"
+            .TestedProc = "StackEd (Function)"
+            Set cllStack = Nothing
+            mBasic.StackPush cllStack, wsBasic
+            .ResultExpected = True
+            .Result = mBasic.StackEd(cllStack, wsBasic, 1)
+                
+        .Verification = "Returns the stacked object"
+            .TestedProc = "StackTop (Function)"
+            Set cllStack = Nothing
+            mBasic.StackPush cllStack, wsBasic
+            Set v = mBasic.StackTop(cllStack)
+            .ResultExpected = True
+            .Result = v Is wsBasic
+        
+        .Verification = "Returns the stacked object"
+            .TestedProc = "StackPop (Function)"
+            Set cllStack = Nothing
+            mBasic.StackPush cllStack, wsBasic
+            Set v = mBasic.StackPop(cllStack)
+            .ResultExpected = True
+            .Result = v Is wsBasic
+            
+        .Verification = "StackIsEmpty returns TRUE after StackPop"
+            .ResultExpected = True
+            .Result = mBasic.StackIsEmpty(cllStack)
+        
+        .Verification = "StackPop for an empty stack returns a vbNullString"
+            .TestedProc = "StackPop (Function)"
+            .ResultExpected = vbNullString
+            .Result = mBasic.StackPop(cllStack)
+        
+        .Verification = "StackTop returns the stacked Item"
+            .TestedProc = "StackTop (Function)"
+            mBasic.StackPush cllStack, 10
+            .ResultExpected = 10
+            .Result = mBasic.StackTop(cllStack)
+    
+        .Verification = "StackEd returns the Item for a given level"
+            .TestedProc = "StackPop (Function)"
+            Set cllStack = Nothing
+            For i = 1 To 10
+                mBasic.StackPush cllStack, 10 * i
+            Next i
+            .ResultExpected = 80
+            .Result = mBasic.StackEd(cllStack, , 8)
+                
         .Verification = "StackPop end with an empty stack when all items are poped"
-        Set cllStack = Nothing
-        For i = 1 To 10
-            mBasic.StackPush cllStack, 10 * i
-        Next i
-        For i = 10 To 1 Step -1
-            Debug.Assert mBasic.StackPop(cllStack) = 10 * i
-        Next i
-        .ResultExpected = True
-        .Result = mBasic.StackIsEmpty(cllStack)
+            .TestedProc = "StackPop (Function)"
+            Set cllStack = Nothing
+            For i = 1 To 10
+                mBasic.StackPush cllStack, 10 * i
+            Next i
+            For i = 10 To 1 Step -1
+                Debug.Assert mBasic.StackPop(cllStack) = 10 * i
+            Next i
+            .ResultExpected = True
+            .Result = mBasic.StackIsEmpty(cllStack)
         
     End With
     
@@ -1862,6 +1819,7 @@ Private Sub Test_0600_TimedDoEvents()
     mBasic.BoP ErrSrc(PROC)
     mBasic.TimedDoEvents ErrSrc(PROC)
     mBasic.EoP ErrSrc(PROC)
+
 End Sub
 
 Public Sub Test_0700_Timer()
@@ -1905,17 +1863,17 @@ Public Sub Test_0800_Coll()
     
     With TestAid
         .TestId = "0800"
-        .Title = "Read from, write to Collection"
-        .TestedProc = "Coll"
-        .TestedProcType = "Property Get"
+        .Title = "Collection service"
         
             .Verification = "Read from not existing Collection"
+                .TestedProc = "Coll (Property Get)"
                 .TimerStart
                 .Result = Coll(cll)
                 .TimerEnd
                 .ResultExpected = Empty
                 
             .Verification = "Read from not existing Collection index"
+                .TestedProc = "Coll (Property Get)"
                 Set cll = New Collection
                 .TimerStart
                 .Result = Coll(cll)
@@ -1923,6 +1881,7 @@ Public Sub Test_0800_Coll()
                 .ResultExpected = Empty
         
             .Verification = "Read with existing Collection index"
+                .TestedProc = "Coll (Property Get)"
                 Set cll = New Collection
                 cll.Add "X"
                 cll.Add "Y"
@@ -1932,6 +1891,7 @@ Public Sub Test_0800_Coll()
                 .ResultExpected = "Y"
         
             .Verification = "Read with not existing Collection index"
+                .TestedProc = "Coll (Property Get)"
                 Set cll = New Collection
                 cll.Add "X"
                 cll.Add "Y"
@@ -1941,6 +1901,7 @@ Public Sub Test_0800_Coll()
                 .ResultExpected = Empty
                 
             .Verification = "Read with a non-integer argument returns the index of the found element"
+                .TestedProc = "Coll (Property Get)"
                 Set cll = New Collection
                 cll.Add "X"
                 cll.Add "Y"
@@ -1950,6 +1911,7 @@ Public Sub Test_0800_Coll()
                 .ResultExpected = 2
             
             .Verification = "Read with a non-integer argument returns Empty for a not found element"
+                .TestedProc = "Coll (Property Get)"
                 Set cll = New Collection
                 cll.Add "X"
                 cll.Add "Y"
@@ -1959,18 +1921,21 @@ Public Sub Test_0800_Coll()
                 .ResultExpected = Empty
             
             .Verification = "An object is returned as object"
-                Set cll = New Collection
+                .TestedProc = "Coll (Property Let)" & vbLf & "Coll (Property Get)"
+                Set cll = Nothing
                 Coll(cll, 10) = ThisWorkbook
                 .Result = Coll(cll, 10)
                 .ResultExpected = ThisWorkbook
     
             .Verification = "A yet un-allocated object is returned as Nothing"
+                .TestedProc = "Coll (Property Let)" & vbLf & "Coll (Property Get)"
                 Set cll = New Collection
                 Coll(cll, 10) = obj
                 .Result = Coll(cll, 10)
                 .ResultExpected = Nothing
         
             .Verification = "Write to not existing Collection"
+                .TestedProc = "Coll (Property Let)"
                 Set cll = Nothing
                 Coll(cll) = "A"
                 Coll(cll) = "B"
@@ -1978,6 +1943,7 @@ Public Sub Test_0800_Coll()
                 .ResultExpected = 2
             
             .Verification = "Write to a very high (10000) index (9998 indices below are filled with Empty)"
+                .TestedProc = "Coll (Property Let)" & vbLf & "Coll (Property Get)"
                 Set cll = Nothing
                 Coll(cll) = "A"
                 Coll(cll) = "B"

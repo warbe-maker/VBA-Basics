@@ -28,101 +28,19 @@ Option Base 1
 '   non-regression-mode - which is the default) any failed test is immediately
 '   displayed (VrfctnLogsWrite)
 '
-' Public services:
-' ----------------
-' AssertedErrors              Error numbers regarded asserted for a specific
-'                             test. Effective only when the Standard Module
-'                             mErH is installed and indicated by the Cond.
-'                             Comp. Argument `mErH = 1`.
-' Comment               P   w Comment on Test, for the whole id or Verification.
-'                             (may be overwritten by a "FailedNote" in case a
-'                             verification failed)
-' ExcludeFromComparison P   w Specifies a like string which is excluded from
-'                             the evaluation/comparision of a Result with an
-'                             expected Result.
-' FolderUnZip                 Unzips a zipped folder to a target folder.
-' FolderZip                   Zips a folder into a zip file.
-' Guide                       Non modal message popup providing testing
-'                             guidance.
-' Instructions          M     Displays instructions for a required
-'                             interaction by the "tester". When the
-'                             _Common VBA Message Component_ `mMsg`/`fMsg`
-'                             is installed (indicated by the Cond. Comp.
-'                             Arg. `mMsg = 1`) the mMsg.Dsply service is
-'                             used to display the instructions non-modal,
-'                             else the instructions are provided in the
-'                             Application.StatusBar.
-' InstructionsDone      M     Unload the displayed instructions if any.
-'                             Note: The form window is identified via the
-'                             displayed title which is the key to the
-'                             displayed instance of the `fMsg` UserForm.
-' InstructionsPosLeft   P r/w Popup message position
-' InstructionsPosTop    P r/w Popup message position
-' ResultLogSummary      M     Writes a verifications summary log to the
-'                             log Worksheet.
-' Result                P r/w Variant expression registers/returns the Result
-'                             of a test, may be a file object, any other
-'                             object or any other data type.
-' Result                P r   Returns Passed or Failed
-' ResultExpected        P r/w The expected Result of a test, a file object,
-'                             any other object or any other data type
-' CleanUp               M     Removes all files provided either by the
-'                             TempTestItem or the TempFileFullName service.
-' TestedComp            P   w Name of the tested VBComponent in a test
-'                             procedure.
-' TestedProc            P   w The name of the tested procedure (a Sub,
-'                             Function, Property, or Method).
-' TestedProcType        P   w Tested procedure type (Sub, Function, ...)
-' TestFolder            P r/w String expression, specifies the test folder
-' TestFile              M     Returns the file object with the
-'                             TestFileFullName, raises an erro when not
-'                             existing.
-' TestFileFullName            Returns a test file's full name based on the
-'                             current `TestId` and the specifies name scheme
-'                             which defaults to "Test-<id>-<vn>-<nm>.<xt>".
-' TestFileNameScheme    P   w Specidies the scheme a test file's name is
-'                             assembled by default
-' TestId                P   w Obligatory, distinct identifcation of a test,
-'                             provided as the very first Property for one
-'                             or more verifications (ResultExpected/Result
-'                             pairs).
-' TempFileFullName      M
-' TempTestItem          P r/w Saves the name of a temporary test file in a
-'                             Collection for being removed when the class
-'                             terminates or explicitly by the CleanUp service.
-' TimerStart                  Initiates a maximum precision timer
-' TimerElapsedTicks     M     Returns the elapsed ticks since start
-' TimerEnd                    Returns the elapsed time since start in
-'                             milliseconds whereby the timer overhead is
-'                             deducted in order to return a Result of 0
-'                             milliseconds when nothing is measured between
-'                             TimerStart and TimerEnd.
-' TimerOverhead         P r   Returns the milliseconds the TimerStart/TimerEnd
-'                             itself consumes when no taking any actual
-'                             measurement.
-' Title                 P   w Title of a test procedure, valid for all tests
-'                             and verifications in it.
-' Verification          P   w A string describing what specifically is verified
-'                             by the tests ResultExpected/Result.
+' Public services: See https://github.com/warbe-maker/Common-VBA-Test-Aid
 '
-' Requires:  Reference to "Microsoft Scripting Runtime"
+' Requires:        Reference to "Microsoft Scripting Runtime"
 '
-' Uses:
-' clsLog              To write and display failed test details
-' mTrc/clsTrc         Only when an execution trace is desired, indicated by
-'                     Cond. Comp. Arg. `mTrc = 1` or `clsTrc = 1`
+' Uses:            no other components
 '
-' Note 1: In order to work completely autonomous the module integrates code
-'         copies of services from the Common Components "mAlign" and clsLog".
+' Note 1: In order to work completely autonomous the module has code copied
+'         from other Common Components.
 ' Note 2: This Common Component is "hosted" in a dedicated Workbook
-'         "TestAid.xlsb" which provides regression testing. However, it may
-'         be modified, ammendet, etc. in any VB-Project use of it provided
-'         the Workbook is serviced by CompMan which cares for making the
-'         modified code public again.
+'         "TestAid.xlsb" which provides all testing means including regression
+'         testing.
 '
-' Requires: Reference to Microsoft Scripting Runtime
-
-' W. Rauschenberger, Berlin Feb 2025
+' W. Rauschenberger, Berlin Mar 2025
 ' ----------------------------------------------------------------------------
 Public fso                  As New FileSystemObject
 
@@ -133,19 +51,18 @@ Private Const SCHEME_NAME               As String = "<nm>"
 Private Const SCHEME_VER_NO             As String = "<vn>"
 Private Const SCHEME_EXT                As String = "<xt>"
 '~~ Array indices for the collection and retrieval of Result details and Result summary log
-Private Const IX_LOGITEM_COMMENT        As Long = 1
-Private Const IX_LOGITEM_COMP_NAME      As Long = 2
-Private Const IX_LOGITEM_EXEC_TIME      As Long = 3
-Private Const IX_LOGITEM_PROC_NAME      As Long = 4
-Private Const IX_LOGITEM_PROC_TYPE      As Long = 5
-Private Const IX_LOGITEM_RES            As Long = 6
-Private Const IX_LOGITEM_RES_EXP        As Long = 7
+Private Const IX_LOGITEM_TCMNT          As Long = 1
+Private Const IX_LOGITEM_VCMNT          As Long = 2
+Private Const IX_LOGITEM_COMP           As Long = 3
+Private Const IX_LOGITEM_XCTM           As Long = 4
+Private Const IX_LOGITEM_PROC           As Long = 5
+Private Const IX_LOGITEM_RSLT           As Long = 6
+Private Const IX_LOGITEM_XPCT           As Long = 7
 Private Const IX_LOGITEM_TEST_ID        As Long = 8
 Private Const IX_LOGITEM_TITLE          As Long = 9
-Private Const IX_LOGITEM_VRFCTN         As Long = 10
-Private Const IX_LOGITEM_VRFCTN_NO      As Long = 11
-Private Const IX_LOGITEM_VRFCTN_RSLT    As Long = 12
-Private Const IX_LOGITEM_VR_TYPE        As Long = 13
+Private Const IX_LOGITEM_DESC           As Long = 10
+Private Const IX_LOGITEM_NMBR           As Long = 11
+Private Const IX_LOGITEM_PORF           As Long = 12
 
 #If VBA7 Then
     Private Declare PtrSafe Function apiShellExecute Lib "shell32.dll" _
@@ -196,19 +113,19 @@ Private Const ERROR_FILE_NOT_FOUND = 2&
 Private Const ERROR_PATH_NOT_FOUND = 3&
 Private Const ERROR_BAD_FORMAT = 11&
 
-Private aLogHeader                  As Variant
+Private aHalignDetails              As Variant
+Private aHalignSummary              As Variant
 Private aLogColFrmt                 As Variant
 Private aLogDetails                 As Variant
+Private aLogHeader                  As Variant
 Private aLogSummary                 As Variant
 Private appLog                      As Application
-Private wbkLog                      As Workbook
-Private wshLog                      As Worksheet
 Private bResult                     As Boolean
 Private bResultExpected             As Boolean
 Private cllLogDetails               As Collection
 Private cllTempTestItems            As Collection
-Private cllTimerStack               As New Collection
 Private cllTicksStackOvrhd          As New Collection
+Private cllTimerStack               As New Collection
 Private cllVrfctnSummary            As Collection
 Private cTicksElapsed               As Currency
 Private cTicksEnd                   As Currency
@@ -218,37 +135,44 @@ Private cTimerFrequency             As Currency
 Private dTimerMsecs                 As Double
 Private dTimerOverhead              As Double
 Private lCols                       As Long
+Private lLogWidthTitle              As Long
+Private lLogWidthVerification       As Long
+Private lLogWidthCmmntTitle         As Long
+Private lLogWidthCmmntVerification  As Long
 Private lMaxVrfctn                  As Long
 Private lVrfctnNumber               As Long
+Private rngLogDetails               As Range
 Private rngLogSheetHeader           As Range
-Private sComment                    As String
-Private sFailedNote                 As String
-Private sTestResultSummaryLogFile   As String
-Private sNameTestFile               As String
-Private sNameTestResultExpectedFile As String
-Private sNameTestResultFile         As String
+Private rngLogSummary               As Range
+Private sCommentTest                As String
+Private sCommentVerification        As String
 Private sExcludeFromComparison      As String
-Private sTestedComp                 As String
-Private sTestedProc                 As String
-Private sTestedProcType             As String
-Private sTestFileExtension          As String
-Private sTestFolder                 As String
-Private sTitle                      As String
-Private sTitleRegression            As String
-Private sTestId                     As String
-Private sVerification               As String
-Private sVrfctnSummaryComment       As String
-Private sVrfctnType                 As String
-Private sTestFileNameScheme         As String
-Private v                           As Variant
-Private vResult                     As Variant
-Private vResultExpected             As Variant
-Private vTempTestItem               As Variant
 Private siInstructionsPosLeft       As Single
 Private siInstructionsPosTop        As Single
 Private siInstructionsTitle         As String
 Private sLogBookFullName            As String
 Private sLogBookName                As String
+Private sNameTestFile               As String
+Private sNameTestResultExpectedFile As String
+Private sNameTestResultFile         As String
+Private sTestedComp                 As String
+Private sTestedProc                 As String
+Private sTestFileExtension          As String
+Private sTestFileNameScheme         As String
+Private sTestFolder                 As String
+Private sTestId                     As String
+Private sTestResultSummaryLogFile   As String
+Private sTitle                      As String
+Private sTitleRegression            As String
+Private sVerification               As String
+Private sVrfctnSummaryComment       As String
+Private sVrfctnType                 As String
+Private v                           As Variant
+Private vResult                     As Variant
+Private vResultExpected             As Variant
+Private vTempTestItem               As Variant
+Private wbkLog                      As Workbook
+Private wshLog                      As Worksheet
 
 #If mMsg = 0 Then
     ' -------------------------------------------------------------------------------
@@ -290,19 +214,25 @@ Private Sub Class_Initialize()
     sLogBookName = "VerificationsLog.xlsx"
     sLogBookFullName = sTestFolder & "\" & sLogBookName
 
-    '~~ Initialize Log headers                                      Initialize column formats (indentation, alignment, merge equal content)
-          LogItemTestId(aLogHeader) = "Test" & vbLf & "Id":               LogItemTestId(aLogColFrmt) = Array(0, xlCenter)
-        LogItemCompName(aLogHeader) = "Tested" & vbLf & "Component":    LogItemCompName(aLogColFrmt) = Array(1, xlLeft)
-           LogItemTitle(aLogHeader) = "Test Title/Description":            LogItemTitle(aLogColFrmt) = Array(1, xlLeft, True)
-        LogItemProcName(aLogHeader) = "Tested" & vbLf & "Procedure":    LogItemProcName(aLogColFrmt) = Array(1, xlLeft)
-        LogItemProcType(aLogHeader) = "Procedure" & vbLf & "Type":      LogItemProcType(aLogColFrmt) = Array(1, xlLeft)
-        LogItemVrfctnNo(aLogHeader) = "Verif." & vbLf & "No":           LogItemVrfctnNo(aLogColFrmt) = Array(0, xlCenter)
-    LogItemVrfctnResExp(aLogHeader) = "Result Expected":            LogItemVrfctnResExp(aLogColFrmt) = Array(0, xlCenter)
-       LogItemVrfctnRes(aLogHeader) = "Result":                        LogItemVrfctnRes(aLogColFrmt) = Array(0, xlCenter)
-      LogItemVrfctnDesc(aLogHeader) = "Verification Description":     LogItemVrfctnDesc(aLogColFrmt) = Array(1, xlLeft, True)
-       LogItemVrfydType(aLogHeader) = "Verified" & vbLf & "Type":      LogItemVrfydType(aLogColFrmt) = Array(1, xlLeft)
-         LogItemVxcTime(aLogHeader) = "Exec-Time" & vbLf & "(msec)":     LogItemVxcTime(aLogColFrmt) = Array(1, xlRight)
-         LogItemComment(aLogHeader) = "Comment":                         LogItemComment(aLogColFrmt) = Array(1, xlLeft, True)
+    '~~ Initialize Log headers                                    Initialize column formats (indentation, alignment, merge equal content)
+    LogItemTestIdnt(aLogHeader) = "Test" & vbLf & "Id":           LogItemTestIdnt(aLogColFrmt) = xlCenter
+    LogItemTestComp(aLogHeader) = "Tested" & vbLf & "Component":  LogItemTestComp(aLogColFrmt) = xlLeft
+    LogItemTestTtle(aLogHeader) = "Test Title/Description":       LogItemTestTtle(aLogColFrmt) = xlLeft
+    LogItemTestProc(aLogHeader) = "Tested" & vbLf & "Procedure":  LogItemTestProc(aLogColFrmt) = xlLeft
+    LogItemVfctNmbr(aLogHeader) = "Verif." & vbLf & "No":         LogItemVfctNmbr(aLogColFrmt) = xlCenter
+    LogItemVfctRslt(aLogHeader) = "Result":                       LogItemVfctRslt(aLogColFrmt) = xlLeft
+    LogItemVfctXptd(aLogHeader) = "Result Expected":              LogItemVfctXptd(aLogColFrmt) = xlLeft
+    LogItemVfctDesc(aLogHeader) = "Verification Description":     LogItemVfctDesc(aLogColFrmt) = xlLeft
+    LogItemVfctPorF(aLogHeader) = "Passed/Failed":                LogItemVfctPorF(aLogColFrmt) = xlCenter
+    LogItemVfctXcTm(aLogHeader) = "Exec-Time" & vbLf & "(msec)":  LogItemVfctXcTm(aLogColFrmt) = xlRight
+    LogItemVfctCmnt(aLogHeader) = "Comment on verification":      LogItemVfctCmnt(aLogColFrmt) = xlLeft
+    LogItemTestCmnt(aLogHeader) = "Comment on test":              LogItemTestCmnt(aLogColFrmt) = xlLeft
+
+    '~~ Default lof column widths
+    lLogWidthCmmntTitle = 30
+    lLogWidthCmmntVerification = 30
+    lLogWidthTitle = 25
+    lLogWidthVerification = 40
 
 End Sub
 
@@ -689,84 +619,81 @@ Private Property Let Coll(Optional ByRef c_cll As Collection, _
 
 End Property
 
-Public Property Let Comment(ByVal s As String):                                                         sComment = s:                                                   End Property
+Friend Property Let Comment(ByVal s As String):                                                     sCommentTest = s:                                       End Property
 
-Private Property Let Dict(Optional ByRef d_dct As Dictionary, _
-                          Optional ByVal d_key As Variant, _
-                                   ByVal d_Item As Variant)
-    If d_dct Is Nothing Then Set d_dct = New Dictionary
-    If d_dct.Exists(d_key) Then d_dct.Remove d_key
-    d_dct.Add d_key, d_Item
-    
-End Property
+Friend Property Let CommentOnVerification(ByVal s As String):                                       sCommentVerification = s:                                       End Property
 
-Friend Property Get InstructionsPosLeft() As Single:                                                    InstructionsPosLeft = siInstructionsPosLeft:                    End Property
+Private Property Get InstructionsPosLeft() As Single:                                                InstructionsPosLeft = siInstructionsPosLeft:            End Property
 
-Friend Property Let InstructionsPosLeft(si As Single):                                                  siInstructionsPosLeft = si:                                     End Property
+Private Property Let InstructionsPosLeft(si As Single):                                              siInstructionsPosLeft = si:                             End Property
 
-Friend Property Get InstructionsPosTop() As Single:                                                     InstructionsPosTop = siInstructionsPosTop:                      End Property
+Private Property Get InstructionsPosTop() As Single:                                                 InstructionsPosTop = siInstructionsPosTop:              End Property
 
-Friend Property Let InstructionsPosTop(si As Single):                                                   siInstructionsPosTop = si:                                      End Property
+Private Property Let InstructionsPosTop(si As Single):                                               siInstructionsPosTop = si:                              End Property
 
-Friend Property Get InstructionsTitle() As String:                                                      InstructionsTitle = siInstructionsTitle:                        End Property
+Friend Property Get InstructionsTitle() As String:                                                  InstructionsTitle = siInstructionsTitle:                End Property
 
-Private Property Get LogItemComment(Optional ByRef l_items As Variant) As Variant:                       LogItemComment = Arry(l_items, IX_LOGITEM_COMMENT):             End Property
+Private Property Get LogItemTestCmnt(Optional ByRef l_items As Variant) As Variant:                 LogItemTestCmnt = Arry(l_items, IX_LOGITEM_TCMNT):      End Property
 
-Private Property Let LogItemComment(Optional ByRef l_items As Variant, ByVal l_item As Variant):         Arry(l_items, IX_LOGITEM_COMMENT) = l_item:                     End Property
+Private Property Let LogItemTestCmnt(Optional ByRef l_items As Variant, ByVal l_item As Variant):   Arry(l_items, IX_LOGITEM_TCMNT) = l_item:               End Property
 
-Private Property Get LogItemCompName(Optional ByRef l_items As Variant) As Variant:                      LogItemCompName = Arry(l_items, IX_LOGITEM_COMP_NAME):          End Property
+Private Property Get LogItemTestComp(Optional ByRef l_items As Variant) As Variant:                 LogItemTestComp = Arry(l_items, IX_LOGITEM_COMP):       End Property
 
-Private Property Let LogItemCompName(Optional ByRef l_items As Variant, ByVal l_item As Variant):        Arry(l_items, IX_LOGITEM_COMP_NAME) = l_item:                   End Property
+Private Property Let LogItemTestComp(Optional ByRef l_items As Variant, ByVal l_item As Variant):   Arry(l_items, IX_LOGITEM_COMP) = l_item:                End Property
 
-Private Property Get LogItemProcName(Optional ByRef l_items As Variant) As Variant:                      LogItemProcName = Arry(l_items, IX_LOGITEM_PROC_NAME):          End Property
+Private Property Get LogItemTestIdnt(Optional ByRef l_items As Variant) As Variant:                 LogItemTestIdnt = Arry(l_items, IX_LOGITEM_TEST_ID):    End Property
 
-Private Property Let LogItemProcName(Optional ByRef l_items As Variant, ByVal l_item As Variant):        Arry(l_items, IX_LOGITEM_PROC_NAME) = l_item:                   End Property
+Private Property Let LogItemTestIdnt(Optional ByRef l_items As Variant, ByVal l_item As Variant):   Arry(l_items, IX_LOGITEM_TEST_ID) = l_item:             End Property
 
-Private Property Get LogItemProcType(Optional ByRef l_items As Variant) As Variant:                      LogItemProcType = Arry(l_items, IX_LOGITEM_PROC_TYPE):          End Property
+Private Property Get LogItemTestProc(Optional ByRef l_items As Variant) As Variant:                 LogItemTestProc = Arry(l_items, IX_LOGITEM_PROC):       End Property
 
-Private Property Let LogItemProcType(Optional ByRef l_items As Variant, ByVal l_item As Variant):        Arry(l_items, IX_LOGITEM_PROC_TYPE) = l_item:                   End Property
+Private Property Let LogItemTestProc(Optional ByRef l_items As Variant, ByVal l_item As Variant):   Arry(l_items, IX_LOGITEM_PROC) = l_item:                End Property
 
-Private Property Get LogItemTestId(Optional ByRef l_items As Variant) As Variant:                        LogItemTestId = Arry(l_items, IX_LOGITEM_TEST_ID):              End Property
+Private Property Get LogItemTestTtle(Optional ByRef l_items As Variant) As Variant:                 LogItemTestTtle = Arry(l_items, IX_LOGITEM_TITLE):      End Property
 
-Private Property Let LogItemTestId(Optional ByRef l_items As Variant, ByVal l_item As Variant):          Arry(l_items, IX_LOGITEM_TEST_ID) = l_item:                     End Property
+Private Property Let LogItemTestTtle(Optional ByRef l_items As Variant, ByVal l_item As Variant):   Arry(l_items, IX_LOGITEM_TITLE) = l_item:               End Property
 
-Private Property Get LogItemTitle(Optional ByRef l_items As Variant) As Variant:                         LogItemTitle = Arry(l_items, IX_LOGITEM_TITLE):                 End Property
+Private Property Get LogItemVfctCmnt(Optional ByRef l_items As Variant) As Variant:                 LogItemVfctCmnt = Arry(l_items, IX_LOGITEM_VCMNT):      End Property
 
-Private Property Let LogItemTitle(Optional ByRef l_items As Variant, ByVal l_item As Variant):           Arry(l_items, IX_LOGITEM_TITLE) = l_item:                       End Property
+Private Property Let LogItemVfctCmnt(Optional ByRef l_items As Variant, ByVal l_item As Variant):   Arry(l_items, IX_LOGITEM_VCMNT) = l_item:               End Property
 
-Private Property Get LogItemVrfctnDesc(Optional ByRef l_items As Variant) As Variant:                    LogItemVrfctnDesc = Arry(l_items, IX_LOGITEM_VRFCTN):           End Property
+Private Property Get LogItemVfctDesc(Optional ByRef l_items As Variant) As Variant:                 LogItemVfctDesc = Arry(l_items, IX_LOGITEM_DESC):       End Property
 
-Private Property Let LogItemVrfctnDesc(Optional ByRef l_items As Variant, ByVal l_item As Variant):      Arry(l_items, IX_LOGITEM_VRFCTN) = l_item:                      End Property
+Private Property Let LogItemVfctDesc(Optional ByRef l_items As Variant, ByVal l_item As Variant):   Arry(l_items, IX_LOGITEM_DESC) = l_item:                End Property
 
-Private Property Get LogItemVrfctnNo(Optional ByRef l_items As Variant) As Variant:                      LogItemVrfctnNo = Arry(l_items, IX_LOGITEM_VRFCTN_NO):          End Property
+Private Property Get LogItemVfctNmbr(Optional ByRef l_items As Variant) As Variant:                 LogItemVfctNmbr = Arry(l_items, IX_LOGITEM_NMBR):       End Property
 
-Private Property Let LogItemVrfctnNo(Optional ByRef l_items As Variant, ByVal l_item As Variant):        Arry(l_items, IX_LOGITEM_VRFCTN_NO) = l_item:                   End Property
+Private Property Let LogItemVfctNmbr(Optional ByRef l_items As Variant, ByVal l_item As Variant):   Arry(l_items, IX_LOGITEM_NMBR) = l_item:                End Property
 
-Private Property Get LogItemVrfctnRes(Optional ByRef l_items As Variant) As Variant:                     LogItemVrfctnRes = Arry(l_items, IX_LOGITEM_RES):               End Property
+Private Property Get LogItemVfctPorF(Optional ByRef l_items As Variant) As Variant:                 LogItemVfctPorF = Arry(l_items, IX_LOGITEM_PORF):       End Property
 
-Private Property Let LogItemVrfctnRes(Optional ByRef l_items As Variant, ByVal l_item As Variant):       Arry(l_items, IX_LOGITEM_RES) = l_item:                         End Property
+Private Property Let LogItemVfctPorF(Optional ByRef l_items As Variant, ByVal l_item As Variant):   Arry(l_items, IX_LOGITEM_PORF) = l_item:                End Property
 
-Private Property Get LogItemVrfctnResExp(Optional ByRef l_items As Variant) As Variant:                  LogItemVrfctnResExp = Arry(l_items, IX_LOGITEM_RES_EXP):        End Property
+Private Property Get LogItemVfctRslt(Optional ByRef l_items As Variant) As Variant:                 LogItemVfctRslt = Arry(l_items, IX_LOGITEM_RSLT):     End Property
 
-Private Property Let LogItemVrfctnResExp(Optional ByRef l_items As Variant, ByVal l_item As Variant):    Arry(l_items, IX_LOGITEM_RES_EXP) = l_item:                     End Property
+Private Property Let LogItemVfctRslt(Optional ByRef l_items As Variant, ByVal l_item As Variant):   Arry(l_items, IX_LOGITEM_RSLT) = l_item:                End Property
 
-Private Property Get LogItemVrfctnResult(Optional ByRef l_items As Variant) As Variant:                  LogItemVrfctnResult = Arry(l_items, IX_LOGITEM_VRFCTN_RSLT):    End Property
+Private Property Get LogItemVfctXcTm(Optional ByRef l_items As Variant) As Variant:                 LogItemVfctXcTm = Arry(l_items, IX_LOGITEM_XCTM):     End Property
 
-Private Property Let LogItemVrfctnResult(Optional ByRef l_items As Variant, ByVal l_item As Variant):    Arry(l_items, IX_LOGITEM_VRFCTN_RSLT) = l_item:                 End Property
+Private Property Let LogItemVfctXcTm(Optional ByRef l_items As Variant, ByVal l_item As Variant):   Arry(l_items, IX_LOGITEM_XCTM) = l_item:                End Property
 
-Private Property Get LogItemVrfydType(Optional ByRef l_items As Variant) As Variant:                     LogItemVrfydType = Arry(l_items, IX_LOGITEM_VR_TYPE):        End Property
+Private Property Get LogItemVfctXptd(Optional ByRef l_items As Variant) As Variant:                 LogItemVfctXptd = Arry(l_items, IX_LOGITEM_XPCT):     End Property
 
-Private Property Let LogItemVrfydType(Optional ByRef l_items As Variant, ByVal l_item As Variant):       Arry(l_items, IX_LOGITEM_VR_TYPE) = l_item:                  End Property
+Private Property Let LogItemVfctXptd(Optional ByRef l_items As Variant, ByVal l_item As Variant):   Arry(l_items, IX_LOGITEM_XPCT) = l_item:                End Property
 
-Private Property Get LogItemVxcTime(Optional ByRef l_items As Variant) As Variant:                       LogItemVxcTime = Arry(l_items, IX_LOGITEM_EXEC_TIME):           End Property
+Friend Property Let LogWidthCommentTitle(ByVal l As Long):          lLogWidthCmmntTitle = l:          End Property
 
-Private Property Let LogItemVxcTime(Optional ByRef l_items As Variant, ByVal l_item As Variant):         Arry(l_items, IX_LOGITEM_EXEC_TIME) = l_item:                   End Property
+Friend Property Let LogWidthCommentVerification(ByVal l As Long):   lLogWidthCmmntVerification = l:   End Property
 
-Friend Property Get NameTestFile() As String:                                                           NameTestFile = sNameTestFile:                                   End Property
+Friend Property Let LogWidthTitle(ByVal l As Long):                 lLogWidthTitle = l:               End Property
 
-Friend Property Get NameTestResultExpectedFile() As String:                                             NameTestResultExpectedFile = sNameTestResultExpectedFile:       End Property
+Friend Property Let LogWidthVerification(ByVal l As Long):          lLogWidthVerification = l:        End Property
 
-Friend Property Get NameTestResultFile() As String:                                                     NameTestResultFile = sNameTestResultFile:                       End Property
+Friend Property Get NameTestFile() As String:                                                       NameTestFile = sNameTestFile:                           End Property
+
+Friend Property Get NameTestResultExpectedFile() As String:                                         NameTestResultExpectedFile = sNameTestResultExpectedFile:   End Property
+
+Friend Property Get NameTestResultFile() As String:                                                 NameTestResultFile = sNameTestResultFile:                   End Property
 
 Friend Property Get Result(Optional ByVal r_exclude As String = vbNullString) As Variant
 ' ------------------------------------------------------------------------------
@@ -856,13 +783,11 @@ Friend Property Let TestedComp(ByVal s As String):                  sTestedComp 
 
 Friend Property Let TestedProc(ByVal s As String):                  sTestedProc = s:                                            End Property
 
-Friend Property Let TestedProcType(ByVal s As String):              sTestedProcType = s:                                        End Property
-
 Friend Property Get TestFileExtension() As String:                  TestFileExtension = sTestFileExtension:                     End Property
 
 Friend Property Let TestFileExtension(ByVal s As String):           sTestFileExtension = Replace("." & s, "..", "."):           End Property
 
-Public Property Let TestFileNameScheme(ByVal s_scheme As String)
+Friend Property Let TestFileNameScheme(ByVal s_scheme As String)
 ' ----------------------------------------------------------------------------
 ' Determines the schem of test file names.
 ' ----------------------------------------------------------------------------
@@ -904,7 +829,7 @@ Friend Property Let TestId(ByVal s As String)
 ' ------------------------------------------------------------------------------
 ' Essential, obligatory, distinct identification of a test, provided as the very
 ' first Property for each test. Resets a previous test to prepare for a new one.
-' since the id is used in the test file's name it must be valid for being part
+' since the Id is used in the test file's name it must be valid for being part
 ' of it.
 ' ------------------------------------------------------------------------------
     Const PROC = "TestId(Let)"
@@ -915,18 +840,21 @@ Friend Property Let TestId(ByVal s As String)
     If Not IsValidFileName(s) _
     Then Err.Raise AppErr(1), ErrSrc(PROC), _
                    "The provided Testid is not valid as (part of a) file or Worksheet name! || " & _
-                   "The id is used in test file's name (.TestFileName, TestResultFileName, TestResultExpectedFileName) " & _
+                   "The Id is used in test file's name (.TestFileName, TestResultFileName, TestResultExpectedFileName) " & _
                    "and as a Worksheet name for failed test verifications. Thus it needs to be valid for becoming part of these names."
-    sTestId = s
-    vTempTestItem = vbNullString
-    lVrfctnNumber = 1
-    sVerification = vbNullString
-    TestFileNames
+    
+    ArryErase aLogDetails
     bResult = False
     bResultExpected = False
-    Set wshLog = Nothing ' enforce initiation of a new log sheet
-    ArryErase aLogDetails
+    lVrfctnNumber = 1
+    sCommentTest = vbNullString
     Set cllLogDetails = Nothing
+    Set rngLogDetails = Nothing
+    Set wshLog = Nothing ' enforce initiation of a new log sheet
+    sTestId = s
+    sVerification = vbNullString
+    TestFileNames
+    vTempTestItem = vbNullString
     
 End Property
 
@@ -943,9 +871,9 @@ End Property
 
 Friend Property Get TimerExecTimeMsecs() As Currency:               TimerExecTimeMsecs = dTimerMsecs:                           End Property
 
-Public Property Get TimerOverheadMsec() As Double:                  TimerOverheadMsec = dTimerOverhead:                         End Property
+Private Property Get TimerOverheadMsec() As Double:                  TimerOverheadMsec = dTimerOverhead:                         End Property
 
-Friend Property Get TimerOverheadTicks() As Currency:               TimerOverheadTicks = cTicksOverhead:                        End Property
+Private Property Get TimerOverheadTicks() As Currency:               TimerOverheadTicks = cTicksOverhead:                        End Property
 
 Friend Property Get Title() As String:                              Title = sTitle:                                             End Property
 
@@ -954,7 +882,7 @@ Friend Property Let Title(ByVal s As String)
     lVrfctnNumber = 0
 End Property
 
-Friend Property Let TitleRegression(ByVal s As String):             sTitleRegression = s:                                       End Property
+'Friend Property Let TitleRegression(ByVal s As String):             sTitleRegression = s:                                       End Property
 
 Private Property Get TxtFile(Optional ByVal t_file As String, _
                              Optional ByVal t_append As Boolean) As String
@@ -963,6 +891,7 @@ Private Property Get TxtFile(Optional ByVal t_file As String, _
     On Error GoTo eh
     Dim iFileNumber As Integer
     
+    t_append = t_append
     iFileNumber = FreeFile
     Open t_file For Input As #iFileNumber
     TxtFile = Input$(LOF(iFileNumber), iFileNumber)
@@ -1005,7 +934,7 @@ Private Property Get Verification() As String
     If sVerification = vbNullString And sTitle <> vbNullString Then sVerification = sTitle
     If sVerification = vbNullString _
     Then Err.Raise AppErr(1), ErrSrc(PROC), _
-         "Neither a .Verification not a .Title had been specified for the evaluation/comparison of a test Result versus a Result expected (test-id " & sTestId & ")." & "||" & _
+         "Neither a .Verification not a .Title had been specified for the evaluation/comparison of a test Result versus a Result expected (test-Id " & sTestId & ")." & "||" & _
          "When it comes to a Result evaluation a specified .Verification or alternatively a given .Title is obligatory."
 
     Verification = sVerification
@@ -1031,7 +960,7 @@ Friend Property Let Verification(ByVal s As String)
     
 End Property
 
-Friend Property Get VrfctnNumber() As Long: VrfctnNumber = lVrfctnNumber:  End Property
+Private Property Get VrfctnNumber() As Long: VrfctnNumber = lVrfctnNumber:  End Property
 
 Private Function AppErr(ByVal app_err_no As Long) As Long
 ' ------------------------------------------------------------------------------
@@ -1068,7 +997,7 @@ Private Function ArryAsColl(ByVal a_arr As Variant) As Collection
     
 End Function
 
-Public Function ArryAsDict(ByVal a_arr As Variant) As Dictionary
+Private Function ArryAsDict(ByVal a_arr As Variant) As Dictionary
 ' ------------------------------------------------------------------------------
 ' Returns a Dictionary with all items of an array (a_arr) with the indices
 ' delimited by a comma as key.
@@ -1284,16 +1213,17 @@ Private Function ArryDiffs(ByVal v_res As Variant, _
     
     Set dctRes = ArryAsDict(v_res)
     Set dctExp = ArryAsDict(v_exp)
-
+    v_res_prfx = v_res_prfx
+    
     If dctRes.Count <> dctExp.Count Then
-        sFailedNote = "Number of items Result/expected differs!"
+        sCommentVerification = "Number of items Result/expected differs!"
         LogCollectVrfctnDetails vbNullString, vbNullString, VR_FAILED
     Else
         LogCollectVrfctnDetails vbNullString, vbNullString, vbNullString
     End If
     For Each v In dctRes
         If Not dctExp.Exists(v) Then
-            sFailedNote = "Item not expected!"
+            sCommentVerification = "Item not expected!"
             LogCollectVrfctnDetails "Item(" & v & ") = " & CStr(dctRes(v)), vbNullString, VR_FAILED
             ArryDiffs = True
         Else
@@ -1306,7 +1236,7 @@ Private Function ArryDiffs(ByVal v_res As Variant, _
     
     For Each v In dctExp
         If Not dctDone.Exists(v) Then
-            sFailedNote = "Item(" & v & ") missing in Result!"
+            sCommentVerification = "Item(" & v & ") missing in Result!"
             LogCollectVrfctnDetails vbNullString, "Item(" & v & ") = " & CStr(dctExp(v)), VR_FAILED
             ArryDiffs = True
         End If
@@ -1359,17 +1289,52 @@ Private Function ArryErase(ByRef a_arr As Variant)
     If IsArray(a_arr) Then Erase a_arr
 End Function
 
-Private Function ArryHasElements(ByVal a_arr As Variant) As Boolean
+Private Function ArryIsAllocated(ByVal a_arr As Variant) As Boolean
 ' ----------------------------------------------------------------------------
-' Returns TRUE when the array (a_arr) has at least one element.
+' Returns TRUE when the array (a_arr) is allocated, i.e. has at least one Item.
 ' ----------------------------------------------------------------------------
-    Dim v As Variant
     
     On Error Resume Next
-    v = a_arr(LBound(a_arr))
-    ArryHasElements = Err.Number = 0
+    ArryIsAllocated = UBound(a_arr) >= LBound(a_arr)
+    On Error GoTo 0
     Err.Clear
+    
+End Function
 
+Private Function ArryItems(ByVal a_arr As Variant, _
+                  Optional ByVal a_default_excluded As Boolean = False) As Long
+' ----------------------------------------------------------------------------
+' Returns the number of items in a multi-dimensional array or a nested array.
+' The latter is an array of which one or more items are again possibly multi-
+' dimensional arrays. An unallocated array returns 0. When items which return
+' a type specific default are excluded (a_default_excluded = True) only
+' "active= items/elements are counted.
+' ----------------------------------------------------------------------------
+    Dim lItems  As Long
+    Dim lDims   As Long
+    Dim v       As Variant
+    Dim i       As Long
+    Dim vDflt   As Variant
+    If Not IsArray(a_arr) Then Exit Function
+    
+    lDims = ArryDims(a_arr)
+    If Not a_default_excluded Then
+        lItems = 1
+        For i = 1 To lDims
+            lItems = lItems * (UBound(a_arr, i) - LBound(a_arr, i) + 1)
+        Next i
+    Else
+        vDflt = ArryDefault(a_arr)
+        For Each v In a_arr
+            If IsArray(v) Or TypeName(v) Like "*()" Then
+                lItems = lItems + ArryItems(v, a_default_excluded)
+            ElseIf Not TypeName(v) = "Error" And Not v = vDflt _
+                Then lItems = lItems + 1
+            End If
+        Next v
+    End If
+    ArryItems = lItems
+    
 End Function
 
 Private Function ArryNdcsCll(ParamArray a_indices() As Variant) As Collection
@@ -1424,54 +1389,6 @@ Private Function ArryNdcsCll(ParamArray a_indices() As Variant) As Collection
 xt: On Error GoTo 0
     Set ArryNdcsCll = cll
     Set cll = Nothing
-    
-End Function
-
-Private Function ArryIsAllocated(ByVal a_arr As Variant) As Boolean
-' ----------------------------------------------------------------------------
-' Returns TRUE when the array (a_arr) is allocated, i.e. has at least one Item.
-' ----------------------------------------------------------------------------
-    
-    On Error Resume Next
-    ArryIsAllocated = UBound(a_arr) >= LBound(a_arr)
-    On Error GoTo 0
-    Err.Clear
-    
-End Function
-
-Private Function ArryItems(ByVal a_arr As Variant, _
-                  Optional ByVal a_default_excluded As Boolean = False) As Long
-' ----------------------------------------------------------------------------
-' Returns the number of items in a multi-dimensional array or a nested array.
-' The latter is an array of which one or more items are again possibly multi-
-' dimensional arrays. An unallocated array returns 0. When items which return
-' a type specific default are excluded (a_default_excluded = True) only
-' "active= items/elements are counted.
-' ----------------------------------------------------------------------------
-    Dim lItems  As Long
-    Dim lDims   As Long
-    Dim v       As Variant
-    Dim i       As Long
-    Dim vDflt   As Variant
-    If Not IsArray(a_arr) Then Exit Function
-    
-    lDims = ArryDims(a_arr)
-    If Not a_default_excluded Then
-        lItems = 1
-        For i = 1 To lDims
-            lItems = lItems * (UBound(a_arr, i) - LBound(a_arr, i) + 1)
-        Next i
-    Else
-        vDflt = ArryDefault(a_arr)
-        For Each v In a_arr
-            If IsArray(v) Or TypeName(v) Like "*()" Then
-                lItems = lItems + ArryItems(v, a_default_excluded)
-            ElseIf Not TypeName(v) = "Error" And Not v = vDflt _
-                Then lItems = lItems + 1
-            End If
-        Next v
-    End If
-    ArryItems = lItems
     
 End Function
 
@@ -2016,8 +1933,9 @@ Private Function CollDiffs(ByVal v_res As Collection, _
     Dim i As Long
     Dim j As Long
 
+    v_res_prfx = v_res_prfx
     If v_res.Count <> v_exp.Count Then
-        sFailedNote = "Number of items Result/expected differs!"
+        sCommentVerification = "Number of items Result/expected differs!"
         LogCollectVrfctnDetails vbNullString, vbNullString, VR_FAILED
     Else
         LogCollectVrfctnDetails vbNullString, vbNullString, vbNullString
@@ -2031,14 +1949,14 @@ Private Function CollDiffs(ByVal v_res As Collection, _
     
     '~~ results without any expected
     For j = i To v_res.Count
-        sFailedNote = j & ". Item not expected!"
+        sCommentVerification = j & ". Item not expected!"
         LogCollectVrfctnDetails "Item(" & i & ") = " & v_res(j), vbNullString, VR_FAILED
         CollDiffs = True
     Next j
     
     '~~ Expected with a missing Result
     For j = i To v_exp.Count
-        sFailedNote = j & ". Item missing!"
+        sCommentVerification = j & ". Item missing!"
         LogCollectVrfctnDetails vbNullString, "Item(" & j & ") = " & v_exp(j), VR_FAILED
         CollDiffs = True
     Next j
@@ -2143,8 +2061,9 @@ Private Function DictDiffs(ByVal v_res As Dictionary, _
     Dim v       As Variant
     Dim dctDone As New Dictionary
     
+    v_res_prfx = v_res_prfx
     If v_res.Count <> v_exp.Count Then
-        sFailedNote = "Number of items Result/expected differ!"
+        sCommentVerification = "Number of items Result/expected differ!"
         LogCollectVrfctnDetails vbNullString, vbNullString, VR_FAILED
     Else
         LogCollectVrfctnDetails vbNullString, vbNullString, vbNullString
@@ -2152,7 +2071,7 @@ Private Function DictDiffs(ByVal v_res As Dictionary, _
     
     For Each v In v_res
         If Not v_exp.Exists(v) Then
-            sFailedNote = "Item not expected!"
+            sCommentVerification = "Item not expected!"
             LogCollectVrfctnDetails VarAsStrg(v) & " = " & VarAsStrg(v_res(v)), vbNullString, VR_FAILED
             DictDiffs = True
         Else
@@ -2165,7 +2084,7 @@ Private Function DictDiffs(ByVal v_res As Dictionary, _
     
     For Each v In v_exp
         If Not dctDone.Exists(v) Then
-            sFailedNote = "Item with key """ & VarAsStrg(v) & """ missing!"
+            sCommentVerification = "Item with key """ & VarAsStrg(v) & """ missing!"
             LogCollectVrfctnDetails vbNullString, VarAsStrg(v) & " = " & VarAsStrg(v_exp(v)), VR_FAILED
             DictDiffs = True
         End If
@@ -2181,7 +2100,25 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Function
 
-Public Sub DsplyFile(ByVal d_file_name As String)
+Private Function DiffsNumeric(ByVal v_res As String, _
+                              ByVal v_exp As String, _
+                     Optional ByRef v_res_prfx As String = vbNullString, _
+                     Optional ByRef v_exp_prfx As String = vbNullString) As Boolean
+' ----------------------------------------------------------------------------
+' Returns TRUE when numeric result (v_res) differs from a numeric expected
+' result(v_exp).
+' ----------------------------------------------------------------------------
+    
+    If CCur(v_res) <> CCur(v_exp) Then
+        DiffsNumeric = True
+        LogCollectVrfctnDetails v_res_prfx & v_res, v_exp_prfx & v_exp, VR_FAILED
+    Else
+        LogCollectVrfctnDetails v_res_prfx & v_res, v_exp_prfx & v_exp, VR_PASSED
+    End If
+
+End Function
+
+Private Sub DsplyFile(ByVal d_file_name As String)
     ShellRun d_file_name
 End Sub
 
@@ -2418,7 +2355,7 @@ Private Function ExcludeString(ByVal e_strng As String, _
     Select Case lStart
         Case 0:                                 ExcludeString = e_strng
         Case 1:                                 ExcludeString = Right(e_strng, Len(e_strng) - Len(e_excld))
-        Case Len(e_strng) - Len(e_excld) + 1:    ExcludeString = Left(e_strng, Len(e_strng) - Len(e_excld))
+        Case Len(e_strng) - Len(e_excld) + 1:   ExcludeString = Left(e_strng, Len(e_strng) - Len(e_excld))
         Case Else:                              ExcludeString = Left(e_strng, lStart - 1) & Right(e_strng, (Len(e_excld) - lStart + 1))
     End Select
 
@@ -2649,7 +2586,7 @@ Private Function FileDiffs(ByVal v_res As File, _
 End Function
 
 Public Sub FldrUnZip(ByVal f_source As Variant, _
-                       ByVal f_target As Variant)
+                     ByVal f_target As Variant)
 ' ----------------------------------------------------------------------------
 ' Unzips a zip file (f_source) to a target folder (f_target).
 ' ----------------------------------------------------------------------------
@@ -2670,32 +2607,6 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
-End Sub
-
-Public Sub FldrZip(ByVal f_source As Variant, _
-                   ByVal f_target As Variant)
-' ----------------------------------------------------------------------------
-' Zips a folder (f_source) into a zip file (f_target).
-' ----------------------------------------------------------------------------
-
-    Dim ShellApp As Object
-
-    '~~ Create an empty zip file
-    TxtFile(f_target) = Chr$(80) & Chr$(75) & Chr$(5) & Chr$(6) & String(18, 0)
-
-    '~~ Copy the files & folders into the zip file
-    Set ShellApp = CreateObject("Shell.Application")
-    With ShellApp
-        .Namespace(f_target).CopyHere ShellApp.Namespace(f_source).Items
-
-        '~~ Zipping the files may take a while, create loop to pause the macro until zipping has finished.
-        On Error Resume Next
-        Do Until .Namespace(f_target).Items.Count = .Namespace(f_source).Items.Count
-            Application.Wait (Now + TimeValue("0:00:01"))
-        Loop
-    End With
-    On Error GoTo 0
-
 End Sub
 
 Public Sub FolderUnZip(ByVal t_zip_file_name As String, _
@@ -2725,6 +2636,32 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
+End Sub
+
+Private Sub FldrZip(ByVal f_source As Variant, _
+                    ByVal f_target As Variant)
+' ----------------------------------------------------------------------------
+' Zips a folder (f_source) into a zip file (f_target).
+' ----------------------------------------------------------------------------
+
+    Dim ShellApp As Object
+
+    '~~ Create an empty zip file
+    TxtFile(f_target) = Chr$(80) & Chr$(75) & Chr$(5) & Chr$(6) & String(18, 0)
+
+    '~~ Copy the files & folders into the zip file
+    Set ShellApp = CreateObject("Shell.Application")
+    With ShellApp
+        .Namespace(f_target).CopyHere ShellApp.Namespace(f_source).Items
+
+        '~~ Zipping the files may take a while, create loop to pause the macro until zipping has finished.
+        On Error Resume Next
+        Do Until .Namespace(f_target).Items.Count = .Namespace(f_source).Items.Count
+            Application.Wait (Now + TimeValue("0:00:01"))
+        Loop
+    End With
+    On Error GoTo 0
+
 End Sub
 
 Public Sub FolderZip(ByVal t_no As String)
@@ -2977,20 +2914,18 @@ Private Sub LogCollectVrfctnDetails(ByVal v_res As String, _
 '
 ' ----------------------------------------------------------------------------
                                       
-           LogItemTitle(aLogDetails) = sTitle
-           LogItemTestId(aLogDetails) = "'" & sTestId
-        LogItemVrfctnNo(aLogDetails) = "'" & Format(lVrfctnNumber, "00")
-      LogItemVrfctnDesc(aLogDetails) = sVerification
-       LogItemVrfydType(aLogDetails) = sVrfctnType
-    LogItemVrfctnResult(aLogDetails) = v_ver
-       LogItemVrfctnRes(aLogDetails) = v_res
-    LogItemVrfctnResExp(aLogDetails) = v_exp
+    LogItemTestTtle(aLogDetails) = sTitle
+    LogItemTestIdnt(aLogDetails) = "'" & sTestId
+    LogItemVfctNmbr(aLogDetails) = "'" & Format(lVrfctnNumber, "00")
+    LogItemVfctDesc(aLogDetails) = sVerification
+    LogItemVfctPorF(aLogDetails) = v_ver
+    LogItemVfctRslt(aLogDetails) = v_res
+    LogItemVfctXptd(aLogDetails) = v_exp
     If dTimerMsecs = 0 _
-    Then LogItemVxcTime(aLogDetails) = "n/a" _
-    Else LogItemVxcTime(aLogDetails) = "'" & Format(dTimerMsecs, "#,##0.000")
-        LogItemComment(aLogDetails) = sComment
-    If sFailedNote <> vbNullString _
-    Then LogItemComment(aLogDetails) = sFailedNote
+    Then LogItemVfctXcTm(aLogDetails) = "n/a" _
+    Else LogItemVfctXcTm(aLogDetails) = "'" & Format(dTimerMsecs, "#,##0.000")
+    LogItemVfctCmnt(aLogDetails) = sCommentVerification
+    LogItemTestCmnt(aLogDetails) = sCommentTest
     
     If cllLogDetails Is Nothing Then Set cllLogDetails = New Collection
     cllLogDetails.Add aLogDetails
@@ -3064,50 +2999,11 @@ Private Sub LogSheetBorder(ByVal l_border As Border)
 
 End Sub
 
-Private Sub LogSheetFinalize()
-' ----------------------------------------------------------------------------
-' Format, merge, etc.
-' Column specs: <col>, <width>, <linebreak>
-' ----------------------------------------------------------------------------
-    Const PROC = "LogSheetFinalize"
-    
-    On Error GoTo eh
-        
-    If appLog.Workbooks.Count = 1 Then
-        With appLog
-            Stop
-            .Left = 10 ' Set the horizontal position (in points)
-            .Top = 10 ' Set the vertical position (in points)
-'            .Visible = True
-        End With
-    End If
-    
-    wbkLog.Activate
-    wshLog.Activate
-    ActiveWindow.DisplayGridlines = False
-    ActiveWindow.DisplayHeadings = False
-    Application.DisplayFormulaBar = False
-    
-    Application.EnableEvents = False
-    wbkLog.Save
-    Application.EnableEvents = True
-    wbkLog.Windows(1).Visible = True
-    
-    appLog.ScreenUpdating = True
-    appLog.Visible = True ' in case it had been established explicitely
-    wshLog.Visible = xlSheetVisible
-
-xt: Exit Sub
-
-eh: Select Case ErrMsg(ErrSrc(PROC))
-        Case vbResume:  Stop: Resume
-        Case Else:      GoTo xt
-    End Select
-End Sub
-
-Private Sub LogSheetFinalizeAdjustColumns(ParamArray l_spec() As Variant)
+Private Sub LogSheetFinalizeAdjustColumns(ByVal l_rng As Range, _
+                                     ParamArray l_spec() As Variant)
 ' ------------------------------------------------------------------------------
-'
+' Adjust provided columns (l_spec) to a certain width, all not specified are
+' autosized.
 ' ------------------------------------------------------------------------------
     Dim col   As Range
     Dim lCols As Long
@@ -3116,6 +3012,7 @@ Private Sub LogSheetFinalizeAdjustColumns(ParamArray l_spec() As Variant)
     Dim i     As Long
     Dim lCol  As Long
     
+    Application.ScreenUpdating = False
     If ArryIsAllocated(l_spec) Then
         '~~ Obtain finalization column specs
         For i = LBound(l_spec) To UBound(l_spec) Step 3
@@ -3130,13 +3027,23 @@ Private Sub LogSheetFinalizeAdjustColumns(ParamArray l_spec() As Variant)
     
     If dct.Count <> 0 Then
         With wshLog
-            For Each col In .UsedRange.Columns
-                If dct.Exists(col.Column) Then
-                    col.EntireColumn.ColumnWidth = dct(col.Column)(1)
-                    col.WrapText = dct(col.Column)(2)
-                    lCols = lCols + 1
-                End If
-                If lCols = dct.Count Then Exit For
+            For Each col In l_rng.Columns
+                With col
+                    If dct.Exists(.Column) Then
+                        .EntireColumn.ColumnWidth = dct(.Column)(1)
+                        .WrapText = dct(.Column)(2)
+                        lCols = lCols + 1
+                    Else
+                        .EntireColumn.AutoFit
+                    End If
+                    If .HorizontalAlignment = xlLeft _
+                    Or .HorizontalAlignment = xlRight Then
+                        .IndentLevel = 1
+                        If Not dct.Exists(.Column) Then
+                            .EntireColumn.AutoFit
+                        End If
+                    End If
+                End With
             Next col
         End With
     End If
@@ -3179,18 +3086,66 @@ Private Sub LogSheetFinalizeFormatings()
 
 End Sub
 
-Private Sub LogSheetFinalizeMergeColsEqual(ParamArray l_cols() As Variant)
+Private Sub LogSheetFinalizeHalignment(ByVal l_halign As Variant, _
+                                       ByVal l_rng As Range)
+' ----------------------------------------------------------------------------
+' Adjusts the horizontal alignment of the cells in the provided range (l_rng)
+' as specified (l_halign).
+' ----------------------------------------------------------------------------
+    Const PROC = "LogSheetFinalizeHalignment"
+    
+    On Error GoTo eh
+    Dim i       As Long
+    Dim lHalign As XlHAlign
+    Dim rngCol  As Range
+    
+    For i = LBound(l_halign) To UBound(l_halign)
+        lHalign = l_halign(i)
+        Set rngCol = l_rng.Columns(i + 1).Resize(l_rng.Rows.Count, 1)
+        rngCol.HorizontalAlignment = lHalign ' e.g. xlLeft
+    Next i
+    
+    If appLog.Workbooks.Count = 1 Then
+        With appLog
+            Stop
+            .Left = 10 ' Set the horizontal position (in points)
+            .Top = 10 ' Set the vertical position (in points)
+'            .Visible = True
+        End With
+    End If
+    
+    wbkLog.Activate
+    wshLog.Activate
+    ActiveWindow.DisplayGridlines = False
+    ActiveWindow.DisplayHeadings = False
+    Application.DisplayFormulaBar = False
+    
+    Application.EnableEvents = False
+    wbkLog.Save
+    Application.EnableEvents = True
+    wbkLog.Windows(1).Visible = True
+    
+    appLog.ScreenUpdating = True
+    appLog.Visible = True ' in case it had been established explicitely
+    wshLog.Visible = xlSheetVisible
+
+xt: Exit Sub
+
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
+End Sub
+
+Private Sub LogSheetFinalizeMergeColsEqual(ByVal l_rng As Range, _
+                                      ParamArray l_cols() As Variant)
 ' ------------------------------------------------------------------------------
-'
+' Merges all cells not empty but with equal content.
 ' ------------------------------------------------------------------------------
     Const PROC = "LogSheetFinalizeMergeColsEqual"
     
     On Error GoTo eh
-    Dim sValue      As Variant
-    Dim rngMerge    As Range
-    Dim cel         As Range
     Dim col         As Range
-    Dim xlHAlgnmnt  As Long
     Dim aCols       As Variant
     
     If Not ArryIsAllocated(l_cols) Then Exit Sub
@@ -3198,51 +3153,13 @@ Private Sub LogSheetFinalizeMergeColsEqual(ParamArray l_cols() As Variant)
         Arry(aCols, v) = True
     Next v
     
-    For Each col In wshLog.UsedRange.Columns
-        If col.Column = 1 Then GoTo nc
-        If Arry(aCols, col.Column - 1) Then
-            For Each cel In col.Cells
-                If cel.row <= rngLogSheetHeader.Rows.Count Then GoTo nc ' skip header rows
-                If cel.MergeCells Then GoTo nc                 ' skip any already merged
-                Select Case True
-                    Case rngMerge Is Nothing
-                        sValue = cel.value
-                        Set rngMerge = cel
-                        xlHAlgnmnt = cel.HorizontalAlignment
-                    Case cel.value = sValue
-                        Set rngMerge = appLog.Union(rngMerge, cel)
-                    Case cel.value <> sValue
-                        If Not rngMerge Is Nothing Then
-                            If rngMerge.Rows.Count > 1 Then
-                                With rngMerge
-                                    Application.DisplayAlerts = False
-                                    .Merge
-                                    Application.DisplayAlerts = False
-                                    .HorizontalAlignment = xlHAlgnmnt
-                                    .VerticalAlignment = xlCenter
-                                End With
-                            End If
-                        End If
-                        sValue = cel.value
-                        Set rngMerge = cel
-                        xlHAlgnmnt = cel.HorizontalAlignment
-                End Select
-nc:         Next cel
-            If Not rngMerge Is Nothing Then
-                If rngMerge.Rows.Count > 1 Then
-                    With rngMerge
-                        Application.DisplayAlerts = False
-                        .Merge
-                        Application.DisplayAlerts = False
-                        .HorizontalAlignment = xlHAlgnmnt
-                        .VerticalAlignment = xlCenter
-                   End With
-                End If
+    For Each col In l_rng.Columns
+        If col.Column <> 1 And col.Rows.Count > 1 Then
+            If Arry(aCols, col.Column - 1) Then
+                MergeEqualContent col, appLog
             End If
-            Set rngMerge = Nothing
         End If
     Next col
-    
     
 xt: Exit Sub
 
@@ -3302,6 +3219,7 @@ End Sub
 
 Private Sub LogSheetInitialize(ByVal l_name As String, _
                                ByVal l_at_end As Boolean, _
+                               ByRef l_halign As Variant, _
                           ParamArray l_format() As Variant)
 ' ------------------------------------------------------------------------------
 '
@@ -3309,16 +3227,12 @@ Private Sub LogSheetInitialize(ByVal l_name As String, _
     Const PROC = "LogSheetInitialize"
     
     On Error GoTo eh
-    Dim i       As Long
-    Dim lCol    As Long
-    Dim lFormat As Long
-    Dim lIndent As Long
-    Dim rngCol  As Range
-    Dim wsh     As Worksheet
+    Dim wsh As Worksheet
         
     If Not ArryIsAllocated(l_format) _
     Then Err.Raise AppErr(1), ErrSrc(PROC), "No columns specification (alignment and indentaion) provided!"
     
+    l_halign = l_format
     On Error Resume Next
     If appLog Is Nothing Then LogInitApp
     If wbkLog Is Nothing Then LogInitWbk
@@ -3332,19 +3246,7 @@ Private Sub LogSheetInitialize(ByVal l_name As String, _
         Else Set wshLog = wbkLog.Worksheets.Add(Before:=wbkLog.Worksheets(1))
         wshLog.Name = l_name
     End If
-    
-    lCol = 1
-    For i = LBound(l_format) To UBound(l_format) Step 2
-        lCol = lCol + 1
-        lIndent = l_format(i)
-        lFormat = l_format(i + 1)
-        Set rngCol = wshLog.Cells(, lCol)
-        With rngCol.EntireColumn
-            .HorizontalAlignment = lFormat ' e.g. xlLeft
-            .IndentLevel = lIndent
-        End With
-    Next i
-    
+        
     '~~ Remove all non "Test-* Worksheets
     For Each wsh In wbkLog.Worksheets
         If Not wsh.Name Like "Test-*" Then
@@ -3360,7 +3262,7 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Private Sub LogSheetInitializeDetails()
+Private Sub LogSheetInitializeDetails(ByRef l_halign As Variant)
 ' ------------------------------------------------------------------------------
 '
 ' ------------------------------------------------------------------------------
@@ -3377,26 +3279,26 @@ Private Sub LogSheetInitializeDetails()
     aLogDetails = cllLogDetails(1)
     
     If wshLog Is Nothing Then
-        LogSheetInitialize "Test-" & sTestId, True _
-                 , 0, xlCenter _
-                 , 1, xlLeft _
-                 , 0, xlCenter _
-                 , 1, xlLeft _
-                 , 1, xlLeft _
-                 , 0, xlCenter _
-                 , 0, xlRight _
-                 , 1, xlLeft
+        LogSheetInitialize "Test-" & sTestId, True, l_halign _
+                 , xlCenter _
+                 , xlLeft _
+                 , xlCenter _
+                 , xlCenter _
+                 , xlCenter _
+                 , xlRight _
+                 , xlLeft _
+                 , xlLeft
     End If
-                                                             
-    LogSheetHeader LogItemTestId(aLogDetails) & ": " & LogItemTitle(aLogDetails) _
-                 , LogItemVrfctnNo(aLogHeader) _
-                 , LogItemVrfctnDesc(aLogHeader) _
-                 , LogItemVrfydType(aLogHeader) _
-                 , LogItemVrfctnRes(aLogHeader) _
-                 , LogItemVrfctnResExp(aLogHeader) _
-                 , LogItemVrfctnResult(aLogHeader) _
-                 , LogItemVxcTime(aLogHeader) _
-                 , LogItemComment(aLogHeader)
+    wshLog.Visible = False
+    LogSheetHeader LogItemTestIdnt(aLogDetails) & ": " & LogItemTestTtle(aLogDetails) _
+                 , LogItemVfctNmbr(aLogHeader) _
+                 , LogItemVfctDesc(aLogHeader) _
+                 , LogItemVfctRslt(aLogHeader) _
+                 , LogItemVfctXptd(aLogHeader) _
+                 , LogItemVfctPorF(aLogHeader) _
+                 , LogItemVfctXcTm(aLogHeader) _
+                 , LogItemVfctCmnt(aLogHeader) _
+                 , LogItemTestCmnt(aLogHeader)
     
 xt: Exit Sub
 
@@ -3406,7 +3308,7 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Private Sub LogSheetInitializeSummary()
+Private Sub LogSheetInitializeSummary(ByRef l_halign As Variant)
 ' ------------------------------------------------------------------------------
 '
 ' ------------------------------------------------------------------------------
@@ -3417,41 +3319,71 @@ Private Sub LogSheetInitializeSummary()
     s = wbkLog.Name
     If s = vbNullString Then LogInitWbk
     
-    LogSheetInitialize "Test-Summary", False _
-               , 0, xlCenter _
-               , 1, xlLeft _
-               , 0, xlCenter _
-               , 1, xlLeft _
-               , 1, xlLeft _
-               , 1, xlLeft _
-               , 0, xlCenter _
-               , 1, xlLeft _
-               , 1, xlRight _
-               , 1, xlLeft
+    LogSheetInitialize "Test-Summary", False, l_halign _
+               , xlCenter _
+               , xlLeft _
+               , xlLeft _
+               , xlLeft _
+               , xlCenter _
+               , xlLeft _
+               , xlCenter _
+               , xlRight _
+               , xlLeft _
+               , xlLeft
     
     LogSheetHeader "Regression Test Summary" _
-                 , LogItemTestId(aLogHeader) _
-                 , LogItemTitle(aLogHeader) _
-                 , LogItemVrfctnNo(aLogHeader) _
-                 , LogItemVrfctnDesc(aLogHeader) _
-                 , "Proc-Type" _
-                 , LogItemCompName(aLogHeader) _
-                 , LogItemProcName(aLogHeader) _
-                 , LogItemVrfctnResult(aLogHeader) _
-                 , LogItemVxcTime(aLogHeader) _
-                 , LogItemComment(aLogHeader)
+                 , LogItemTestIdnt(aLogHeader) _
+                 , LogItemTestTtle(aLogHeader) _
+                 , LogItemTestComp(aLogHeader) _
+                 , LogItemTestProc(aLogHeader) _
+                 , LogItemVfctNmbr(aLogHeader) _
+                 , LogItemVfctDesc(aLogHeader) _
+                 , LogItemVfctPorF(aLogHeader) _
+                 , LogItemVfctXcTm(aLogHeader) _
+                 , LogItemVfctCmnt(aLogHeader) _
+                 , LogItemTestCmnt(aLogHeader)
+    wshLog.Visible = False
     
 End Sub
 
-Public Sub LogSheetWrite(ParamArray l_log() As Variant)
+Private Sub LogSheetWrite(ByRef l_rng As Range, _
+                     ParamArray l_log() As Variant)
 ' ------------------------------------------------------------------------------
 '
 ' ------------------------------------------------------------------------------
     Dim lRowNew As Long
+    Dim rng     As Range
+    
+    On Error GoTo xt ' when no array is provided
+    If UBound(l_log) >= LBound(l_log) Then
+        With wshLog
+            lRowNew = .UsedRange.Rows.Count + 1
+            Set rng = .Cells(lRowNew + 1, 2)
+            If rng.EntireRow.Hidden Then
+                Set rng = .Cells(lRowNew + 2, 2)
+            End If
+            ArryAsRnge l_log, rng
+            If l_rng Is Nothing _
+            Then Set l_rng = rng _
+            Else Set l_rng = appLog.Union(l_rng, rng)
+        End With
+    End If
+
+xt:
+End Sub
+
+Private Sub LogSheetWriteDelimiterRow(ByRef l_rng As Range)
+' ------------------------------------------------------------------------------
+'
+' ------------------------------------------------------------------------------
+    Dim lRowNew As Long
+    Dim rng     As Range
     
     With wshLog
         lRowNew = .UsedRange.Rows.Count + 1
-        ArryAsRnge l_log, .Cells(lRowNew + 1, 2)
+        Set rng = l_rng.Resize(1, l_rng.Columns.Count).Offset(l_rng.Rows.Count, 0)
+        rng.EntireRow.Hidden = True
+        Set l_rng = appLog.Union(l_rng, rng)
     End With
 
 End Sub
@@ -3522,6 +3454,62 @@ Private Function Max(ParamArray va() As Variant) As Variant
     
 End Function
 
+Private Sub MergeEqualContent(ByVal m_rng As Range, _
+                     Optional ByVal m_app As Application)
+' ----------------------------------------------------------------------------
+'
+' ----------------------------------------------------------------------------
+    Const PROC = "MergeEqualContent"
+    
+    On Error GoTo eh
+    Dim cel As Range
+    Dim rng As Range
+    Dim sLast As String
+    
+    For Each cel In m_rng.Cells
+        Select Case True
+            Case cel.value <> cel.Offset(1).value _
+            And cel.value = cel.Offset(-1).value ' not equal next content but equal with previous
+                If Not rng Is Nothing Then
+                    If rng.Cells.Count > 0 Then
+                        Application.DisplayAlerts = False
+                        Set rng = m_app.Union(rng, cel)
+                        rng.Merge
+                        Application.DisplayAlerts = True
+                        rng.VerticalAlignment = xlCenter
+                    End If
+                    Set rng = Nothing
+                End If
+            Case cel.value = cel.Offset(1).value    ' equal next content
+                If Not cel.MergeCells Then
+                    If cel.value <> vbNullString Then
+                        If rng Is Nothing _
+                        Then Set rng = cel _
+                        Else Set rng = m_app.Union(rng, cel)
+                    End If
+                Else
+                    Set rng = cel.MergeArea
+                    sLast = cel.value
+                End If
+            Case cel.value = sLast ' equal with previous
+                If cel.Offset(-1).MergeCells Then
+                    Set rng = m_app.Union(cel.Offset(-1), cel)
+                    Application.DisplayAlerts = False
+                    rng.Merge
+                    Application.DisplayAlerts = True
+                End If
+        End Select
+        
+    Next cel
+    
+xt: Exit Sub
+    
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
+End Sub
+
 Private Function Min(ParamArray va() As Variant) As Variant
 ' ------------------------------------------------------------------------------
 ' Returns the minimum (smallest) of all provided values.
@@ -3552,29 +3540,34 @@ Private Sub ResultLogDetails()
     Const PROC = "ResultLogDetails"
     
     On Error GoTo eh
-        
+    
     If cllLogDetails Is Nothing Then GoTo xt
     If cllLogDetails.Count = 0 Then GoTo xt
     
     Application.ScreenUpdating = False
-    If wshLog Is Nothing Then LogSheetInitializeDetails
+    If wshLog Is Nothing Then LogSheetInitializeDetails aHalignDetails
     
     For Each v In cllLogDetails
         aLogDetails = v
-        LogSheetWrite LogItemVrfctnNo(aLogDetails) _
-                    , LogItemVrfctnDesc(aLogDetails) _
-                    , LogItemVrfydType(aLogDetails) _
-                    , LogItemVrfctnRes(aLogDetails) _
-                    , LogItemVrfctnResExp(aLogDetails) _
-                    , LogItemVrfctnResult(aLogDetails) _
-                    , LogItemVxcTime(aLogDetails) _
-                    , LogItemComment(aLogDetails)
+        LogSheetWrite rngLogDetails _
+                    , LogItemVfctNmbr(aLogDetails) _
+                    , LogItemVfctDesc(aLogDetails) _
+                    , LogItemVfctRslt(aLogDetails) _
+                    , LogItemVfctXptd(aLogDetails) _
+                    , LogItemVfctPorF(aLogDetails) _
+                    , LogItemVfctXcTm(aLogDetails) _
+                    , LogItemVfctCmnt(aLogDetails) _
+                    , LogItemTestCmnt(aLogDetails)
     Next v
     Set cllLogDetails = Nothing
     
     LogSheetFinalizeFormatings
-    LogSheetFinalizeMergeColsEqual 1, 2
-    LogSheetFinalize
+    LogSheetFinalizeMergeColsEqual rngLogDetails, 1, 2, 7, 8
+    LogSheetFinalizeHalignment aHalignDetails, rngLogDetails
+    LogSheetFinalizeAdjustColumns rngLogDetails, 3, lLogWidthVerification, True _
+                                               , 8, lLogWidthCmmntVerification, True _
+                                               , 9, lLogWidthCmmntTitle, True
+    wshLog.Visible = True
     
 xt: Exit Sub
 
@@ -3591,30 +3584,42 @@ Public Sub ResultLogSummary()
     Const PROC = "ResultLogSummary"
     
     On Error GoTo eh
-    Dim v As Variant
+    Dim v       As Variant
+    Dim sId     As String
     
     If cllVrfctnSummary.Count = 0 Then Exit Sub
-    LogSheetInitializeSummary
+    LogSheetInitializeSummary aHalignSummary
     
+    Application.ScreenUpdating = False
     For Each v In cllVrfctnSummary
         aLogSummary = v
-        LogSheetWrite LogItemTestId(aLogSummary) _
-                    , LogItemTitle(aLogSummary) _
-                    , LogItemVrfctnNo(aLogSummary) _
-                    , LogItemVrfctnDesc(aLogSummary) _
-                    , LogItemProcType(aLogSummary) _
-                    , LogItemCompName(aLogSummary) _
-                    , LogItemProcName(aLogSummary) _
-                    , LogItemVrfctnResult(aLogSummary) _
-                    , LogItemVxcTime(aLogSummary) _
-                    , LogItemComment(aLogSummary) _
+        If sId <> vbNullString And sId <> LogItemTestIdnt(aLogSummary) Then
+            LogSheetWriteDelimiterRow rngLogSummary
+        End If
+        LogSheetWrite rngLogSummary _
+                    , LogItemTestIdnt(aLogSummary) _
+                    , LogItemTestTtle(aLogSummary) _
+                    , LogItemTestComp(aLogSummary) _
+                    , LogItemTestProc(aLogSummary) _
+                    , LogItemVfctNmbr(aLogSummary) _
+                    , LogItemVfctDesc(aLogSummary) _
+                    , LogItemVfctPorF(aLogSummary) _
+                    , LogItemVfctXcTm(aLogSummary) _
+                    , LogItemVfctCmnt(aLogSummary) _
+                    , LogItemTestCmnt(aLogSummary)
 
+        sId = LogItemTestIdnt(aLogSummary)
     Next v
     LogSheetFinalizeFormatings
-    LogSheetFinalizeMergeColsEqual 1, 2, 10
-    LogSheetFinalizeAdjustColumns 3, 40, True
-    LogSheetFinalize
+    LogSheetFinalizeMergeColsEqual rngLogSummary, 1, 2, 3, 4, 9, 10
+    LogSheetFinalizeHalignment aHalignSummary, rngLogSummary
+    '~~  Col width arguments:                  col, width, wrap
+    LogSheetFinalizeAdjustColumns rngLogSummary, 3, lLogWidthTitle, True _
+                                               , 7, lLogWidthVerification, True _
+                                               , 10, lLogWidthCmmntVerification, True _
+                                               , 11, lLogWidthCmmntTitle, True
     Set cllVrfctnSummary = Nothing
+    wshLog.Visible = True
     
 xt: Exit Sub
     
@@ -3642,8 +3647,9 @@ Private Sub ResultVersusExpected(ByVal v_res As Variant, _
     Select Case True
         Case IsArray(v_res) And IsArray(v_exp)
         Case TypeName(v_res) = TypeName(v_exp)
+        Case IsNumeric(v_res) And IsNumeric(v_exp)
         Case Else: Err.Raise AppErr(1), ErrSrc(PROC), _
-                             "The Result and the ResultExpected are different types of objects but need to be the same!" & vbCrLf & _
+                             "The Result and the ResultExpected are different data types. Supported are: array, numeric, or any other equal type names!" & vbCrLf & _
                              "Result = " & TypeName(v_res) & ", ResultExpected = " & TypeName(v_exp)
     End Select
     
@@ -3658,22 +3664,19 @@ Private Sub ResultVersusExpected(ByVal v_res As Variant, _
             
     '~~ Verification summary, writen to the log Worksheet by an explicit call of ResultLogSummary
     '~~ usually in the Regression-Test procecure"
-          LogItemTestId(aLogSummary) = "'" & sTestId
-           LogItemTitle(aLogSummary) = sTitle
-        LogItemVrfctnNo(aLogSummary) = "'" & Format(lVrfctnNumber, "00")
-      LogItemVrfctnDesc(aLogSummary) = sVerification
-        LogItemProcType(aLogSummary) = sTestedProcType
-        LogItemCompName(aLogSummary) = sTestedComp
-        LogItemProcName(aLogSummary) = sTestedProc
-    LogItemVrfctnResult(aLogSummary) = sVrfctnSummaryResult
-         LogItemComment(aLogSummary) = sComment:    sComment = vbNullString
-    If sFailedNote <> vbNullString _
-    Then LogItemComment(aLogSummary) = sFailedNote
-    sFailedNote = vbNullString
+    LogItemTestIdnt(aLogSummary) = "'" & sTestId
+    LogItemTestTtle(aLogSummary) = sTitle
+    LogItemVfctNmbr(aLogSummary) = "'" & Format(lVrfctnNumber, "00")
+    LogItemVfctDesc(aLogSummary) = sVerification
+    LogItemTestComp(aLogSummary) = sTestedComp
+    LogItemTestProc(aLogSummary) = sTestedProc
+    LogItemVfctPorF(aLogSummary) = sVrfctnSummaryResult
+    LogItemVfctCmnt(aLogSummary) = sCommentVerification: sCommentVerification = vbNullString
+    LogItemTestCmnt(aLogSummary) = sCommentTest
     
     If dTimerMsecs = 0 _
-    Then LogItemVxcTime(aLogSummary) = "n/a" _
-    Else LogItemVxcTime(aLogSummary) = "'" & Format(dTimerMsecs, "#,##0.000")
+    Then LogItemVfctXcTm(aLogSummary) = "n/a" _
+    Else LogItemVfctXcTm(aLogSummary) = "'" & Format(dTimerMsecs, "#,##0.000")
     If cllVrfctnSummary Is Nothing Then Set cllVrfctnSummary = New Collection
     cllVrfctnSummary.Add aLogSummary
     
@@ -3729,7 +3732,7 @@ Private Function RngeDiffs(ByVal v_res As Range, _
     
     If v_res.Columns.Count <> v_exp.Columns.Count _
     Or v_res.Rows.Count <> v_exp.Rows.Count Then
-        sFailedNote = "Number of columns/rows Result/expected differ!"
+        sCommentVerification = "Number of columns/rows Result/expected differ!"
         LogCollectVrfctnDetails "Range " & Replace(v_res.Address, "$", vbNullString), "Range " & Replace(v_exp.Address, "$", vbNullString), VR_FAILED
     Else
         LogCollectVrfctnDetails "Range " & Replace(v_res.Address, "$", vbNullString), "Range " & Replace(v_exp.Address, "$", vbNullString), vbNullString
@@ -3739,7 +3742,7 @@ Private Function RngeDiffs(ByVal v_res As Range, _
     
     For Each v In dctRes
         If Not dctExp.Exists(v) Then
-            sFailedNote = "Cell not expected!"
+            sCommentVerification = "Cell not expected!"
             LogCollectVrfctnDetails v & "=" & dctRes(v), vbNullString, VR_FAILED
             RngeDiffs = True
         Else
@@ -3752,7 +3755,7 @@ Private Function RngeDiffs(ByVal v_res As Range, _
     
     For Each v In dctExp
         If Not dctDone.Exists(v) Then
-            sFailedNote = "Cell missing in Result!"
+            sCommentVerification = "Cell missing in Result!"
             LogCollectVrfctnDetails vbNullString, v & "=" & dctExp(v), VR_FAILED
             RngeDiffs = True
         End If
@@ -3885,7 +3888,7 @@ Private Function StringAsArry(ByVal s_strng As String, _
     
 End Function
 
-Public Function StringAsColl(ByVal s_items As String, _
+Private Function StringAsColl(ByVal s_items As String, _
                           Optional ByVal s_split As String = vbNullString) As Collection
 ' ----------------------------------------------------------------------------
 ' Note when copied: Originates in mVarTrans
@@ -3937,7 +3940,7 @@ Private Function StringAsDict(ByVal s_items As String, _
     
 End Function
 
-Public Function StringAsFile(ByVal s_strng As String, _
+Private Function StringAsFile(ByVal s_strng As String, _
                     Optional ByRef s_file As Variant = vbNullString, _
                     Optional ByVal s_file_append As Boolean = False) As File
 ' ----------------------------------------------------------------------------
@@ -4033,7 +4036,7 @@ Public Function TestFileFullName(Optional ByVal t_name As String = vbNullString,
 
 End Function
 
-Private Function TestFileName(ByVal t_id As String, _
+Private Function TestFileName(ByVal t_Id As String, _
                               ByVal t_ver_no As Long, _
                      Optional ByVal t_name As String = vbNullString, _
                      Optional ByVal t_ext As String = vbNullString) As String
@@ -4044,7 +4047,7 @@ Private Function TestFileName(ByVal t_id As String, _
     Dim s As String
     
     s = sTestFileNameScheme
-    s = Replace(s, SCHEME_ID, t_id)
+    s = Replace(s, SCHEME_ID, t_Id)
     
     If t_ver_no = 0 Then t_ver_no = 1
     s = Replace(s, SCHEME_VER_NO, t_ver_no)
@@ -4094,7 +4097,7 @@ Public Function TestResultFile() As File
     
 End Function
 
-Public Sub TimerCalibration(Optional ByVal t_sleep_msec As Long = 20, _
+Private Sub TimerCalibration(Optional ByVal t_sleep_msec As Long = 20, _
                             Optional ByVal t_sleeps As Long = 1, _
                             Optional ByVal t_loops As Long = 1)
 ' ----------------------------------------------------------------------------
@@ -4306,7 +4309,7 @@ Private Function VarDiffs(ByVal v_res As Variant, _
                 If ArryNoOfElements(v_res) = ArryNoOfElements(v_exp) Then
                     LogCollectVrfctnDetails "Array", "Array", vbNullString
                 Else
-                    sFailedNote = "Number of elements/items differ!"
+                    sCommentVerification = "Number of elements/items differ!"
                     LogCollectVrfctnDetails "Array", "Array", VR_FAILED
                 End If
                 VarDiffs = ArryDiffs(v_res, v_exp, v_res_prfx)
@@ -4314,6 +4317,12 @@ Private Function VarDiffs(ByVal v_res As Variant, _
                 vResult = Exclude(VarAsStrg(v_res), sExcludeFromComparison)
                 vResultExpected = Exclude(VarAsStrg(v_exp), sExcludeFromComparison)
                 VarDiffs = StrgDiffs(vResult, vResultExpected, v_res_prfx, v_exp_prfx)
+            Case IsNumeric(v_res) And IsNumeric(v_exp) _
+             And Not VarType(v_res) = vbBoolean _
+             And Not VarType(v_exp) = vbBoolean _
+             And Not v_res = Empty _
+             And Not v_exp = Empty
+                VarDiffs = DiffsNumeric(v_res, v_exp, v_res_prfx, v_exp_prfx)
             Case Else
                 VarDiffs = StrgDiffs(VarAsStrg(v_res), VarAsStrg(v_exp), v_res_prfx, v_exp_prfx)
         End Select

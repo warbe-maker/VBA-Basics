@@ -1460,85 +1460,85 @@ Public Function ShellRun(ByVal oue_string As String, _
 
 End Function
 
-Private Function StackIsEmpty(ByVal stck As Collection) As Boolean
+Private Function StackIsEmpty(ByVal s_stck As Collection) As Boolean
 ' ----------------------------------------------------------------------------
-' Returns TRUE when the stack (stck) is empty.
+' Returns TRUE when the stack (s_stck) is empty.
 ' ----------------------------------------------------------------------------
-    If stck Is Nothing _
+    If s_stck Is Nothing _
     Then StackIsEmpty = True _
-    Else StackIsEmpty = stck.Count = 0
+    Else StackIsEmpty = s_stck.Count = 0
 End Function
 
-Private Function StackPop(ByVal stck As Collection) As Variant
+Private Function StackPop(ByVal s_stck As Collection) As Variant
 ' ----------------------------------------------------------------------------
-' Common Stack Pop service. Returns the last item pushed on the stack (stck)
-' and removes the item from the stack. When the stack (stck) is empty a
+' Common Stack Pop service. Returns the last item pushed on the stack (s_stck)
+' and removes the item from the stack. When the stack (s_stck) is empty a
 ' vbNullString is returned.
 ' ----------------------------------------------------------------------------
     Const PROC = "StckPop"
     
     On Error GoTo eh
     Dim sName As String
-    If StackIsEmpty(stck) Then GoTo xt
+    If StackIsEmpty(s_stck) Then GoTo xt
     
-    If IsObject(stck(stck.Count), sName) _
-    Then Set StackPop = stck(stck.Count) _
-    Else StackPop = stck(stck.Count)
-    stck.Remove stck.Count
+    If IsObject(s_stck(s_stck.Count), sName) _
+    Then Set StackPop = s_stck(s_stck.Count) _
+    Else StackPop = s_stck(s_stck.Count)
+    s_stck.Remove s_stck.Count
 
 xt: Exit Function
 
 eh: If ErrMsg(ErrSrc(PROC)) = vbYes Then: Stop: Resume
 End Function
 
-Private Function StckIsEmpty(ByVal stck As Collection) As Boolean
+Private Function StckIsEmpty(ByVal s_stck As Collection) As Boolean
 ' ----------------------------------------------------------------------------
 ' Common Stack Empty check service. Returns True when either there is no stack
-' (stck Is Nothing) or when the stack is empty (items count is 0).
+' (s_stck Is Nothing) or when the stack is empty (items count is 0).
 ' ----------------------------------------------------------------------------
-    StckIsEmpty = stck Is Nothing
-    If Not StckIsEmpty Then StckIsEmpty = stck.Count = 0
+    StckIsEmpty = s_stck Is Nothing
+    If Not StckIsEmpty Then StckIsEmpty = s_stck.Count = 0
 End Function
 
-Private Function StckPop(ByVal stck As Collection) As Variant
+Private Function StckPop(ByVal s_stck As Collection) As Variant
 ' ----------------------------------------------------------------------------
-' Common Stack Pop service. Returns the last item pushed on the stack (stck)
-' and removes the item from the stack. When the stack (stck) is empty a
+' Common Stack Pop service. Returns the last item pushed on the stack (s_stck)
+' and removes the item from the stack. When the stack (s_stck) is empty a
 ' vbNullString is returned.
 ' ----------------------------------------------------------------------------
     Const PROC = "StckPop"
     
     On Error GoTo eh
-    If StckIsEmpty(stck) Then GoTo xt
+    If StckIsEmpty(s_stck) Then GoTo xt
     
     On Error Resume Next
-    Set StckPop = stck(stck.Count)
+    Set StckPop = s_stck(s_stck.Count)
     If Err.Number <> 0 _
-    Then StckPop = stck(stck.Count)
-    stck.Remove stck.Count
+    Then StckPop = s_stck(s_stck.Count)
+    s_stck.Remove s_stck.Count
 
 xt: Exit Function
 
 eh: If ErrMsg(ErrSrc(PROC)) = vbYes Then: Stop: Resume
 End Function
 
-Private Sub StckPush(ByRef stck As Collection, _
-                     ByVal stck_item As Variant)
+Private Sub StckPush(ByRef s_stck As Collection, _
+                     ByVal s_item As Variant)
 ' ----------------------------------------------------------------------------
-' Common Stack Push service. Pushes (adds) an item (stck_item) to the stack
-' (stck). When the provided stack (stck) is Nothing the stack is created.
+' Common Stack Push service. Pushes (adds) an item (s_item) to the stack
+' (s_stck). When the provided stack (s_stck) is Nothing the stack is created.
 ' ----------------------------------------------------------------------------
     Const PROC = "StckPush"
     
     On Error GoTo eh
-    If stck Is Nothing Then Set stck = New Collection
-    stck.Add stck_item
-    If stck.Count >= 15 Then
+    If s_stck Is Nothing Then Set s_stck = New Collection
+    s_stck.Add s_item
+    If s_stck.Count >= 200 Then
         Select Case MsgBox("Loop warning!" & vbLf & _
                            "Yes: Display stack" & vbLf & _
                            "No: Continue" & vbLf & _
                            "Cancel: Terminate process", vbYesNoCancel, "Loop warning!")
-            Case vbYes:     ShellRun CollAsFile(stck, TempFileFullName).Path, WIN_NORMAL
+            Case vbYes:     ShellRun CollAsFile(s_stck, TempFileFullName).Path, WIN_NORMAL
             Case vbNo:
             Case vbCancel: Stop
         End Select

@@ -726,76 +726,76 @@ Private Function ErrSrc(ByVal sProc As String) As String
     ErrSrc = "mErH." & sProc
 End Function
 
-Private Function StackBottom(ByVal stck As Collection) As String
-    If Not StackIsEmpty(stck) Then StackBottom = ProcStack(1)
+Private Function StackBottom(ByVal s_stck As Collection) As String
+    If Not StackIsEmpty(s_stck) Then StackBottom = ProcStack(1)
 End Function
 
-Private Sub StackErase(ByRef stck As Collection)
-    If Not stck Is Nothing Then Set stck = Nothing
-    Set stck = New Collection
+Private Sub StackErase(ByRef s_stck As Collection)
+    If Not s_stck Is Nothing Then Set s_stck = Nothing
+    Set s_stck = New Collection
 End Sub
 
-Public Function StackIsEmpty(ByVal stck As Collection) As Boolean
+Public Function StackIsEmpty(ByVal s_stck As Collection) As Boolean
 ' ----------------------------------------------------------------------------
 ' Common Stack Empty check service. Returns True when either there is no stack
-' (stck Is Nothing) or when the stack is empty (items count is 0).
+' (s_stck Is Nothing) or when the stack is empty (items count is 0).
 ' ----------------------------------------------------------------------------
-    StackIsEmpty = stck Is Nothing
-    If Not StackIsEmpty Then StackIsEmpty = stck.Count = 0
+    StackIsEmpty = s_stck Is Nothing
+    If Not StackIsEmpty Then StackIsEmpty = s_stck.Count = 0
 End Function
 
-Public Function StackPop(ByVal stck As Collection, _
-                Optional ByVal id As Variant = vbNullString) As Variant
+Public Function StackPop(ByVal s_stck As Collection, _
+                Optional ByVal s_id As Variant = vbNullString) As Variant
 ' ----------------------------------------------------------------------------
-' Common Stack Pop service. Returns the last Item pushed on the stack (stck)
-' and removes the Item from the stack. When the stack (stck) is empty a
+' Common Stack Pop service. Returns the last Item pushed on the stack (s_stck)
+' and removes the Item from the stack. When the stack (s_stck) is empty a
 ' vbNullString is returned.
 ' ----------------------------------------------------------------------------
     Const PROC = "StckPop"
     
     On Error GoTo eh
-    If StackIsEmpty(stck) Then GoTo xt
+    If StackIsEmpty(s_stck) Then GoTo xt
     
-    If VarType(id) = vbObject Then
-        If Not StackTop(ProcStack) Is id Then GoTo xt
+    If VarType(s_id) = vbObject Then
+        If Not StackTop(ProcStack) Is s_id Then GoTo xt
     Else
-        If Not id = vbNullString Then
-            If StackTop(ProcStack) <> id Then GoTo xt
+        If Not s_id = vbNullString Then
+            If StackTop(ProcStack) <> s_id Then GoTo xt
         End If
     End If
     
-    If IsObject(stck(stck.Count)) _
-    Then Set StackPop = stck(stck.Count) _
-    Else StackPop = stck(stck.Count)
-    stck.Remove stck.Count
+    If IsObject(s_stck(s_stck.Count)) _
+    Then Set StackPop = s_stck(s_stck.Count) _
+    Else StackPop = s_stck(s_stck.Count)
+    s_stck.Remove s_stck.Count
 
 xt: Exit Function
 
 eh: If ErrMsg(ErrSrc(PROC)) = vbYes Then: Stop: Resume
 End Function
 
-Public Sub StackPush(ByRef stck As Collection, _
-                     ByVal stck_item As Variant)
+Public Sub StackPush(ByRef s_stck As Collection, _
+                     ByVal s_item As Variant)
 ' ----------------------------------------------------------------------------
-' Common Stack Push service. Pushes (adds) an Item (stck_Item) to the stack
-' (stck). When the provided stack (stck) is Nothing the stack is created.
+' Common Stack Push service. Pushes (adds) an Item (s_item) to the stack
+' (s_stck). When the provided stack (s_stck) is Nothing the stack is created.
 ' ----------------------------------------------------------------------------
     Const PROC = "StckPush"
     
     On Error GoTo eh
-    If stck Is Nothing Then Set stck = New Collection
-    stck.Add stck_item
+    If s_stck Is Nothing Then Set s_stck = New Collection
+    s_stck.Add s_item
 
 xt: Exit Sub
 
 eh: If ErrMsg(ErrSrc(PROC)) = vbYes Then: Stop: Resume
 End Sub
 
-Private Function StackTop(ByVal stck As Collection) As Variant
-    If Not StackIsEmpty(stck) Then
-        If VarType(stck.Count) = vbObject _
-        Then Set StackTop = stck(stck.Count) _
-        Else StackTop = stck(stck.Count)
+Private Function StackTop(ByVal s_stck As Collection) As Variant
+    If Not StackIsEmpty(s_stck) Then
+        If VarType(s_stck.Count) = vbObject _
+        Then Set StackTop = s_stck(s_stck.Count) _
+        Else StackTop = s_stck(s_stck.Count)
     End If
 End Function
 

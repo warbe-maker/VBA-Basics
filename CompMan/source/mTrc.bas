@@ -1239,10 +1239,10 @@ Private Sub StckAdjust(ByVal t_id As String)
 
 End Sub
 
-Private Function StckEd(ByVal stck_id As String) As Boolean
+Private Function StckEd(ByVal s_id As String) As Boolean
 ' ----------------------------------------------------------------------------
 ' Returns TRUE when last Item pushed to the stack is identical with the Item
-' (stck_id) and level (stck_lvl).
+' (s_id) and level (stck_lvl).
 ' ----------------------------------------------------------------------------
     Const PROC = "StckEd"
     
@@ -1252,7 +1252,7 @@ Private Function StckEd(ByVal stck_id As String) As Boolean
     
     For i = TraceStack.Count To 1 Step -1
         Set cllNtry = TraceStack(i)
-        If ItmId(cllNtry) = stck_id Then
+        If ItmId(cllNtry) = s_id Then
             StckEd = True
             Exit Function
         End If
@@ -1272,18 +1272,18 @@ Private Function StckIsEmpty(ByVal stck As Collection) As Boolean
 End Function
 
 Private Sub StckPop(ByRef stck As Collection, _
-                    ByVal stck_item As Variant, _
+                    ByVal s_item As Variant, _
            Optional ByRef stck_ppd As Collection)
 ' ----------------------------------------------------------------------------
-' Pops the Item (stck_Item) from the stack (stck) when it is the top Item.
-' When the top Item is not identical with the provided Item (stck_Item) the
+' Pops the Item (s_item) from the stack (stck) when it is the top Item.
+' When the top Item is not identical with the provided Item (s_item) the
 ' pop is skipped.
 ' ----------------------------------------------------------------------------
     Const PROC = "StckPop"
     
     On Error GoTo eh
     Dim cllTop  As Collection: Set cllTop = StckTop(stck)
-    Dim cll     As Collection: Set cll = stck_item
+    Dim cll     As Collection: Set cll = s_item
     
     While ItmId(cll) <> ItmId(cllTop) And Not StckIsEmpty(TraceStack)
         '~~ Finish any unfinished code trace still on the stack which needs to be finished first
@@ -1320,9 +1320,9 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
 End Sub
 
 Private Sub StckPush(ByRef stck As Collection, _
-                     ByVal stck_item As Variant)
+                     ByVal s_item As Variant)
     If stck Is Nothing Then Set stck = New Collection
-    stck.Add stck_item
+    stck.Add s_item
 End Sub
 
 Private Function StckTop(ByVal stck As Collection) As Collection
@@ -1456,7 +1456,7 @@ Private Sub TrcEnd(ByVal t_id As String, _
            , t_args:=t_args _
            , t_ntry:=t_cll
          
-    StckPop stck:=TraceStack, stck_item:=t_cll, stck_ppd:=Itm
+    StckPop stck:=TraceStack, s_item:=t_cll, stck_ppd:=Itm
     iTrcLvl = iTrcLvl - 1
 
 xt: Exit Sub
